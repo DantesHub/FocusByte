@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>456536034619-g8ck1gutjupke0cgtnk28sse55smgupm.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.456536034619-g8ck1gutjupke0cgtnk28sse55smgupm</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAI-FMS0DOwnCrUKzbyYukemyWV3Hs8Qxs</string>
+	<key>GCM_SENDER_ID</key>
+	<string>456536034619</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>co.byteteam.focusbyte</string>
+	<key>PROJECT_ID</key>
+	<string>focusbyte-7ebd4</string>
+	<key>STORAGE_BUCKET</key>
+	<string>focusbyte-7ebd4.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:456536034619:ios:10c7bde1872e679a033b1e</string>
+	<key>DATABASE_URL</key>
+	<string>https://focusbyte-7ebd4.firebaseio.com</string>
+</dict>
+</plist>
