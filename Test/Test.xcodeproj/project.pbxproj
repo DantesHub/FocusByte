@@ -27,6 +27,7 @@
 		FECA7A8B2439101A00763504 /* TextFieldExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FECA7A8A2439101A00763504 /* TextFieldExtension.swift */; };
 		FECA7A8D2439135300763504 /* NameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FECA7A8C2439135300763504 /* NameViewController.swift */; };
 		FECA7A8F2439136700763504 /* GenderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FECA7A8E2439136700763504 /* GenderViewController.swift */; };
+		FED6F636243E69C400553996 /* MenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED6F635243E69C400553996 /* MenuController.swift */; };
 		FEF55DCC2430275E00B4C0E1 /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEF55DCA2430275E00B4C0E1 /* WelcomeViewController.swift */; };
 		FEF55DCF2430346D00B4C0E1 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEF55DCE2430346D00B4C0E1 /* LoginViewController.swift */; };
 		FEF55DD224310F2800B4C0E1 /* PressStart2P.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FEF55DD124310F2700B4C0E1 /* PressStart2P.ttf */; };
@@ -84,6 +85,7 @@
 		FECA7A8A2439101A00763504 /* TextFieldExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldExtension.swift; sourceTree = "<group>"; };
 		FECA7A8C2439135300763504 /* NameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameViewController.swift; sourceTree = "<group>"; };
 		FECA7A8E2439136700763504 /* GenderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenderViewController.swift; sourceTree = "<group>"; };
+		FED6F635243E69C400553996 /* MenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuController.swift; sourceTree = "<group>"; };
 		FEF55DCA2430275E00B4C0E1 /* WelcomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewController.swift; sourceTree = "<group>"; };
 		FEF55DCE2430346D00B4C0E1 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		FEF55DD124310F2700B4C0E1 /* PressStart2P.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = PressStart2P.ttf; sourceTree = "<group>"; };
@@ -242,6 +244,7 @@
 				FECA7A8124390D3500763504 /* RegisterFlow */,
 				FECA7A8024390D2600763504 /* Login */,
 				E1593606242ACE6F0050E914 /* TimerController.swift */,
+				FED6F635243E69C400553996 /* MenuController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -552,6 +555,7 @@
 				FECA7A8B2439101A00763504 /* TextFieldExtension.swift in Sources */,
 				FECA7A8F2439136700763504 /* GenderViewController.swift in Sources */,
 				FEF55DCC2430275E00B4C0E1 /* WelcomeViewController.swift in Sources */,
+				FED6F636243E69C400553996 /* MenuController.swift in Sources */,
 				E1593605242ACE6F0050E914 /* SceneDelegate.swift in Sources */,
 				FE5395C124311AD100DA83C1 /* Constants.swift in Sources */,
 				FECA7A7D243909CF00763504 /* ValidationError.swift in Sources */,

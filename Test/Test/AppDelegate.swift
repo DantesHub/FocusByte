@@ -10,41 +10,40 @@ import Firebase
 import GoogleSignIn
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
- 
-    
-    
+class AppDelegate: UIResponder, UIApplicationDelegate { 
     var count = 0
+    var window: UIWindow?
     func applicationDidEnterBackground(_ application: UIApplication) {
-        
+        if isPlaying {
         let timer2 = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-            self.count += 1
-            
-            if self.count == 1 {
+                self.count += 1
                 
-                let center = UNUserNotificationCenter.current()
-                let content = UNMutableNotificationContent()
-                content.title = "Come back!"
-                content.body = "If you don't come back the treasure will be lost!"
-                
-                // Step 3: Create the notification trigger
-                let date = Date().addingTimeInterval(10)
-                
-                let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
-                
-                let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
-                
-                // Step 4: Create the request
-                
-                let uuidString = UUID().uuidString
-                
-                let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
-                
-                // Step 5: Register the request
-                center.add(request) { (error) in
-                    // Check the error parameter and handle any errors
+                if self.count == 1 {
+                    
+                    let center = UNUserNotificationCenter.current()
+                    let content = UNMutableNotificationContent()
+                    content.title = "Come back!"
+                    content.body = "If you don't come back the treasure will be lost!"
+                    
+                    // Step 3: Create the notification trigger
+                    let date = Date().addingTimeInterval(15)
+                    
+                    let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+                    
+                    let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+                    
+                    // Step 4: Create the request
+                    
+                    let uuidString = UUID().uuidString
+                    
+                    let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
+                    
+                    // Step 5: Register the request
+                    center.add(request) { (error) in
+                        // Check the error parameter and handle any errors
+                    }
+                    
                 }
-                
             }
         }
     }
@@ -56,6 +55,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
         FirebaseApp.configure()
         let db = Firestore.firestore()
     

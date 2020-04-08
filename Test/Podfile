@@ -12,6 +12,7 @@ target 'Test' do
 	pod 'Firebase/Database'
 	pod 'Firebase/Firestore'
 	pod 'FirebaseFirestoreSwift'
+	pod 'HGCircularSlider', '~> 2.0.0'
 
 	
   target 'TestTests' do

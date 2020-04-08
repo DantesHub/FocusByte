@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-let brightPurple = hexStringToUIColor(hex: "#C7B6F5")
+let brightPurple = hexStringToUIColor(hex: "#5351C0")
 let color1 = hexStringToUIColor(hex: "#5E558A")
 let lightLavender = hexStringToUIColor(hex: "#ABA9FF")
 let superLightLavender = hexStringToUIColor(hex: "#E3DAFA")
