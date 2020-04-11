@@ -8,15 +8,24 @@
 
 import Foundation
 import UIKit
-
+let largeConfiguration = UIImage.SymbolConfiguration(weight: .bold)
+let menuImage = UIImage(systemName: "line.horizontal.3", withConfiguration: largeConfiguration)
+let resizedMenuImage = menuImage?.resized(to: CGSize(width: 35, height: 25)).withTintColor(.white, renderingMode:.alwaysOriginal)
 let brightPurple = hexStringToUIColor(hex: "#5351C0")
-let color1 = hexStringToUIColor(hex: "#5E558A")
 let lightLavender = hexStringToUIColor(hex: "#ABA9FF")
+let backgroundColor = hexStringToUIColor(hex: "#C7B6F5")
+let green = hexStringToUIColor(hex: "#196300")
+let lightPurple = hexStringToUIColor(hex: "#B99AFF")
 let superLightLavender = hexStringToUIColor(hex: "#E3DAFA")
+let darkRed = hexStringToUIColor(hex: "#811301")
 let darkPurple = hexStringToUIColor(hex:"#5E558A")
 
 struct K {
     static let userPreferenes = "userPreferences"
+    
+    struct FStore {
+        static let collectionName = "userPreferences"
+    }
 }
 
 
@@ -61,4 +70,33 @@ extension UIView {
             return UIImage(cgImage: image!.cgImage!)
         }
     }
+}
+
+extension UIImage {
+    func resized(to size: CGSize) -> UIImage {
+        return UIGraphicsImageRenderer(size: size).image { _ in
+            draw(in: CGRect(origin: .zero, size: size))
+        }
+    }
+}
+
+extension UIViewController {
+  func presentInFullScreen(_ viewController: UIViewController,
+                           animated: Bool,
+                           completion: (() -> Void)? = nil) {
+    viewController.modalPresentationStyle = .fullScreen
+    present(viewController, animated: animated, completion: completion)
+  }
+
+ func configureNavigationBar() {
+      navigationController?.navigationBar.barTintColor = backgroundColor
+      navigationController?.navigationBar.barStyle = .black
+      navigationItem.title = "Home"
+      self.navigationController?.navigationBar.titleTextAttributes =
+          [NSAttributedString.Key.foregroundColor: UIColor.white,
+           NSAttributedString.Key.font: UIFont(name: "Menlo-Bold", size: 30)!]
+      navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+      navigationController?.navigationBar.shadowImage = UIImage()
+      
+  }
 }

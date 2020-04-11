@@ -27,11 +27,19 @@
 		FECA7A8B2439101A00763504 /* TextFieldExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FECA7A8A2439101A00763504 /* TextFieldExtension.swift */; };
 		FECA7A8D2439135300763504 /* NameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FECA7A8C2439135300763504 /* NameViewController.swift */; };
 		FECA7A8F2439136700763504 /* GenderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FECA7A8E2439136700763504 /* GenderViewController.swift */; };
+		FED05132243FD25600D7B1F0 /* RealmObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED05131243FD25600D7B1F0 /* RealmObjects.swift */; };
+		FED05134243FD65400D7B1F0 /* RealmService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED05133243FD65400D7B1F0 /* RealmService.swift */; };
+		FED0513724411F3700D7B1F0 /* CircularSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED0513624411F3700D7B1F0 /* CircularSlider.swift */; };
 		FED6F636243E69C400553996 /* MenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED6F635243E69C400553996 /* MenuController.swift */; };
+		FED6F638243E843800553996 /* TimerContainerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED6F637243E843800553996 /* TimerContainerController.swift */; };
+		FED6F63A243E866400553996 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FED6F639243E866400553996 /* Main.storyboard */; };
+		FED6F63C243EA82700553996 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED6F63B243EA82700553996 /* Protocols.swift */; };
+		FED6F63E243EAC6100553996 /* MenuOptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED6F63D243EAC6100553996 /* MenuOptionCell.swift */; };
+		FED6F640243EB3A200553996 /* MenuOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED6F63F243EB3A200553996 /* MenuOption.swift */; };
+		FEF00175243FB635002D6C78 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEF00174243FB635002D6C78 /* SettingsController.swift */; };
 		FEF55DCC2430275E00B4C0E1 /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEF55DCA2430275E00B4C0E1 /* WelcomeViewController.swift */; };
 		FEF55DCF2430346D00B4C0E1 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEF55DCE2430346D00B4C0E1 /* LoginViewController.swift */; };
 		FEF55DD224310F2800B4C0E1 /* PressStart2P.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FEF55DD124310F2700B4C0E1 /* PressStart2P.ttf */; };
-		FEF55DD42431124200B4C0E1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FEF55DD32431124200B4C0E1 /* Main.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,11 +93,19 @@
 		FECA7A8A2439101A00763504 /* TextFieldExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldExtension.swift; sourceTree = "<group>"; };
 		FECA7A8C2439135300763504 /* NameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameViewController.swift; sourceTree = "<group>"; };
 		FECA7A8E2439136700763504 /* GenderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenderViewController.swift; sourceTree = "<group>"; };
+		FED05131243FD25600D7B1F0 /* RealmObjects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmObjects.swift; sourceTree = "<group>"; };
+		FED05133243FD65400D7B1F0 /* RealmService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmService.swift; sourceTree = "<group>"; };
+		FED0513624411F3700D7B1F0 /* CircularSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularSlider.swift; sourceTree = "<group>"; };
 		FED6F635243E69C400553996 /* MenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuController.swift; sourceTree = "<group>"; };
+		FED6F637243E843800553996 /* TimerContainerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerContainerController.swift; sourceTree = "<group>"; };
+		FED6F639243E866400553996 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		FED6F63B243EA82700553996 /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
+		FED6F63D243EAC6100553996 /* MenuOptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuOptionCell.swift; sourceTree = "<group>"; };
+		FED6F63F243EB3A200553996 /* MenuOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuOption.swift; sourceTree = "<group>"; };
+		FEF00174243FB635002D6C78 /* SettingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		FEF55DCA2430275E00B4C0E1 /* WelcomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewController.swift; sourceTree = "<group>"; };
 		FEF55DCE2430346D00B4C0E1 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		FEF55DD124310F2700B4C0E1 /* PressStart2P.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = PressStart2P.ttf; sourceTree = "<group>"; };
-		FEF55DD32431124200B4C0E1 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -206,6 +222,9 @@
 			children = (
 				FECA7A7C243909CF00763504 /* ValidationError.swift */,
 				FECA7A8224390D6B00763504 /* ValidateInputs.swift */,
+				FED6F63F243EB3A200553996 /* MenuOption.swift */,
+				FED05131243FD25600D7B1F0 /* RealmObjects.swift */,
+				FED05133243FD65400D7B1F0 /* RealmService.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -229,11 +248,20 @@
 			path = RegisterFlow;
 			sourceTree = "<group>";
 		};
+		FED0513524411F2400D7B1F0 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				FED0513624411F3700D7B1F0 /* CircularSlider.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 		FEF55DC624301CB300B4C0E1 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				FEF55DD32431124200B4C0E1 /* Main.storyboard */,
+				FED6F639243E866400553996 /* Main.storyboard */,
 				E159360D242ACE710050E914 /* LaunchScreen.storyboard */,
+				FED6F63D243EAC6100553996 /* MenuOptionCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -241,10 +269,13 @@
 		FEF55DC724301CB800B4C0E1 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				FED0513524411F2400D7B1F0 /* Components */,
 				FECA7A8124390D3500763504 /* RegisterFlow */,
 				FECA7A8024390D2600763504 /* Login */,
 				E1593606242ACE6F0050E914 /* TimerController.swift */,
 				FED6F635243E69C400553996 /* MenuController.swift */,
+				FED6F637243E843800553996 /* TimerContainerController.swift */,
+				FEF00174243FB635002D6C78 /* SettingsController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -255,6 +286,7 @@
 				FECA7A8A2439101A00763504 /* TextFieldExtension.swift */,
 				E1D2BF93242B9CCB004AC477 /* animatedLabel.swift */,
 				FE5395C024311AD100DA83C1 /* Constants.swift */,
+				FED6F63B243EA82700553996 /* Protocols.swift */,
 			);
 			path = Misc;
 			sourceTree = "<group>";
@@ -382,8 +414,8 @@
 				E159360F242ACE710050E914 /* LaunchScreen.storyboard in Resources */,
 				FECA7A8924390ECE00763504 /* GoogleService-Info.plist in Resources */,
 				FEBC64142431183F00FB082A /* PressStart2P-Regular.ttf in Resources */,
+				FED6F63A243E866400553996 /* Main.storyboard in Resources */,
 				E159360C242ACE710050E914 /* Assets.xcassets in Resources */,
-				FEF55DD42431124200B4C0E1 /* Main.storyboard in Resources */,
 				FEF55DD224310F2800B4C0E1 /* PressStart2P.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -550,16 +582,24 @@
 				FECA7A8524390E0000763504 /* RegisterViewController.swift in Sources */,
 				FEF55DCF2430346D00B4C0E1 /* LoginViewController.swift in Sources */,
 				E1593607242ACE6F0050E914 /* TimerController.swift in Sources */,
+				FED05132243FD25600D7B1F0 /* RealmObjects.swift in Sources */,
 				E1D2BF94242B9CCB004AC477 /* animatedLabel.swift in Sources */,
+				FED6F638243E843800553996 /* TimerContainerController.swift in Sources */,
 				E1593603242ACE6F0050E914 /* AppDelegate.swift in Sources */,
 				FECA7A8B2439101A00763504 /* TextFieldExtension.swift in Sources */,
+				FED6F63E243EAC6100553996 /* MenuOptionCell.swift in Sources */,
 				FECA7A8F2439136700763504 /* GenderViewController.swift in Sources */,
+				FED0513724411F3700D7B1F0 /* CircularSlider.swift in Sources */,
 				FEF55DCC2430275E00B4C0E1 /* WelcomeViewController.swift in Sources */,
 				FED6F636243E69C400553996 /* MenuController.swift in Sources */,
 				E1593605242ACE6F0050E914 /* SceneDelegate.swift in Sources */,
+				FED6F640243EB3A200553996 /* MenuOption.swift in Sources */,
 				FE5395C124311AD100DA83C1 /* Constants.swift in Sources */,
+				FED05134243FD65400D7B1F0 /* RealmService.swift in Sources */,
+				FEF00175243FB635002D6C78 /* SettingsController.swift in Sources */,
 				FECA7A7D243909CF00763504 /* ValidationError.swift in Sources */,
 				FECA7A8D2439135300763504 /* NameViewController.swift in Sources */,
+				FED6F63C243EA82700553996 /* Protocols.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

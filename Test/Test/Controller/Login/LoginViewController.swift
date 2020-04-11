@@ -10,21 +10,19 @@ class LoginViewController: UIViewController {
     var loginTitle = UILabel()
     var loginButtonView = UIView()
     var loginButtonLabel = UILabel()
-    var errorLabel =  UILabel(frame: CGRect(x: 60, y: 520, width: 350, height: 50))
+    var errorLabel: UILabel!
     var emailIsValid = false
     var passwordIsValid = false
     var forgotEmailField = UITextField()
     let container: UIView = UIView()
     var spinner = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.large)
-    var forgotPassword = UILabel(frame: CGRect(x: 110, y: 545, width: 350, height: 50))
+    var forgotPassword: UILabel!
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        loadTextViews()
-        loadForgotPassword()
-
+        view.backgroundColor = .white
+        configureNavigationBar()
         loginTitle.frame.size.width = 300
         loginTitle.frame.size.height = 100
         loginTitle.center.x = view.center.x + 70
@@ -48,6 +46,8 @@ class LoginViewController: UIViewController {
         loginButtonLabel.center.y = view.center.y + 200
         view.addSubview(loginButtonLabel)
         // Do any additional setup after loading the view.
+        loadTextViews()
+        loadForgotPassword()
     }
     
     @objc func forgotPasswordTapped() {
@@ -60,6 +60,7 @@ class LoginViewController: UIViewController {
             if let emailString = alert.textFields?.first?.text {
                 Auth.auth().sendPasswordReset(withEmail: emailString) { error in
                     if error != nil {
+                        self.errorLabel =  UILabel(frame: CGRect(x: self.view.center.x - 100, y: self.password.center.y + 50 , width: 350, height: 50))
                         self.errorLabel.text =  "Email does not exist"
                         self.errorLabel.textColor = .red
                         self.view.addSubview(self.errorLabel)
@@ -91,13 +92,14 @@ class LoginViewController: UIViewController {
         showSpinner()
         Auth.auth().signIn(withEmail: email.text!, password: password.text!) { result, error in
             if error != nil {
+                self.errorLabel =  UILabel(frame: CGRect(x: self.view.center.x - 130, y: self.password.center.y + 50 , width: 350, height: 50))
                 self.errorLabel.text = "username or password is incorrect"
                 self.errorLabel.textColor = .red
                 self.view.addSubview(self.errorLabel)
+//                self.errorLabel.topAnchor.constraint(equalTo: self.password.bottomAnchor, constant: 30).isActive = true
                 self.spinner.stopAnimating()
                 self.container.removeFromSuperview()
             } else {
-                
                 self.performSegue(withIdentifier: "loginToTimer", sender: nil)
             }
 
@@ -111,10 +113,8 @@ class LoginViewController: UIViewController {
     func loadTextViews() {
         email.placeholder = "Email"
         view.addSubview(email)
-        email.topAnchor.constraint(equalTo: view.topAnchor, constant: 340).isActive = true
+        email.topAnchor.constraint(equalTo: loginTitle.bottomAnchor, constant: 25).isActive = true
         email.applyDesign(view, x: -165, y: -110)
-        
-        
         password.placeholder = "Password"
         password.isSecureTextEntry = true
         view.addSubview(password)
@@ -123,13 +123,15 @@ class LoginViewController: UIViewController {
         
         
     }
+
     
     func loadForgotPassword() {
-        forgotPassword.attributedText = NSAttributedString(string: "Forgot my password", attributes:
-            [.underlineStyle: NSUnderlineStyle.single.rawValue])
+        forgotPassword = UILabel(frame: CGRect(x: view.center.x - 100, y: loginButtonView.center.y + 30 , width: 350, height: 50))
+        forgotPassword.attributedText = NSAttributedString(string: "Forgot my password", attributes: [.underlineStyle: NSUnderlineStyle.single.rawValue])
         forgotPassword.textColor = .blue
         forgotPassword.font = UIFont(name: "Menlo", size: 18)
         view.addSubview(forgotPassword)
+      
         let tapForgot = UITapGestureRecognizer(target: self, action: #selector(forgotPasswordTapped))
         forgotPassword.isUserInteractionEnabled = true
         forgotPassword.addGestureRecognizer(tapForgot)

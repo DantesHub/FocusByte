@@ -2,7 +2,7 @@ import UIKit
 import Firebase
 
 var chosenGender: String = ""
-class BoyOrGirlViewController: UIViewController {
+class GenderViewController: UIViewController {
     let boyImage = UIImage(named: "babyBoy")
     let girlImage = UIImage(named: "babyGirl")
     var boyImageView = UIImageView()
@@ -15,6 +15,7 @@ class BoyOrGirlViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = lightLavender
+        configureNavigationBar()
         self.navigationItem.setHidesBackButton(true, animated: false)
         UINavigationBar.appearance().barTintColor = lightLavender
         boyImageView.center.x = view.center.x - 150
@@ -64,15 +65,20 @@ class BoyOrGirlViewController: UIViewController {
         selectLabel.center.y = view.center.y - 170
         view.addSubview(selectLabel)
     }
+
     
     @objc func boyTapped() {
         chosenGender = "male"
-        performSegue(withIdentifier: "genderToName", sender: nil)
+        let nameVC = NameViewController()
+        nameVC.modalPresentationStyle = .fullScreen
+        self.navigationController?.pushViewController(nameVC, animated: true)
     }
     
     @objc func girlTapped() {
         chosenGender = "female"
-        performSegue(withIdentifier: "genderToName", sender: nil)
+        let nameVC = NameViewController()
+        nameVC.modalPresentationStyle = .fullScreen
+        self.navigationController?.pushViewController(nameVC, animated: true)
     }
 
 

@@ -8,28 +8,58 @@
 
 import UIKit
 
-enum MenuType: Int {
-    case timer
-    case store
-    case avatar
-    case statistics
-    case inventory
-    case settings
-}
 
-class MenuController: UITableViewController {
+private let reuseIdentifer = "MenuOptionCell"
 
+class MenuController: UIViewController {
+    //MARK: - Properties
+    var tableView: UITableView!
+    var delegate: TimerControllerDelegate!
+    
+    //MARK: - Init
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        configureTableView()
+    }
 
-        // Do any additional setup after loading the view.
+    
+    //MARK: - Handlers
+    func configureTableView() {
+        tableView = UITableView()
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(MenuOptionCell.self, forCellReuseIdentifier: reuseIdentifer)
+        tableView.backgroundColor = superLightLavender
+        tableView.separatorStyle = .none
+        tableView.rowHeight = 80
+        view.addSubview(tableView)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        tableView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        tableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        self.tableView.contentInset = UIEdgeInsets(top: 50,left: 0,bottom: 0,right: 0)
+
     }
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let menuType = MenuType(rawValue: indexPath.row) else { return }
-        dismiss(animated: true) {
-            print("\(menuType) dismissed")
-        }
+}
+
+extension MenuController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 6
     }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifer, for: indexPath) as! MenuOptionCell
+        let menuOption = MenuOption(rawValue: indexPath.row)
+        cell.descriptionLabel.text = menuOption?.description
+        cell.iconImageView.image = menuOption?.image
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let menuOption = MenuOption(rawValue: indexPath.row)
+        delegate?.handleMenuToggle(forMenuOption: menuOption)
+    }
+    
     
 }

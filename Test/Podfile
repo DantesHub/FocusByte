@@ -11,8 +11,9 @@ target 'Test' do
 	pod 'Validator', '~> 3.2'
 	pod 'Firebase/Database'
 	pod 'Firebase/Firestore'
-	pod 'FirebaseFirestoreSwift'
+	pod 'Firebase'
 	pod 'HGCircularSlider', '~> 2.0.0'
+	pod 'RealmSwift'
 
 	
   target 'TestTests' do

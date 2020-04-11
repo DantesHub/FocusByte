@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import RealmSwift
 
 class NameViewController: UIViewController {
     var nameInput = UITextField()
@@ -20,6 +21,7 @@ class NameViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = lightLavender
+        configureNavigationBar()
            self.navigationItem.setHidesBackButton(true, animated: false)
            UINavigationBar.appearance().barTintColor = lightLavender
            nameLabel.text = "What's your name?"
@@ -57,13 +59,15 @@ class NameViewController: UIViewController {
              finishButton.addGestureRecognizer(tap)
             
     }
+
     
     
     @objc func finishTapped() {
         showSpinner()
         if nameInput.text! != "" {
             if let _ = Auth.auth().currentUser?.email {
-                db.collection(K.userPreferenes).addDocument(data: [
+                let email = Auth.auth().currentUser?.email
+                db.collection(K.userPreferenes).document(email!).setData([
                     "gender": chosenGender,
                     "name": nameInput.text!,
                 ]) { (error) in
@@ -71,10 +75,12 @@ class NameViewController: UIViewController {
                         print("There was a issue saving data to firestore \(e) ")
                     } else {
                         print("Succesfully saved")
-                        self.performSegue(withIdentifier: "nameToTimer", sender: nil)
+                        let timerVC = TimerContainerController()
+                        self.navigationController?.pushViewController(timerVC, animated: true)
                     }
                 }
             }
+            saveToRealm()
         } else {
             let alert = UIAlertController(title: "Must input a name!", message:nil, preferredStyle: .alert)       
             alert.addAction(UIAlertAction(title: "Okay", style: .default, handler: nil))
@@ -91,6 +97,15 @@ class NameViewController: UIViewController {
         view.addSubview(container)
         container.addSubview(spinner)
         spinner.startAnimating()
+    }
+    
+    func saveToRealm() {
+        let UserToAdd = User()
+        UserToAdd.gender = chosenGender
+        UserToAdd.name = nameInput.text!
+        UserToAdd.email = Auth.auth().currentUser?.email
+        UserToAdd.isLoggedIn = true
+        UserToAdd.writeToRealm()
     }
     
 }

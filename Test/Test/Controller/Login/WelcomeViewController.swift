@@ -6,8 +6,10 @@
 //  Copyright © 2020 Steve Ink. All rights reserved.
 //
 import UIKit
+import RealmSwift
 
 class WelcomeViewController: UIViewController {
+    var results: Results<User>!
     var loginView = UIView()
     var registerView = UIView()
     var loginLabel = UILabel()
@@ -22,11 +24,22 @@ class WelcomeViewController: UIViewController {
         
         // Do any additional setup after loading the view.
     }
+    override func viewWillAppear(_ animated: Bool) {
+        results = uiRealm.objects(User.self)
+        for result in results {
+            if result.isLoggedIn == true {
+                navigationController?.pushViewController(TimerContainerController(), animated: false)
+            }
+        }
+        
+    }
 
     
     
     // MARK: - Components
     func loadComponents() {
+        view.backgroundColor = .white
+        configureNavigationBar()
         titleLabel1.frame.size.width = 300
         titleLabel1.frame.size.height = 100
         titleLabel1.center.x = view.center.x
@@ -86,19 +99,24 @@ class WelcomeViewController: UIViewController {
         view.addSubview(registerLabel)
         view.addSubview(middleText)
     }
+
+
     
     
     @objc func tappedLogin() {
-         // do something here
-         performSegue(withIdentifier: "welcomeToLogin", sender: nil)
-     }
+        let loginVC = LoginViewController()
+        self.navigationController?.pushViewController(loginVC, animated: true)
+    }
     
     @objc func tappedRegister() {
-        performSegue(withIdentifier: "welcomeToRegister", sender: nil)
+        let registerVC = RegisterViewController()
+        self.navigationController?.pushViewController(registerVC, animated: true)
     }
     
     
 }
+
+
 
 extension UIView {
     func applyDesign(color: UIColor) {

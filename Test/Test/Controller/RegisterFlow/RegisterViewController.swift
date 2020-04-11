@@ -5,7 +5,7 @@ import FirebaseAuth
 import GoogleSignIn
 import FirebaseAuth
 import Validator
-
+var userEmail = ""
 class RegisterViewController: UIViewController, GIDSignInDelegate {
     var registerTitle = UILabel()
     var password = UITextField()
@@ -16,7 +16,7 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
     var emailErrorLabel =  UILabel(frame: CGRect(x: 60, y: 305, width: 350, height: 40))
     var passwordErrorLabel = UILabel(frame: CGRect(x: 60, y: 405, width: 350, height: 40))
     var passwordConfirmationErrorLabel = UILabel(frame: CGRect(x: 60, y: 618, width: 350, height: 50))
-    var registerErrorLabel = UILabel(frame: CGRect(x: 60, y: 588, width: 350, height: 45))
+    var registerErrorLabel = UILabel(frame: CGRect(x: 60, y: 620, width: 350, height: 45))
     var emailIsValid = false
     var passwordIsValid = false
     var passwordConfirmationIsValid = false
@@ -28,8 +28,7 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
     var spinner = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.large)
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadButtons()
-        loadTextFields()
+        view.backgroundColor = .white
         registerTitle.text = "Sign up"
         registerTitle.textAlignment = .center
         registerTitle.font = UIFont(name:"Menlo-Bold", size: 55)
@@ -40,7 +39,7 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
         registerTitle.center.y = view.center.y - 280
         view.addSubview(registerTitle)
         
-        signUpView =  UIView(frame: CGRect(x: 100, y: 400, width: 350, height: 60))
+        signUpView =  UIView(frame: CGRect(x: 100, y: view.center.y + 270, width: 350, height: 60))
         signUpView.applyDesign(color: lightLavender)
         signUpView.center.x = view.center.x
         signUpView.center.y = view.center.y + 270
@@ -53,7 +52,10 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
         signUpLabel.center.x = view.center.x
         signUpLabel.center.y = view.center.y + 270
         view.addSubview(signUpLabel)
-        // Do any additional setup after loading the view.
+        
+        configureNavigationBar()
+        loadButtons()
+        loadTextFields()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -124,20 +126,25 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
                     self.registerErrorLabel.text = error!.localizedDescription
                     self.registerErrorLabel.textColor = .red
                     self.view.addSubview(self.registerErrorLabel)
+                    self.container.removeFromSuperview()
                     self.spinner.stopAnimating()
                     return
                 }
+                userEmail = self.ValInput.email
+                print(userEmail)
                 self.spinner.stopAnimating()
-                self.performSegue(withIdentifier: "registerToGender", sender: nil)
+                let genderVC = GenderViewController()
+                self.navigationController?.pushViewController(genderVC, animated: true)
             }
         }
     }
+
     
     func loadTextFields() {
         
         email.placeholder = "Email"
         view.addSubview(email)
-        email.topAnchor.constraint(equalTo: view.topAnchor, constant: 230).isActive = true
+        email.topAnchor.constraint(equalTo: self.registerTitle.bottomAnchor, constant: 15).isActive = true
         email.applyDesign(view, x: -165, y: -220)
         
         
@@ -165,9 +172,9 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
     }
     
     func loadButtons() {
-        let googleImageView = GIDSignInButton(frame: CGRect(x: 55 , y: 550 , width: 130, height: 50))
+        let googleImageView = GIDSignInButton(frame: CGRect(x: view.center.x - 150 , y: signUpView.center.y - 180, width: 130, height: 50))
         googleImageView.clipsToBounds = true
-        let shadowView = UIView(frame: CGRect(x: 55 , y: 550 , width: 130, height: 50))
+        let shadowView = UIView(frame: CGRect(x:view.center.x - 150 , y: signUpView.center.y - 180 , width: 130, height: 50))
         shadowView.backgroundColor = .white
         shadowView.dropShadow(superview: view)
         view.addSubview(shadowView)
@@ -178,9 +185,9 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
 //        let facebookLoginButton = FBSDKLoginButton()
 //        loginButton.delegate = self
         let facebookImageView = UIImageView(image: facebookImage)
-        facebookImageView.frame = CGRect(x: 235, y: 545, width: 130, height: 58)
+        facebookImageView.frame = CGRect(x: view.center.x + 30, y: signUpView.center.y - 180  , width: 130, height: 58)
         facebookImageView.clipsToBounds = true
-        let shadowView2 = UIView(frame: CGRect(x: 235 , y: 545 , width: 130, height: 58))
+        let shadowView2 = UIView(frame: CGRect(x: view.center.x + 30 , y: signUpView.center.y - 180 , width: 130, height: 58))
         shadowView2.backgroundColor = .white
         shadowView2.dropShadow(superview: view)
         view.addSubview(shadowView2)
@@ -196,9 +203,9 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
          }
          
          guard let authentication = user.authentication else { return }
+        
          let credential = GoogleAuthProvider.credential(withIDToken: authentication.idToken,
                                                         accessToken: authentication.accessToken)
-         
          Auth.auth().signIn(with: credential) { (authResult, error) in
              if let error = error {
                 self.passwordConfirmationErrorLabel.text = "Something went wrong"
@@ -208,7 +215,10 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
              } else {
                 self.passwordConfirmationErrorLabel.removeFromSuperview()
                  print("user is signed in")
-                self.performSegue(withIdentifier: "registerToGender", sender: nil)
+                userEmail = String(signIn.currentUser.userID)
+                let genderVC = GenderViewController()
+                genderVC.modalPresentationStyle = .fullScreen
+                self.navigationController?.pushViewController(genderVC, animated: true)
              }
          }
      }
@@ -225,8 +235,9 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
                 print(error)
             } else {
                 self.passwordConfirmationErrorLabel.removeFromSuperview()
-                print("user is signed in")
-                self.performSegue(withIdentifier: "registerToGender", sender: nil)
+                let genderVC = GenderViewController()
+                genderVC.modalPresentationStyle = .fullScreen
+                self.navigationController?.pushViewController(genderVC, animated: true)
             }
         }
     }
