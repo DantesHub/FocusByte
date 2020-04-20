@@ -14,7 +14,7 @@ private let reuseIdentifer = "MenuOptionCell"
 class MenuController: UIViewController {
     //MARK: - Properties
     var tableView: UITableView!
-    var delegate: TimerControllerDelegate!
+    var delegate: ContainerControllerDelegate!
     
     //MARK: - Init
     override func viewDidLoad() {

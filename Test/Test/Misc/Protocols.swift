@@ -1,6 +1,8 @@
 
 import Foundation
+import UIKit
 
-protocol TimerControllerDelegate {
+protocol ContainerControllerDelegate {
     func handleMenuToggle(forMenuOption menuOption: MenuOption?)
 }
+

@@ -1,28 +1,35 @@
-//
-//  TimerContainerController.swift
-//  Test
-//
-//  Created by Dante Kim on 4/8/20.
-//  Copyright © 2020 Steve Ink. All rights reserved.
-//
 
 import UIKit
 
-class TimerContainerController: UIViewController {
+class ContainerController: UIViewController {
     //MARK: - Properties
     var menuController: MenuController! //We only want to add our menuController one time
     var centerController: UIViewController!
     var isExpanded = false
+    
+    
+    //MARK: - INIT
+    convenience init(center: UIViewController) {
+        self.init()
+        self.centerController = center
+    }
+    
+  
     //MARK: - Init
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = backgroundColor
         self.navigationController?.isNavigationBarHidden = true
-        configureTimerController()
-}
+        configureCenterController()
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        if loggedOut {
+            self.navigationController?.popToRootViewController(animated: true)
+        }
+        
+    }
     
+
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return.lightContent
     }
@@ -36,27 +43,33 @@ class TimerContainerController: UIViewController {
     }
     
     //MARK: - Handlers
-    func configureTimerController() {
-        let timerController = TimerController()
-        timerController.delegate = self
-        centerController = UINavigationController(rootViewController: timerController)
-        view.addSubview(centerController.view)
-        addChild(centerController)
-        centerController.didMove(toParent: self)
-        
-    }
-    
-    func configureMenuController()  {
-        if menuController == nil {
-            //add our menu controller
-            menuController = MenuController()
-             menuController.delegate = self
-            view.insertSubview(menuController.view, at: 0)
-            addChild(menuController)
-            menuController.didMove(toParent: self)
-        }
-    }
-    
+       func configureCenterController() {
+            if centerController is TimerController {
+                let timerController = TimerController()
+                timerController.delegate = self
+                centerController = UINavigationController(rootViewController: timerController)
+            }
+            if centerController is StoreController {
+                let storeController = StoreController()
+                storeController.delegate = self
+                centerController = UINavigationController(rootViewController: storeController)
+            }
+           view.addSubview(centerController.view)
+           addChild(centerController)
+           centerController.didMove(toParent: self)
+           
+       }
+       
+       func configureMenuController()  {
+           if menuController == nil {
+               //add our menu controller
+               menuController = MenuController()
+               menuController.delegate = self
+               view.insertSubview(menuController.view, at: 0)
+               addChild(menuController)
+               menuController.didMove(toParent: self)
+           }
+       }
     func showMenuController(shouldExpand: Bool, menuOption: MenuOption?) {
         if shouldExpand {
             //show menu
@@ -78,11 +91,17 @@ class TimerContainerController: UIViewController {
     func didSelectMenuOption(menuOption: MenuOption) {
         switch menuOption {
         case .timer:
-            print("show timer")
+            let controller = ContainerController(center: TimerController())
+            controller.modalPresentationStyle = .fullScreen
+            presentInFullScreen(UINavigationController(rootViewController: controller), animated: false, completion: nil)
         case .store:
-            print("show store")
+            let controller = ContainerController(center: StoreController())
+            controller.modalPresentationStyle = .fullScreen
+            presentInFullScreen(UINavigationController(rootViewController: controller), animated: false, completion: nil)
         case .avatar:
-            print("show avatar")
+            let controller = ContainerController(center: AvatarController())
+            controller.modalPresentationStyle = .fullScreen
+            presentInFullScreen(UINavigationController(rootViewController: controller), animated: false, completion: nil)
         case .statistics:
             print("show statistics")
         case .inventory:
@@ -99,19 +118,17 @@ class TimerContainerController: UIViewController {
             self.setNeedsStatusBarAppearanceUpdate()
         }, completion: nil)
     }
+
     
 }
 
-
-
-extension TimerContainerController: TimerControllerDelegate {
+extension ContainerController: ContainerControllerDelegate {
     func handleMenuToggle(forMenuOption menuOption: MenuOption?) {
+        print("pressing")
         if !isExpanded {
             configureMenuController()
         }
-         isExpanded = !isExpanded
+        isExpanded = !isExpanded
         showMenuController(shouldExpand: isExpanded, menuOption: menuOption)
     }
-    
-    
 }

@@ -21,25 +21,22 @@ class WelcomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         loadComponents()
-        
         // Do any additional setup after loading the view.
     }
     override func viewWillAppear(_ animated: Bool) {
+        print("welcome screen")
         results = uiRealm.objects(User.self)
         for result in results {
             if result.isLoggedIn == true {
-                navigationController?.pushViewController(TimerContainerController(), animated: false)
+                navigationController?.pushViewController(ContainerController(center: TimerController()), animated: false)
             }
         }
-        
     }
-
-    
     
     // MARK: - Components
     func loadComponents() {
         view.backgroundColor = .white
-        configureNavigationBar()
+        configureNavigationBar(color: .white, isTrans: true)
         titleLabel1.frame.size.width = 300
         titleLabel1.frame.size.height = 100
         titleLabel1.center.x = view.center.x
@@ -112,11 +109,7 @@ class WelcomeViewController: UIViewController {
         let registerVC = RegisterViewController()
         self.navigationController?.pushViewController(registerVC, animated: true)
     }
-    
-    
 }
-
-
 
 extension UIView {
     func applyDesign(color: UIColor) {

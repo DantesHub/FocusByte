@@ -12,8 +12,8 @@ import HGCircularSlider
 
 extension TimerController {
     func createCircularSlider() {
-        circularSlider = CircularSlider(frame: CGRect(x: view.center.x - 175, y: view.center.y - 225, width: 350, height: 350))
-        circularSlider.layer.cornerRadius = 180
+        circularSlider = CircularSlider(frame: CGRect(x: view.center.x - 150, y: view.center.y - 200, width: 300, height: 300))
+        circularSlider.layer.cornerRadius = 150
         circularSlider.clipsToBounds = true
         circularSlider.backgroundColor = superLightLavender
         circularSlider.diskColor = superLightLavender

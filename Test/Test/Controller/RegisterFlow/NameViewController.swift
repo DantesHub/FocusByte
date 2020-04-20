@@ -21,7 +21,7 @@ class NameViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = lightLavender
-        configureNavigationBar()
+        configureNavigationBar(color: backgroundColor, isTrans: true)
            self.navigationItem.setHidesBackButton(true, animated: false)
            UINavigationBar.appearance().barTintColor = lightLavender
            nameLabel.text = "What's your name?"
@@ -48,7 +48,7 @@ class NameViewController: UIViewController {
             finishButton.font = UIFont(name: "Menlo", size: 25)
             finishButton.clipsToBounds = true
             finishButton.layer.cornerRadius = 25
-            let shadowView = UIView(frame: CGRect(x: 105 , y: 686 , width: 200, height: 60))
+            let shadowView = UIView(frame: CGRect(x: 105 , y: finishButton.center.y-20 , width: 200, height: 60))
             shadowView.backgroundColor = .clear
             shadowView.layer.cornerRadius = 25
             shadowView.dropShadow(superview: finishButton)
@@ -70,12 +70,13 @@ class NameViewController: UIViewController {
                 db.collection(K.userPreferenes).document(email!).setData([
                     "gender": chosenGender,
                     "name": nameInput.text!,
+                    "coins": 0
                 ]) { (error) in
                     if let e = error {
                         print("There was a issue saving data to firestore \(e) ")
                     } else {
                         print("Succesfully saved")
-                        let timerVC = TimerContainerController()
+                        let timerVC = ContainerController(center: TimerController())
                         self.navigationController?.pushViewController(timerVC, animated: true)
                     }
                 }
@@ -104,7 +105,9 @@ class NameViewController: UIViewController {
         UserToAdd.gender = chosenGender
         UserToAdd.name = nameInput.text!
         UserToAdd.email = Auth.auth().currentUser?.email
+        UserToAdd.coins = 0
         UserToAdd.isLoggedIn = true
+        loggedOut = false
         UserToAdd.writeToRealm()
     }
     

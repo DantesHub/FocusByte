@@ -12,7 +12,6 @@ import Firebase
 import RealmSwift
 
 var isPlaying = false
-
 class TimerController: UIViewController {
     //MARK: - Properties
     var results: Results<User>!
@@ -33,17 +32,23 @@ class TimerController: UIViewController {
     var durationString = ""
     var counter = 0
     var currentValueLabel: UILabel!
-    var delegate: TimerControllerDelegate?
     var ref: DatabaseReference!
-    
+    var delegate: ContainerControllerDelegate!
+
     
     //MARK: -Init
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureNavigationBar()
+        navigationItem.title = "Home"
+        configureNavigationBar(color: backgroundColor, isTrans: true)
         configureUI()
+        navigationItem.leftBarButtonItem =  UIBarButtonItem(image: resizedMenuImage?.withTintColor(.white), style: .plain, target: self, action: #selector(handleMenuToggle))
+        navigationController?.navigationBar.addSubview(coinsL)
+        navigationController?.navigationBar.addSubview(coinsImg!)
+
         createCircularSlider()
     }
+   
     
     override func viewDidAppear(_ animated: Bool) {
            var coins = 0
@@ -78,23 +83,25 @@ class TimerController: UIViewController {
               timeL.frame.size.width = 240
               timeL.frame.size.height = 75
               timeL.center.x = view.center.x
-              timeL.center.y = view.center.y + 200
+              timeL.center.y = view.center.y + 180
               timeL.lineBreakMode = .byClipping
               view.addSubview(timeL)
+
               
               timerButton.frame.size.width = 200
               timerButton.frame.size.height = 75
               timerButton.center.x = view.center.x
-              timerButton.center.y = timeL.center.y + 125
               timerButton.backgroundColor = darkPurple
+              timerButton.center.y = timeL.center.y + 100
               timerButton.layer.cornerRadius = 25
-              view.addSubview(timerButton)
-        
               timerButtonLbl.font = UIFont(name: "Menlo-Bold", size: 20)
-              if !isPlaying {
-                  timerButtonLbl.text = "Start"
-              }
-              let shadowView = UIView(frame: CGRect(x: view.center.x - 100 , y: timeL.center.y + 85 , width: 200, height: 75))
+                if !isPlaying {
+                    timerButtonLbl.text = "Start"
+                }
+              view.addSubview(timerButton)
+              
+             
+              let shadowView = UIView(frame: CGRect(x: view.center.x - 100 , y: timerButton.center.y-30 , width: 200, height: 75))
               shadowView.backgroundColor = .clear
               shadowView.layer.cornerRadius = 25
               shadowView.dropShadow(superview: timerButton)
@@ -114,10 +121,8 @@ class TimerController: UIViewController {
               
               let tap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
               timerButton.addGestureRecognizer(tap)
-        
-            navigationItem.leftBarButtonItem =  UIBarButtonItem(image: resizedMenuImage?.withTintColor(.white), style: .plain, target: self, action: #selector(handleMenuToggle))
-            navigationController?.navigationBar.addSubview(coinsL)
-            navigationController?.navigationBar.addSubview(coinsImg!)
+            
+           
             view.backgroundColor = backgroundColor
     }
 
@@ -152,7 +157,7 @@ class TimerController: UIViewController {
             center.y = view.center.y - 50
             // create my track layer
             
-            let circularPath = UIBezierPath(arcCenter: center, radius: 150, startAngle: -CGFloat.pi / 2, endAngle: 2 * CGFloat.pi, clockwise: true)
+            let circularPath = UIBezierPath(arcCenter: center, radius: 130, startAngle: -CGFloat.pi / 2, endAngle: 2 * CGFloat.pi, clockwise: true)
             trackLayer.path = circularPath.cgPath
             trackLayer.strokeColor = darkPurple.cgColor
             trackLayer.lineWidth = 15
