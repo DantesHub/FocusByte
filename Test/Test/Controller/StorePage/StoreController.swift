@@ -92,7 +92,6 @@ class StoreController: UIViewController {
     func configureUI() {
         configureNavigationBar(color: backgroundColor, isTrans: false)
         view.backgroundColor = backgroundColor
-        navigationController?.navigationBar.backgroundColor = backgroundColor
         navigationItem.title = "Shop"
         navigationItem.leftBarButtonItem =  UIBarButtonItem(image: resizedMenuImage?.withTintColor(.white), style: .plain, target: self, action: #selector(handleMenuToggle))
         mysteryBox = createBox(color: darkPurple, handler: #selector(mysteryTapped))

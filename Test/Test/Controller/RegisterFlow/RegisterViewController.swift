@@ -7,6 +7,8 @@ import FirebaseAuth
 import Validator
 var userEmail = ""
 class RegisterViewController: UIViewController, GIDSignInDelegate {
+    
+    //MARK: - properties
     var registerTitle = UILabel()
     var password = UITextField()
     var email = UITextField()
@@ -19,13 +21,136 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
     var passwordConfirmationIsValid = false
     let googleImage = UIImage(named: "googleButton")
     let facebookImage = UIImage(named: "facebookButton")
-    
     var ValInput = ValidateInputs()
     let container: UIView = UIView()
     var spinner = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.large)
+    
+    //MARK: - init
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        configureUI()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        GIDSignIn.sharedInstance()?.presentingViewController = self
+        GIDSignIn.sharedInstance().delegate = self
+       
+    }
+    
+    //MARK: - Handlers
+    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error?) {
+          // ...
+          if let error = error {
+              print(error)
+              return
+          }
+          
+          guard let authentication = user.authentication else { return }
+         
+          let credential = GoogleAuthProvider.credential(withIDToken: authentication.idToken,
+                                                         accessToken: authentication.accessToken)
+          Auth.auth().signIn(with: credential) { (authResult, error) in
+              if let error = error {
+                 self.registerErrorLabel.text = "Something went wrong"
+                 self.registerErrorLabel.textColor = .red
+                 self.registerErrorLabel.center.y = self.view.center.y + 220
+                 self.view.addSubview(self.registerErrorLabel)
+                 print(error)
+              } else {
+                 self.registerErrorLabel.removeFromSuperview()
+                  print("user is signed in")
+                 userEmail = String(signIn.currentUser.userID)
+                 let genderVC = GenderViewController()
+                 genderVC.modalPresentationStyle = .fullScreen
+                 self.navigationController?.pushViewController(genderVC, animated: true)
+              }
+          }
+      }
+    
+    @objc func tappedRegister() {
+        showSpinner()
+        if let constant = email.text {
+            ValInput.email = constant
+            emailIsValid = ValInput.isEmailValid()
+            if emailIsValid {
+                let color = UIColor.placeholderGray
+                let placeholder = "Email" //There should be a placeholder set in storyboard or elsewhere string or pass empty
+                email.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [NSAttributedString.Key.foregroundColor : color])
+            } else {
+                let color = UIColor.red
+                let placeholder = "Invalid Email" //There should be a placeholder set in storyboard or elsewhere string or pass empty
+                email.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [NSAttributedString.Key.foregroundColor : color])
+                self.spinner.stopAnimating()
+                container.removeFromSuperview()
+            }
+        }
+        if let constant = password.text {
+            ValInput.password = constant
+            passwordIsValid = ValInput.isPasswordLengthValid()
+            let passwordIsNumeric = ValInput.doesPasswordHaveDigits()
+            if passwordIsValid && passwordIsNumeric{
+                let color = UIColor.placeholderGray
+                let placeholder = "Password" //There should be a placeholder set in storyboard or elsewhere string or pass empty
+                password.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [NSAttributedString.Key.foregroundColor : color])
+            } else if !passwordIsValid {
+                password.text = ""
+                let color = UIColor.red
+                let placeholder = "At least 5 characters" //There should be a placeholder set in storyboard or elsewhere string or pass empty
+                password.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [NSAttributedString.Key.foregroundColor : color])
+                self.spinner.stopAnimating()
+                container.removeFromSuperview()
+            } else if !passwordIsNumeric {
+                password.text = ""
+                let color = UIColor.red
+                let placeholder = "Must contain numbers"
+                password.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [NSAttributedString.Key.foregroundColor : color])
+                self.spinner.stopAnimating()
+                container.removeFromSuperview()
+            }
+            
+        }
+        
+        if let constant = passwordConfirmation.text {
+            ValInput.passwordConfirmation = constant
+            passwordConfirmationIsValid = ValInput.isPasswordConfirmationValid()
+            if passwordConfirmationIsValid {
+                let color = UIColor.placeholderGray
+                let placeholder = "Password Confirmation" //There should be a placeholder set in storyboard or elsewhere string or pass empty
+                passwordConfirmation.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [NSAttributedString.Key.foregroundColor : color])
+            } else {
+                passwordConfirmation.text = ""
+                let color = UIColor.red
+                let placeholder = "Passwords do not match"
+                passwordConfirmation.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [NSAttributedString.Key.foregroundColor : color])
+                self.spinner.stopAnimating()
+                container.removeFromSuperview()
+            }
+        }
+        if emailIsValid && passwordIsValid && passwordConfirmationIsValid {
+            Auth.auth().createUser(withEmail: ValInput.email, password: ValInput.password) { result, error in
+                // [START_EXCLUDE]
+                if error != nil {
+                    self.registerErrorLabel.text = "Something went wrong"
+                    self.registerErrorLabel.textColor = .red
+                    self.registerErrorLabel.center.y = self.view.center.y + 220
+                    self.view.addSubview(self.registerErrorLabel)
+                    self.container.removeFromSuperview()
+                    self.spinner.stopAnimating()
+                    return
+                }
+                userEmail = self.ValInput.email
+                print(userEmail)
+                self.spinner.stopAnimating()
+                let genderVC = GenderViewController()
+                self.navigationController?.pushViewController(genderVC, animated: true)
+            }
+        }
+    }
+
+    //MARK: - Helper functions
+    func configureUI() {
         registerTitle.text = "Sign up"
         registerTitle.textAlignment = .center
         registerTitle.font = UIFont(name:"Menlo-Bold", size: 55)
@@ -55,106 +180,11 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
         loadTextFields()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        GIDSignIn.sharedInstance()?.presentingViewController = self
-        GIDSignIn.sharedInstance().delegate = self
-       
-    }
-    
-    @objc func tappedRegister() {
-        showSpinner()
-        if let constant = email.text {
-            ValInput.email = constant
-            emailIsValid = ValInput.isEmailValid()
-            if emailIsValid {
-                let color = UIColor.placeholderGray
-                let placeholder = "Email" //There should be a placeholder set in storyboard or elsewhere string or pass empty
-                email.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [NSAttributedString.Key.foregroundColor : color])
-            } else {
-                let color = UIColor.red
-                let placeholder = "Invalid Email" //There should be a placeholder set in storyboard or elsewhere string or pass empty
-                email.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [NSAttributedString.Key.foregroundColor : color])
-                self.spinner.stopAnimating()
-                container.removeFromSuperview()
-            }
-        }
-        
-        if let constant = password.text {
-            ValInput.password = constant
-            passwordIsValid = ValInput.isPasswordLengthValid()
-            let passwordIsNumeric = ValInput.doesPasswordHaveDigits()
-            if passwordIsValid && passwordIsNumeric{
-                let color = UIColor.placeholderGray
-                let placeholder = "Password" //There should be a placeholder set in storyboard or elsewhere string or pass empty
-                password.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [NSAttributedString.Key.foregroundColor : color])
-            } else if !passwordIsValid {
-                password.text = ""
-                let color = UIColor.red
-                let placeholder = "At least 5 characters" //There should be a placeholder set in storyboard or elsewhere string or pass empty
-                password.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [NSAttributedString.Key.foregroundColor : color])
-                self.spinner.stopAnimating()
-                container.removeFromSuperview()
-            } else if !passwordIsNumeric {
-                password.text = ""
-                let color = UIColor.red
-                let placeholder = "Must contain numbers"
-                password.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [NSAttributedString.Key.foregroundColor : color])
-                self.spinner.stopAnimating()
-                container.removeFromSuperview()
-              
-            }
-            
-        }
-        
-        if let constant = passwordConfirmation.text {
-            ValInput.passwordConfirmation = constant
-            passwordConfirmationIsValid = ValInput.isPasswordConfirmationValid()
-            if passwordConfirmationIsValid {
-                let color = UIColor.placeholderGray
-                let placeholder = "Password Confirmation" //There should be a placeholder set in storyboard or elsewhere string or pass empty
-                passwordConfirmation.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [NSAttributedString.Key.foregroundColor : color])
-            } else {
-                passwordConfirmation.text = ""
-                let color = UIColor.red
-                let placeholder = "Passwords do not match"
-                passwordConfirmation.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [NSAttributedString.Key.foregroundColor : color])
-                self.spinner.stopAnimating()
-                container.removeFromSuperview()
-             
-            }
-        }
-        
-        
-        if emailIsValid && passwordIsValid && passwordConfirmationIsValid {
-            Auth.auth().createUser(withEmail: ValInput.email, password: ValInput.password) { result, error in
-                // [START_EXCLUDE]
-                if error != nil {
-                    self.registerErrorLabel.text = "Something went wrong"
-                    self.registerErrorLabel.textColor = .red
-                    self.registerErrorLabel.center.y = self.view.center.y + 220
-                    self.view.addSubview(self.registerErrorLabel)
-                    self.container.removeFromSuperview()
-                    self.spinner.stopAnimating()
-                    return
-                }
-                userEmail = self.ValInput.email
-                print(userEmail)
-                self.spinner.stopAnimating()
-                let genderVC = GenderViewController()
-                self.navigationController?.pushViewController(genderVC, animated: true)
-            }
-        }
-    }
-
-    
     func loadTextFields() {
-        
         email.placeholder = "Email"
         view.addSubview(email)
         email.topAnchor.constraint(equalTo: self.registerTitle.bottomAnchor, constant: 15).isActive = true
         email.applyDesign(view, x: -165, y: -170)
-        
         
         password.isSecureTextEntry = true
         password.placeholder = "Password"
@@ -188,8 +218,6 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
         view.addSubview(shadowView)
         view.insertSubview(googleImageView, aboveSubview: shadowView)
         view.addSubview(googleImageView)
-        
-        
 //        let facebookLoginButton = FBSDKLoginButton()
 //        loginButton.delegate = self
         let facebookImageView = UIImageView(image: facebookImage)
@@ -202,37 +230,6 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
         view.insertSubview(facebookImageView, aboveSubview: shadowView2)
         view.addSubview(facebookImageView)
     }
-    
-    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error?) {
-         // ...
-         if let error = error {
-             print(error)
-             return
-         }
-         
-         guard let authentication = user.authentication else { return }
-        
-         let credential = GoogleAuthProvider.credential(withIDToken: authentication.idToken,
-                                                        accessToken: authentication.accessToken)
-         Auth.auth().signIn(with: credential) { (authResult, error) in
-             if let error = error {
-                self.registerErrorLabel.text = "Something went wrong"
-                self.registerErrorLabel.textColor = .red
-                self.registerErrorLabel.center.y = self.view.center.y + 220
-                self.view.addSubview(self.registerErrorLabel)
-                print(error)
-             } else {
-                self.registerErrorLabel.removeFromSuperview()
-                 print("user is signed in")
-                userEmail = String(signIn.currentUser.userID)
-                let genderVC = GenderViewController()
-                genderVC.modalPresentationStyle = .fullScreen
-                self.navigationController?.pushViewController(genderVC, animated: true)
-             }
-         }
-     }
-    
-    
     
     func firebaseFacebookLogin(accessToken: String) {
         let credential = FacebookAuthProvider.credential(withAccessToken: accessToken)

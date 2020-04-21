@@ -11,6 +11,7 @@ import Firebase
 import RealmSwift
 
 class NameViewController: UIViewController {
+    //MARK: - Properties
     var nameInput = UITextField()
     let nameLabel = UILabel()
     var finishButton = UILabel()
@@ -18,50 +19,15 @@ class NameViewController: UIViewController {
     let container: UIView = UIView()
     var spinner = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.large)
     
+    //MARK: - init
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = lightLavender
-        configureNavigationBar(color: backgroundColor, isTrans: true)
-           self.navigationItem.setHidesBackButton(true, animated: false)
-           UINavigationBar.appearance().barTintColor = lightLavender
-           nameLabel.text = "What's your name?"
-           nameLabel.textColor = .white
-           nameLabel.font = UIFont(name: "Menlo", size: 35)
-           nameLabel.center.x = view.center.x - 170
-           nameLabel.center.y = view.center.y - 180
-           nameLabel.frame.size.width = 400
-           nameLabel.frame.size.height = 130
-           view.addSubview(nameLabel)
-           
-           nameInput.placeholder = "Steve"
-           view.addSubview(nameInput)
-           nameInput.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 25).isActive = true
-           nameInput.applyDesign(view, x: -170, y: -30)
-           // Do any additional setup after loading the view.
-            
-            finishButton = UILabel(frame: CGRect(x: view.center.x - 100, y: view.center.y + 240, width: 200, height: 60))
-            finishButton.text = "Next"
-            finishButton.textAlignment = .center
-            view.addSubview(finishButton)
-            finishButton.textColor = .white
-            finishButton.backgroundColor = brightPurple
-            finishButton.font = UIFont(name: "Menlo", size: 25)
-            finishButton.clipsToBounds = true
-            finishButton.layer.cornerRadius = 25
-            let shadowView = UIView(frame: CGRect(x: 105 , y: finishButton.center.y-20 , width: 200, height: 60))
-            shadowView.backgroundColor = .clear
-            shadowView.layer.cornerRadius = 25
-            shadowView.dropShadow(superview: finishButton)
-            view.addSubview(shadowView)
-            view.insertSubview(finishButton, aboveSubview: shadowView)
-             finishButton.isUserInteractionEnabled = true
-             let tap = UITapGestureRecognizer(target: self, action: #selector(finishTapped))
-             finishButton.addGestureRecognizer(tap)
-            
+        configureUI()
     }
-
     
     
+    //MARK: - handlers
     @objc func finishTapped() {
         showSpinner()
         if nameInput.text! != "" {
@@ -88,6 +54,45 @@ class NameViewController: UIViewController {
             container.removeFromSuperview()
             self.present(alert, animated: true)
         }
+    }
+    
+    //MARK: - Helper Functions
+    func configureUI() {
+        configureNavigationBar(color: backgroundColor, isTrans: true)
+        self.navigationItem.setHidesBackButton(true, animated: false)
+        UINavigationBar.appearance().barTintColor = lightLavender
+        nameLabel.text = "What's your name?"
+        nameLabel.textColor = .white
+        nameLabel.font = UIFont(name: "Menlo", size: 35)
+        nameLabel.center.x = view.center.x - 170
+        nameLabel.center.y = view.center.y - 180
+        nameLabel.frame.size.width = 400
+        nameLabel.frame.size.height = 130
+        view.addSubview(nameLabel)
+        
+        nameInput.placeholder = "Steve"
+        view.addSubview(nameInput)
+        nameInput.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 25).isActive = true
+        nameInput.applyDesign(view, x: -170, y: -30)
+        
+        finishButton = UILabel(frame: CGRect(x: view.center.x - 100, y: view.center.y + 240, width: 200, height: 60))
+        finishButton.text = "Next"
+        finishButton.textAlignment = .center
+        view.addSubview(finishButton)
+        finishButton.textColor = .white
+        finishButton.backgroundColor = brightPurple
+        finishButton.font = UIFont(name: "Menlo", size: 25)
+        finishButton.clipsToBounds = true
+        finishButton.layer.cornerRadius = 25
+        let shadowView = UIView(frame: CGRect(x: 105 , y: finishButton.center.y-20 , width: 200, height: 60))
+        shadowView.backgroundColor = .clear
+        shadowView.layer.cornerRadius = 25
+        shadowView.dropShadow(superview: finishButton)
+        view.addSubview(shadowView)
+        view.insertSubview(finishButton, aboveSubview: shadowView)
+        finishButton.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(target: self, action: #selector(finishTapped))
+        finishButton.addGestureRecognizer(tap)
     }
     
     func showSpinner() {

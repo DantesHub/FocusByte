@@ -16,11 +16,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     func applicationDidEnterBackground(_ application: UIApplication) {
         if isPlaying {
-        let timer2 = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+                _ = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
                 self.count += 1
-                
                 if self.count == 1 {
-                    
                     let center = UNUserNotificationCenter.current()
                     let content = UNMutableNotificationContent()
                     content.title = "Come back!"
@@ -28,15 +26,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     
                     // Step 3: Create the notification trigger
                     let date = Date().addingTimeInterval(15)
-                    
                     let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
-                    
                     let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
                     
                     // Step 4: Create the request
-                    
                     let uuidString = UUID().uuidString
-                    
                     let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
                     
                     // Step 5: Register the request
@@ -56,10 +50,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        print(Realm.Configuration.defaultConfiguration.fileURL)
+        print(Realm.Configuration.defaultConfiguration.fileURL!)
         FirebaseApp.configure()
-        let db = Firestore.firestore()
-    
+        Firestore.firestore()
         GIDSignIn.sharedInstance().clientID = FirebaseApp.app()?.options.clientID
         
         let center = UNUserNotificationCenter.current()

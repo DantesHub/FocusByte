@@ -3,6 +3,7 @@ import Firebase
 
 var chosenGender: String = ""
 class GenderViewController: UIViewController {
+    //MARK: - Properties
     let boyImage = UIImage(named: "babyBoy")
     let girlImage = UIImage(named: "babyGirl")
     var boyImageView = UIImageView()
@@ -11,10 +12,30 @@ class GenderViewController: UIViewController {
     var ref: DatabaseReference!
     let db = Firestore.firestore()
 
-
+    //MARK: - init
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = lightLavender
+        configureUI()
+    }
+
+    //MARK: - Handlers
+    @objc func boyTapped() {
+        chosenGender = "male"
+        let nameVC = NameViewController()
+        nameVC.modalPresentationStyle = .fullScreen
+        self.navigationController?.pushViewController(nameVC, animated: true)
+    }
+    
+    @objc func girlTapped() {
+        chosenGender = "female"
+        let nameVC = NameViewController()
+        nameVC.modalPresentationStyle = .fullScreen
+        self.navigationController?.pushViewController(nameVC, animated: true)
+    }
+    
+    //MARK: - Helper Functions
+    func configureUI() {
         configureNavigationBar(color: backgroundColor, isTrans: true)
         self.navigationItem.setHidesBackButton(true, animated: false)
         UINavigationBar.appearance().barTintColor = lightLavender
@@ -65,21 +86,5 @@ class GenderViewController: UIViewController {
         selectLabel.center.y = view.center.y - 170
         view.addSubview(selectLabel)
     }
-
-    
-    @objc func boyTapped() {
-        chosenGender = "male"
-        let nameVC = NameViewController()
-        nameVC.modalPresentationStyle = .fullScreen
-        self.navigationController?.pushViewController(nameVC, animated: true)
-    }
-    
-    @objc func girlTapped() {
-        chosenGender = "female"
-        let nameVC = NameViewController()
-        nameVC.modalPresentationStyle = .fullScreen
-        self.navigationController?.pushViewController(nameVC, animated: true)
-    }
-
 
 }

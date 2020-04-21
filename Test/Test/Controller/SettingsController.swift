@@ -19,9 +19,7 @@ class SettingsController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
-        
-        // Do any additional setup after loading the view.
-    }
+}
     
     //MARK: - Helper functions
     func configureUI() {

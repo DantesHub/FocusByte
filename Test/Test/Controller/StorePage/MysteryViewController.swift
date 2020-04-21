@@ -9,11 +9,12 @@
 import UIKit
 
 class MysteryViewController: UIViewController {
-   
+   //MARK: - Properties
     var goldMysteryBox = UIImageView()
     var goldMysteryImage = UIImage()
     var diamondMysteryBox = UIImageView()
     let minLineSpace: CGFloat = 4
+    
     fileprivate let collectionView: UICollectionView = {
        let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -30,7 +31,8 @@ class MysteryViewController: UIViewController {
          MysteryBox(description: "There are 20 different items in the Diamond Mystery Box", image: UIImage(named: "diamondmysterybox")!, title: "Diamond Box", color: diamond)
 
      ]
-
+    
+    //MARK: - Init
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
@@ -38,13 +40,14 @@ class MysteryViewController: UIViewController {
         collectionView.dataSource = self
     }
     
+    //MARK: - Helper Functions
     func configureUI() {
         view.backgroundColor = backgroundColor
         view.addSubview(collectionView)
         collectionView.showsHorizontalScrollIndicator = false
         self.title = "Mystery Boxes"
         configureNavigationBar(color: backgroundColor, isTrans: false)
-        navigationController?.navigationBar.tintColor = .red
+        navigationController?.navigationBar.tintColor = .white
         
         collectionView.backgroundColor = backgroundColor
         collectionView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
@@ -52,9 +55,6 @@ class MysteryViewController: UIViewController {
         collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
         collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
         collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-//        collectionView.heightAnchor.constraint(equalTo: collectionView.widthAnchor, multiplier: 0.5).isActive = true
-//        collectionView.selectItem(at: NSIndexPath(item: 2, section: 1) as IndexPath, animated: false, scrollPosition: [])
-//        self.collectionView.decelerationRate = UIScrollView.DecelerationRate.fast
         collectionView.isPagingEnabled = true;
 
     }

@@ -9,6 +9,7 @@ import UIKit
 import RealmSwift
 
 class WelcomeViewController: UIViewController {
+    //MARK: - properties
     var results: Results<User>!
     var loginView = UIView()
     var registerView = UIView()
@@ -18,6 +19,8 @@ class WelcomeViewController: UIViewController {
     let titleLabel2 = UILabel()
     let middleText = UILabel()
     
+    
+    //MARK: - init
     override func viewDidLoad() {
         super.viewDidLoad()
         loadComponents()
@@ -33,7 +36,7 @@ class WelcomeViewController: UIViewController {
         }
     }
     
-    // MARK: - Components
+    // MARK: - helper functions
     func loadComponents() {
         view.backgroundColor = .white
         configureNavigationBar(color: .white, isTrans: true)
@@ -97,9 +100,8 @@ class WelcomeViewController: UIViewController {
         view.addSubview(middleText)
     }
 
-
     
-    
+    //MARK: - Handlers
     @objc func tappedLogin() {
         let loginVC = LoginViewController()
         self.navigationController?.pushViewController(loginVC, animated: true)
@@ -111,23 +113,3 @@ class WelcomeViewController: UIViewController {
     }
 }
 
-extension UIView {
-    func applyDesign(color: UIColor) {
-        self.backgroundColor = color
-        self.layer.cornerRadius = 25
-        self.layer.shadowColor = UIColor.black.cgColor
-        self.layer.shadowOpacity = 0.5;
-        self.layer.shadowRadius = 12
-        self.layer.shadowOffset = CGSize(width: 10, height: 10)
-    }
-}
-
-extension UILabel {
-    func applyDesign(text: String) {
-        self.font = UIFont(name: "Menlo", size: 25)
-        self.text = text
-        self.textAlignment = .center
-        self.textColor = .white
-    }
-    
-}

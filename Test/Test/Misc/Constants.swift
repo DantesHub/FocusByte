@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+
 let largeConfiguration = UIImage.SymbolConfiguration(weight: .bold)
 let menuImage = UIImage(systemName: "line.horizontal.3", withConfiguration: largeConfiguration)
 let resizedMenuImage = menuImage?.resized(to: CGSize(width: 35, height: 25)).withTintColor(.white, renderingMode:.alwaysOriginal)
@@ -31,8 +32,6 @@ struct K {
         static let collectionName = "userPreferences"
     }
 }
-
-
 
 func hexStringToUIColor (hex:String) -> UIColor {
     var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()

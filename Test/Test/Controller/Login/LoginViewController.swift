@@ -2,7 +2,7 @@ import UIKit
 import Firebase
 import GoogleSignIn
 import RealmSwift
-
+let realmUser = User()
 class LoginViewController: UIViewController {
     var goToTimerView = UIView()
     var goToTimerLabel = UILabel()
@@ -187,7 +187,7 @@ class LoginViewController: UIViewController {
                 } else {
                     print("Document does not exist")
                 }
-                let realmUser = User()
+                
                 realmUser.name = name
                 realmUser.email = Auth.auth().currentUser?.email
                 realmUser.isLoggedIn = true

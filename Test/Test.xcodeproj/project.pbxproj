@@ -29,7 +29,6 @@
 		FECA7A8324390D6B00763504 /* ValidateInputs.swift in Sources */ = {isa = PBXBuildFile; fileRef = FECA7A8224390D6B00763504 /* ValidateInputs.swift */; };
 		FECA7A8524390E0000763504 /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FECA7A8424390E0000763504 /* RegisterViewController.swift */; };
 		FECA7A8924390ECE00763504 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FECA7A8824390ECE00763504 /* GoogleService-Info.plist */; };
-		FECA7A8B2439101A00763504 /* TextFieldExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FECA7A8A2439101A00763504 /* TextFieldExtension.swift */; };
 		FECA7A8D2439135300763504 /* NameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FECA7A8C2439135300763504 /* NameViewController.swift */; };
 		FECA7A8F2439136700763504 /* GenderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FECA7A8E2439136700763504 /* GenderViewController.swift */; };
 		FED05132243FD25600D7B1F0 /* RealmObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED05131243FD25600D7B1F0 /* RealmObjects.swift */; };
@@ -100,7 +99,6 @@
 		FECA7A8224390D6B00763504 /* ValidateInputs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidateInputs.swift; sourceTree = "<group>"; };
 		FECA7A8424390E0000763504 /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		FECA7A8824390ECE00763504 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		FECA7A8A2439101A00763504 /* TextFieldExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldExtension.swift; sourceTree = "<group>"; };
 		FECA7A8C2439135300763504 /* NameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameViewController.swift; sourceTree = "<group>"; };
 		FECA7A8E2439136700763504 /* GenderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenderViewController.swift; sourceTree = "<group>"; };
 		FED05131243FD25600D7B1F0 /* RealmObjects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmObjects.swift; sourceTree = "<group>"; };
@@ -313,7 +311,6 @@
 		FEF55DC924301EA500B4C0E1 /* Misc */ = {
 			isa = PBXGroup;
 			children = (
-				FECA7A8A2439101A00763504 /* TextFieldExtension.swift */,
 				E1D2BF93242B9CCB004AC477 /* animatedLabel.swift */,
 				FE5395C024311AD100DA83C1 /* Constants.swift */,
 				FED6F63B243EA82700553996 /* Protocols.swift */,
@@ -617,7 +614,6 @@
 				E1D2BF94242B9CCB004AC477 /* animatedLabel.swift in Sources */,
 				E1593603242ACE6F0050E914 /* AppDelegate.swift in Sources */,
 				FEC28337244BA17A00098413 /* MysteryBox.swift in Sources */,
-				FECA7A8B2439101A00763504 /* TextFieldExtension.swift in Sources */,
 				FEC28333244B87E100098413 /* MysteryViewController.swift in Sources */,
 				FED6F63E243EAC6100553996 /* MenuOptionCell.swift in Sources */,
 				FECA7A8F2439136700763504 /* GenderViewController.swift in Sources */,
