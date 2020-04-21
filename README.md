@@ -3,4 +3,4 @@ Gamifying studying by adding rewards for users who do not exist the app once tim
 If user tries to leave app, notification will be sent, and treasure will be lost. 
 
 Design created using Figma:
-[]!(Test/images/appsketch.png)
+![](Test/images/appsketch.png)
