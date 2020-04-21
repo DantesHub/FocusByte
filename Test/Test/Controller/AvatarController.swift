@@ -4,7 +4,6 @@
 //
 //  Created by Dante Kim on 4/19/20.
 //  Copyright © 2020 Steve Ink. All rights reserved.
-//
 
 import UIKit
 import RealmSwift
