@@ -34,7 +34,7 @@ extension TimerController {
         circularSlider.thumbRadius = 20.0
         circularSlider.endPointValue = 10
         circularSlider.addTarget(self, action: #selector(updateTexts), for: .valueChanged)
-        view.insertSubview(circularSlider, belowSubview: chest!)
+        view.insertSubview(circularSlider, belowSubview: imageView!)
         updateTexts()
     }
     

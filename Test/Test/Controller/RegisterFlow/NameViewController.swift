@@ -22,7 +22,7 @@ class NameViewController: UIViewController {
     //MARK: - init
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = lightLavender
+        view.backgroundColor = backgroundColor
         configureUI()
     }
     
@@ -58,7 +58,7 @@ class NameViewController: UIViewController {
     
     //MARK: - Helper Functions
     func configureUI() {
-        configureNavigationBar(color: backgroundColor, isTrans: true)
+        configureNavigationBar(color: backgroundColor, isTrans: false)
         self.navigationItem.setHidesBackButton(true, animated: false)
         UINavigationBar.appearance().barTintColor = lightLavender
         nameLabel.text = "What's your name?"

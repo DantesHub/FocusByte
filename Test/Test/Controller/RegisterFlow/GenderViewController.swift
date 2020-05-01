@@ -15,7 +15,7 @@ class GenderViewController: UIViewController {
     //MARK: - init
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = lightLavender
+        view.backgroundColor = backgroundColor
         configureUI()
     }
 
@@ -36,7 +36,7 @@ class GenderViewController: UIViewController {
     
     //MARK: - Helper Functions
     func configureUI() {
-        configureNavigationBar(color: backgroundColor, isTrans: true)
+        configureNavigationBar(color: backgroundColor, isTrans: false)
         self.navigationItem.setHidesBackButton(true, animated: false)
         UINavigationBar.appearance().barTintColor = lightLavender
         boyImageView.center.x = view.center.x - 150

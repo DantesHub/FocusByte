@@ -11,6 +11,9 @@ import FirebaseDatabase
 import Firebase
 import RealmSwift
 
+var exp = 0
+var coins = 0
+
 var isPlaying = false
 class TimerController: UIViewController {
     //MARK: - Properties
@@ -22,8 +25,14 @@ class TimerController: UIViewController {
     var circularSlider = CircularSlider()
     var motivationalQuote = ""
     let coinsL = AnimatedLabel()
-    var chest: UIImageView?
-    var coinsReceived = 0
+    var imageView: UIImageView? = {
+        let iv = UIImageView()
+        iv.sizeToFit()
+        iv.contentMode = .scaleAspectFit
+        return iv
+    }()
+    var coinsReceived: Int! = 0
+    var expReceived: Int! = 0
     var coinsImg: UIImageView?
     var timerButton = UIView()
     let timerButtonLbl = UILabel()
@@ -46,11 +55,12 @@ class TimerController: UIViewController {
     
     
     override func viewDidAppear(_ animated: Bool) {
-        var coins = 0
+        
         results = uiRealm.objects(User.self)
         for result  in results {
             if result.isLoggedIn == true {
                 coins = result.coins
+                exp = result.exp
                 coinsL.text = String(coins)
             }
         }
@@ -79,7 +89,7 @@ class TimerController: UIViewController {
         timeL.frame.size.width = 240
         timeL.frame.size.height = 75
         timeL.center.x = view.center.x
-        timeL.center.y = view.center.y + 180
+        timeL.center.y = view.center.y + 160
         timeL.lineBreakMode = .byClipping
         view.addSubview(timeL)
         
@@ -109,11 +119,11 @@ class TimerController: UIViewController {
         timerButtonLbl.center.y = timerButton.center.y
         view.addSubview(timerButtonLbl)
         
-        chest = UIImageView(image: UIImage(named: "chest")!)
-        chest?.sizeToFit()
-        chest?.center.x = view.center.x + 15
-        chest?.center.y = view.center.y - 60
-        view.insertSubview(chest!, at: 10)
+        imageView?.image =  UIImage(named: "chest")!
+        imageView?.sizeToFit()
+        imageView?.center.x = view.center.x
+        imageView?.center.y = view.center.y - 50
+        view.insertSubview(imageView!, at: 10)
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
         timerButton.addGestureRecognizer(tap)
@@ -123,6 +133,17 @@ class TimerController: UIViewController {
         navigationItem.leftBarButtonItem =  UIBarButtonItem(image: resizedMenuImage?.withTintColor(.white), style: .plain, target: self, action: #selector(handleMenuToggle))
         navigationController?.navigationBar.addSubview(coinsL)
         navigationController?.navigationBar.addSubview(coinsImg!)
+    }
+    
+    func displayalert(title:String, message:String) {
+      let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
+      alert.addAction((UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
+
+          alert.dismiss(animated: true, completion: nil)
+
+      })))
+
+      self.present(alert, animated: true, completion: nil)
     }
     
     
@@ -137,6 +158,7 @@ class TimerController: UIViewController {
             timerButtonLbl.text = "Start"
             timerButton.backgroundColor = darkPurple
             timerButtonLbl.sizeToFit()
+            imageView?.image = UIImage(named: "chest")
             timerButtonLbl.center.x = view.center.x
             view.addSubview(timerButtonLbl)
             timeL.font = UIFont(name: "Menlo-Bold", size: 65)
@@ -146,6 +168,7 @@ class TimerController: UIViewController {
         if isPlaying {
             isPlaying = false
             timerButtonLbl.text = "Start"
+            imageView?.image = UIImage(named: "chest")
             timerButton.backgroundColor = darkPurple
             timerButtonLbl.sizeToFit()
             timerButtonLbl.center.x = view.center.x
@@ -158,6 +181,7 @@ class TimerController: UIViewController {
             timerButton.backgroundColor = darkRed
             timerButtonLbl.sizeToFit()
             timerButtonLbl.center.x = view.center.x
+            imageView?.image = #imageLiteral(resourceName: "map")
             view.addSubview(timerButtonLbl)
             var center = view.center
             center.y = view.center.y - 50
@@ -185,7 +209,7 @@ class TimerController: UIViewController {
             basicAnimation.fillMode = CAMediaTimingFillMode.backwards
             basicAnimation.isRemovedOnCompletion = false
             
-            shapeLayer.add(basicAnimation, forKey: "urSoBasic")
+            shapeLayer.add(basicAnimation, forKey: "basic")
             let defaults = UserDefaults.standard
             defaults.set("playing", forKey: "status")
             
@@ -195,8 +219,7 @@ class TimerController: UIViewController {
             counter = 10
             print("duration String" + durationString)
             basicAnimation.duration = CFTimeInterval((Int(durationString) ?? 10) * 60)
-            print(CFTimeInterval((Int(durationString) ?? 10) * 60))
-            self.shapeLayer.add(basicAnimation, forKey: "urSoBasic")
+            self.shapeLayer.add(basicAnimation, forKey: "basic")
             countDownTimer()
             circularSlider.removeFromSuperview()
         }
@@ -207,13 +230,15 @@ class TimerController: UIViewController {
             guard let strongself = self else { return }
             strongself.counter -= 1
             if strongself.counter == 0 {
+                isPlaying = false
                 let numCoins = Int((self?.coinsL.text!)!)!
                 let coins = self?.updateCoinLabel(numCoins: numCoins)
                 self?.coinsL.text = String(coins!)
                 if let _ = Auth.auth().currentUser?.email {
                     let email = Auth.auth().currentUser?.email
                     self?.db.collection(K.userPreferenes).document(email!).setData([
-                        "coins": coins!
+                        "coins": coins!,
+                        "exp": exp
                     ], merge: true) { (error) in
                         if let e = error {
                             print("There was a issue saving data to firestore \(e) ")
@@ -229,13 +254,12 @@ class TimerController: UIViewController {
                 self?.timerButtonLbl.center.x = self!.view.center.x
                 self?.view.addSubview(self!.timerButtonLbl)
                 timer.invalidate()
-                strongself.timeL.text = "Great job! You found 20 coins"
-                strongself.timeL.font = UIFont(name: "Menlo-Bold", size: 28)
-                strongself.timeL.numberOfLines = 2
-                strongself.timeL.sizeToFit()
+                self?.imageView?.image = #imageLiteral(resourceName: "openedChest")
+                strongself.timeL.text = "Great job! You found \(strongself.coinsReceived!) coins and gained \(strongself.expReceived!) exp"
+                strongself.timeL.font = UIFont(name: "Menlo-Bold", size: 20)
+                strongself.timeL.numberOfLines = 3
                 self?.view.addSubview(self!.timeL)
                 strongself.shapeLayer.removeFromSuperlayer()
-                
                 isPlaying = false
                 return
             }
@@ -257,6 +281,7 @@ class TimerController: UIViewController {
                 do {
                     try uiRealm.write {
                         result.setValue(Int(coinsL.text!)!, forKey: "coins")
+                        result.setValue(exp, forKey: "exp")
                     }
                 } catch {
                     print(error)
@@ -268,21 +293,33 @@ class TimerController: UIViewController {
     func updateCoinLabel(numCoins: Int) -> Int? {
         let prevNumOfCoins = numCoins
         var numOfCoins = numCoins
+        let prevExp = exp
         
         switch counter {
         case 599...1499:
             numOfCoins += 5
+            exp += 1
         case 1500...2999:
             numOfCoins += 10
+            exp += 3
         case 3000...4499:
             numOfCoins += 20
+            exp += 6
         case 4500...5999:
             numOfCoins += 30
+            exp += 9
         case 6000...7201:
             numOfCoins += 40
+            exp += 12
         default:
             numOfCoins += 2
+            exp += 1
         }
+        let  level = ((pow(Double(exp), 1.0/3.0)))
+        if (level - floor(level) == 0) { // 0.000001 can be changed depending on the level of precision you need
+            displayalert(title: "You Leveled Up!", message: "Congratulations you have leveled up!\n You are now level \(Int(level))")
+        }
+        expReceived = exp - prevExp
         coinsReceived = numOfCoins - prevNumOfCoins
         return numOfCoins
     }

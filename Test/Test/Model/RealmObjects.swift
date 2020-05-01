@@ -15,6 +15,7 @@ class User: Object {
     @objc dynamic var email: String? = nil
     @objc dynamic var isLoggedIn = false
     @objc dynamic var coins = 0
+    @objc dynamic var exp = 0 
     
     override static func primaryKey() -> String? {
         return "email"
