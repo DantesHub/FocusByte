@@ -112,16 +112,17 @@ class LoginViewController: UIViewController {
     
     
     func loadTextViews() {
-        email.placeholder = "Email"
         view.addSubview(email)
+        email.addDoneButtonOnKeyboard()
         email.topAnchor.constraint(equalTo: loginTitle.bottomAnchor, constant: 25).isActive = true
         email.applyDesign(view, x: -165, y: -110)
-        password.placeholder = "Password"
+        email.placeholder = "Email"
+        password.addDoneButtonOnKeyboard()
         password.isSecureTextEntry = true
         view.addSubview(password)
         password.topAnchor.constraint(equalTo: email.bottomAnchor, constant: 30).isActive = true
         password.applyDesign(view, x: -165, y: -5)
-        
+        password.placeholder = "Password"   
         
     }
     

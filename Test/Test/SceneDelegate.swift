@@ -42,7 +42,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillResignActive(_ scene: UIScene) {
         // Called when the scene will move from an active state to an inactive state.
         // This may occur due to temporary interruptions (ex. an incoming phone call).
-        DispatchQueue.global(qos: .background).async {
+       if isPlaying { DispatchQueue.global(qos: .background).async {
                       DispatchQueue.main.asyncAfter(deadline: .now() + 15.0) {
                      let defaults = UserDefaults.standard
                      defaults.set("exited", forKey: "status")
@@ -69,7 +69,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                       // Step 5: Register the request
                       center.add(request) { (error) in
                           // Check the error parameter and handle any errors
-                      }
+                      }}
                   
 
     func sceneWillEnterForeground(_ scene: UIScene) {

@@ -29,6 +29,8 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tap)
         configureUI()
     }
     
@@ -40,6 +42,10 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
     }
     
     //MARK: - Handlers
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error?) {
           // ...
           if let error = error {
@@ -79,6 +85,7 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
                 let placeholder = "Email" //There should be a placeholder set in storyboard or elsewhere string or pass empty
                 email.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [NSAttributedString.Key.foregroundColor : color])
             } else {
+                email.text = ""
                 let color = UIColor.red
                 let placeholder = "Invalid Email" //There should be a placeholder set in storyboard or elsewhere string or pass empty
                 email.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [NSAttributedString.Key.foregroundColor : color])
@@ -181,22 +188,28 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
     }
     
     func loadTextFields() {
-        email.placeholder = "Email"
         view.addSubview(email)
         email.topAnchor.constraint(equalTo: self.registerTitle.bottomAnchor, constant: 15).isActive = true
+        email.addDoneButtonOnKeyboard()
         email.applyDesign(view, x: -165, y: -170)
+        email.placeholder = "Email"
+        
         
         password.isSecureTextEntry = true
-        password.placeholder = "Password"
         view.addSubview(password)
         password.topAnchor.constraint(equalTo: email.bottomAnchor, constant: 28).isActive = true
+        password.addDoneButtonOnKeyboard()
         password.applyDesign(view, x: -165, y: -70)
+        password.placeholder = "Password"
+
         
         passwordConfirmation.isSecureTextEntry = true
-        passwordConfirmation.placeholder = "Password Confirmation"
+        passwordConfirmation.addDoneButtonOnKeyboard()
         view.addSubview(passwordConfirmation)
         passwordConfirmation.topAnchor.constraint(equalTo: password.bottomAnchor, constant: 32).isActive = true
         passwordConfirmation.applyDesign(view, x: -165, y: 40)
+        passwordConfirmation.placeholder = "Password Confirmation"
+
     }
     
     func showSpinner() {
@@ -248,5 +261,8 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
             }
         }
     }
+
 }
+
+
 

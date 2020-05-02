@@ -16,6 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     func applicationDidEnterBackground(_ application: UIApplication) {
         if isPlaying {
+            print("inside here")
                 _ = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
                 self.count += 1
                 if self.count == 1 {

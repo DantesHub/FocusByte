@@ -154,7 +154,10 @@ class TimerController: UIViewController {
     
     
     @objc func handleTap(_ sender: UITapGestureRecognizer? = nil) {
-        if timerButtonLbl.text == "Go Again" {
+        if let colon = self.timeL.text?.firstIndex(of: ":") {
+                       durationString = String((self.timeL.text?[..<colon])!)
+                   }
+        if timerButtonLbl.text == "Go Again"{
             timerButtonLbl.text = "Start"
             timerButton.backgroundColor = darkPurple
             timerButtonLbl.sizeToFit()
@@ -166,16 +169,8 @@ class TimerController: UIViewController {
             return
         }
         if isPlaying {
-            isPlaying = false
-            timerButtonLbl.text = "Start"
-            imageView?.image = UIImage(named: "chest")
-            timerButton.backgroundColor = darkPurple
-            timerButtonLbl.sizeToFit()
-            timerButtonLbl.center.x = view.center.x
-            view.addSubview(timerButtonLbl)
-            shapeLayer.removeFromSuperlayer()
-            createCircularSlider()
-        } else {
+            giveUpAlert()
+        } else if durationString != "0"{
             isPlaying = true
             timerButtonLbl.text = "Give Up"
             timerButton.backgroundColor = darkRed
@@ -216,8 +211,7 @@ class TimerController: UIViewController {
             if let colon = self.timeL.text?.firstIndex(of: ":") {
                 durationString = String((self.timeL.text?[..<colon])!)
             }
-            counter = 10
-            print("duration String" + durationString)
+            counter = ((Int(durationString) ?? 10) * 60)
             basicAnimation.duration = CFTimeInterval((Int(durationString) ?? 10) * 60)
             self.shapeLayer.add(basicAnimation, forKey: "basic")
             countDownTimer()
@@ -226,52 +220,76 @@ class TimerController: UIViewController {
     }
     
     func countDownTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { [weak self](timer) in
-            guard let strongself = self else { return }
-            strongself.counter -= 1
-            if strongself.counter == 0 {
-                isPlaying = false
-                let numCoins = Int((self?.coinsL.text!)!)!
-                let coins = self?.updateCoinLabel(numCoins: numCoins)
-                self?.coinsL.text = String(coins!)
-                if let _ = Auth.auth().currentUser?.email {
-                    let email = Auth.auth().currentUser?.email
-                    self?.db.collection(K.userPreferenes).document(email!).setData([
-                        "coins": coins!,
-                        "exp": exp
-                    ], merge: true) { (error) in
-                        if let e = error {
-                            print("There was a issue saving data to firestore \(e) ")
-                        } else {
-                            self?.saveToRealm()
-                            print("Succesfully saved")
-                        }
+        self.timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(incrementCount), userInfo: nil, repeats: true)
+    }
+    
+    @objc func incrementCount() {
+        counter -= 1
+        if counter == 0 {
+            isPlaying = false
+            let numCoins = Int((self.coinsL.text!))!
+            let coins = self.updateCoinLabel(numCoins: numCoins)
+            self.coinsL.text = String(coins!)
+            if let _ = Auth.auth().currentUser?.email {
+                let email = Auth.auth().currentUser?.email
+                self.db.collection(K.userPreferenes).document(email!).setData([
+                    "coins": coins!,
+                    "exp": exp
+                ], merge: true) { (error) in
+                    if let e = error {
+                        print("There was a issue saving data to firestore \(e) ")
+                    } else {
+                        self.saveToRealm()
+                        print("Succesfully saved")
                     }
                 }
-                self?.timerButton.backgroundColor = lightPurple
-                self?.timerButtonLbl.text = "Go Again"
-                self?.timerButtonLbl.sizeToFit()
-                self?.timerButtonLbl.center.x = self!.view.center.x
-                self?.view.addSubview(self!.timerButtonLbl)
-                timer.invalidate()
-                self?.imageView?.image = #imageLiteral(resourceName: "openedChest")
-                strongself.timeL.text = "Great job! You found \(strongself.coinsReceived!) coins and gained \(strongself.expReceived!) exp"
-                strongself.timeL.font = UIFont(name: "Menlo-Bold", size: 20)
-                strongself.timeL.numberOfLines = 3
-                self?.view.addSubview(self!.timeL)
-                strongself.shapeLayer.removeFromSuperlayer()
-                isPlaying = false
-                return
             }
-            if isPlaying == false {
-                print("invalidated")
-                timer.invalidate()
-                return
+            self.timerButton.backgroundColor = lightPurple
+            self.timerButtonLbl.text = "Go Again"
+            self.timerButtonLbl.sizeToFit()
+            self.timerButtonLbl.center.x = self.view.center.x
+            self.view.addSubview(self.timerButtonLbl)
+            timer.invalidate()
+            self.imageView?.image = #imageLiteral(resourceName: "openedChest")
+            self.timeL.text = "Great job! You found \(self.coinsReceived!) coins and gained \(self.expReceived!) exp"
+            self.timeL.font = UIFont(name: "Menlo-Bold", size: 20)
+            self.timeL.numberOfLines = 3
+            self.view.addSubview(self.timeL)
+            self.shapeLayer.removeFromSuperlayer()
+            isPlaying = false
+            return
+        }
+        
+        let minutes = String(counter/60)
+        var seconds = String(counter%60)
+        if Int(seconds)! < 10 {
+            seconds = "0" + seconds
+        }
+        timeL.text = "\(minutes):\(seconds)"
+    }
+    
+    func giveUpAlert() {
+        let alert = UIAlertController(title: "Are you sure you want to give up?", message:"The search for treasure will stop", preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action) in
+            DispatchQueue.main.async {
+                self.timer.invalidate()
             }
-            let minutes = String(strongself.counter/60)
-            let seconds = String(strongself.counter%60)
-            strongself.timeL.text = "\(minutes):\(seconds)"
-        })
+            isPlaying = false
+            self.timerButtonLbl.text = "Start"
+            self.imageView?.image = UIImage(named: "chest")
+            self.timerButton.backgroundColor = darkPurple
+            self.timerButtonLbl.sizeToFit()
+            self.timerButtonLbl.center.x = self.view.center.x
+            self.view.addSubview(self.timerButtonLbl)
+            self.shapeLayer.removeFromSuperlayer()
+            self.createCircularSlider()
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { (action) in
+               return
+        }))
+        self.present(alert, animated: true)
     }
     
     func saveToRealm() {

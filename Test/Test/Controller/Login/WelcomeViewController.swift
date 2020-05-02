@@ -62,6 +62,7 @@ class WelcomeViewController: UIViewController {
         middleText.center.x = view.center.x
         middleText.center.y = view.center.y - 50
         middleText.text = "Level up and have fun while you study and do work. "
+        middleText.textColor = .black
         middleText.numberOfLines = 0;
         middleText.font = UIFont(name: "Hiragino Sans", size: 40)
         

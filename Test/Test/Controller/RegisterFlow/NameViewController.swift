@@ -58,7 +58,7 @@ class NameViewController: UIViewController {
     
     //MARK: - Helper Functions
     func configureUI() {
-        configureNavigationBar(color: backgroundColor, isTrans: false)
+        configureNavigationBar(color: backgroundColor, isTrans: true)
         self.navigationItem.setHidesBackButton(true, animated: false)
         UINavigationBar.appearance().barTintColor = lightLavender
         nameLabel.text = "What's your name?"
@@ -70,12 +70,14 @@ class NameViewController: UIViewController {
         nameLabel.frame.size.height = 130
         view.addSubview(nameLabel)
         
-        nameInput.placeholder = "Steve"
+        
         view.addSubview(nameInput)
+        nameInput.addDoneButtonOnKeyboard()
         nameInput.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 25).isActive = true
         nameInput.applyDesign(view, x: -170, y: -30)
-        
         finishButton = UILabel(frame: CGRect(x: view.center.x - 100, y: view.center.y + 240, width: 200, height: 60))
+        nameInput.placeholder = "Steve"
+
         finishButton.text = "Next"
         finishButton.textAlignment = .center
         view.addSubview(finishButton)
