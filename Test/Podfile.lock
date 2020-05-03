@@ -294,6 +294,7 @@ PODS:
     - GTMSessionFetcher/Core (= 1.4.0)
   - HGCircularSlider (2.0.0)
   - leveldb-library (1.22)
+  - LWAlert (0.2.2)
   - nanopb (0.3.9011):
     - nanopb/decode (= 0.3.9011)
     - nanopb/encode (= 0.3.9011)
@@ -314,6 +315,7 @@ DEPENDENCIES:
   - Firebase/Firestore
   - GoogleSignIn
   - HGCircularSlider (~> 2.0.0)
+  - LWAlert
   - RealmSwift
   - Validator (~> 3.2)
 
@@ -343,6 +345,7 @@ SPEC REPOS:
     - GTMSessionFetcher
     - HGCircularSlider
     - leveldb-library
+    - LWAlert
     - nanopb
     - PromisesObjC
     - Realm
@@ -374,12 +377,13 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 6f5c8abbab8a9bce4bb3f057e317728ec6182b10
   HGCircularSlider: 92e2ee098c814709f455b8f46cd9008147f6a869
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
+  LWAlert: eb0a0c94cde4e3c64bb9b35e4434d52ba92426a7
   nanopb: 18003b5e52dab79db540fe93fe9579f399bd1ccd
   PromisesObjC: c119f3cd559f50b7ae681fa59dc1acd19173b7e6
   Realm: 4eb04d7487bd43c0581256f40b424eafb711deff
   RealmSwift: 3eb8924ff7100df5928c7602f71d0fec51e7c9c5
   Validator: 80a6f567220c962dfd2d9928ae98a8c1d164f6f4
 
-PODFILE CHECKSUM: 8b5dff3b48bbb7e3073c8ab51a8fd365395c2492
+PODFILE CHECKSUM: 75e32fc54aefb47bd734efa9af58dd015deb242e
 
 COCOAPODS: 1.9.1

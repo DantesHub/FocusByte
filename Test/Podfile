@@ -14,6 +14,7 @@ target 'Test' do
 	pod 'Firebase'
 	pod 'HGCircularSlider', '~> 2.0.0'
 	pod 'RealmSwift'
+	pod 'LWAlert'
 
 
 	
