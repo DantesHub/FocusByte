@@ -1,0 +1,6 @@
+framework module LWAlert {
+  umbrella header "LWAlert-umbrella.h"
+
+  export *
+  module * { export * }
+}
