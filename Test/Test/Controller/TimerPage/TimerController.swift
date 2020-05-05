@@ -10,7 +10,6 @@ import HGCircularSlider
 import FirebaseDatabase
 import Firebase
 import RealmSwift
-import LWAlert
 
 var exp = 0
 var coins = 0
@@ -23,8 +22,8 @@ class TimerController: UIViewController {
     let trackLayer = CAShapeLayer()
     var time = 600
     let timeL = UILabel()
-    var circularSlider = CircularSlider()
     var motivationalQuote = ""
+    var circularSlider = CircularSlider()
     let coinsL = AnimatedLabel()
     var imageView: UIImageView? = {
         let iv = UIImageView()
@@ -32,6 +31,8 @@ class TimerController: UIViewController {
         iv.contentMode = .scaleAspectFit
         return iv
     }()
+    var breakL = UILabel()
+    var breakTime = [String.SubSequence]()
     var coinsReceived: Int! = 0
     var expReceived: Int! = 0
     var coinsImg: UIImageView?
@@ -42,12 +43,15 @@ class TimerController: UIViewController {
     var breakButtonLbl = UILabel()
     let timerButtonLbl = UILabel()
     var timer = Timer()
+    var breakTimer = Timer()
     let db = Firestore.firestore()
     var durationString = ""
     var counter = 0
     var currentValueLabel: UILabel!
     var ref: DatabaseReference!
     var delegate: ContainerControllerDelegate!
+    var tagImageView = UIImageView()
+    var xImageView = UIImageView()
     
     
     //MARK: -Init
@@ -55,12 +59,10 @@ class TimerController: UIViewController {
         super.viewDidLoad()
         configureUI()
         configureNavigationBar(color: backgroundColor, isTrans: true)
-        createCircularSlider()
     }
     
     
     override func viewDidAppear(_ animated: Bool) {
-        
         results = uiRealm.objects(User.self)
         for result  in results {
             if result.isLoggedIn == true {
@@ -74,6 +76,7 @@ class TimerController: UIViewController {
     
     //MARK: - helper functions
     func configureUI() {
+        
         coinsImg = UIImageView(image: UIImage(named: "coins")!)
         coinsImg!.frame.size.width = 25
         coinsImg!.frame.size.height = 30
@@ -98,7 +101,7 @@ class TimerController: UIViewController {
         timeL.lineBreakMode = .byClipping
         view.addSubview(timeL)
         
-        timerButton.frame.size.width = 180
+        timerButton.frame.size.width = 170
         timerButton.frame.size.height = 75
         timerButton.center.x = view.center.x
         timerButton.backgroundColor = darkPurple
@@ -111,8 +114,7 @@ class TimerController: UIViewController {
         }
         view.addSubview(timerButton)
         
-        
-        shadowView = UIView(frame: CGRect(x: view.center.x - 100 , y: timerButton.center.y-30 , width: 180, height: 75))
+        shadowView = UIView(frame: CGRect(x: view.center.x - 85 , y: timerButton.center.y-30 , width: 170, height: 75))
         shadowView.backgroundColor = .clear
         shadowView.layer.cornerRadius = 25
         shadowView.dropShadow(superview: timerButton)
@@ -124,29 +126,68 @@ class TimerController: UIViewController {
         timerButtonLbl.center.y = timerButton.center.y
         view.addSubview(timerButtonLbl)
         
-        self.breakButton.isUserInteractionEnabled = true
-        let breakTapped = UIGestureRecognizer(target: self, action: #selector(self.breakPressed(_:)))
-        self.breakButton.addGestureRecognizer(breakTapped)
-        
         breakShadow = UIView(frame: CGRect(x: view.center.x + 35 , y: timerButton.center.y-30 , width: 130, height: 75))
-            breakShadow.backgroundColor = .clear
-            breakShadow.layer.cornerRadius = 25
+        breakShadow.backgroundColor = .clear
+        breakShadow.layer.cornerRadius = 25
         breakShadow.dropShadow(superview: breakButton)
+        
+        let breakTapped = UITapGestureRecognizer(target: self, action: #selector(self.breakPressed))
+        self.breakButton.addGestureRecognizer(breakTapped)
         
         imageView?.image =  UIImage(named: "chest")!
         imageView?.sizeToFit()
         imageView?.center.x = view.center.x
         imageView?.center.y = view.center.y - 50
         view.insertSubview(imageView!, at: 10)
+    
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
         timerButton.addGestureRecognizer(tap)
+        
+        tagImageView.frame.size.width = 70
+        tagImageView.frame.size.height = 70
+        tagImageView.center.x = view.center.x - 140
+        tagImageView.center.y = view.center.y + 260
+        tagImageView.isUserInteractionEnabled = true
+        tagImageView.layer.cornerRadius = 10
+        tagImageView.image = #imageLiteral(resourceName: "tagIcon")
+        tagImageView.backgroundColor = superLightLavender
+        tagImageView.layer.cornerRadius = 25
+        tagImageView.contentMode = .scaleAspectFit
+        tagImageView.layer.shadowColor = UIColor.black.cgColor
+        tagImageView.layer.shadowOffset = CGSize(width: 5, height: 5)
+        tagImageView.layer.shadowRadius = 25
+        tagImageView.layer.shadowOpacity = 0.5
+        view.addSubview(tagImageView)
+        
+        xImageView.frame.size.width = 70
+        xImageView.frame.size.height = 70
+        xImageView.center.x = view.center.x + 140
+        xImageView.center.y = view.center.y + 260
+        xImageView.isUserInteractionEnabled = true
+        xImageView.layer.cornerRadius = 10
+        let largeConfiguration = UIImage.SymbolConfiguration(weight: .bold)
+        let img = UIImage(systemName: "xmark", withConfiguration: largeConfiguration)?.withTintColor(.white, renderingMode:.alwaysOriginal)
+        xImageView.image = img
+        let tappedX = UITapGestureRecognizer(target: self, action: #selector(xTapped))
+        xImageView.addGestureRecognizer(tappedX)
+        xImageView.contentMode = .center
+        xImageView.backgroundColor = darkRed
+        xImageView.layer.cornerRadius = 25
+        xImageView.layer.shadowColor = UIColor.black.cgColor
+        xImageView.layer.shadowOffset = CGSize(width: 5, height: 5)
+        xImageView.layer.shadowRadius = 25
+        xImageView.layer.shadowOpacity = 0.5
+        view.addSubview(xImageView)
         
         view.backgroundColor = backgroundColor
         navigationItem.title = "Home"
         navigationItem.leftBarButtonItem =  UIBarButtonItem(image: resizedMenuImage?.withTintColor(.white), style: .plain, target: self, action: #selector(handleMenuToggle))
         navigationController?.navigationBar.addSubview(coinsL)
         navigationController?.navigationBar.addSubview(coinsImg!)
+        
+        createCircularSlider()
+
     }
     
     func displayalert(title:String, message:String) {
@@ -171,31 +212,8 @@ class TimerController: UIViewController {
         if let colon = self.timeL.text?.firstIndex(of: ":") {
             durationString = String((self.timeL.text?[..<colon])!)
         }
-        if timerButtonLbl.text == "Go Again"{
-            timerButtonLbl.text = "Start"
-            timerButton.backgroundColor = darkPurple
-            timerButtonLbl.sizeToFit()
-            imageView?.image = UIImage(named: "chest")
-            timerButtonLbl.center.x = view.center.x
-            view.addSubview(timerButtonLbl)
-            timeL.font = UIFont(name: "Menlo-Bold", size: 65)
-            createCircularSlider()
-            return
-        } else if timerButtonLbl.text == "Try Again" {
-            timerButtonLbl.text = "Start"
-            timerButton.backgroundColor = darkPurple
-            timerButtonLbl.sizeToFit()
-            imageView?.image = UIImage(named: "chest")
-            timerButtonLbl.center.x = view.center.x
-            view.addSubview(timerButtonLbl)
-            timeL.font = UIFont(name: "Menlo-Bold", size: 65)
-            breakButton.removeFromSuperview()
-            breakButtonLbl.removeFromSuperview()
-            breakShadow.removeFromSuperview()
-            timerButton.center.x = view.center.x
-            shadowView.center.x = view.center.x
-            timerButtonLbl.center.x = view.center.x
-            createCircularSlider()
+        if timerButtonLbl.text == "Timer" {
+            createStartUI()
             return
         }
         if isPlaying {
@@ -203,32 +221,13 @@ class TimerController: UIViewController {
         } else if durationString != "0"{
             isPlaying = true
             timerButtonLbl.text = "Give Up"
-            timerButton.backgroundColor = darkRed
             timerButtonLbl.sizeToFit()
             timerButtonLbl.center.x = view.center.x
+            timerButton.backgroundColor = darkRed
             imageView?.image = #imageLiteral(resourceName: "map")
             view.addSubview(timerButtonLbl)
-            var center = view.center
-            center.y = view.center.y - 50
             // create my track layer
-            
-            let circularPath = UIBezierPath(arcCenter: center, radius: 130, startAngle: -CGFloat.pi / 2, endAngle: 2 * CGFloat.pi, clockwise: true)
-            trackLayer.path = circularPath.cgPath
-            trackLayer.strokeColor = darkPurple.cgColor
-            trackLayer.lineWidth = 15
-            
-            trackLayer.fillColor = superLightLavender.cgColor
-            trackLayer.lineCap = CAShapeLayerLineCap.round
-            view.layer.insertSublayer(trackLayer, at: 0)
-            shapeLayer.path = circularPath.cgPath
-            
-            shapeLayer.strokeColor = brightPurple.cgColor
-            shapeLayer.lineWidth = 10
-            shapeLayer.fillColor = UIColor.clear.cgColor
-            shapeLayer.lineCap = CAShapeLayerLineCap.round
-            shapeLayer.strokeEnd = 0
-            
-            view.layer.addSublayer(shapeLayer)
+            createShapeLayer()
             let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")
             basicAnimation.toValue = 1
             basicAnimation.fillMode = CAMediaTimingFillMode.backwards
@@ -245,13 +244,175 @@ class TimerController: UIViewController {
             basicAnimation.duration = CFTimeInterval((Int(durationString) ?? 10) * 60)
             self.shapeLayer.add(basicAnimation, forKey: "basic")
             countDownTimer()
+            breakTimer.invalidate()
+            breakL.removeFromSuperview()
             circularSlider.removeFromSuperview()
+            xImageView.removeFromSuperview()
+            tagImageView.removeFromSuperview()
         }
+    }
+    func createStartUI() {
+        view.addSubview(xImageView)
+        view.addSubview(tagImageView)
+        timerButtonLbl.text = "Start"
+        timerButton.backgroundColor = darkPurple
+        timerButtonLbl.sizeToFit()
+        imageView?.image = UIImage(named: "chest")
+        timerButtonLbl.center.x = view.center.x
+        view.addSubview(timerButtonLbl)
+        timeL.font = UIFont(name: "Menlo-Bold", size: 65)
+        breakButton.removeFromSuperview()
+        breakButtonLbl.removeFromSuperview()
+        breakShadow.removeFromSuperview()
+        timerButton.center.x = view.center.x
+        shadowView.center.x = view.center.x
+        timerButtonLbl.center.x = view.center.x
+        createCircularSlider()
+    }
+
+    
+    func createShapeLayer() {
+        var center = view.center
+        center.y = view.center.y - 50
+        let circularPath = UIBezierPath(arcCenter: center, radius: 130, startAngle: -CGFloat.pi / 2, endAngle: 2 * CGFloat.pi, clockwise: true)
+        trackLayer.path = circularPath.cgPath
+        trackLayer.strokeColor = darkPurple.cgColor
+        trackLayer.lineWidth = 15
+        
+        trackLayer.fillColor = superLightLavender.cgColor
+        trackLayer.lineCap = CAShapeLayerLineCap.round
+        view.layer.insertSublayer(trackLayer, at: 0)
+        shapeLayer.path = circularPath.cgPath
+        
+        shapeLayer.strokeColor = brightPurple.cgColor
+        shapeLayer.lineWidth = 10
+        shapeLayer.fillColor = UIColor.clear.cgColor
+        shapeLayer.lineCap = CAShapeLayerLineCap.round
+        shapeLayer.strokeEnd = 0
+        
+        view.layer.addSublayer(shapeLayer)
+    }
+    
+    @objc func breakPressed() {
+        print("pressed")
+           let alert = LWAlert.init(customData: [["1", "2", "3", "4", "5","6","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28",
+            "29","30"], ["minutes", "seconds", "hours"]])
+            alert.customPickerBlock = { str in
+                self.breakTime = str.split(separator: "-")
+                self.startBreakTimer()
+            }
+        alert.show()
+    }
+
+    
+    @objc func xTapped() {
+        circularSlider.removeFromSuperview()
+        createShapeLayer()
+        twoButtonSetup()
+    }
+    
+    func giveUpAlert() {
+        let alert = UIAlertController(title: "Are you sure you want to give up?", message:"The search for treasure will stop", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action) in
+            DispatchQueue.main.async {
+                self.timer.invalidate()
+            }
+            isPlaying = false
+            self.twoButtonSetup() //Add break button and timer button
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { (action) in
+               return
+        }))
+        self.present(alert, animated: true)
+    }
+    
+    func twoButtonSetup() {
+        self.timerButtonLbl.removeFromSuperview()
+        self.shapeLayer.removeFromSuperlayer()
+        self.tagImageView.removeFromSuperview()
+        self.breakButton.frame.size.width = 130
+        self.breakButton.frame.size.height = 75
+        self.breakButton.center.x = self.view.center.x + 110
+        self.breakButton.backgroundColor = darkRed
+        self.breakButton.center.y = self.timeL.center.y + 100
+        self.breakButton.layer.cornerRadius = 25
+        self.breakButtonLbl.font = UIFont(name: "Menlo-Bold", size: 20)
+        self.breakButtonLbl.textColor = .white
+        
+        self.breakButton.isUserInteractionEnabled = true
+        self.view.addSubview(self.breakButton)
+        self.view.addSubview(self.breakShadow)
+        self.view.insertSubview(self.breakButton, aboveSubview: self.breakShadow)
+        
+        self.breakButtonLbl.text = "Break"
+        self.breakButtonLbl.sizeToFit()
+        self.breakButtonLbl.center.x = self.breakButton.center.x
+        self.breakButtonLbl.center.y = self.breakButton.center.y
+        self.view.addSubview(self.breakButtonLbl)
+        
+        
+        self.timerButton.center.x = self.view.center.x - 70
+        self.timerButton.backgroundColor = darkPurple
+        
+        self.timeL.numberOfLines = 2
+        self.timeL.text = "Let's Go \nAgain!"
+        self.timeL.font = UIFont(name: "Menlo-Bold", size: 30)
+        self.timerButtonLbl.text = "Timer"
+        self.timerButtonLbl.sizeToFit()
+        self.timerButtonLbl.center.x = self.timerButton.center.x
+   
+        self.shadowView.center.x = self.view.center.x - 70
+        self.imageView?.image = UIImage(named: "chest")
+        self.view.addSubview(self.timerButtonLbl)
     }
     
     //MARK: - timer functions
     func countDownTimer() {
         self.timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(incrementCount), userInfo: nil, repeats: true)
+    }
+    
+    func startBreakTimer() {
+        createStartUI()
+        view.addSubview(breakL)
+        breakL.font = UIFont(name: "Menlo", size: 25)
+        breakL.textAlignment = .center
+        breakL.textColor = .white
+        breakL.frame.size.width = 200
+        breakL.frame.size.height = 100
+        breakL.numberOfLines = 2
+        breakL.center.x = view.center.x
+        breakL.center.y = view.center.y - 260
+        breakL.lineBreakMode = .byClipping
+        breakL.text = "Starting..."
+        var factor = 0
+        switch (String(breakTime[1])) {
+        case "minutes":
+            factor = 60
+        case "seconds":
+            factor = 1
+        default:
+            factor = 360
+        }
+        self.counter = Int(String(breakTime[0]))! * factor
+        self.breakTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(incrementBreakCount), userInfo: nil, repeats: true)
+    }
+    @objc func incrementBreakCount() {
+         counter -= 1
+              if counter == 0 {
+                  breakL.text = "Break time is up!"
+                  twoButtonSetup()
+                  self.breakTimer.invalidate()
+                  isPlaying = false
+                  return
+              }
+              
+              let minutes = String(counter/60)
+              var seconds = String(counter%60)
+              if Int(seconds)! < 10 {
+                  seconds = "0" + seconds
+              }
+              breakL.text = "Break Time\n\(minutes):\(seconds)"
     }
     
     @objc func incrementCount() {
@@ -275,18 +436,13 @@ class TimerController: UIViewController {
                     }
                 }
             }
-            self.timerButton.backgroundColor = lightPurple
-            self.timerButtonLbl.text = "Go Again"
-            self.timerButtonLbl.sizeToFit()
-            self.timerButtonLbl.center.x = self.view.center.x
-            self.view.addSubview(self.timerButtonLbl)
+            twoButtonSetup()
             timer.invalidate()
             self.imageView?.image = #imageLiteral(resourceName: "openedChest")
             self.timeL.text = "Great job! You found \(self.coinsReceived!) coins and gained \(self.expReceived!) exp"
             self.timeL.font = UIFont(name: "Menlo-Bold", size: 20)
             self.timeL.numberOfLines = 3
             self.view.addSubview(self.timeL)
-            self.shapeLayer.removeFromSuperlayer()
             isPlaying = false
             return
         }
@@ -297,62 +453,6 @@ class TimerController: UIViewController {
             seconds = "0" + seconds
         }
         timeL.text = "\(minutes):\(seconds)"
-    }
-    
-    @objc func breakPressed(_ sender: UITapGestureRecognizer? = nil) {
-        print("pressed")
-           let alert = LWAlert.init(customData: [["1", "2", "3", "4", "5","6","8","9","10"], ["minutes", "seconds", "hours"]])
-            alert.customPickerBlock = { str in
-                       print(str)
-            }
-        alert.show()
-    }
-    
-    func giveUpAlert() {
-        let alert = UIAlertController(title: "Are you sure you want to give up?", message:"The search for treasure will stop", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action) in
-            DispatchQueue.main.async {
-                self.timer.invalidate()
-            }
-            isPlaying = false
-           
-            self.breakButton.frame.size.width = 130
-            self.breakButton.frame.size.height = 75
-            self.breakButton.center.x = self.view.center.x + 110
-            self.breakButton.backgroundColor = darkRed
-            self.breakButton.center.y = self.timeL.center.y + 100
-            self.breakButton.layer.cornerRadius = 25
-            self.breakButtonLbl.font = UIFont(name: "Menlo-Bold", size: 20)
-            self.breakButtonLbl.textColor = .white
-            self.view.addSubview(self.breakButton)
-            self.view.addSubview(self.breakShadow)
-            self.view.insertSubview(self.breakButton, aboveSubview: self.breakShadow)
-            self.timeL.numberOfLines = 2
-            self.timeL.text = "Let's Go \nAgain!"
-            self.timeL.font = UIFont(name: "Menlo-Bold", size: 30)
-            self.timerButton.center.x = self.view.center.x - 70
-            self.shadowView.center.x = self.view.center.x - 70
-            self.timerButtonLbl.text = "Try Again"
-            self.imageView?.image = UIImage(named: "chest")
-            self.timerButton.backgroundColor = darkPurple
-            self.breakButtonLbl.text = "Break"
-            self.timerButtonLbl.sizeToFit()
-            self.breakButtonLbl.sizeToFit()
-            self.timerButtonLbl.center.x = self.view.center.x - 70
-            self.breakButtonLbl.center.x = self.breakButton.center.x
-            self.breakButtonLbl.center.y = self.breakButton.center.y
-            
-           
-        
-            self.view.addSubview(self.breakButtonLbl)
-            self.view.addSubview(self.timerButtonLbl)
-            self.shapeLayer.removeFromSuperlayer()
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { (action) in
-               return
-        }))
-        self.present(alert, animated: true)
     }
     
     func saveToRealm() {

@@ -11,7 +11,7 @@ import GoogleSignIn
 import RealmSwift
 var uiRealm = try! Realm()
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate { 
+ class AppDelegate: UIResponder, UIApplicationDelegate { 
     var count = 0
     var window: UIWindow?
     func applicationDidEnterBackground(_ application: UIApplication) {

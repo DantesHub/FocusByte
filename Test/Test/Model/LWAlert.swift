@@ -1,7 +1,8 @@
 //
 //  Created by wang on 14/12/2017.
 //  Copyright © 2017 wang. All rights reserved.
-//
+//This is a POD FILE that I Copy and pasted because the pod was not working
+//not my code pod file LWAlert
 
 import Foundation
 import UIKit
@@ -218,97 +219,6 @@ open class LWAlert: UIView, UIPickerViewDataSource, UIPickerViewDelegate {
         realView.center = center
     }
     
-    ///Init with style: picker
-    public init(style: LWAlertStyle) {
-        super.init(frame: UIScreen.main.bounds)
-        
-        self.style = style
-        
-        bgView = UIView.init(frame: UIScreen.main.bounds)
-        
-        let buttonWidth: CGFloat = 100
-
-        pickerBgView = UIView.init(frame: CGRect(x: 0, y: viewHeight, width: viewWidth, height: buttonHeight + pickerHeight))
-        pickerBgView?.backgroundColor = UIColor.white
-        
-        let buttonView = UIView.init(frame: CGRect(x: 0, y: 0, width: viewWidth, height: buttonHeight))
-        let cancelButton = UIButton.init(type: .custom)
-        cancelButton.tag = 0
-        cancelButton.frame = CGRect(x: 0, y: 0, width: buttonWidth, height: buttonHeight)
-        cancelButton.setTitle("Cancel", for: .normal)
-        cancelButton.setTitleColor(UIColor.lightGray, for: .normal)
-        cancelButton.addTarget(self, action: #selector(LWAlert.pickerButtonAction(button:)), for: .touchUpInside)
-        buttonView.addSubview(cancelButton)
-        
-        let confirmButton = UIButton.init(type: .custom)
-        confirmButton.tag = 1
-        confirmButton.frame = CGRect(x: viewWidth - buttonWidth, y: 0, width: buttonWidth, height: buttonHeight)
-        confirmButton.setTitle("Confirm", for: .normal)
-        confirmButton.setTitleColor(UIColor.green, for: .normal)
-        confirmButton.addTarget(self, action: #selector(LWAlert.pickerButtonAction(button:)), for: .touchUpInside)
-        buttonView.addSubview(confirmButton)
-        buttonView.addLine(at: .bottom)
-        
-        let components = Calendar.current.dateComponents([.day, .hour, .minute], from: Date())
-        dateInfo = Date().dateInfo()
-        
-        switch style {
-        case .systemDatePicker, .everyThirtyIn24Hours:
-            picker = UIDatePicker.init(frame: CGRect(x: 0, y: buttonHeight, width: viewWidth, height: pickerHeight))
-            switch style {
-            case .systemDatePicker:
-                picker?.datePickerMode = .date
-                dateInfo = Date().systemDateInfo()
-
-            case .everyThirtyIn24Hours:
-                picker?.datePickerMode = .time
-                picker?.minuteInterval = 30
-                dateInfo = Date().everyThirtyIn24HoursDateInfo()
-                
-            default:
-                break
-            }
-            
-            picker?.addTarget(self, action: #selector(LWAlert.systemPickerValueChanged), for: .valueChanged)
-            pickerBgView?.addSubview(picker!)
-            
-        case .datePicker, .timePicker:
-            
-            pickerView = UIPickerView.init(frame: CGRect(x: 0, y: buttonHeight, width: viewWidth, height: pickerHeight))
-            pickerView?.dataSource = self
-            pickerView?.delegate = self
-            
-            switch style {
-            case .datePicker:
-                pickerView?.selectRow(Calendar.current.dateComponents([.day], from: LWAlert.startDate, to: Date()).day!, inComponent: 0, animated: false)
-            case .timePicker:
-                
-                let amOrPm = components.hour! / 12
-                
-                pickerView?.selectRow(amOrPm, inComponent: 0, animated: false)
-                if components.hour! % 12 == 0 {
-                    pickerView?.selectRow(11, inComponent: 1, animated: false)
-                } else {
-                    pickerView?.selectRow((components.hour! % 12 - 1), inComponent: 1, animated: false)
-                }
-                pickerView?.selectRow(components.minute!, inComponent: 2, animated: false)
-                
-            default:
-                break
-            }
-            
-            pickerBgView?.addSubview(pickerView!)
-            
-        default:
-            break
-        }
-        
-        pickerBgView?.addSubview(buttonView)
-
-        addSubview(bgView)
-        addSubview(pickerBgView!)
-    }
-    
     ///Init with style custom picker, can be set with dafaultStrings
     public init(customData: [[String]], defaultStrings: [String]? = nil) {
         super.init(frame: UIScreen.main.bounds)
@@ -328,7 +238,7 @@ open class LWAlert: UIView, UIPickerViewDataSource, UIPickerViewDelegate {
         let cancelButton = UIButton.init(type: .custom)
         cancelButton.tag = 0
         cancelButton.frame = CGRect(x: 0, y: 0, width: buttonWidth, height: buttonHeight)
-        cancelButton.setTitle("cancel", for: .normal)
+        cancelButton.setTitle("Cancel", for: .normal)
         cancelButton.setTitleColor(UIColor.lightGray, for: .normal)
         cancelButton.addTarget(self, action: #selector(LWAlert.pickerButtonAction(button:)), for: .touchUpInside)
         buttonView.addSubview(cancelButton)
@@ -347,19 +257,24 @@ open class LWAlert: UIView, UIPickerViewDataSource, UIPickerViewDelegate {
         pickerView?.delegate = self
         
         pickerView?.selectRow(0, inComponent: 0, animated: false)
-        
+        print("selected row")
         var stringArray = [String]()
         for (components,strings) in customData.enumerated() {
             var row = 0
-            
             if defaultStrings != nil {
                 assert(defaultStrings!.count == customData.count, "DefaultStrings's count must equal to customData's count")
                 if let defaultIndex = strings.index(of: defaultStrings![components]) {
                    row = defaultIndex
                 }
             }
-            pickerView?.selectRow(row, inComponent: components, animated: false)
-            stringArray.append(strings[row])
+            pickerView?.selectRow(4, inComponent: 0, animated: false)
+            if components == 0 {
+                row = 4
+                stringArray.append(strings[row])
+            } else {
+                stringArray.append(strings[row])
+            }
+            
         }
         customPickerString = stringArray.joined(separator: "-")
         
