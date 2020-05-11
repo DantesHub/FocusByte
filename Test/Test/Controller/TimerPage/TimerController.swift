@@ -52,6 +52,7 @@ class TimerController: UIViewController {
     var delegate: ContainerControllerDelegate!
     var tagImageView = UIImageView()
     var xImageView = UIImageView()
+    var quoteLabel = UILabel()
     
     
     //MARK: -Init
@@ -89,6 +90,16 @@ class TimerController: UIViewController {
         coinsL.center.x =  view.center.x + 180
         coinsL.center.y = 30
         coinsL.font = UIFont(name: "Menlo-Bold", size: 20)
+        
+        quoteLabel.numberOfLines = 0
+        quoteLabel.text = "Whatever you do, do it well. \n– Walt Disney"
+        quoteLabel.textAlignment = .center
+        quoteLabel.textColor = .white
+        quoteLabel.font = UIFont(name: "Menlo-Bold", size: 15)
+        quoteLabel.sizeToFit()
+        quoteLabel.center.x = view.center.x
+        quoteLabel.center.y = view.center.y - 250
+        view.addSubview(quoteLabel)
         
         timeL.font = .boldSystemFont(ofSize: 20)
         timeL.font = UIFont(name: "Menlo-Bold", size: 65)
@@ -401,7 +412,6 @@ class TimerController: UIViewController {
          counter -= 1
               if counter == 0 {
                   breakL.text = "Break time is up!"
-                  twoButtonSetup()
                   self.breakTimer.invalidate()
                   isPlaying = false
                   return

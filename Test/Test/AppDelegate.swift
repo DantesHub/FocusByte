@@ -4,7 +4,7 @@
 //
 //  Created by Laima Cernius-Ink on 3/24/20.
 //  Copyright © 2020 Steve Ink. All rights reserved.
-//
+
 import UIKit
 import Firebase
 import GoogleSignIn
@@ -24,7 +24,6 @@ var uiRealm = try! Realm()
                     let content = UNMutableNotificationContent()
                     content.title = "Come back!"
                     content.body = "If you don't come back the treasure will be lost!"
-                    
                     // Step 3: Create the notification trigger
                     let date = Date().addingTimeInterval(15)
                     let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)

@@ -14,7 +14,8 @@ class AvatarController: UIViewController {
     var name: String?
     var type = ""
     var gender = ""
-    var lvlData: Int = Int((pow(Double(exp), 1.0/3.0)))
+//    Int((pow(Double(exp), 1.0/3.0)))
+    var lvlData: Int = 49
     var avatarImageView: UIImageView = {
        let iv = UIImageView()
         iv.translatesAutoresizingMaskIntoConstraints = false
@@ -27,7 +28,7 @@ class AvatarController: UIViewController {
        let iv = UIImageView()
         iv.translatesAutoresizingMaskIntoConstraints = false
         iv.contentMode = .scaleAspectFit
-        iv.image = #imageLiteral(resourceName: "nopets")
+        iv.image = #imageLiteral(resourceName: "cat")
         return iv
     }()
     var petLabel: UILabel = {
@@ -171,8 +172,10 @@ class AvatarController: UIViewController {
             avatarImageView.image = gender == "male" ? UIImage(named: "boyToddler") : UIImage(named: "girlToddler")
         case 20...48:
             type = "Kid"
+            avatarImageView.image = gender == "male" ? UIImage(named: "kidBoy") : UIImage(named: "kidGirl")
         case 49...84:
             type = "Adult"
+            avatarImageView.image = gender == "male" ? UIImage(named: "man") : UIImage(named: "woman")
         case 85...100:
             type = "Elder"
         default: type = ""

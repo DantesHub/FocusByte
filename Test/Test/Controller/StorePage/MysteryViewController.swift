@@ -14,7 +14,8 @@ class MysteryViewController: UIViewController {
     var goldMysteryImage = UIImage()
     var diamondMysteryBox = UIImageView()
     let minLineSpace: CGFloat = 4
-    
+    var name: String = ""
+
     fileprivate let collectionView: UICollectionView = {
        let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -71,6 +72,7 @@ extension MysteryViewController: UICollectionViewDelegateFlowLayout, UICollectio
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: K.boxCell, for: indexPath) as! BoxCell
+        self.name  = self.data[indexPath.row].title
         cell.data = self.data[indexPath.row]
         cell.clipsToBounds = false
         cell.desc.text = self.data[indexPath.row].description
@@ -80,7 +82,23 @@ extension MysteryViewController: UICollectionViewDelegateFlowLayout, UICollectio
         if self.data[indexPath.row].color == gold {
             cell.buyButton.backgroundColor = darkGold
         }
+        cell.buyButton.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(target: self, action: #selector(tappedBuy))
+        cell.buyButton.addGestureRecognizer(tap)
         return cell
+    }
+    
+    @objc func tappedBuy() {
+        print("bought")
+    switch self.name {
+        case "Common Box":
+            
+            let controller = GifController()
+            controller.modalPresentationStyle = .fullScreen
+            self.present(controller, animated: true, completion: nil)
+        default:
+            return
+        }
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
