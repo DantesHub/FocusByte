@@ -7,6 +7,7 @@
 //
 
 import UIKit
+var name: String = ""
 
 class MysteryViewController: UIViewController {
    //MARK: - Properties
@@ -14,8 +15,15 @@ class MysteryViewController: UIViewController {
     var goldMysteryImage = UIImage()
     var diamondMysteryBox = UIImageView()
     let minLineSpace: CGFloat = 4
-    var name: String = ""
-
+    lazy var nextButton: UIButton = {
+       let button = UIButton()
+        let largeConfiguration = UIImage.SymbolConfiguration(weight: .bold)
+        let carrotGreat = UIImage(systemName: "greaterthan", withConfiguration: largeConfiguration)
+        let carrotGreat2 = carrotGreat?.resized(to: CGSize(width: 45, height: 45)).withTintColor(.white, renderingMode:.alwaysOriginal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(carrotGreat2, for: .normal)
+        return button
+    }()
     fileprivate let collectionView: UICollectionView = {
        let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -37,6 +45,7 @@ class MysteryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+        if #available(iOS 10.0, *) {collectionView.isPrefetchingEnabled = false}
         collectionView.delegate = self
         collectionView.dataSource = self
     }
@@ -53,10 +62,14 @@ class MysteryViewController: UIViewController {
         collectionView.backgroundColor = backgroundColor
         collectionView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
 
-        collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
-        collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
-        collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40).isActive = true
+        collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40).isActive = true
+        collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -80).isActive = true
         collectionView.isPagingEnabled = true;
+        
+//        view.addSubview(nextButton)
+//        nextButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
+//        nextButton.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
 
     }
 
@@ -71,8 +84,9 @@ extension MysteryViewController: UICollectionViewDelegateFlowLayout, UICollectio
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        print(indexPath)
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: K.boxCell, for: indexPath) as! BoxCell
-        self.name  = self.data[indexPath.row].title
+        name  = self.data[indexPath.row].title
         cell.data = self.data[indexPath.row]
         cell.clipsToBounds = false
         cell.desc.text = self.data[indexPath.row].description
@@ -90,15 +104,11 @@ extension MysteryViewController: UICollectionViewDelegateFlowLayout, UICollectio
     
     @objc func tappedBuy() {
         print("bought")
-    switch self.name {
-        case "Common Box":
-            
             let controller = GifController()
             controller.modalPresentationStyle = .fullScreen
+            controller.modalTransitionStyle = .crossDissolve
             self.present(controller, animated: true, completion: nil)
-        default:
             return
-        }
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {

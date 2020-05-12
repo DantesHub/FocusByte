@@ -10,10 +10,13 @@ target 'Test' do
 	pod 'GoogleSignIn'
 	pod 'Validator', '~> 3.2'
 	pod 'Firebase/Database'
+	pod 'FirebaseCore', '~> 6.7'
 	pod 'Firebase/Firestore'
 	pod 'Firebase'
 	pod 'HGCircularSlider', '~> 2.0.0'
 	pod 'RealmSwift'
+	pod 'FLAnimatedImage', '~> 1.0'
+
 
 
 	

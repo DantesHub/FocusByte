@@ -10,7 +10,6 @@ import UIKit
 
 class BoxCell: UICollectionViewCell {
     
-    
     //MARK: - properties
     var data: MysteryBox? {
         didSet {
@@ -90,7 +89,7 @@ class BoxCell: UICollectionViewCell {
         boxView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -30).isActive = true
 //
         desc.topAnchor.constraint(equalTo: boxView.bottomAnchor, constant: 0).isActive = true
-        desc.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 30).isActive = true
+        desc.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 60).isActive = true
         desc.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -30).isActive = true
         
         buyButton.topAnchor.constraint(equalTo: desc.bottomAnchor, constant: 0).isActive = false
