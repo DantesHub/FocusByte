@@ -15,15 +15,31 @@ class MysteryViewController: UIViewController {
     var goldMysteryImage = UIImage()
     var diamondMysteryBox = UIImageView()
     let minLineSpace: CGFloat = 4
-    lazy var nextButton: UIButton = {
+    let pageControl: UIPageControl = {
+        let pc = UIPageControl()
+        pc.pageIndicatorTintColor = .lightGray
+        return pc
+    }()
+    lazy var nextButton: UIButton? = {
        let button = UIButton()
         let largeConfiguration = UIImage.SymbolConfiguration(weight: .bold)
         let carrotGreat = UIImage(systemName: "greaterthan", withConfiguration: largeConfiguration)
-        let carrotGreat2 = carrotGreat?.resized(to: CGSize(width: 45, height: 45)).withTintColor(.white, renderingMode:.alwaysOriginal)
+        let carrotGreat2 = carrotGreat?.resized(to: CGSize(width: 50, height: 50)).withTintColor(.white, renderingMode:.alwaysOriginal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(carrotGreat2, for: .normal)
+        button.addTarget(self, action: #selector(nextTapped), for: .touchUpInside)
         return button
     }()
+    lazy var backButton: UIButton = {
+         let button = UIButton()
+          let largeConfiguration = UIImage.SymbolConfiguration(weight: .bold)
+          let carrotGreat = UIImage(systemName: "lessthan", withConfiguration: largeConfiguration)
+          let carrotGreat2 = carrotGreat?.resized(to: CGSize(width: 50, height: 50)).withTintColor(.white, renderingMode:.alwaysOriginal)
+          button.translatesAutoresizingMaskIntoConstraints = false
+          button.setImage(carrotGreat2, for: .normal)
+          button.addTarget(self, action: #selector(backTapped), for: .touchUpInside)
+          return button
+      }()
     fileprivate let collectionView: UICollectionView = {
        let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -46,6 +62,7 @@ class MysteryViewController: UIViewController {
         super.viewDidLoad()
         configureUI()
         if #available(iOS 10.0, *) {collectionView.isPrefetchingEnabled = false}
+        collectionView.isUserInteractionEnabled = false
         collectionView.delegate = self
         collectionView.dataSource = self
     }
@@ -67,10 +84,44 @@ class MysteryViewController: UIViewController {
         collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -80).isActive = true
         collectionView.isPagingEnabled = true;
         
-//        view.addSubview(nextButton)
-//        nextButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
-//        nextButton.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        view.addSubview(nextButton!)
+        nextButton?.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
+        nextButton?.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        
+        
 
+    }
+    
+    @objc func nextTapped() {
+        let visibleItems: NSArray = self.collectionView.indexPathsForVisibleItems as NSArray
+        
+        var minItem: NSIndexPath = visibleItems.object(at: 0) as! NSIndexPath
+        for itr in visibleItems {
+            print("itr \(itr)")
+            if minItem.row > (itr as AnyObject).row {
+                print("minItem \(minItem)")
+                minItem = itr as! NSIndexPath
+            }
+        }
+        
+        let nextItem = NSIndexPath(row: minItem.row + 1, section: 0)
+        self.collectionView.scrollToItem(at: nextItem as IndexPath, at: .left, animated: true)
+    }
+    
+    @objc func backTapped() {
+        print("back")
+        let visibleItems: NSArray = self.collectionView.indexPathsForVisibleItems as NSArray
+        
+        var minItem: NSIndexPath = visibleItems.object(at: 0) as! NSIndexPath
+        for itr in visibleItems {
+            
+            if minItem.row > (itr as AnyObject).row {
+                minItem = itr as! NSIndexPath
+            }
+        }
+        
+        let nextItem = NSIndexPath(row: minItem.row - 1, section: 0)
+        self.collectionView.scrollToItem(at: nextItem as IndexPath, at: .right, animated: true)
     }
 
 }
@@ -86,6 +137,23 @@ extension MysteryViewController: UICollectionViewDelegateFlowLayout, UICollectio
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         print(indexPath)
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: K.boxCell, for: indexPath) as! BoxCell
+        if indexPath.row == 1 {
+            view.addSubview(backButton)
+            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
+            backButton.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+            if !self.view.subviews.contains(nextButton!) {
+                view.addSubview(nextButton!)
+                nextButton?.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
+                nextButton?.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+            }
+        } else if indexPath.row == 2 {
+            nextButton?.removeFromSuperview()
+        } else {
+            view.addSubview(nextButton!)
+            nextButton?.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
+            nextButton?.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+            backButton.removeFromSuperview()
+        }
         name  = self.data[indexPath.row].title
         cell.data = self.data[indexPath.row]
         cell.clipsToBounds = false
@@ -104,11 +172,11 @@ extension MysteryViewController: UICollectionViewDelegateFlowLayout, UICollectio
     
     @objc func tappedBuy() {
         print("bought")
-            let controller = GifController()
-            controller.modalPresentationStyle = .fullScreen
-            controller.modalTransitionStyle = .crossDissolve
-            self.present(controller, animated: true, completion: nil)
-            return
+        let controller = GifController()
+        controller.modalPresentationStyle = .fullScreen
+        controller.modalTransitionStyle = .crossDissolve
+        self.present(controller, animated: true, completion: nil)
+        return
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
