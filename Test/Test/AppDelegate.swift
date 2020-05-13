@@ -19,6 +19,7 @@ var uiRealm = try! Realm()
             print("inside here")
                 _ = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
                 self.count += 1
+                counter -= 1
                 if self.count == 1 {
                     let center = UNUserNotificationCenter.current()
                     let content = UNMutableNotificationContent()
@@ -76,9 +77,6 @@ var uiRealm = try! Realm()
     func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
         // Called when the user discards a scene session.
         // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
-        // Use this method to release any resources that were specific to the discarded scenes, as they will not return.\
-        
-        
-        
+        // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
 }

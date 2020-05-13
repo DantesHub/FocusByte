@@ -62,7 +62,7 @@ class MysteryViewController: UIViewController {
         super.viewDidLoad()
         configureUI()
         if #available(iOS 10.0, *) {collectionView.isPrefetchingEnabled = false}
-        collectionView.isUserInteractionEnabled = false
+        collectionView.isScrollEnabled = false
         collectionView.delegate = self
         collectionView.dataSource = self
     }
@@ -79,13 +79,13 @@ class MysteryViewController: UIViewController {
         collectionView.backgroundColor = backgroundColor
         collectionView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
 
-        collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40).isActive = true
-        collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40).isActive = true
-        collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -80).isActive = true
+        collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30).isActive = true
+        collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30).isActive = true
+        collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -40).isActive = true
         collectionView.isPagingEnabled = true;
         
         view.addSubview(nextButton!)
-        nextButton?.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
+        nextButton?.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
         nextButton?.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
         
@@ -139,18 +139,18 @@ extension MysteryViewController: UICollectionViewDelegateFlowLayout, UICollectio
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: K.boxCell, for: indexPath) as! BoxCell
         if indexPath.row == 1 {
             view.addSubview(backButton)
-            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
+            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10).isActive = true
             backButton.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
             if !self.view.subviews.contains(nextButton!) {
                 view.addSubview(nextButton!)
-                nextButton?.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
+                nextButton?.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
                 nextButton?.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
             }
         } else if indexPath.row == 2 {
             nextButton?.removeFromSuperview()
         } else {
             view.addSubview(nextButton!)
-            nextButton?.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
+            nextButton?.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
             nextButton?.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
             backButton.removeFromSuperview()
         }

@@ -10,9 +10,13 @@ import HGCircularSlider
 import FirebaseDatabase
 import Firebase
 import RealmSwift
+import FLAnimatedImage
+
 
 var exp = 0
 var coins = 0
+var counter = 0
+var breakPlaying = false
 
 var isPlaying = false
 class TimerController: UIViewController {
@@ -31,6 +35,8 @@ class TimerController: UIViewController {
         iv.contentMode = .scaleAspectFit
         return iv
     }()
+    var mins = 0
+    var secs = 0
     var breakL = UILabel()
     var breakTime = [String.SubSequence]()
     var coinsReceived: Int! = 0
@@ -46,18 +52,23 @@ class TimerController: UIViewController {
     var breakTimer = Timer()
     let db = Firestore.firestore()
     var durationString = ""
-    var counter = 0
     var currentValueLabel: UILabel!
     var ref: DatabaseReference!
     var delegate: ContainerControllerDelegate!
     var tagImageView = UIImageView()
     var xImageView = UIImageView()
     var quoteLabel = UILabel()
+    var diffMins = 0
+    var diffSecs = 0
     
     
      //MARK: -Init
     override func viewDidLoad() {
         super.viewDidLoad()
+        NotificationCenter.default.addObserver(self, selector: #selector(pauseWhenBackground(noti:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground(noti:)), name: UIApplication.willEnterForegroundNotification, object: nil)
+        
+        
         configureUI()
         configureNavigationBar(color: backgroundColor, isTrans: true)
     }
@@ -77,7 +88,7 @@ class TimerController: UIViewController {
     
     //MARK: - helper functions
     func configureUI() {
-        
+        UIApplication.shared.isIdleTimerDisabled = true
         coinsImg = UIImageView(image: UIImage(named: "coins")!)
         coinsImg!.frame.size.width = 25
         coinsImg!.frame.size.height = 30
@@ -220,6 +231,10 @@ class TimerController: UIViewController {
     
     
     @objc func handleTap(_ sender: UITapGestureRecognizer? = nil) {
+        if !self.view.subviews.contains(quoteLabel) && self.view.subviews.contains(breakL) {
+            print("add quote label")
+            view.addSubview(quoteLabel)
+        }
         if let colon = self.timeL.text?.firstIndex(of: ":") {
             durationString = String((self.timeL.text?[..<colon])!)
         }
@@ -235,7 +250,7 @@ class TimerController: UIViewController {
             timerButtonLbl.sizeToFit()
             timerButtonLbl.center.x = view.center.x
             timerButton.backgroundColor = darkRed
-            imageView?.image = #imageLiteral(resourceName: "map")
+            imageView?.loadGif(name: "mapGif")
             view.addSubview(timerButtonLbl)
             // create my track layer
             createShapeLayer()
@@ -252,7 +267,8 @@ class TimerController: UIViewController {
                 durationString = String((self.timeL.text?[..<colon])!)
             }
             counter = ((Int(durationString) ?? 10) * 60)
-            basicAnimation.duration = CFTimeInterval((Int(durationString) ?? 10) * 60)
+            print(counter)
+            basicAnimation.duration = CFTimeInterval(counter)
             self.shapeLayer.add(basicAnimation, forKey: "basic")
             countDownTimer()
             breakTimer.invalidate()
@@ -307,7 +323,7 @@ class TimerController: UIViewController {
     @objc func breakPressed() {
         print("pressed")
            let alert = LWAlert.init(customData: [["1", "2", "3", "4", "5","6","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28",
-            "29","30"], ["minutes", "seconds", "hours"]])
+            "29","30"], ["minutes", "seconds"]])
             alert.customPickerBlock = { str in
                 self.breakTime = str.split(separator: "-")
                 self.startBreakTimer()
@@ -328,6 +344,7 @@ class TimerController: UIViewController {
             DispatchQueue.main.async {
                 self.timer.invalidate()
             }
+            self.timeL.text = "Let's Go \nAgain!"
             isPlaying = false
             self.twoButtonSetup() //Add break button and timer button
         }))
@@ -384,6 +401,8 @@ class TimerController: UIViewController {
     }
     
     func startBreakTimer() {
+        self.breakTimer.invalidate()
+        breakPlaying = true
         createStartUI()
         view.addSubview(breakL)
         breakL.font = UIFont(name: "Menlo", size: 25)
@@ -396,6 +415,7 @@ class TimerController: UIViewController {
         breakL.center.y = view.center.y - 260
         breakL.lineBreakMode = .byClipping
         breakL.text = "Starting..."
+        quoteLabel.removeFromSuperview()
         var factor = 0
         switch (String(breakTime[1])) {
         case "minutes":
@@ -405,24 +425,26 @@ class TimerController: UIViewController {
         default:
             factor = 360
         }
-        self.counter = Int(String(breakTime[0]))! * factor
+        counter = Int(String(breakTime[0]))! * factor
         self.breakTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(incrementBreakCount), userInfo: nil, repeats: true)
     }
     @objc func incrementBreakCount() {
-         counter -= 1
-              if counter == 0 {
-                  breakL.text = "Break time is up!"
-                  self.breakTimer.invalidate()
-                  isPlaying = false
-                  return
-              }
-              
-              let minutes = String(counter/60)
-              var seconds = String(counter%60)
-              if Int(seconds)! < 10 {
-                  seconds = "0" + seconds
-              }
-              breakL.text = "Break Time\n\(minutes):\(seconds)"
+        counter -= 1
+        if counter == 0 {
+            breakL.text = "Break time is up!"
+            self.breakTimer.invalidate()
+            breakPlaying = false
+            return
+        }
+        self.mins = counter/60
+        self.secs = counter%60
+        let minutes = String(counter/60)
+        var seconds = String(counter%60)
+        if Int(seconds)! < 10 {
+            seconds = "0" + seconds
+        }
+        breakL.text = "Break Time\n\(minutes):\(seconds)"
+                
     }
     
     @objc func incrementCount() {
@@ -457,12 +479,85 @@ class TimerController: UIViewController {
             return
         }
         
-        let minutes = String(counter/60)
-        var seconds = String(counter%60)
+        self.mins = counter/60
+        self.secs = counter%60
+        print("main timer \(self.mins), \(self.secs)")
+        let minutes = String(self.mins)
+        var seconds = String(self.secs)
         if Int(seconds)! < 10 {
             seconds = "0" + seconds
         }
         timeL.text = "\(minutes):\(seconds)"
+    }
+    
+    @objc func pauseWhenBackground(noti: Notification) {
+        if isPlaying {
+            self.timer.invalidate()
+            let shared = UserDefaults.standard
+            shared.set(Date(), forKey: "savedTime")
+        } else if breakPlaying {
+            self.breakTimer.invalidate()
+            let shared = UserDefaults.standard
+            shared.set(Date(), forKey: "savedBreakTime")
+        }
+        
+    }
+    
+    @objc func willEnterForeground(noti: Notification) {
+        if isPlaying {
+            let center = UNUserNotificationCenter.current()
+            center.removeAllDeliveredNotifications() // To remove all delivered notifications
+            center.removeAllPendingNotificationRequests()
+            if let savedDate = UserDefaults.standard.object(forKey: "savedTime") as? Date {
+                   (self.diffMins, self.diffSecs) = TimerController.getTimeDifference(startDate: savedDate)
+                   print(" willenterforeground, Min: \(diffMins), Sec: \(diffSecs)")
+                   self.refresh(mins: diffMins, secs: diffSecs)
+               }
+        } else if breakPlaying {
+            let center = UNUserNotificationCenter.current()
+            center.removeAllDeliveredNotifications() // To remove all delivered notifications
+            center.removeAllPendingNotificationRequests()
+            if let savedDate = UserDefaults.standard.object(forKey: "savedBreakTime") as? Date {
+                   (self.diffMins, self.diffSecs) = TimerController.getTimeDifference(startDate: savedDate)
+                   print(" willenterforeground, Min: \(diffMins), Sec: \(diffSecs)")
+                    self.refresh(mins: diffMins, secs: diffSecs)
+            }
+        }
+    }
+    
+    func refresh (mins: Int, secs: Int) {
+        self.mins -= mins
+        self.secs -= secs
+        counter = self.mins * 60 + self.secs
+        self.mins = counter/60
+        self.secs = counter%60
+        var secsString = ""
+        if (self.secs) < 10 {
+            secsString = "0" + String(self.secs)
+        } else {
+            secsString = String(self.secs)
+        }
+        if isPlaying {
+            self.timeL.text = "\(String(self.mins)):\(secsString)"
+            self.timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.incrementCount), userInfo: nil, repeats: true)
+        } else if breakPlaying {
+            if counter <= 0 {
+                breakL.text = "Break time is up!"
+                breakPlaying = false
+                self.breakTimer.invalidate()
+                return
+            }
+            self.breakL.text = "Break Time\n\(String(self.mins)):\(secsString)"
+            self.breakTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.incrementBreakCount), userInfo: nil, repeats: true)
+        }
+       
+    }
+    
+    static func getTimeDifference(startDate: Date) -> (Int, Int) {
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.minute, .second], from: startDate, to: Date())
+        print(components)
+        return (components.minute!, components.second!)
     }
     
     func saveToRealm() {

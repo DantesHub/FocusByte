@@ -7,6 +7,10 @@
 //
 
 import UIKit
+var isActive = false
+var dateResignActive : Date?
+var dateAppDidBack : Date?
+var sceneTimer = Timer()
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -16,85 +20,115 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let winScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: winScene)
-        let nc =  MysteryViewController()
-      
-        window?.rootViewController = nc
+//        let nc =  UINavigationController(rootViewController: )
+        
+        window?.rootViewController = NewitemViewController()
         window?.makeKeyAndVisible()
     }
-
+    
     func sceneDidDisconnect(_ scene: UIScene) {
+        print("scene did disconnect")
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.
         // Release any resources associated with this scene that can be re-created the next time the scene connects.
-        // The scene may re-connect later, as its session was not neccessarily discarded (see `application:didDiscardSceneSessions` instead).    
+        // The scene may re-connect later, as its session was not neccessarily discarded (see `application:didDiscardSceneSessions` instead).
     }
-
+    
     func sceneDidBecomeActive(_ scene: UIScene) {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
         let defaults = UserDefaults.standard
         let status = defaults.string(forKey: "status")
-        print(status)
-        
+    
+        isActive = true
         
     }
-
+    
     func sceneWillResignActive(_ scene: UIScene) {
+        isActive = false
         // Called when the scene will move from an active state to an inactive state.
         // This may occur due to temporary interruptions (ex. an incoming phone call).
-       if isPlaying { DispatchQueue.global(qos: .background).async {
-                      DispatchQueue.main.asyncAfter(deadline: .now() + 15.0) {
-                     let defaults = UserDefaults.standard
-                     defaults.set("exited", forKey: "status")
-                  }
-                 }
-        let center = UNUserNotificationCenter.current()
-                 let content = UNMutableNotificationContent()
-                      content.title = "Come back!"
-                      content.body = "If you don't come back the treasure will be lost!"
-                      
-                      // Step 3: Create the notification trigger
-                      let date = Date().addingTimeInterval(10)
-                      
-                      let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
-                      
-                      let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
-                      
-                      // Step 4: Create the request
-                      
-                      let uuidString = UUID().uuidString
-                      
-                      let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
-                      
-                      // Step 5: Register the request
-                      center.add(request) { (error) in
-                          // Check the error parameter and handle any errors
-                      }}
-                  
+        //       if isPlaying { DispatchQueue.global(qos: .background).async {
+        //                      DispatchQueue.main.asyncAfter(deadline: .now() + 15.0) {
+        //                     let defaults = UserDefaults.standard
+        //                     defaults.set("exited", forKey: "status")
+        //
+        //                  }
+        //                 }
+ 
+   
+        
+    }
+    
+    
 
+    
     func sceneWillEnterForeground(_ scene: UIScene) {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
+        sceneTimer.invalidate()
     }
-
+    @objc func decrementCounter() {
+        print("counter")
+    }
+    
     func sceneDidEnterBackground(_ scene: UIScene) {
+        print("entered backgroundd")
+        do {
+            sleep(1)
+        }
+        print("Jump up and down \(UIScreen.main.brightness)")
+         if isPlaying && UIScreen.main.brightness != 0 {
+                let center = UNUserNotificationCenter.current()
+                let content = UNMutableNotificationContent()
+                content.title = "Come back!"
+                content.body = "If you don't come back the treasure will be lost!"
+                
+                // Step 3: Create the notification trigger
+                let date = Date().addingTimeInterval(8)
+                
+                let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+                
+                let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+                
+                // Step 4: Create the request
+                
+                let uuidString = UUID().uuidString
+                
+                let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
+                
+                // Step 5: Register the request
+                center.add(request) { (error) in
+                    // Check the error parameter and handle any errors
+                }
+         } else if breakPlaying {
+            let center = UNUserNotificationCenter.current()
+            let content = UNMutableNotificationContent()
+            content.title = "Break Times Up!"
+            content.body = "Lets get back to work!"
+            
+            // Step 3: Create the notification trigger
+            let date = Date().addingTimeInterval(Double(counter - 1))
+            let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+            
+            // Step 4: Create the request
+            
+            let uuidString = UUID().uuidString
+            
+            let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
+            
+            // Step 5: Register the request
+            center.add(request) { (error) in
+         }
+        }
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
-        // to restore the scene back to its current state.
-     
-           
-                // do something in background
-           
-           
-            
-        }
-        
-        
-        
+        // to restore the scene back to its current state
         
     }
-    }
-
+    
+}
 
 
 

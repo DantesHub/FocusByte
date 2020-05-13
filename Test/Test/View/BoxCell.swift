@@ -51,6 +51,7 @@ class BoxCell: UICollectionViewCell {
     
     let buyButton: UIButton = {
         let button = UIButton()
+        button.isUserInteractionEnabled = true
         button.translatesAutoresizingMaskIntoConstraints = false
         button.titleLabel!.font = UIFont(name: "Menlo-Bold", size: 30)
         button.setTitle("BUY", for: .normal)

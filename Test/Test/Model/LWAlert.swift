@@ -232,7 +232,7 @@ open class LWAlert: UIView, UIPickerViewDataSource, UIPickerViewDelegate {
         let buttonWidth: CGFloat = 100
         
         pickerBgView = UIView.init(frame: CGRect(x: 0, y: viewHeight, width: viewWidth, height: buttonHeight + pickerHeight))
-        pickerBgView?.backgroundColor = UIColor.white
+        pickerBgView?.backgroundColor = darkPurple
         
         let buttonView = UIView.init(frame: CGRect(x: 0, y: 0, width: viewWidth, height: buttonHeight))
         let cancelButton = UIButton.init(type: .custom)
@@ -247,7 +247,8 @@ open class LWAlert: UIView, UIPickerViewDataSource, UIPickerViewDelegate {
         confirmButton.tag = 1
         confirmButton.frame = CGRect(x: viewWidth - buttonWidth, y: 0, width: buttonWidth, height: buttonHeight)
         confirmButton.setTitle("Done", for: .normal)
-        confirmButton.setTitleColor(UIColor.green, for: .normal)
+        confirmButton.setTitleColor(.white, for: .normal)
+        confirmButton.titleLabel?.font = UIFont(name: "Menlo-Bold", size: 20)
         confirmButton.addTarget(self, action: #selector(LWAlert.pickerButtonAction(button:)), for: .touchUpInside)
         buttonView.addSubview(confirmButton)
         buttonView.addLine(at: .bottom)

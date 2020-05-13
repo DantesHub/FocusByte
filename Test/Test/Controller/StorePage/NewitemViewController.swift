@@ -17,10 +17,8 @@ class NewitemViewController: UIViewController {
     }()
     var goStoreLabel = UILabel()
     var goStoreView = UIView()
-    var goStoreShadow = UIView()
     var inventoryLabel = UILabel()
     var inventoryView = UIView()
-    var inventoryShadow = UIView()
     var timerImageView: UIImageView = {
         let iv = UIImageView()
         iv.frame.size = CGSize(width: 150, height: 150)
@@ -30,6 +28,7 @@ class NewitemViewController: UIViewController {
         iv.layer.cornerRadius = 25
         iv.isUserInteractionEnabled = true
         iv.backgroundColor = .white
+        iv.contentMode = .scaleAspectFit
         return iv
     }()
     var itemLabel = UILabel()
@@ -52,66 +51,60 @@ class NewitemViewController: UIViewController {
         view.addSubview(itemImageView)
         itemImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         itemImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        view.backgroundColor = color
+        view.backgroundColor = backgroundColor
         
         view.addSubview(timerImageView)
         timerImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        timerImageView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -100).isActive = true
+//        timerImageView.topAnchor.constraint(equalTo: itemImageView.centerYAnchor, constant: 250).isActive = true
+        timerImageView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -60).isActive = true
         let tapTimer = UITapGestureRecognizer(target: self, action: #selector(tappedTimer))
         timerImageView.addGestureRecognizer(tapTimer)
         
-        goStoreView.frame.size.width = 125
-        goStoreView.frame.size.height = 75
-        goStoreView.center.x = view.center.x - 120
+        goStoreView.translatesAutoresizingMaskIntoConstraints = false
         goStoreView.backgroundColor = .white
-        goStoreView.center.y = view.center.y + 305
         goStoreView.layer.cornerRadius = 25
         let tapStore = UITapGestureRecognizer(target: self, action: #selector(tappedStore))
         goStoreView.addGestureRecognizer(tapStore)
         view.addSubview(goStoreView)
-    
-        
-        goStoreShadow = UIView(frame: CGRect(x: goStoreView.center.x - 60  , y: goStoreView.center.y-30 , width: 125, height: 75))
-        goStoreShadow.backgroundColor = .clear
-        goStoreShadow.layer.cornerRadius = 25
-        goStoreShadow.dropShadow(superview: goStoreView)
-        view.addSubview(goStoreShadow)
-        view.insertSubview(goStoreView, aboveSubview: goStoreShadow)
+//        goStoreView.center.x = view.center.x - 120
+        goStoreView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
+        goStoreView.trailingAnchor.constraint(equalTo: timerImageView.leadingAnchor, constant: -20).isActive = true
+        goStoreView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -65).isActive = true
+        goStoreView.widthAnchor.constraint(equalToConstant: 110).isActive = true
+        goStoreView.heightAnchor.constraint(equalToConstant: 75).isActive = true
+        goStoreView.applyDesign(color: .white)
         
         goStoreLabel.font = UIFont(name: "Menlo-Bold", size: 20)
         goStoreLabel.text = "Store"
         goStoreLabel.sizeToFit()
         goStoreLabel.textColor = .black
-        goStoreLabel.center.x = goStoreView.center.x
-        goStoreLabel.center.y = goStoreView.center.y
+        goStoreLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(goStoreLabel)
         view.insertSubview(goStoreLabel, aboveSubview: goStoreView)
+        goStoreLabel.centerXAnchor.constraint(equalTo: goStoreView.centerXAnchor).isActive = true
+        goStoreLabel.centerYAnchor.constraint(equalTo: goStoreView.centerYAnchor).isActive = true
         
-        inventoryView.frame.size.width = 125
-        inventoryView.frame.size.height = 75
-        inventoryView.center.x = view.center.x + 120
+        inventoryView.translatesAutoresizingMaskIntoConstraints = false
         inventoryView.backgroundColor = .white
-        inventoryView.center.y = goStoreView.center.y
         inventoryView.layer.cornerRadius = 25
         //add tapInventory
         view.addSubview(inventoryView)
-        
-        inventoryShadow = UIView(frame: CGRect(x: inventoryView.center.x - 60, y: goStoreView.center.y-30 , width: 125, height: 75))
-        inventoryShadow.backgroundColor = .clear
-        inventoryShadow.layer.cornerRadius = 25
-        inventoryShadow.dropShadow(superview: inventoryView)
-        view.addSubview(inventoryShadow)
-        view.insertSubview(inventoryShadow, aboveSubview: goStoreShadow)
+        inventoryView.leadingAnchor.constraint(equalTo: timerImageView.trailingAnchor, constant: 20).isActive = true
+        inventoryView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
+        inventoryView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -65).isActive = true
+        inventoryView.widthAnchor.constraint(equalToConstant: 120).isActive = true
+        inventoryView.heightAnchor.constraint(equalToConstant: 75).isActive = true
+        inventoryView.applyDesign(color: .white)
         
         inventoryLabel.font = UIFont(name: "Menlo-Bold", size: 20)
-        inventoryLabel.text = "Inventory"
+        inventoryLabel.text = "Items"
         inventoryLabel.sizeToFit()
         inventoryLabel.textColor = .black
-        inventoryLabel.center.x = inventoryView.center.x
-        inventoryLabel.center.y = inventoryView.center.y
+        inventoryLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(inventoryLabel)
         view.insertSubview(inventoryLabel, aboveSubview: inventoryView)
-        
+        inventoryLabel.centerXAnchor.constraint(equalTo: inventoryView.centerXAnchor).isActive = true
+        inventoryLabel.centerYAnchor.constraint(equalTo: inventoryView.centerYAnchor).isActive = true
         
 
     }
