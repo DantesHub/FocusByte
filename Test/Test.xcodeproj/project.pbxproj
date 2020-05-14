@@ -26,6 +26,8 @@
 		FE3249672469CC9A0090759B /* commonBox.gif in Resources */ = {isa = PBXBuildFile; fileRef = FE3249662469CC9A0090759B /* commonBox.gif */; };
 		FE324971246CA0820090759B /* mapGif.gif in Resources */ = {isa = PBXBuildFile; fileRef = FE324970246CA0820090759B /* mapGif.gif */; };
 		FE324973246CA1380090759B /* swiftgif.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE324972246CA1380090759B /* swiftgif.swift */; };
+		FE324975246CB0220090759B /* InventoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE324974246CB0220090759B /* InventoryController.swift */; };
+		FE324977246DFB1C0090759B /* StatisticsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE324976246DFB1C0090759B /* StatisticsController.swift */; };
 		FE5395C124311AD100DA83C1 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE5395C024311AD100DA83C1 /* Constants.swift */; };
 		FE6B03E0245F958200C48E27 /* LWAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE6B03DF245F958200C48E27 /* LWAlert.swift */; };
 		FEBC64142431183F00FB082A /* PressStart2P-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FEBC64132431183F00FB082A /* PressStart2P-Regular.ttf */; };
@@ -104,6 +106,8 @@
 		FE3249662469CC9A0090759B /* commonBox.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = commonBox.gif; sourceTree = "<group>"; };
 		FE324970246CA0820090759B /* mapGif.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = mapGif.gif; sourceTree = "<group>"; };
 		FE324972246CA1380090759B /* swiftgif.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = swiftgif.swift; sourceTree = "<group>"; };
+		FE324974246CB0220090759B /* InventoryController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InventoryController.swift; sourceTree = "<group>"; };
+		FE324976246DFB1C0090759B /* StatisticsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsController.swift; sourceTree = "<group>"; };
 		FE5395C024311AD100DA83C1 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		FE6B03DF245F958200C48E27 /* LWAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LWAlert.swift; sourceTree = "<group>"; };
 		FEBC64132431183F00FB082A /* PressStart2P-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PressStart2P-Regular.ttf"; sourceTree = "<group>"; };
@@ -328,6 +332,8 @@
 				FEF00174243FB635002D6C78 /* SettingsController.swift */,
 				FED6F635243E69C400553996 /* MenuController.swift */,
 				FED1FFEE24453EC80068FD5E /* ContainerController.swift */,
+				FE324974246CB0220090759B /* InventoryController.swift */,
+				FE324976246DFB1C0090759B /* StatisticsController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -639,10 +645,12 @@
 				FECA7A8524390E0000763504 /* RegisterViewController.swift in Sources */,
 				FEF55DCF2430346D00B4C0E1 /* LoginViewController.swift in Sources */,
 				E1593607242ACE6F0050E914 /* TimerController.swift in Sources */,
+				FE324977246DFB1C0090759B /* StatisticsController.swift in Sources */,
 				FED05132243FD25600D7B1F0 /* RealmObjects.swift in Sources */,
 				E1D2BF94242B9CCB004AC477 /* animatedLabel.swift in Sources */,
 				E1593603242ACE6F0050E914 /* AppDelegate.swift in Sources */,
 				FEC28337244BA17A00098413 /* MysteryBox.swift in Sources */,
+				FE324975246CB0220090759B /* InventoryController.swift in Sources */,
 				FE3249632469CA300090759B /* BoxCell.swift in Sources */,
 				FEC28333244B87E100098413 /* MysteryViewController.swift in Sources */,
 				FED6F63E243EAC6100553996 /* MenuOptionCell.swift in Sources */,

@@ -46,6 +46,16 @@ class ContainerController: UIViewController {
                     avatarController.delegate = self
                     centerController = UINavigationController(rootViewController: avatarController)
             }
+            if centerController is InventoryController {
+                let inventoryController = InventoryController()
+                inventoryController.delegate = self
+                centerController = UINavigationController(rootViewController: inventoryController)
+            }
+            if centerController is StatisticsController {
+                let statisticsController = StatisticsController()
+                statisticsController.delegate = self
+                centerController = UINavigationController(rootViewController: statisticsController)
+            }
            view.addSubview(centerController.view)
            addChild(centerController)
            centerController.didMove(toParent: self)
@@ -96,9 +106,13 @@ class ContainerController: UIViewController {
             controller.modalPresentationStyle = .fullScreen
             presentInFullScreen(UINavigationController(rootViewController: controller), animated: false, completion: nil)
         case .statistics:
-            print("show statistics")
+            let controller = ContainerController(center: StatisticsController())
+            controller.modalPresentationStyle = .fullScreen
+            presentInFullScreen(UINavigationController(rootViewController: controller), animated:false, completion: nil)
         case .inventory:
-            print("show inventory")
+            let controller = ContainerController(center: InventoryController())
+            controller.modalPresentationStyle = .fullScreen
+            presentInFullScreen(UINavigationController(rootViewController: controller), animated: false, completion: nil)
         case .settings:
             let controller = SettingsController()
             controller.modalPresentationStyle = .fullScreen

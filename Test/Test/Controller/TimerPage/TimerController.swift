@@ -17,7 +17,9 @@ var exp = 0
 var coins = 0
 var counter = 0
 var breakPlaying = false
-
+var totalTime = 0
+var isPro = true
+var timeData = [String]()
 var isPlaying = false
 class TimerController: UIViewController {
     //MARK: - Properties
@@ -35,6 +37,7 @@ class TimerController: UIViewController {
         iv.contentMode = .scaleAspectFit
         return iv
     }()
+    var howMuchTime: Int = 0
     var mins = 0
     var secs = 0
     var breakL = UILabel()
@@ -62,7 +65,7 @@ class TimerController: UIViewController {
     var diffSecs = 0
     
     
-     //MARK: -Init
+    //MARK: -Init
     override func viewDidLoad() {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(pauseWhenBackground(noti:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
@@ -161,7 +164,7 @@ class TimerController: UIViewController {
         imageView?.center.x = view.center.x
         imageView?.center.y = view.center.y - 50
         view.insertSubview(imageView!, at: 10)
-    
+        
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
         timerButton.addGestureRecognizer(tap)
@@ -209,18 +212,18 @@ class TimerController: UIViewController {
         navigationController?.navigationBar.addSubview(coinsImg!)
         
         createCircularSlider()
-
+        
     }
     
     func displayalert(title:String, message:String) {
-      let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
-      alert.addAction((UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
-
-          alert.dismiss(animated: true, completion: nil)
-
-      })))
-
-      self.present(alert, animated: true, completion: nil)
+        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
+        alert.addAction((UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
+            
+            alert.dismiss(animated: true, completion: nil)
+            
+        })))
+        
+        self.present(alert, animated: true, completion: nil)
     }
     
     
@@ -266,9 +269,11 @@ class TimerController: UIViewController {
             if let colon = self.timeL.text?.firstIndex(of: ":") {
                 durationString = String((self.timeL.text?[..<colon])!)
             }
-            counter = ((Int(durationString) ?? 10) * 60)
+//            counter = ((Int(durationString) ?? 10) * 60)
+            counter = 3
+            howMuchTime = ((Int(durationString) ?? 10) * 60)
             print(counter)
-            basicAnimation.duration = CFTimeInterval(counter)
+            basicAnimation.duration = CFTimeInterval(counter + (counter/4))
             self.shapeLayer.add(basicAnimation, forKey: "basic")
             countDownTimer()
             breakTimer.invalidate()
@@ -296,7 +301,7 @@ class TimerController: UIViewController {
         timerButtonLbl.center.x = view.center.x
         createCircularSlider()
     }
-
+    
     
     func createShapeLayer() {
         var center = view.center
@@ -322,15 +327,15 @@ class TimerController: UIViewController {
     
     @objc func breakPressed() {
         print("pressed")
-           let alert = LWAlert.init(customData: [["1", "2", "3", "4", "5","6","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28",
-            "29","30"], ["minutes", "seconds"]])
-            alert.customPickerBlock = { str in
-                self.breakTime = str.split(separator: "-")
-                self.startBreakTimer()
-            }
+        let alert = LWAlert.init(customData: [["1", "2", "3", "4", "5","6","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28",
+                                               "29","30"], ["minutes", "seconds"]])
+        alert.customPickerBlock = { str in
+            self.breakTime = str.split(separator: "-")
+            self.startBreakTimer()
+        }
         alert.show()
     }
-
+    
     
     @objc func xTapped() {
         circularSlider.removeFromSuperview()
@@ -350,7 +355,7 @@ class TimerController: UIViewController {
         }))
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { (action) in
-               return
+            return
         }))
         self.present(alert, animated: true)
     }
@@ -389,7 +394,7 @@ class TimerController: UIViewController {
         self.timerButtonLbl.text = "Timer"
         self.timerButtonLbl.sizeToFit()
         self.timerButtonLbl.center.x = self.timerButton.center.x
-   
+        
         self.shadowView.center.x = self.view.center.x - 70
         self.imageView?.image = UIImage(named: "chest")
         self.view.addSubview(self.timerButtonLbl)
@@ -444,44 +449,92 @@ class TimerController: UIViewController {
             seconds = "0" + seconds
         }
         breakL.text = "Break Time\n\(minutes):\(seconds)"
-                
+        
     }
     
     @objc func incrementCount() {
         counter -= 1
         if counter == 0 {
+       
+
             isPlaying = false
-            let numCoins = Int((self.coinsL.text!))!
-            let coins = self.updateCoinLabel(numCoins: numCoins)
-            self.coinsL.text = String(coins!)
-            if let _ = Auth.auth().currentUser?.email {
-                let email = Auth.auth().currentUser?.email
-                self.db.collection(K.userPreferenes).document(email!).setData([
-                    "coins": coins!,
-                    "exp": exp
-                ], merge: true) { (error) in
-                    if let e = error {
-                        print("There was a issue saving data to firestore \(e) ")
-                    } else {
-                        self.saveToRealm()
-                        print("Succesfully saved")
+            var numCoins = 0
+            var lastDate = ""
+            var totalTimeForDay = ""
+            var fbDate = ""
+            //read data from firebase
+                if let _ = Auth.auth().currentUser?.email {
+                    let email = Auth.auth().currentUser?.email
+                    let docRef = self.db.collection(K.FStore.collectionName).document(email!)
+                    docRef.getDocument { (snapshot, error) in
+                        if let document = snapshot, document.exists {
+                            if let c = document["coins"] {
+                                numCoins = c  as! Int
+                            }
+                            if let xp = document["exp"] {
+                                exp = xp as! Int
+                            }
+                            if let time = document["TimeData"] {
+                                timeData = time as! [String]
+                                lastDate = (timeData[timeData.count - 1])
+                            }
+                            coins = self.updateCoinLabel(numCoins: numCoins)!
+                            self.coinsL.text = String(coins)
+                            //Check if last entry is equal to today
+                            //if last entry is, then we just need to add time to it
+                            //if not we have to create a new date
+                            let equalIndex = lastDate.firstIndex(of: "=")
+                            let equalIndexOffset = lastDate.index(equalIndex!, offsetBy: 1)
+                            
+                            fbDate = String(lastDate[..<equalIndex!])
+                            let dateFormatterGet = DateFormatter()
+                            dateFormatterGet.dateFormat = "MMM d,yyyy E"
+                            //date already exists
+                            if dateFormatterGet.string(from: Date()) == fbDate {
+                                totalTimeForDay = String(lastDate[equalIndexOffset...])
+                                let totalTimeInt = Int(totalTimeForDay)! + (self.howMuchTime/60)
+                                totalTimeForDay = String(totalTimeInt)
+                                timeData[timeData.count - 1] = fbDate + "=" + totalTimeForDay
+                            } else {
+                                fbDate = dateFormatterGet.string(from: Date())
+                                totalTimeForDay = String(self.howMuchTime/60)
+                                timeData.append(fbDate + "=" + totalTimeForDay)
+                            }
+                            //update data in firebase
+                            if let _ = Auth.auth().currentUser?.email {
+                                let email = Auth.auth().currentUser?.email
+                                self.db.collection(K.userPreferenes).document(email!).setData([
+                                    "coins": coins,
+                                    "exp": exp,
+                                    "TimeData": timeData
+                                ], merge: true) { (error) in
+                                    if let e = error {
+                                        print("There was a issue saving data to firestore \(e) ")
+                                    } else {
+                                        self.saveToRealm()
+                                        print("Succesfully saved")
+                                    }
+                                }
+                            }
+                            print("ping")
+                            self.twoButtonSetup()
+                            self.timer.invalidate()
+                            self.imageView?.image = #imageLiteral(resourceName: "openedChest")
+                            self.timeL.text = "Great job! You found \(self.coinsReceived!) coins and gained \(self.expReceived!) exp"
+                            self.timeL.font = UIFont(name: "Menlo-Bold", size: 20)
+                            self.timeL.numberOfLines = 3
+                            self.view.addSubview(self.timeL)
+                            isPlaying = false
+                        } else {
+                            print("Document does not exist")
+                        }
                     }
                 }
-            }
-            twoButtonSetup()
-            timer.invalidate()
-            self.imageView?.image = #imageLiteral(resourceName: "openedChest")
-            self.timeL.text = "Great job! You found \(self.coinsReceived!) coins and gained \(self.expReceived!) exp"
-            self.timeL.font = UIFont(name: "Menlo-Bold", size: 20)
-            self.timeL.numberOfLines = 3
-            self.view.addSubview(self.timeL)
-            isPlaying = false
             return
         }
         
         self.mins = counter/60
         self.secs = counter%60
-        print("main timer \(self.mins), \(self.secs)")
         let minutes = String(self.mins)
         var seconds = String(self.secs)
         if Int(seconds)! < 10 {
@@ -509,18 +562,18 @@ class TimerController: UIViewController {
             center.removeAllDeliveredNotifications() // To remove all delivered notifications
             center.removeAllPendingNotificationRequests()
             if let savedDate = UserDefaults.standard.object(forKey: "savedTime") as? Date {
-                   (self.diffMins, self.diffSecs) = TimerController.getTimeDifference(startDate: savedDate)
-                   print(" willenterforeground, Min: \(diffMins), Sec: \(diffSecs)")
-                   self.refresh(mins: diffMins, secs: diffSecs)
-               }
+                (self.diffMins, self.diffSecs) = TimerController.getTimeDifference(startDate: savedDate)
+                print(" willenterforeground, Min: \(diffMins), Sec: \(diffSecs)")
+                self.refresh(mins: diffMins, secs: diffSecs)
+            }
         } else if breakPlaying {
             let center = UNUserNotificationCenter.current()
             center.removeAllDeliveredNotifications() // To remove all delivered notifications
             center.removeAllPendingNotificationRequests()
             if let savedDate = UserDefaults.standard.object(forKey: "savedBreakTime") as? Date {
-                   (self.diffMins, self.diffSecs) = TimerController.getTimeDifference(startDate: savedDate)
-                   print(" willenterforeground, Min: \(diffMins), Sec: \(diffSecs)")
-                    self.refresh(mins: diffMins, secs: diffSecs)
+                (self.diffMins, self.diffSecs) = TimerController.getTimeDifference(startDate: savedDate)
+                print(" willenterforeground, Min: \(diffMins), Sec: \(diffSecs)")
+                self.refresh(mins: diffMins, secs: diffSecs)
             }
         }
     }
@@ -550,7 +603,7 @@ class TimerController: UIViewController {
             self.breakL.text = "Break Time\n\(String(self.mins)):\(secsString)"
             self.breakTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.incrementBreakCount), userInfo: nil, repeats: true)
         }
-       
+        
     }
     
     static func getTimeDifference(startDate: Date) -> (Int, Int) {
@@ -568,6 +621,7 @@ class TimerController: UIViewController {
                     try uiRealm.write {
                         result.setValue(Int(coinsL.text!)!, forKey: "coins")
                         result.setValue(exp, forKey: "exp")
+                        result.setValue(timeData, forKey: "timeArray")
                     }
                 } catch {
                     print(error)
@@ -580,8 +634,8 @@ class TimerController: UIViewController {
         let prevNumOfCoins = numCoins
         var numOfCoins = numCoins
         let prevExp = exp
-        
-        switch counter {
+        print("numOFCoins before addition \(numOfCoins)")
+        switch howMuchTime {
         case 599...1499:
             numOfCoins += 5
             exp += 1
@@ -598,9 +652,10 @@ class TimerController: UIViewController {
             numOfCoins += 40
             exp += 12
         default:
-            numOfCoins += 2
+            numOfCoins += 7
             exp += 1
         }
+        //experience algo
         let  level = ((pow(Double(exp), 1.0/3.0)))
         if (level - floor(level) == 0) { // 0.000001 can be changed depending on the level of precision you need
             displayalert(title: "You Leveled Up!", message: "Congratulations you have leveled up!\n You are now level \(Int(level))")

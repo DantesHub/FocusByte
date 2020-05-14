@@ -175,15 +175,12 @@ class LoginViewController: UIViewController {
                     print("Document data: \(dataDescription)")
                     if let g = document["gender"]  {
                         gender = g as! String
-                        print("gender: \(gender)")
                     }
                     if let n = document["name"] {
                         name = n as! String
-                        print("name: \(name)")
                     }
                     if let c = document["coins"] {
                         coins = c  as! Int
-                        print("coins: \(c)")
                     }
                 } else {
                     print("Document does not exist")
