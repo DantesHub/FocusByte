@@ -16,6 +16,9 @@ target 'Test' do
 	pod 'HGCircularSlider', '~> 2.0.0'
 	pod 'RealmSwift'
 	pod 'FLAnimatedImage', '~> 1.0'
+	pod "TinyConstraints"
+	pod 'Charts'
+
 
 
 

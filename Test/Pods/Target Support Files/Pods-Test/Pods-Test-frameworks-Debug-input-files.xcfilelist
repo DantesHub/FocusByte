@@ -1,6 +1,7 @@
 ${PODS_ROOT}/Target Support Files/Pods-Test/Pods-Test-frameworks.sh
 ${BUILT_PRODUCTS_DIR}/AppAuth/AppAuth.framework
 ${BUILT_PRODUCTS_DIR}/BoringSSL-GRPC/openssl_grpc.framework
+${BUILT_PRODUCTS_DIR}/Charts/Charts.framework
 ${BUILT_PRODUCTS_DIR}/FLAnimatedImage/FLAnimatedImage.framework
 ${BUILT_PRODUCTS_DIR}/GTMAppAuth/GTMAppAuth.framework
 ${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework
@@ -9,6 +10,7 @@ ${BUILT_PRODUCTS_DIR}/HGCircularSlider/HGCircularSlider.framework
 ${BUILT_PRODUCTS_DIR}/PromisesObjC/FBLPromises.framework
 ${BUILT_PRODUCTS_DIR}/Realm/Realm.framework
 ${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework
+${BUILT_PRODUCTS_DIR}/TinyConstraints/TinyConstraints.framework
 ${BUILT_PRODUCTS_DIR}/Validator/Validator.framework
 ${BUILT_PRODUCTS_DIR}/abseil/absl.framework
 ${BUILT_PRODUCTS_DIR}/gRPC-C++/grpcpp.framework
