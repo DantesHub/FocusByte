@@ -11,6 +11,7 @@ import FirebaseDatabase
 import Firebase
 import RealmSwift
 import FLAnimatedImage
+import AudioToolbox
 
 
 var exp = 0
@@ -52,6 +53,7 @@ class TimerController: UIViewController {
     var breakButtonLbl = UILabel()
     let timerButtonLbl = UILabel()
     var timer = Timer()
+    var enteredForeground = false
     var breakTimer = Timer()
     let db = Firestore.firestore()
     var durationString = ""
@@ -270,7 +272,7 @@ class TimerController: UIViewController {
                 durationString = String((self.timeL.text?[..<colon])!)
             }
 //            counter = ((Int(durationString) ?? 10) * 60)
-            counter = 3
+            counter = 10
             howMuchTime = ((Int(durationString) ?? 10) * 60)
             print(counter)
             basicAnimation.duration = CFTimeInterval(counter + (counter/4))
@@ -436,6 +438,7 @@ class TimerController: UIViewController {
     @objc func incrementBreakCount() {
         counter -= 1
         if counter == 0 {
+            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
             breakL.text = "Break time is up!"
             self.breakTimer.invalidate()
             breakPlaying = false
@@ -455,84 +458,8 @@ class TimerController: UIViewController {
     @objc func incrementCount() {
         counter -= 1
         if counter == 0 {
-       
-
-            isPlaying = false
-            var numCoins = 0
-            var lastDate = ""
-            var totalTimeForDay = ""
-            var fbDate = ""
-            //read data from firebase
-                if let _ = Auth.auth().currentUser?.email {
-                    let email = Auth.auth().currentUser?.email
-                    let docRef = self.db.collection(K.FStore.collectionName).document(email!)
-                    docRef.getDocument { (snapshot, error) in
-                        if let document = snapshot, document.exists {
-                            if let c = document["coins"] {
-                                numCoins = c  as! Int
-                            }
-                            if let xp = document["exp"] {
-                                exp = xp as! Int
-                            }
-                            if let time = document["TimeData"] {
-                                timeData = time as! [String]
-                                lastDate = (timeData[timeData.count - 1])
-                            }
-                            coins = self.updateCoinLabel(numCoins: numCoins)!
-                            self.coinsL.text = String(coins)
-                            //Check if last entry is equal to today
-                            //if last entry is, then we just need to add time to it
-                            //if not we have to create a new date
-                            let equalIndex = lastDate.firstIndex(of: "=")
-                            let equalIndexOffset = lastDate.index(equalIndex!, offsetBy: 1)
-                            
-                            fbDate = String(lastDate[..<equalIndex!])
-                            let dateFormatterGet = DateFormatter()
-                            dateFormatterGet.dateFormat = "MMM d,yyyy E"
-                            //date already exists
-                            if dateFormatterGet.string(from: Date()) == fbDate {
-                                totalTimeForDay = String(lastDate[equalIndexOffset...])
-                                let totalTimeInt = Int(totalTimeForDay)! + (self.howMuchTime/60)
-                                totalTimeForDay = String(totalTimeInt)
-                                timeData[timeData.count - 1] = fbDate + "=" + totalTimeForDay
-                            } else {
-                                fbDate = dateFormatterGet.string(from: Date())
-                                totalTimeForDay = String(self.howMuchTime/60)
-                                timeData.append(fbDate + "=" + totalTimeForDay)
-                            }
-                            //update data in firebase
-                            if let _ = Auth.auth().currentUser?.email {
-                                let email = Auth.auth().currentUser?.email
-                                self.db.collection(K.userPreferenes).document(email!).setData([
-                                    "coins": coins,
-                                    "exp": exp,
-                                    "TimeData": timeData
-                                ], merge: true) { (error) in
-                                    if let e = error {
-                                        print("There was a issue saving data to firestore \(e) ")
-                                    } else {
-                                        self.saveToRealm()
-                                        print("Succesfully saved")
-                                    }
-                                }
-                            }
-                            print("ping")
-                            self.twoButtonSetup()
-                            self.timer.invalidate()
-                            self.imageView?.image = #imageLiteral(resourceName: "openedChest")
-                            self.timeL.text = "Great job! You found \(self.coinsReceived!) coins and gained \(self.expReceived!) exp"
-                            self.timeL.font = UIFont(name: "Menlo-Bold", size: 20)
-                            self.timeL.numberOfLines = 3
-                            self.view.addSubview(self.timeL)
-                            isPlaying = false
-                        } else {
-                            print("Document does not exist")
-                        }
-                    }
-                }
-            return
+            focusTimerComplete()
         }
-        
         self.mins = counter/60
         self.secs = counter%60
         let minutes = String(self.mins)
@@ -544,6 +471,7 @@ class TimerController: UIViewController {
     }
     
     @objc func pauseWhenBackground(noti: Notification) {
+        enteredForeground = false
         if isPlaying {
             self.timer.invalidate()
             let shared = UserDefaults.standard
@@ -556,12 +484,96 @@ class TimerController: UIViewController {
         
     }
     
+    func focusTimerComplete() {
+    
+        AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+        self.timer.invalidate()
+        if enteredForeground {
+            self.timeL.text = "You found..."
+            self.timeL.font = UIFont(name: "Menlo-Bold", size: 20)
+        }
+        var numCoins = 0
+        var lastDate = ""
+        var totalTimeForDay = ""
+        var fbDate = ""
+        //read data from firebase
+            if let _ = Auth.auth().currentUser?.email {
+                let email = Auth.auth().currentUser?.email
+                let docRef = self.db.collection(K.FStore.collectionName).document(email!)
+                docRef.getDocument { (snapshot, error) in
+                    if let document = snapshot, document.exists {
+                        if let c = document["coins"] {
+                            numCoins = c  as! Int
+                        }
+                        if let xp = document["exp"] {
+                            exp = xp as! Int
+                        }
+                        if let time = document["TimeData"] {
+                            timeData = time as! [String]
+                            lastDate = (timeData[timeData.count - 1])
+                        }
+                        coins = self.updateCoinLabel(numCoins: numCoins)!
+                        self.coinsL.text = String(coins)
+                        //Check if last entry is equal to today
+                        //if last entry is, then we just need to add time to it
+                        //if not we have to create a new date
+                        let equalIndex = lastDate.firstIndex(of: "=")
+                        let equalIndexOffset = lastDate.index(equalIndex!, offsetBy: 1)
+                        
+                        fbDate = String(lastDate[..<equalIndex!])
+                        let dateFormatterGet = DateFormatter()
+                        dateFormatterGet.dateFormat = "MMM d,yyyy E"
+                        //date already exists
+                        if dateFormatterGet.string(from: Date()) == fbDate {
+                            totalTimeForDay = String(lastDate[equalIndexOffset...])
+                            let totalTimeInt = Int(totalTimeForDay)! + (self.howMuchTime/60)
+                            totalTimeForDay = String(totalTimeInt)
+                            timeData[timeData.count - 1] = fbDate + "=" + totalTimeForDay
+                        } else {
+                            fbDate = dateFormatterGet.string(from: Date())
+                            totalTimeForDay = String(self.howMuchTime/60)
+                            timeData.append(fbDate + "=" + totalTimeForDay)
+                        }
+                        //update data in firebase
+                        if let _ = Auth.auth().currentUser?.email {
+                            let email = Auth.auth().currentUser?.email
+                            self.db.collection(K.userPreferenes).document(email!).setData([
+                                "coins": coins,
+                                "exp": exp,
+                                "TimeData": timeData
+                            ], merge: true) { (error) in
+                                if let e = error {
+                                    print("There was a issue saving data to firestore \(e) ")
+                                } else {
+                                    self.saveToRealm()
+                                    print("Succesfully saved")
+                                }
+                            }
+                        }
+                        self.timeL.removeFromSuperview()
+                        self.twoButtonSetup()
+                        self.imageView?.image = #imageLiteral(resourceName: "openedChest")
+                        self.timeL.text = "Great job! You found \(self.coinsReceived!) coins and gained \(self.expReceived!) exp"
+                        self.timeL.font = UIFont(name: "Menlo-Bold", size: 20)
+                        self.timeL.numberOfLines = 3
+                        self.view.addSubview(self.timeL)
+                        isPlaying = false
+                        self.enteredForeground = false
+                    } else {
+                        print("Document does not exist")
+                    }
+                }
+            }
+        return
+    }
+    
     @objc func willEnterForeground(noti: Notification) {
+        enteredForeground = true
         if isPlaying {
             let center = UNUserNotificationCenter.current()
             center.removeAllDeliveredNotifications() // To remove all delivered notifications
             center.removeAllPendingNotificationRequests()
-            if let savedDate = UserDefaults.standard.object(forKey: "savedTime") as? Date {
+            if let savedDate = UserDefaults.standard.object(forKey: "savedTime") as? Date{
                 (self.diffMins, self.diffSecs) = TimerController.getTimeDifference(startDate: savedDate)
                 print(" willenterforeground, Min: \(diffMins), Sec: \(diffSecs)")
                 self.refresh(mins: diffMins, secs: diffSecs)
@@ -591,6 +603,10 @@ class TimerController: UIViewController {
             secsString = String(self.secs)
         }
         if isPlaying {
+            if counter <= 0 {
+                focusTimerComplete()
+                return
+            }
             self.timeL.text = "\(String(self.mins)):\(secsString)"
             self.timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.incrementCount), userInfo: nil, repeats: true)
         } else if breakPlaying {

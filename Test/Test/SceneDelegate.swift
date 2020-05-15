@@ -45,17 +45,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func sceneWillResignActive(_ scene: UIScene) {
         isActive = false
-        // Called when the scene will move from an active state to an inactive state.
-        // This may occur due to temporary interruptions (ex. an incoming phone call).
-        //       if isPlaying { DispatchQueue.global(qos: .background).async {
-        //                      DispatchQueue.main.asyncAfter(deadline: .now() + 15.0) {
-        //                     let defaults = UserDefaults.standard
-        //                     defaults.set("exited", forKey: "status")
-        //
-        //                  }
-        //                 }
- 
-   
         
     }
     
@@ -78,53 +67,50 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         print("Jump up and down \(UIScreen.main.brightness)")
          if isPlaying && UIScreen.main.brightness != 0 {
-                let center = UNUserNotificationCenter.current()
-                let content = UNMutableNotificationContent()
-                content.title = "Come back!"
-                content.body = "If you don't come back the treasure will be lost!"
-                
-                // Step 3: Create the notification trigger
-                let date = Date().addingTimeInterval(8)
-                
-                let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
-                
-                let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
-                
-                // Step 4: Create the request
-                
-                let uuidString = UUID().uuidString
-                
-                let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
-                
-                // Step 5: Register the request
-                center.add(request) { (error) in
-                    // Check the error parameter and handle any errors
-                }
+            let center = UNUserNotificationCenter.current()
+            let content = UNMutableNotificationContent()
+            content.title = "Come back!"
+            content.body = "If you don't come back the treasure will be lost!"
+            // Step 3: Create the notification trigger
+            let date = Date().addingTimeInterval(8)
+            let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+            // Step 4: Create the request
+            let uuidString = UUID().uuidString
+            let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
+            // Step 5: Register the request
+            center.add(request) { (error) in }
+                // Check the error parameter and handle any errors
          } else if breakPlaying {
             let center = UNUserNotificationCenter.current()
             let content = UNMutableNotificationContent()
             content.title = "Break Times Up!"
             content.body = "Lets get back to work!"
-            
             // Step 3: Create the notification trigger
             let date = Date().addingTimeInterval(Double(counter - 1))
             let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
             let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
-            
             // Step 4: Create the request
-            
             let uuidString = UUID().uuidString
-            
             let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
-            
             // Step 5: Register the request
-            center.add(request) { (error) in
-         }
+            center.add(request) { (error) in }
+        } else if (isPlaying && UIScreen.main.brightness == 0) {
+            let center = UNUserNotificationCenter.current()
+            let content = UNMutableNotificationContent()
+            content.title = "Focus Session Complete!"
+            content.body = "We found something you'll like!"
+            // Step 3: Create the notification trigger
+            let date = Date().addingTimeInterval(Double(counter - 1))
+            print("locked screen counter \(counter)")
+            let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+            // Step 4: Create the request
+            let uuidString = UUID().uuidString
+            let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
+            // Step 5: Register the request
+            center.add(request) { (error) in }
         }
-        // Called as the scene transitions from the foreground to the background.
-        // Use this method to save data, release shared resources, and store enough scene-specific state information
-        // to restore the scene back to its current state
-        
     }
     
 }
