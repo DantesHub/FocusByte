@@ -20,7 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let winScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: winScene)
-        let nc =  UINavigationController(rootViewController: StatisticsController() )
+        let nc =  UINavigationController(rootViewController: WelcomeViewController() )
         window?.rootViewController = nc
         window?.makeKeyAndVisible()
     }
@@ -72,7 +72,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             content.title = "Come back!"
             content.body = "If you don't come back the treasure will be lost!"
             // Step 3: Create the notification trigger
-            let date = Date().addingTimeInterval(8)
+            let date = Date().addingTimeInterval(7)
+            //add 5 seconds to this to notification observer, to kil chest
             let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
             let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
             // Step 4: Create the request
@@ -81,8 +82,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // Step 5: Register the request
             center.add(request) { (error) in }
                 // Check the error parameter and handle any errors
+            
          } else if breakPlaying {
             let center = UNUserNotificationCenter.current()
+        
+      
             let content = UNMutableNotificationContent()
             content.title = "Break Times Up!"
             content.body = "Lets get back to work!"
@@ -95,8 +99,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
             // Step 5: Register the request
             center.add(request) { (error) in }
-        } else if (isPlaying && UIScreen.main.brightness == 0) {
+        }
+        if (isPlaying) {
             let center = UNUserNotificationCenter.current()
+            center.removeAllDeliveredNotifications() // To remove all delivered notifications
+            center.removeAllPendingNotificationRequests()
             let content = UNMutableNotificationContent()
             content.title = "Focus Session Complete!"
             content.body = "We found something you'll like!"

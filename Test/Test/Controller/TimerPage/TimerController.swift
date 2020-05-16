@@ -72,14 +72,12 @@ class TimerController: UIViewController {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(pauseWhenBackground(noti:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground(noti:)), name: UIApplication.willEnterForegroundNotification, object: nil)
-        
-        
         configureUI()
         configureNavigationBar(color: backgroundColor, isTrans: true)
     }
+
     
-    
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         results = uiRealm.objects(User.self)
         for result  in results {
             if result.isLoggedIn == true {
@@ -89,6 +87,12 @@ class TimerController: UIViewController {
             }
         }
         coinsL.countFromZero(to: Float(coins), duration: .brisk)
+    }
+    
+    deinit {
+        self.timer.invalidate()
+        self.breakTimer.invalidate()
+        NotificationCenter.default.removeObserver(self)
     }
     
     //MARK: - helper functions
@@ -259,24 +263,7 @@ class TimerController: UIViewController {
             view.addSubview(timerButtonLbl)
             // create my track layer
             createShapeLayer()
-            let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")
-            basicAnimation.toValue = 1
-            basicAnimation.fillMode = CAMediaTimingFillMode.backwards
-            basicAnimation.isRemovedOnCompletion = false
-            
-            shapeLayer.add(basicAnimation, forKey: "basic")
-            let defaults = UserDefaults.standard
-            defaults.set("playing", forKey: "status")
-            
-            if let colon = self.timeL.text?.firstIndex(of: ":") {
-                durationString = String((self.timeL.text?[..<colon])!)
-            }
-//            counter = ((Int(durationString) ?? 10) * 60)
-            counter = 10
-            howMuchTime = ((Int(durationString) ?? 10) * 60)
-            print(counter)
-            basicAnimation.duration = CFTimeInterval(counter + (counter/4))
-            self.shapeLayer.add(basicAnimation, forKey: "basic")
+            createBasicAnimation()
             countDownTimer()
             breakTimer.invalidate()
             breakL.removeFromSuperview()
@@ -360,6 +347,39 @@ class TimerController: UIViewController {
             return
         }))
         self.present(alert, animated: true)
+    }
+    func createBasicAnimation() {
+        let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")
+        basicAnimation.toValue = 1
+        basicAnimation.fillMode = CAMediaTimingFillMode.backwards
+        basicAnimation.isRemovedOnCompletion = false
+        
+        shapeLayer.add(basicAnimation, forKey: "basic")
+        let defaults = UserDefaults.standard
+        defaults.set("playing", forKey: "status")
+        
+        if let colon = self.timeL.text?.firstIndex(of: ":") {
+            durationString = String((self.timeL.text?[..<colon])!)
+        }
+        counter = 10
+        howMuchTime = ((Int(durationString) ?? 10) * 60)
+        basicAnimation.duration = CFTimeInterval(counter + (counter/4))
+        self.shapeLayer.add(basicAnimation, forKey: "basic")
+    }
+    
+    func pauseLayer(layer: CALayer) {
+        let pausedTime: CFTimeInterval = layer.convertTime(CACurrentMediaTime(), from: nil)
+        layer.speed = 0.0
+        layer.timeOffset = pausedTime
+    }
+
+    func resumeLayer(layer: CALayer) {
+        let pausedTime: CFTimeInterval = layer.timeOffset
+        layer.speed = 1.0
+        layer.timeOffset = 0.0
+        layer.beginTime = 0.0
+        let timeSincePause: CFTimeInterval = layer.convertTime(CACurrentMediaTime(), from: nil) - pausedTime
+        layer.beginTime = timeSincePause
     }
     
     func twoButtonSetup() {
@@ -459,6 +479,7 @@ class TimerController: UIViewController {
         counter -= 1
         if counter == 0 {
             focusTimerComplete()
+            return
         }
         self.mins = counter/60
         self.secs = counter%60
@@ -476,6 +497,7 @@ class TimerController: UIViewController {
             self.timer.invalidate()
             let shared = UserDefaults.standard
             shared.set(Date(), forKey: "savedTime")
+            pauseLayer(layer: trackLayer)
         } else if breakPlaying {
             self.breakTimer.invalidate()
             let shared = UserDefaults.standard
@@ -485,9 +507,9 @@ class TimerController: UIViewController {
     }
     
     func focusTimerComplete() {
-    
         AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
         self.timer.invalidate()
+        print("entered foreground \(enteredForeground)")
         if enteredForeground {
             self.timeL.text = "You found..."
             self.timeL.font = UIFont(name: "Menlo-Bold", size: 20)
@@ -552,7 +574,7 @@ class TimerController: UIViewController {
                         }
                         self.timeL.removeFromSuperview()
                         self.twoButtonSetup()
-                        self.imageView?.image = #imageLiteral(resourceName: "openedChest")
+                        self.imageView?.image = #imageLiteral(resourceName: "chest-open")
                         self.timeL.text = "Great job! You found \(self.coinsReceived!) coins and gained \(self.expReceived!) exp"
                         self.timeL.font = UIFont(name: "Menlo-Bold", size: 20)
                         self.timeL.numberOfLines = 3
@@ -573,11 +595,13 @@ class TimerController: UIViewController {
             let center = UNUserNotificationCenter.current()
             center.removeAllDeliveredNotifications() // To remove all delivered notifications
             center.removeAllPendingNotificationRequests()
+         
             if let savedDate = UserDefaults.standard.object(forKey: "savedTime") as? Date{
                 (self.diffMins, self.diffSecs) = TimerController.getTimeDifference(startDate: savedDate)
                 print(" willenterforeground, Min: \(diffMins), Sec: \(diffSecs)")
                 self.refresh(mins: diffMins, secs: diffSecs)
             }
+            
         } else if breakPlaying {
             let center = UNUserNotificationCenter.current()
             center.removeAllDeliveredNotifications() // To remove all delivered notifications
@@ -650,7 +674,6 @@ class TimerController: UIViewController {
         let prevNumOfCoins = numCoins
         var numOfCoins = numCoins
         let prevExp = exp
-        print("numOFCoins before addition \(numOfCoins)")
         switch howMuchTime {
         case 599...1499:
             numOfCoins += 5

@@ -25,8 +25,11 @@ let lightPurple = hexStringToUIColor(hex: "#B99AFF")
 let superLightLavender = hexStringToUIColor(hex: "#E3DAFA")
 let darkRed = hexStringToUIColor(hex: "#811301")
 let darkPurple = hexStringToUIColor(hex:"#5E558A")
-
-struct K {
+let dayKey = "io.focusbyte.day"
+let weekKey = "io.focusbyte.week"
+let monthKey = "io.focusbyte.month"
+let yearKey = "io.focusbyte.year"
+ struct K {
     static let userPreferenes = "userPreferences"
     static let boxCell = "boxCell"
     
@@ -56,6 +59,7 @@ func hexStringToUIColor (hex:String) -> UIColor {
         alpha: CGFloat(1.0)
     )
 }
+
 
 
 

@@ -24,12 +24,14 @@
 		FE3249632469CA300090759B /* BoxCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE3249622469CA2F0090759B /* BoxCell.swift */; };
 		FE3249652469CC820090759B /* goldBox.gif in Resources */ = {isa = PBXBuildFile; fileRef = FE3249642469CC820090759B /* goldBox.gif */; };
 		FE3249672469CC9A0090759B /* commonBox.gif in Resources */ = {isa = PBXBuildFile; fileRef = FE3249662469CC9A0090759B /* commonBox.gif */; };
-		FE324971246CA0820090759B /* mapGif.gif in Resources */ = {isa = PBXBuildFile; fileRef = FE324970246CA0820090759B /* mapGif.gif */; };
 		FE324973246CA1380090759B /* swiftgif.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE324972246CA1380090759B /* swiftgif.swift */; };
 		FE324975246CB0220090759B /* InventoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE324974246CB0220090759B /* InventoryController.swift */; };
 		FE324977246DFB1C0090759B /* StatisticsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE324976246DFB1C0090759B /* StatisticsController.swift */; };
 		FE324979246E27DA0090759B /* DayAxisFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE324978246E27DA0090759B /* DayAxisFormatter.swift */; };
+		FE32497B246F106D0090759B /* MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE32497A246F106D0090759B /* MenuBar.swift */; };
 		FE5395C124311AD100DA83C1 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE5395C024311AD100DA83C1 /* Constants.swift */; };
+		FE577C90246F6A8E00042819 /* IntAxisFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE577C8F246F6A8E00042819 /* IntAxisFormatter.swift */; };
+		FE577C9224704D6800042819 /* mapGif.gif in Resources */ = {isa = PBXBuildFile; fileRef = FE577C9124704D6800042819 /* mapGif.gif */; };
 		FE6B03E0245F958200C48E27 /* LWAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE6B03DF245F958200C48E27 /* LWAlert.swift */; };
 		FEBC64142431183F00FB082A /* PressStart2P-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FEBC64132431183F00FB082A /* PressStart2P-Regular.ttf */; };
 		FEC28331244B86C200098413 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEC28330244B86C200098413 /* Extensions.swift */; };
@@ -105,12 +107,14 @@
 		FE3249622469CA2F0090759B /* BoxCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoxCell.swift; sourceTree = "<group>"; };
 		FE3249642469CC820090759B /* goldBox.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = goldBox.gif; sourceTree = "<group>"; };
 		FE3249662469CC9A0090759B /* commonBox.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = commonBox.gif; sourceTree = "<group>"; };
-		FE324970246CA0820090759B /* mapGif.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = mapGif.gif; sourceTree = "<group>"; };
 		FE324972246CA1380090759B /* swiftgif.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = swiftgif.swift; sourceTree = "<group>"; };
 		FE324974246CB0220090759B /* InventoryController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InventoryController.swift; sourceTree = "<group>"; };
 		FE324976246DFB1C0090759B /* StatisticsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsController.swift; sourceTree = "<group>"; };
 		FE324978246E27DA0090759B /* DayAxisFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayAxisFormatter.swift; sourceTree = "<group>"; };
+		FE32497A246F106D0090759B /* MenuBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBar.swift; sourceTree = "<group>"; };
 		FE5395C024311AD100DA83C1 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		FE577C8F246F6A8E00042819 /* IntAxisFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntAxisFormatter.swift; sourceTree = "<group>"; };
+		FE577C9124704D6800042819 /* mapGif.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = mapGif.gif; sourceTree = "<group>"; };
 		FE6B03DF245F958200C48E27 /* LWAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LWAlert.swift; sourceTree = "<group>"; };
 		FEBC64132431183F00FB082A /* PressStart2P-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PressStart2P-Regular.ttf"; sourceTree = "<group>"; };
 		FEC28330244B86C200098413 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -258,6 +262,7 @@
 				FE6B03DF245F958200C48E27 /* LWAlert.swift */,
 				FE324972246CA1380090759B /* swiftgif.swift */,
 				FE324978246E27DA0090759B /* DayAxisFormatter.swift */,
+				FE577C8F246F6A8E00042819 /* IntAxisFormatter.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -285,6 +290,7 @@
 			isa = PBXGroup;
 			children = (
 				FED0513624411F3700D7B1F0 /* CircularSlider.swift */,
+				FE32497A246F106D0090759B /* MenuBar.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -292,7 +298,7 @@
 		FED1FFE8244255730068FD5E /* TimerPage */ = {
 			isa = PBXGroup;
 			children = (
-				FE324970246CA0820090759B /* mapGif.gif */,
+				FE577C9124704D6800042819 /* mapGif.gif */,
 				E1593606242ACE6F0050E914 /* TimerController.swift */,
 			);
 			path = TimerPage;
@@ -479,10 +485,10 @@
 				FED6F63A243E866400553996 /* Main.storyboard in Resources */,
 				E159360C242ACE710050E914 /* Assets.xcassets in Resources */,
 				FE32495F2468F63C0090759B /* diamondBox.gif in Resources */,
-				FE324971246CA0820090759B /* mapGif.gif in Resources */,
 				FEF55DD224310F2800B4C0E1 /* PressStart2P.ttf in Resources */,
 				FE3249672469CC9A0090759B /* commonBox.gif in Resources */,
 				FE3249652469CC820090759B /* goldBox.gif in Resources */,
+				FE577C9224704D6800042819 /* mapGif.gif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -656,6 +662,7 @@
 				FE324975246CB0220090759B /* InventoryController.swift in Sources */,
 				FE3249632469CA300090759B /* BoxCell.swift in Sources */,
 				FEC28333244B87E100098413 /* MysteryViewController.swift in Sources */,
+				FE577C90246F6A8E00042819 /* IntAxisFormatter.swift in Sources */,
 				FED6F63E243EAC6100553996 /* MenuOptionCell.swift in Sources */,
 				FE6B03E0245F958200C48E27 /* LWAlert.swift in Sources */,
 				FECA7A8F2439136700763504 /* GenderViewController.swift in Sources */,
@@ -670,6 +677,7 @@
 				FED6F640243EB3A200553996 /* MenuOption.swift in Sources */,
 				FE5395C124311AD100DA83C1 /* Constants.swift in Sources */,
 				FED1FFEA244255900068FD5E /* StoreController.swift in Sources */,
+				FE32497B246F106D0090759B /* MenuBar.swift in Sources */,
 				FE3249612468F7BE0090759B /* NewitemViewController.swift in Sources */,
 				FEC28331244B86C200098413 /* Extensions.swift in Sources */,
 				FEF00175243FB635002D6C78 /* SettingsController.swift in Sources */,

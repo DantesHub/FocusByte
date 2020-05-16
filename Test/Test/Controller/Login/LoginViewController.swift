@@ -168,6 +168,7 @@ class LoginViewController: UIViewController {
             var gender = ""
             var coins = -1
             var name = ""
+            let timeD = List<String>()
             let docRef = db.collection(K.FStore.collectionName).document(email)
             docRef.getDocument { (snapshot, error) in
                 if let document = snapshot, document.exists {
@@ -182,10 +183,17 @@ class LoginViewController: UIViewController {
                     if let c = document["coins"] {
                         coins = c  as! Int
                     }
+                    if let timeData = document["TimeData"] {
+                        print(timeData)
+                        let entries = timeData as! [String]
+                        for entry in entries {
+                            timeD.append(entry)
+                        }
+                    }
                 } else {
                     print("Document does not exist")
                 }
-                
+                realmUser.timeArray = timeD 
                 realmUser.name = name
                 realmUser.email = Auth.auth().currentUser?.email
                 realmUser.isLoggedIn = true
