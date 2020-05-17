@@ -85,8 +85,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             
          } else if breakPlaying {
             let center = UNUserNotificationCenter.current()
-        
-      
             let content = UNMutableNotificationContent()
             content.title = "Break Times Up!"
             content.body = "Lets get back to work!"

@@ -522,6 +522,7 @@ class TimerController: UIViewController {
             if let _ = Auth.auth().currentUser?.email {
                 let email = Auth.auth().currentUser?.email
                 let docRef = self.db.collection(K.FStore.collectionName).document(email!)
+                //Read Data from firebase
                 docRef.getDocument { (snapshot, error) in
                     if let document = snapshot, document.exists {
                         if let c = document["coins"] {
