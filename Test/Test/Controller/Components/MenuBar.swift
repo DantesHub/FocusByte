@@ -1,4 +1,5 @@
 import UIKit
+var menuLabel = "Week"
 
 class MenuBar: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout{
    lazy var collectionView: UICollectionView = {
@@ -51,10 +52,13 @@ class MenuBar: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UIC
     func tappedLabel(categoryName: String) {
         switch categoryName {
         case "Week":
+            menuLabel = "Week"
             NotificationCenter.default.post(name: Notification.Name(rawValue: weekKey), object: nil)
         case "Month":
+            menuLabel = "Month"
             NotificationCenter.default.post(name: Notification.Name(rawValue: monthKey), object: nil)
         case "Year":
+            menuLabel = "Year"
             NotificationCenter.default.post(name: Notification.Name(rawValue: yearKey), object: nil)
         default:
             print("Default")

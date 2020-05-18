@@ -518,11 +518,12 @@ class TimerController: UIViewController {
         var lastDate = ""
         var totalTimeForDay = ""
         var fbDate = ""
+        var totalSessionsForDay = ""
         //read data from firebase
             if let _ = Auth.auth().currentUser?.email {
                 let email = Auth.auth().currentUser?.email
                 let docRef = self.db.collection(K.FStore.collectionName).document(email!)
-                //Read Data from firebase
+                //Read Data from firebase, for syncing
                 docRef.getDocument { (snapshot, error) in
                     if let document = snapshot, document.exists {
                         if let c = document["coins"] {
@@ -543,19 +544,24 @@ class TimerController: UIViewController {
                         let equalIndex = lastDate.firstIndex(of: "=")
                         let equalIndexOffset = lastDate.index(equalIndex!, offsetBy: 1)
                         
+                        let dashIndex = lastDate.firstIndex(of: "-")
+                        let dashIndexOffset = lastDate.index(dashIndex!, offsetBy: 1)
+                        
                         fbDate = String(lastDate[..<equalIndex!])
                         let dateFormatterGet = DateFormatter()
                         dateFormatterGet.dateFormat = "MMM d,yyyy E"
                         //date already exists
                         if dateFormatterGet.string(from: Date()) == fbDate {
-                            totalTimeForDay = String(lastDate[equalIndexOffset...])
+                            totalTimeForDay = String(lastDate[equalIndexOffset..<dashIndex!])
                             let totalTimeInt = Int(totalTimeForDay)! + (self.howMuchTime/60)
+                            totalSessionsForDay = String(Int(lastDate[dashIndexOffset...])! + 1)
                             totalTimeForDay = String(totalTimeInt)
-                            timeData[timeData.count - 1] = fbDate + "=" + totalTimeForDay
+                            timeData[timeData.count - 1] = fbDate + "=" + totalTimeForDay + "-" + totalSessionsForDay
                         } else {
+                            //first session
                             fbDate = dateFormatterGet.string(from: Date())
                             totalTimeForDay = String(self.howMuchTime/60)
-                            timeData.append(fbDate + "=" + totalTimeForDay)
+                            timeData.append(fbDate + "=" + totalTimeForDay + "-1")
                         }
                         //update data in firebase
                         if let _ = Auth.auth().currentUser?.email {

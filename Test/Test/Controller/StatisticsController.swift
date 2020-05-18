@@ -33,9 +33,18 @@ class StatisticsController: UIViewController, ChartViewDelegate{
     var results: Results<User>!
     var timeData = [String]()
     var dateLabel = UILabel()
+    var totalMinutesLabel = UILabel()
+    var totalMinutes = 0
+    var totalSessions = 0
+    var barMinNumLabel = UILabel()
+    var barMinDescLabel = UILabel()
+    var barSessNumLabel = UILabel()
+    var barSessDescLabel = UILabel()
+    var barPressedTitle = UILabel()
     lazy var nextButton: UIButton = {
        let button = UIButton()
-        let carrotGreat = UIImage(systemName: "greaterthan", withConfiguration: .none)
+        let largeConfiguration = UIImage.SymbolConfiguration(weight: .bold)
+        let carrotGreat = UIImage(systemName: "greaterthan", withConfiguration: largeConfiguration)
         let carrotGreat2 = carrotGreat?.resized(to: CGSize(width: 25, height: 25)).withTintColor(.white, renderingMode:.alwaysOriginal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(carrotGreat2, for: .normal)
@@ -69,33 +78,7 @@ class StatisticsController: UIViewController, ChartViewDelegate{
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMM"
-        todayMonth = formatter.string(from: Date())
-        formatter.dateFormat = "E"
-        todayDayOfWeek = formatter.string(from: Date())
-        formatter.dateFormat = "d"
-        todayNum = Int(formatter.string(from: Date()))!
-        formatter.dateFormat = "yyyy"
-        todayYear = formatter.string(from: Date())
-        switch todayDayOfWeek {
-        case "Sun":
-            begWeekNum = todayNum - 0
-        case "Mon":
-            begWeekNum = todayNum - 1
-        case "Tue":
-            begWeekNum = todayNum - 2
-        case "Wed":
-            begWeekNum = todayNum - 3
-        case "Thu":
-            begWeekNum = todayNum - 4
-        case "Fri":
-            begWeekNum = todayNum - 5
-        case "Sat":
-            begWeekNum = todayNum - 6
-        default:
-            print("rise")
-        }
+        setDateToToday()
         endWeekNum = begWeekNum + 6
           results = uiRealm.objects(User.self)
           for result  in results {
@@ -106,24 +89,24 @@ class StatisticsController: UIViewController, ChartViewDelegate{
         createWeekBarChart()
         barChartView.animate(xAxisDuration: 1.5, easingOption: .easeInOutBack)
         barChartView.animate(yAxisDuration: 1.5, easingOption: .easeInOutBack)
-        barChartView.dragEnabled = false
+        barChartView.isUserInteractionEnabled = true
+        barChartView.dragEnabled = true
         barChartView.pinchZoomEnabled = false
         barChartView.drawBarShadowEnabled = false
-        barChartView.isUserInteractionEnabled = false
-        
+        barChartView.doubleTapToZoomEnabled = false
         barChartView.getAxis(.right).enabled = false
+        barChartView.scaleXEnabled = false
+        barChartView.scaleYEnabled = false
+        barChartView.legend.enabled = false
 
       }
-    override func viewWillDisappear(_ animated: Bool) {
-        print("dissapeared")
-    }
+    
     
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
     
     //MARK: - Helper Functions
-    
     func configureUI() {
         self.navigationItem.title = "Statistics"
         setUpTabBar()
@@ -137,33 +120,105 @@ class StatisticsController: UIViewController, ChartViewDelegate{
         
         view.addSubview(backButton)
         backButton.topToBottom(of: menuBar, offset: 30)
-        backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50).isActive = true
+        backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25).isActive = true
         
         view.addSubview(nextButton)
         nextButton.topToBottom(of: menuBar, offset: 30)
-        nextButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50).isActive = true
+        nextButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25).isActive = true
         
         view.addSubview(barChartView)
-        barChartView.edgesToSuperview(excluding: .bottom, insets:  TinyEdgeInsets(top: 120, left: 25, bottom: 0, right: 25))
+        barChartView.edgesToSuperview(excluding: .bottom, insets:  TinyEdgeInsets(top: 140, left: 25, bottom: 0, right: 25))
         barChartView.height(300)
+        
+        totalMinutesLabel.text = "Total: \(totalMinutes) minutes"
+        totalMinutesLabel.textColor = .white
+        totalMinutesLabel.font = UIFont(name: "Menlo-Bold", size: 15)
+        view.addSubview(totalMinutesLabel)
+        totalMinutesLabel.topToBottom(of: dateLabel, offset: 20)
+        totalMinutesLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 45).isActive = true
         
         noDataLabel.text = "No Data For \nThis Page :("
         noDataLabel.numberOfLines = 2
         noDataLabel.textColor = .white
         noDataLabel.font = UIFont(name: "Menlo-Bold", size: 25)
         
-    }
+        barPressedTitle.text = "No Bar Selected"
+        barPressedTitle.textColor = .black
+        barPressedTitle.font = UIFont(name: "Menlo", size: 22)
+        view.addSubview(barPressedTitle)
+        barPressedTitle.centerXToSuperview()
+        barPressedTitle.topToBottom(of: barChartView, offset: 30)
+        
+        //vertical line
+        let path = UIBezierPath()
+        path.move(to: CGPoint(x: view.center.x, y: view.center.y + 100))
+        path.addLine(to: CGPoint(x: view.center.x, y: view.center.y + 200))
+        let shapeLayer = CAShapeLayer()
+        shapeLayer.path = path.cgPath
+        shapeLayer.strokeColor = UIColor.white.cgColor
+        shapeLayer.fillColor = UIColor.clear.cgColor
+        shapeLayer.lineWidth = 4
+        view.layer.addSublayer(shapeLayer)
+        
+        barMinNumLabel.text = "0"
+        barMinNumLabel.textColor = .white
+        barMinNumLabel.textAlignment = .center
+        barMinNumLabel.font = UIFont(name: "Menlo-Bold", size: 50)
+        barMinNumLabel.sizeToFit()
+        view.addSubview(barMinNumLabel)
+        barMinNumLabel.topToBottom(of: barPressedTitle, offset: 30)
+        barMinNumLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 90).isActive = true
+        
+        barMinDescLabel.text = "minutes"
+        barMinDescLabel.textColor = .white
+        barMinDescLabel.font = UIFont(name: "Menlo", size: 25)
+        view.addSubview(barMinDescLabel)
+        barMinDescLabel.topToBottom(of: barPressedTitle, offset: 85)
+        barMinDescLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 60).isActive = true
+        
+        barSessNumLabel.text = "0"
+        barSessNumLabel.textColor = .white
+        barSessNumLabel.font = UIFont(name: "Menlo-Bold", size: 50)
+        view.addSubview(barSessNumLabel)
+        barSessNumLabel.topToBottom(of: barPressedTitle, offset: 30)
+        barSessNumLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -90).isActive = true
+        
+        barSessDescLabel.text = "sessions"
+        barSessDescLabel.textColor = .white
+        barSessDescLabel.font = UIFont(name: "Menlo", size: 25)
+        view.addSubview(barSessDescLabel)
+        barSessDescLabel.topToBottom(of: barPressedTitle, offset: 85)
+        barSessDescLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40).isActive = true
+        
 
-    func createObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(StatisticsController.updateBarChartToWeek(notificaton:)), name: NSNotification.Name(rawValue: weekKey), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(StatisticsController.updateBarChartToMonth(notificaton:)), name: NSNotification.Name(rawValue: monthKey), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(StatisticsController.updateBarChartToYear(notificaton:)), name: NSNotification.Name(rawValue: yearKey), object: nil)
     }
-    @objc func updateBarChartToWeek(notificaton: NSNotification) {
-       createWeekBarChart()
-    }
+  
     @objc func backTapped() {
         noDataLabel.removeFromSuperview()
+        if menuLabel == "Week" {
+            backWeekTapped()
+        } else if menuLabel == "Month" {
+            backMonthTapped()
+        } else {
+            backYearTapped()
+        }
+    }
+    
+     func backYearTapped() {
+        noDataLabel.removeFromSuperview()
+        todayYear = String(Int(todayYear)! - 1)
+        createYearBarChart()
+     }
+    func backMonthTapped() {
+        let monthNum = dateHelper.getMonthNum(month: todayMonth)
+        if monthNum == 1 {
+            todayYear = String(Int(todayYear)! - 1)
+        }
+        todayMonth = dateHelper.intToMonth(num: monthNum - 1)
+        createMonthBarChart()
+    }
+    
+    func backWeekTapped() {
         begWeekNum -= 7
         endWeekNum = begWeekNum + 6
         if todayMonth == "Jan"  {
@@ -175,7 +230,7 @@ class StatisticsController: UIViewController, ChartViewDelegate{
             }
         }
         nextMonth = ""
-
+        
         if begWeekNum == -6 {
             let todayMonthInt = dateHelper.getMonthNum(month: todayMonth)
             todayMonth = dateHelper.intToMonth(num: todayMonthInt - 1)
@@ -184,7 +239,6 @@ class StatisticsController: UIViewController, ChartViewDelegate{
             createWeekBarChart()
             return
         }
-        
         if begWeekNum <= 0 {
             let todayMonthInt = dateHelper.getMonthNum(month: todayMonth)
             nextMonth = todayMonth
@@ -195,6 +249,28 @@ class StatisticsController: UIViewController, ChartViewDelegate{
     }
     @objc func nextTapped() {
         noDataLabel.removeFromSuperview()
+            if menuLabel == "Week" {
+                nextWeekTapped()
+            } else if menuLabel == "Month" {
+                nextMonthTapped()
+            } else {
+                nextYearTapped()
+            }
+    }
+    func nextMonthTapped() {
+        let monthNum = dateHelper.getMonthNum(month: todayMonth)
+        if monthNum == 12 {
+            todayYear = String(Int(todayYear)! + 1)
+        }
+        todayMonth = dateHelper.intToMonth(num: monthNum + 1)
+        createMonthBarChart()
+    }
+    func nextYearTapped() {
+        noDataLabel.removeFromSuperview()
+        todayYear = String(Int(todayYear)! + 1)
+        createYearBarChart()
+    }
+    func nextWeekTapped() {
         begWeekNum += 7
         endWeekNum = begWeekNum + 6
         if todayMonth == "Dec"  {
@@ -222,37 +298,62 @@ class StatisticsController: UIViewController, ChartViewDelegate{
             nextMonth = dateHelper.intToMonth(num: todayMonthInt + 1)
             endWeekNum -= numOfDays
         }
-     
+        
         createWeekBarChart()
     }
+    @objc func updateBarChartToWeek(notificaton: NSNotification) {
+        noDataLabel.removeFromSuperview()
+         setDateToToday()
+         createWeekBarChart()
+
+      }
+    
     @objc func updateBarChartToMonth(notificaton: NSNotification) {
-        dateLabel.text = todayMonth
+         noDataLabel.removeFromSuperview()
+         setDateToToday()
+         createMonthBarChart()
+         barChartView.animate(xAxisDuration: 1.5, easingOption: .easeOutExpo)
+         barChartView.animate(yAxisDuration: 1.5, easingOption: .easeOutExpo)
+    }
+    
+    @objc func updateBarChartToYear(notificaton: NSNotification) {
+        noDataLabel.removeFromSuperview()
+        setDateToToday()
+        createYearBarChart()
+        barChartView.animate(xAxisDuration: 1.5, easingOption: .easeOutExpo)
+        barChartView.animate(yAxisDuration: 1.5, easingOption: .easeOutExpo)
+    }
+    func createMonthBarChart() {
+        dateLabel.text = "\(todayMonth), \(todayYear)"
         let set = createMonthData()
         let yAxis = barChartView.leftAxis
         if set.entries == createEmptyMonthData() {
-            //             yAxis.valueFormatter = IndexAxisValueFormatter(values: ["", "50","100","150","200","250","300"])
-            set.drawValuesEnabled = true
             view.addSubview(noDataLabel)
             noDataLabel.center(in: barChartView)
         }
+        set.drawValuesEnabled = false
         set.colors = [brightPurple]
-        
         let data = BarChartData(dataSet: set)
-        barChartView.legend.enabled = false
         barChartView.data = data
+        barChartView.highlightValue(x: 1.0, dataSetIndex: 1, stackIndex: 1)
         
         let xAxis = barChartView.xAxis
         xAxis.labelPosition = .bottom
+        xAxis.labelFont = UIFont(name: "Menlo", size: 10)!
         let numDays = dateHelper.getNumberOfDays(month: todayMonth)
+        xAxis.labelCount = numDays
         var days = [String]()
         days.append("")
         let firstDay = "\(dateHelper.getMonthNum(month: todayMonth))/1"
         days.append(firstDay)
         for i in 2...numDays {
-            days.append(String(i))
+            if i % 8 == 0 || i == numDays{
+                days.append(String(i))
+            } else {
+                days.append("")
+            }
         }
-        xAxis.labelFont = UIFont(name: "Menlo", size: 10)!
-        xAxis.labelCount = 7
+        
         xAxis.valueFormatter = IndexAxisValueFormatter(values: days)
         barChartView.xAxis.granularity = 1
         xAxis.drawGridLinesEnabled = false
@@ -260,47 +361,24 @@ class StatisticsController: UIViewController, ChartViewDelegate{
         xAxis.axisLineColor = backgroundColor
         
         yAxis.axisLineColor = backgroundColor
-        yAxis.axisMinimum = 0.0
-    }
-    
-    @objc func updateBarChartToYear(notificaton: NSNotification) {
-          let set = BarChartDataSet(entries: [
-                     BarChartDataEntry(x: 2.0, y: 67.0),
-                     BarChartDataEntry(x: 1.0, y: 40.0),
-                     BarChartDataEntry(x: 3.0, y: 25.0),
-                     BarChartDataEntry(x: 4.0, y: 125.0),
-                     BarChartDataEntry(x: 6.0, y: 125.0),
-                     BarChartDataEntry(x: 7.0, y: 180.0),
-                     BarChartDataEntry(x: 11.0, y: 180.0),
-                 ], label: "Minutes")
-                 set.colors = [brightPurple]
-                 //        set.colors = ChartColorTemplates.
-                 let data = BarChartData(dataSet: set)
-                 barChartView.legend.enabled = false
-                 barChartView.data = data
-                 let xAxis = barChartView.xAxis
-                 xAxis.labelPosition = .bottom
-                 xAxis.labelFont = UIFont(name: "Menlo", size: 8)!
-                 xAxis.labelCount = 12
-                 let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul","Aug","Sep","Oct","Nov","Dec"]
-                 xAxis.valueFormatter = IndexAxisValueFormatter(values: months)
-        barChartView.animate(xAxisDuration: 1.5, easingOption: .easeInOutBack)
-               barChartView.animate(yAxisDuration: 1.5, easingOption: .easeInOutBack)
+        yAxis.axisMinimum = 0
+        
+      
+        totalMinutesLabel.text = "Total: \(totalMinutes) minutes"
     }
     
     func createWeekBarChart() {
+        dateLabel.text = "\(todayMonth) \(begWeekNum)  - \(nextMonth) \(endWeekNum), \(todayYear)"
         let set = createWeekData()
         let yAxis = barChartView.leftAxis
         if set.entries == createEmptyWeekData() {
-//             yAxis.valueFormatter = IndexAxisValueFormatter(values: ["", "50","100","150","200","250","300"])
-            set.drawValuesEnabled = true
             view.addSubview(noDataLabel)
             noDataLabel.center(in: barChartView)
         }
+        set.drawValuesEnabled = false
         set.colors = [brightPurple]
         
         let data = BarChartData(dataSet: set)
-        barChartView.legend.enabled = false
         barChartView.data = data
         
         let xAxis = barChartView.xAxis
@@ -313,30 +391,114 @@ class StatisticsController: UIViewController, ChartViewDelegate{
         xAxis.drawGridLinesEnabled = false
         xAxis.drawAxisLineEnabled = false
         xAxis.axisLineColor = backgroundColor
+
        
         yAxis.axisLineColor = backgroundColor
-        yAxis.axisMinimum = 0.0
-       
+        yAxis.axisMinimum = 0
+        barChartView.animate(xAxisDuration: 1.5, easingOption: .easeOutExpo)
+        barChartView.animate(yAxisDuration: 1.5, easingOption: .easeOutExpo)
+        totalMinutesLabel.text = "Total: \(totalMinutes) minutes"
+
     }
-    func createEmptyMonthData() -> [BarChartDataEntry] {
-        var entries = [BarChartDataEntry]()
-        let numOfDays = dateHelper.getMonthNum(month: todayMonth)
-        for i in 1...numOfDays {
-            entries.append(BarChartDataEntry(x: Double(i), y: 0.0))
+    
+    func createYearBarChart() {
+        dateLabel.text = todayYear
+        let set = createYearData()
+        set.colors = [brightPurple]
+        if set.entries == createEmptyYearData() {
+            view.addSubview(noDataLabel)
+            noDataLabel.center(in: barChartView)
         }
-        return entries
+        set.drawValuesEnabled = false
+        let data = BarChartData(dataSet: set)
+        barChartView.data = data
+        let xAxis = barChartView.xAxis
+        xAxis.labelPosition = .bottom
+        xAxis.labelFont = UIFont(name: "Menlo", size: 8)!
+        xAxis.labelCount = 12
+        let months = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul","Aug","Sep","Oct","Nov","Dec"]
+        xAxis.valueFormatter = IndexAxisValueFormatter(values: months)
+        
+       
+        totalMinutesLabel.text = "Total: \(totalMinutes) minutes"
     }
-    func createMonthData() -> BarChartDataSet {
-        var entries = createEmptyMonthData()
+    
+    func createYearData() -> BarChartDataSet {
+        var entries = createEmptyYearData()
+        var thisYearArray = [String]()
+        for day in timeData {
+            if day.contains(todayYear) {
+                thisYearArray.append(day)
+            }
+        }
+        totalMinutes = 0
+        for day in thisYearArray {
+            let equalIndex = day.firstIndex(of: "=")
+            let equalIndexOffset = day.index(equalIndex!, offsetBy: 1)
+            let totalTimeForDay = String(day[equalIndexOffset...])
+            totalMinutes += Int(totalTimeForDay)!
+            if day.contains("Jan") {
+                entries[0].y = entries[0].y + Double(Int(totalTimeForDay)!)
+            } else if day.contains("Feb") {
+                entries[1].y = entries[1].y + Double(Int(totalTimeForDay)!)
+            } else if day.contains("Mar") {
+                entries[2].y = entries[2].y + Double(Int(totalTimeForDay)!)
+            } else if day.contains("Apr") {
+                entries[3].y = entries[3].y + Double(Int(totalTimeForDay)!)
+            } else if day.contains("May") {
+                entries[4].y = entries[4].y + Double(Int(totalTimeForDay)!)
+            } else if day.contains("Jun") {
+                entries[5].y = entries[5].y + Double(Int(totalTimeForDay)!)
+            } else if day.contains("Jul") {
+                entries[6].y = entries[6].y + Double(Int(totalTimeForDay)!)
+            } else if day.contains("Aug") {
+                entries[7].y = entries[7].y + Double(Int(totalTimeForDay)!)
+            } else if day.contains("Sep") {
+                entries[8].y = entries[8].y + Double(Int(totalTimeForDay)!)
+            } else if day.contains("Oct") {
+                entries[9].y = entries[9].y + Double(Int(totalTimeForDay)!)
+            } else if day.contains("Nov") {
+                entries[10].y = entries[10].y + Double(Int(totalTimeForDay)!)
+            } else if day.contains("Dec") {
+                entries[11].y = entries[11].y + Double(Int(totalTimeForDay)!)
+            }
+        }
+        entries.sort(by: { $0.x < $1.x })
         let set = BarChartDataSet(entries: entries, label: "Minutes")
         return set
     }
+  
+    
+    func createMonthData() -> BarChartDataSet {
+        var entries = createEmptyMonthData()
+        var thisMonthArray = [String]()
+        
+        for day in timeData {
+            if day.contains(todayMonth) {
+                if day.contains(todayYear) {
+                    thisMonthArray.append(day)
+                }
+            }
+        }
+        totalMinutes = 0
+        for day in thisMonthArray {
+            let equalIndex = day.firstIndex(of: "=")
+            let commaIndex = day.firstIndex(of: ",")
+            let startIndexBef = day.firstIndex(of: " ")
+            let startIndex = day.index(startIndexBef!, offsetBy: 1)
+            let dayNum = Int(day[startIndex..<commaIndex!])!
+            let equalIndexOffset = day.index(equalIndex!, offsetBy: 1)
+            let totalTimeForDay = String(day[equalIndexOffset...])
+            entries[dayNum - 1] = BarChartDataEntry(x: Double(dayNum), y: Double(Int(totalTimeForDay)!))
+            totalMinutes += Int(totalTimeForDay)!
+        }
+        let set = BarChartDataSet(entries: entries, label: "Minutes")
+        return set
+    }
+    
     func createWeekData() -> BarChartDataSet {
         var thisWeekArray = [String]()
         var thisMonthArray = [String]()
-        
-        dateLabel.text = "\(todayMonth) \(begWeekNum)  - \(nextMonth) \(endWeekNum), \(todayYear)"
-        
 
         for day in timeData {
             if day.contains(todayMonth) {
@@ -369,12 +531,13 @@ class StatisticsController: UIViewController, ChartViewDelegate{
             }
         }
         
+        totalMinutes = 0
         var entries = createEmptyWeekData()
         for day in thisWeekArray {
             let equalIndex = day.firstIndex(of: "=")
             let equalIndexOffset = day.index(equalIndex!, offsetBy: 1)
             let totalTimeForDay = String(day[equalIndexOffset...])
-            
+            totalMinutes += Int(totalTimeForDay)!
             if day.contains("Sun") {
                 entries[0] = (BarChartDataEntry(x: 1.0, y: Double(Int(totalTimeForDay)!)))
             } else if day.contains("Mon") {
@@ -395,19 +558,6 @@ class StatisticsController: UIViewController, ChartViewDelegate{
         return set
     }
     
-    
-    func createEmptyWeekData() -> [BarChartDataEntry] {
-         return     [
-                   BarChartDataEntry(x: 1.0, y: 0.0),
-                   BarChartDataEntry(x: 2.0, y: 0.0),
-                   BarChartDataEntry(x: 3.0, y: 0.0),
-                   BarChartDataEntry(x: 4.0, y: 0.0),
-                   BarChartDataEntry(x: 5.0, y: 0.0),
-                   BarChartDataEntry(x: 6.0, y: 0.0),
-                   BarChartDataEntry(x: 7.0, y: 0.0)
-               ]
-    }
-    
  
     private func setUpTabBar() {
         view.addSubview(menuBar)
@@ -424,6 +574,26 @@ class StatisticsController: UIViewController, ChartViewDelegate{
       }
     
     func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
-        print(entry)
-    }
+        if menuLabel == "Week" {
+            barPressedTitle.text = "\(todayMonth) \(begWeekNum + Int(entry.x) - 1), \(todayYear)"
+        } else if menuLabel == "Month" {
+            barPressedTitle.text = "\(todayMonth) \(Int(entry.x)), \(todayYear)"
+        } else if menuLabel == "Year" {
+            barPressedTitle.text = dateHelper.intToMonth(num: Int(entry.x))
+        }
+        
+            barMinNumLabel.removeFromSuperview()
+            barMinNumLabel.text = String(Int(entry.y))
+            barMinNumLabel.sizeToFit()
+            view.addSubview(barMinNumLabel)
+            barMinNumLabel.topToBottom(of: barPressedTitle, offset: 30)
+            if String(Int(entry.y)).count == 2 {
+                barMinNumLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 80).isActive = true
+            } else if String(Int(entry.y)).count == 3 {
+                barMinNumLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 65).isActive = true
+            } else {
+                barMinNumLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 90).isActive = true
+            }
+                
+        }
 }

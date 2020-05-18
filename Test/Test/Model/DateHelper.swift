@@ -43,6 +43,7 @@ struct DateHelper {
             return -1
         }
     }
+
      func getMonthNum(month: String) -> Int {
           switch month {
               case "Jan":
