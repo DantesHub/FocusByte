@@ -11,7 +11,7 @@ var isActive = false
 var dateResignActive : Date?
 var dateAppDidBack : Date?
 var sceneTimer = Timer()
-
+var killDate = Date()
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -27,18 +27,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func sceneDidDisconnect(_ scene: UIScene) {
         print("scene did disconnect")
-        // Called as the scene is being released by the system.
-        // This occurs shortly after the scene enters the background, or when its session is discarded.
-        // Release any resources associated with this scene that can be re-created the next time the scene connects.
-        // The scene may re-connect later, as its session was not neccessarily discarded (see `application:didDiscardSceneSessions` instead).
     }
     
     func sceneDidBecomeActive(_ scene: UIScene) {
-        // Called when the scene has moved from an inactive state to an active state.
-        // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
-        let defaults = UserDefaults.standard
-        let status = defaults.string(forKey: "status")
-    
+//        let defaults = UserDefaults.standard
+//        let status = defaults.string(forKey: "status")
         isActive = true
         
     }
@@ -48,32 +41,31 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
     }
     
-    
-
-    
     func sceneWillEnterForeground(_ scene: UIScene) {
-        // Called as the scene transitions from the background to the foreground.
-        // Use this method to undo the changes made on entering the background.
         sceneTimer.invalidate()
     }
     @objc func decrementCounter() {
         print("counter")
     }
+    @objc func killChest() {
+      
+    }
     
     func sceneDidEnterBackground(_ scene: UIScene) {
         print("entered backgroundd")
+        //allow brightnesss of screen to equal 0 if phone locks
         do {
             sleep(1)
         }
-        print("Jump up and down \(UIScreen.main.brightness)")
-         if isPlaying && UIScreen.main.brightness != 0 {
+        killDate = Date().addingTimeInterval(10000000)
+         if isPlaying && UIScreen.main.brightness != 0 && counter > 6 {
             let center = UNUserNotificationCenter.current()
             let content = UNMutableNotificationContent()
             content.title = "Come back!"
             content.body = "If you don't come back the treasure will be lost!"
             // Step 3: Create the notification trigger
-            let date = Date().addingTimeInterval(7)
-            //add 5 seconds to this to notification observer, to kil chest
+            killDate = Date().addingTimeInterval(9)
+            let date = Date().addingTimeInterval(6)
             let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
             let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
             // Step 4: Create the request
@@ -81,8 +73,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
             // Step 5: Register the request
             center.add(request) { (error) in }
-                // Check the error parameter and handle any errors
-            
+
          } else if breakPlaying {
             let center = UNUserNotificationCenter.current()
             let content = UNMutableNotificationContent()
@@ -98,16 +89,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // Step 5: Register the request
             center.add(request) { (error) in }
         }
-        if (isPlaying) {
+        //if screen == 0, should always display
+        if (isPlaying) && (UIScreen.main.brightness == 0){
             let center = UNUserNotificationCenter.current()
-            center.removeAllDeliveredNotifications() // To remove all delivered notifications
-            center.removeAllPendingNotificationRequests()
             let content = UNMutableNotificationContent()
             content.title = "Focus Session Complete!"
             content.body = "We found something you'll like!"
             // Step 3: Create the notification trigger
             let date = Date().addingTimeInterval(Double(counter - 1))
-            print("locked screen counter \(counter)")
             let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
             let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
             // Step 4: Create the request
@@ -115,6 +104,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
             // Step 5: Register the request
             center.add(request) { (error) in }
+            
         }
     }
     

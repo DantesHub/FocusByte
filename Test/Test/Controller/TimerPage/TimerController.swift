@@ -70,8 +70,7 @@ class TimerController: UIViewController {
     //MARK: -Init
     override func viewDidLoad() {
         super.viewDidLoad()
-        NotificationCenter.default.addObserver(self, selector: #selector(pauseWhenBackground(noti:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground(noti:)), name: UIApplication.willEnterForegroundNotification, object: nil)
+        createObservers()
         configureUI()
         configureNavigationBar(color: backgroundColor, isTrans: true)
     }
@@ -361,7 +360,7 @@ class TimerController: UIViewController {
         if let colon = self.timeL.text?.firstIndex(of: ":") {
             durationString = String((self.timeL.text?[..<colon])!)
         }
-        counter = 10
+        counter = 15
         howMuchTime = ((Int(durationString) ?? 10) * 60)
         basicAnimation.duration = CFTimeInterval(counter + (counter/4))
         self.shapeLayer.add(basicAnimation, forKey: "basic")
@@ -506,7 +505,7 @@ class TimerController: UIViewController {
         
     }
     
-    func focusTimerComplete() {
+   func focusTimerComplete() {
         AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
         self.timer.invalidate()
         print("entered foreground \(enteredForeground)")
@@ -541,24 +540,33 @@ class TimerController: UIViewController {
                         //Check if last entry is equal to today
                         //if last entry is, then we just need to add time to it
                         //if not we have to create a new date
-                        let equalIndex = lastDate.firstIndex(of: "=")
-                        let equalIndexOffset = lastDate.index(equalIndex!, offsetBy: 1)
-                        
-                        let dashIndex = lastDate.firstIndex(of: "-")
-                        let dashIndexOffset = lastDate.index(dashIndex!, offsetBy: 1)
-                        
-                        fbDate = String(lastDate[..<equalIndex!])
                         let dateFormatterGet = DateFormatter()
                         dateFormatterGet.dateFormat = "MMM d,yyyy E"
-                        //date already exists
-                        if dateFormatterGet.string(from: Date()) == fbDate {
-                            totalTimeForDay = String(lastDate[equalIndexOffset..<dashIndex!])
-                            let totalTimeInt = Int(totalTimeForDay)! + (self.howMuchTime/60)
-                            totalSessionsForDay = String(Int(lastDate[dashIndexOffset...])! + 1)
-                            totalTimeForDay = String(totalTimeInt)
-                            timeData[timeData.count - 1] = fbDate + "=" + totalTimeForDay + "-" + totalSessionsForDay
+                        if lastDate != "" {
+                            let equalIndex = lastDate.firstIndex(of: "=")
+                            let equalIndexOffset = lastDate.index(equalIndex!, offsetBy: 1)
+                            
+                            let dashIndex = lastDate.firstIndex(of: "-")
+                            let dashIndexOffset = lastDate.index(dashIndex!, offsetBy: 1)
+                            
+                            fbDate = String(lastDate[..<equalIndex!])
+                           
+                            //date already exists
+                            if dateFormatterGet.string(from: Date()) == fbDate {
+                                totalTimeForDay = String(lastDate[equalIndexOffset..<dashIndex!])
+                                let totalTimeInt = Int(totalTimeForDay)! + (self.howMuchTime/60)
+                                totalSessionsForDay = String(Int(lastDate[dashIndexOffset...])! + 1)
+                                totalTimeForDay = String(totalTimeInt)
+                                timeData[timeData.count - 1] = fbDate + "=" + totalTimeForDay + "-" + totalSessionsForDay
+                            } else {
+                                //first session for that day
+                                fbDate = dateFormatterGet.string(from: Date())
+                                totalTimeForDay = String(self.howMuchTime/60)
+                                timeData.append(fbDate + "=" + totalTimeForDay + "-1")
+                            }
+                          
                         } else {
-                            //first session
+                            //very first session of account
                             fbDate = dateFormatterGet.string(from: Date())
                             totalTimeForDay = String(self.howMuchTime/60)
                             timeData.append(fbDate + "=" + totalTimeForDay + "-1")
@@ -595,14 +603,30 @@ class TimerController: UIViewController {
             }
         return
     }
+    @objc func killChest() {
+                isPlaying = false
+                self.timer.invalidate()
+                self.twoButtonSetup()
+                self.imageView?.image = #imageLiteral(resourceName: "boyToddler")
+                self.timeL.text = "We Lost The Chest :("
+                timer.invalidate()
+                return
+            }
+   
+        
+
     
     @objc func willEnterForeground(noti: Notification) {
         enteredForeground = true
+        let center = UNUserNotificationCenter.current()
+        center.removeAllDeliveredNotifications()
+        center.removeAllPendingNotificationRequests()
         if isPlaying {
-            let center = UNUserNotificationCenter.current()
-            center.removeAllDeliveredNotifications() // To remove all delivered notifications
-            center.removeAllPendingNotificationRequests()
-         
+            if Date() >= killDate {
+                killChest()
+                return
+            }
+      
             if let savedDate = UserDefaults.standard.object(forKey: "savedTime") as? Date{
                 (self.diffMins, self.diffSecs) = TimerController.getTimeDifference(startDate: savedDate)
                 print(" willenterforeground, Min: \(diffMins), Sec: \(diffSecs)")
@@ -712,7 +736,4 @@ class TimerController: UIViewController {
     }
     
 }
-
-
-
 

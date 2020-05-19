@@ -24,84 +24,28 @@ extension Results {
         return array
     }
 }
-
-extension StatisticsController {
+extension TimerController {
     func createObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(StatisticsController.updateBarChartToWeek(notificaton:)), name: NSNotification.Name(rawValue: weekKey), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(StatisticsController.updateBarChartToMonth(notificaton:)), name: NSNotification.Name(rawValue: monthKey), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(StatisticsController.updateBarChartToYear(notificaton:)), name: NSNotification.Name(rawValue: yearKey), object: nil)
-    }
-    
-    func setDateToToday() {
-        let formatter = DateFormatter()
-          formatter.dateFormat = "MMM"
-          todayMonth = formatter.string(from: Date())
-          formatter.dateFormat = "E"
-          todayDayOfWeek = formatter.string(from: Date())
-          formatter.dateFormat = "d"
-          todayNum = Int(formatter.string(from: Date()))!
-          formatter.dateFormat = "yyyy"
-          todayYear = formatter.string(from: Date())
-          switch todayDayOfWeek {
-          case "Sun":
-              begWeekNum = todayNum - 0
-          case "Mon":
-              begWeekNum = todayNum - 1
-          case "Tue":
-              begWeekNum = todayNum - 2
-          case "Wed":
-              begWeekNum = todayNum - 3
-          case "Thu":
-              begWeekNum = todayNum - 4
-          case "Fri":
-              begWeekNum = todayNum - 5
-          case "Sat":
-              begWeekNum = todayNum - 6
-          default:
-              print("rise")
-          }
-        endWeekNum = begWeekNum + 6
-    }
-    
-    func createEmptyMonthData() -> [BarChartDataEntry] {
-          var entries = [BarChartDataEntry]()
-          let numOfDays = dateHelper.getNumberOfDays(month: todayMonth)
-          for i in 1...numOfDays {
-              entries.append(BarChartDataEntry(x: Double(i), y: 0))
-          }
-          return entries
-      }
-    
-    func createEmptyWeekData() -> [BarChartDataEntry] {
-         return     [
-                   BarChartDataEntry(x: 1.0, y: 0.0),
-                   BarChartDataEntry(x: 2.0, y: 0.0),
-                   BarChartDataEntry(x: 3.0, y: 0.0),
-                   BarChartDataEntry(x: 4.0, y: 0.0),
-                   BarChartDataEntry(x: 5.0, y: 0.0),
-                   BarChartDataEntry(x: 6.0, y: 0.0),
-                   BarChartDataEntry(x: 7.0, y: 0.0)
-               ]
-    }
-    
-    func createEmptyYearData() -> [BarChartDataEntry] {
-        return [
-            BarChartDataEntry(x: 1.0, y: 0.0),
-            BarChartDataEntry(x: 2.0, y: 0.0),
-            BarChartDataEntry(x: 3.0, y: 0.0),
-            BarChartDataEntry(x: 4.0, y: 0.0),
-            BarChartDataEntry(x: 5.0, y: 0.0),
-            BarChartDataEntry(x: 6.0, y: 0.0),
-            BarChartDataEntry(x: 7.0, y: 0.0),
-            BarChartDataEntry(x: 8.0, y: 0.0),
-            BarChartDataEntry(x: 9.0, y: 0.0),
-            BarChartDataEntry(x: 10.0, y: 0.0),
-            BarChartDataEntry(x: 11.0, y: 0.0),
-            BarChartDataEntry(x: 12.0, y: 0.0)
-        ]
+        NotificationCenter.default.addObserver(self, selector: #selector(pauseWhenBackground(noti:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
+         NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground(noti:)), name: UIApplication.willEnterForegroundNotification, object: nil)
     }
 }
 
+extension Collection where Element: Equatable {
+    func secondIndex(of element: Element) -> Index? {
+        guard let index = firstIndex(of: element) else { return nil }
+        return self[self.index(after: index)...].firstIndex(of: element)
+    }
+    func indexes(of element: Element) -> [Index] {
+        var indexes: [Index] = []
+        var startIndex = self.startIndex
+        while let index = self[startIndex...].firstIndex(of: element) {
+            indexes.append(index)
+            startIndex = self.index(after: index)
+        }
+        return indexes
+    }
+}
 
 extension UIView {
     func asImage(viewLayer: CALayer, viewBounds: CGRect) -> UIImage {
@@ -291,3 +235,5 @@ extension UITextField {
       }
     
 }
+
+

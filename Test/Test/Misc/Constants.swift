@@ -27,6 +27,7 @@ let darkRed = hexStringToUIColor(hex: "#811301")
 let darkPurple = hexStringToUIColor(hex:"#5E558A")
 let dayKey = "io.focusbyte.day"
 let weekKey = "io.focusbyte.week"
+let killKey = "io.focusbyte.kill"
 let monthKey = "io.focusbyte.month"
 let yearKey = "io.focusbyte.year"
  struct K {

@@ -26,13 +26,13 @@
 		FE3249672469CC9A0090759B /* commonBox.gif in Resources */ = {isa = PBXBuildFile; fileRef = FE3249662469CC9A0090759B /* commonBox.gif */; };
 		FE324973246CA1380090759B /* swiftgif.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE324972246CA1380090759B /* swiftgif.swift */; };
 		FE324975246CB0220090759B /* InventoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE324974246CB0220090759B /* InventoryController.swift */; };
-		FE324977246DFB1C0090759B /* StatisticsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE324976246DFB1C0090759B /* StatisticsController.swift */; };
-		FE324979246E27DA0090759B /* DayAxisFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE324978246E27DA0090759B /* DayAxisFormatter.swift */; };
+		FE324977246DFB1C0090759B /* StatisticsControllerUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE324976246DFB1C0090759B /* StatisticsControllerUI.swift */; };
 		FE32497B246F106D0090759B /* MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE32497A246F106D0090759B /* MenuBar.swift */; };
 		FE5395C124311AD100DA83C1 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE5395C024311AD100DA83C1 /* Constants.swift */; };
-		FE577C90246F6A8E00042819 /* IntAxisFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE577C8F246F6A8E00042819 /* IntAxisFormatter.swift */; };
 		FE577C9224704D6800042819 /* mapGif.gif in Resources */ = {isa = PBXBuildFile; fileRef = FE577C9124704D6800042819 /* mapGif.gif */; };
 		FE577C942470CD1200042819 /* DateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE577C932470CD1200042819 /* DateHelper.swift */; };
+		FE577C9D24748D4200042819 /* StatisticsBarChartLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE577C9C24748D4200042819 /* StatisticsBarChartLogic.swift */; };
+		FE577C9F247491B900042819 /* BarChartDataUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE577C9E247491B900042819 /* BarChartDataUtil.swift */; };
 		FE6B03E0245F958200C48E27 /* LWAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE6B03DF245F958200C48E27 /* LWAlert.swift */; };
 		FEBC64142431183F00FB082A /* PressStart2P-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FEBC64132431183F00FB082A /* PressStart2P-Regular.ttf */; };
 		FEC28331244B86C200098413 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEC28330244B86C200098413 /* Extensions.swift */; };
@@ -110,13 +110,13 @@
 		FE3249662469CC9A0090759B /* commonBox.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = commonBox.gif; sourceTree = "<group>"; };
 		FE324972246CA1380090759B /* swiftgif.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = swiftgif.swift; sourceTree = "<group>"; };
 		FE324974246CB0220090759B /* InventoryController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InventoryController.swift; sourceTree = "<group>"; };
-		FE324976246DFB1C0090759B /* StatisticsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsController.swift; sourceTree = "<group>"; };
-		FE324978246E27DA0090759B /* DayAxisFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayAxisFormatter.swift; sourceTree = "<group>"; };
+		FE324976246DFB1C0090759B /* StatisticsControllerUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsControllerUI.swift; sourceTree = "<group>"; };
 		FE32497A246F106D0090759B /* MenuBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBar.swift; sourceTree = "<group>"; };
 		FE5395C024311AD100DA83C1 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		FE577C8F246F6A8E00042819 /* IntAxisFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntAxisFormatter.swift; sourceTree = "<group>"; };
 		FE577C9124704D6800042819 /* mapGif.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = mapGif.gif; sourceTree = "<group>"; };
 		FE577C932470CD1200042819 /* DateHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateHelper.swift; sourceTree = "<group>"; };
+		FE577C9C24748D4200042819 /* StatisticsBarChartLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsBarChartLogic.swift; sourceTree = "<group>"; };
+		FE577C9E247491B900042819 /* BarChartDataUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartDataUtil.swift; sourceTree = "<group>"; };
 		FE6B03DF245F958200C48E27 /* LWAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LWAlert.swift; sourceTree = "<group>"; };
 		FEBC64132431183F00FB082A /* PressStart2P-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PressStart2P-Regular.ttf"; sourceTree = "<group>"; };
 		FEC28330244B86C200098413 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -253,6 +253,15 @@
 			path = TestUITests;
 			sourceTree = "<group>";
 		};
+		FE577C9B24748CFE00042819 /* Statistics */ = {
+			isa = PBXGroup;
+			children = (
+				FE324976246DFB1C0090759B /* StatisticsControllerUI.swift */,
+				FE577C9C24748D4200042819 /* StatisticsBarChartLogic.swift */,
+			);
+			path = Statistics;
+			sourceTree = "<group>";
+		};
 		FECA7A7B243909C200763504 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -263,9 +272,8 @@
 				FEC28336244BA17A00098413 /* MysteryBox.swift */,
 				FE6B03DF245F958200C48E27 /* LWAlert.swift */,
 				FE324972246CA1380090759B /* swiftgif.swift */,
-				FE324978246E27DA0090759B /* DayAxisFormatter.swift */,
-				FE577C8F246F6A8E00042819 /* IntAxisFormatter.swift */,
 				FE577C932470CD1200042819 /* DateHelper.swift */,
+				FE577C9E247491B900042819 /* BarChartDataUtil.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -345,7 +353,7 @@
 				FED6F635243E69C400553996 /* MenuController.swift */,
 				FED1FFEE24453EC80068FD5E /* ContainerController.swift */,
 				FE324974246CB0220090759B /* InventoryController.swift */,
-				FE324976246DFB1C0090759B /* StatisticsController.swift */,
+				FE577C9B24748CFE00042819 /* Statistics */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -657,22 +665,21 @@
 				FECA7A8524390E0000763504 /* RegisterViewController.swift in Sources */,
 				FEF55DCF2430346D00B4C0E1 /* LoginViewController.swift in Sources */,
 				E1593607242ACE6F0050E914 /* TimerController.swift in Sources */,
-				FE324977246DFB1C0090759B /* StatisticsController.swift in Sources */,
+				FE324977246DFB1C0090759B /* StatisticsControllerUI.swift in Sources */,
 				FED05132243FD25600D7B1F0 /* RealmObjects.swift in Sources */,
 				E1D2BF94242B9CCB004AC477 /* animatedLabel.swift in Sources */,
 				FE577C942470CD1200042819 /* DateHelper.swift in Sources */,
 				E1593603242ACE6F0050E914 /* AppDelegate.swift in Sources */,
 				FEC28337244BA17A00098413 /* MysteryBox.swift in Sources */,
+				FE577C9D24748D4200042819 /* StatisticsBarChartLogic.swift in Sources */,
 				FE324975246CB0220090759B /* InventoryController.swift in Sources */,
 				FE3249632469CA300090759B /* BoxCell.swift in Sources */,
 				FEC28333244B87E100098413 /* MysteryViewController.swift in Sources */,
-				FE577C90246F6A8E00042819 /* IntAxisFormatter.swift in Sources */,
 				FED6F63E243EAC6100553996 /* MenuOptionCell.swift in Sources */,
 				FE6B03E0245F958200C48E27 /* LWAlert.swift in Sources */,
 				FECA7A8F2439136700763504 /* GenderViewController.swift in Sources */,
 				FED1FFEF24453EC80068FD5E /* ContainerController.swift in Sources */,
 				FE324973246CA1380090759B /* swiftgif.swift in Sources */,
-				FE324979246E27DA0090759B /* DayAxisFormatter.swift in Sources */,
 				FED0513724411F3700D7B1F0 /* CircularSlider.swift in Sources */,
 				FEF55DCC2430275E00B4C0E1 /* WelcomeViewController.swift in Sources */,
 				FE32495B24689A670090759B /* GifController.swift in Sources */,
@@ -688,6 +695,7 @@
 				FEC28339244CFCAB00098413 /* AvatarController.swift in Sources */,
 				FECA7A7D243909CF00763504 /* ValidationError.swift in Sources */,
 				FECA7A8D2439135300763504 /* NameViewController.swift in Sources */,
+				FE577C9F247491B900042819 /* BarChartDataUtil.swift in Sources */,
 				FED6F63C243EA82700553996 /* Protocols.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

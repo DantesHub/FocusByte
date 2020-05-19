@@ -9,7 +9,6 @@
 import UIKit
 
 class BoxCell: UICollectionViewCell {
-    
     //MARK: - properties
     var data: MysteryBox? {
         didSet {
