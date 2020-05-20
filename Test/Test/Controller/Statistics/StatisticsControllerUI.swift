@@ -15,12 +15,34 @@ import RealmSwift
 var todayYear = ""
 var todayMonth = ""
 class StatisticsController: UIViewController, ChartViewDelegate{
-    //MARK: - Properties
+    //MARK: - Properties and Views
+    lazy var contentViewSize = CGSize(width: self.view.frame.width, height: self.view.frame.height + 400)
     var delegate: ContainerControllerDelegate!
     lazy var barChartView: BarChartView = {
         let barView = BarChartView()
         barView.backgroundColor = backgroundColor
         return barView
+    }()
+    
+    lazy var pieChartView: PieChartView = {
+        let pieView = PieChartView()
+        pieView.backgroundColor = darkPurple
+        return pieView
+    }()
+    lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView(frame: .zero)
+        scrollView.backgroundColor = backgroundColor
+        scrollView.frame = view.bounds
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.autoresizingMask = .flexibleHeight
+        scrollView.contentSize = contentViewSize
+        return scrollView
+    }()
+    lazy var containerView: UIView = {
+        let view = UIView()
+        view.frame.size = contentViewSize
+        return view
     }()
     let menuBar: MenuBar = {
            let mb = MenuBar()
@@ -97,8 +119,10 @@ class StatisticsController: UIViewController, ChartViewDelegate{
         barChartView.scaleXEnabled = false
         barChartView.scaleYEnabled = false
         barChartView.legend.enabled = false
-
-      }
+        
+        createWeekPieChart()
+        pieChartView.animate(xAxisDuration: 1.5, easingOption: .easeInOutBack)
+        pieChartView.animate(yAxisDuration: 1.5, easingOption: .easeInOutBack)      }
     
     
     deinit {
@@ -111,30 +135,32 @@ class StatisticsController: UIViewController, ChartViewDelegate{
         setUpTabBar()
         configureNavigationBar(color: backgroundColor, isTrans: false)
          navigationItem.leftBarButtonItem =  UIBarButtonItem(image: resizedMenuImage?.withTintColor(.white), style: .plain, target: self, action: #selector(handleMenuToggle))
+        view.addSubview(scrollView)
+        scrollView.addSubview(containerView)
         view.backgroundColor = backgroundColor
         dateLabel.font = UIFont(name: "Menlo", size: 20)
-        view.addSubview(dateLabel)
+        containerView.addSubview(dateLabel)
         dateLabel.topToBottom(of: menuBar, offset: 30)
         dateLabel.centerX(to: view)
         
-        view.addSubview(backButton)
+        containerView.addSubview(backButton)
         backButton.topToBottom(of: menuBar, offset: 30)
-        backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25).isActive = true
+        backButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 25).isActive = true
         
-        view.addSubview(nextButton)
+        containerView.addSubview(nextButton)
         nextButton.topToBottom(of: menuBar, offset: 30)
-        nextButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25).isActive = true
+        nextButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -25).isActive = true
         
-        view.addSubview(barChartView)
+        containerView.addSubview(barChartView)
         barChartView.edgesToSuperview(excluding: .bottom, insets:  TinyEdgeInsets(top: 140, left: 25, bottom: 0, right: 25))
         barChartView.height(300)
         
         totalMinutesLabel.text = "Total: \(totalMinutes) minutes"
         totalMinutesLabel.textColor = .white
         totalMinutesLabel.font = UIFont(name: "Menlo-Bold", size: 15)
-        view.addSubview(totalMinutesLabel)
+        containerView.addSubview(totalMinutesLabel)
         totalMinutesLabel.topToBottom(of: dateLabel, offset: 20)
-        totalMinutesLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 45).isActive = true
+        totalMinutesLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 45).isActive = true
         
         noDataLabel.text = "No Data For \nThis Page :("
         noDataLabel.numberOfLines = 2
@@ -144,50 +170,50 @@ class StatisticsController: UIViewController, ChartViewDelegate{
         barPressedTitle.text = "No Bar Selected"
         barPressedTitle.textColor = .black
         barPressedTitle.font = UIFont(name: "Menlo", size: 22)
-        view.addSubview(barPressedTitle)
+        containerView.addSubview(barPressedTitle)
         barPressedTitle.centerXToSuperview()
         barPressedTitle.topToBottom(of: barChartView, offset: 30)
         
         //vertical line
         let path = UIBezierPath()
-        path.move(to: CGPoint(x: view.center.x, y: view.center.y + 100))
-        path.addLine(to: CGPoint(x: view.center.x, y: view.center.y + 200))
+        path.move(to: CGPoint(x: containerView.center.x, y: containerView.center.y - 25))
+        path.addLine(to: CGPoint(x: containerView.center.x, y: containerView.center.y - 120))
         let shapeLayer = CAShapeLayer()
         shapeLayer.path = path.cgPath
         shapeLayer.strokeColor = UIColor.white.cgColor
         shapeLayer.fillColor = UIColor.clear.cgColor
         shapeLayer.lineWidth = 4
-        view.layer.addSublayer(shapeLayer)
+        containerView.layer.addSublayer(shapeLayer)
         
         barMinNumLabel.text = "0"
         barMinNumLabel.textColor = .white
         barMinNumLabel.textAlignment = .center
         barMinNumLabel.font = UIFont(name: "Menlo-Bold", size: 50)
         barMinNumLabel.sizeToFit()
-        view.addSubview(barMinNumLabel)
+        containerView.addSubview(barMinNumLabel)
         barMinNumLabel.topToBottom(of: barPressedTitle, offset: 30)
-        barMinNumLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 90).isActive = true
+        barMinNumLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 90).isActive = true
         
         barMinDescLabel.text = "minutes"
         barMinDescLabel.textColor = .white
         barMinDescLabel.font = UIFont(name: "Menlo", size: 25)
-        view.addSubview(barMinDescLabel)
+        containerView.addSubview(barMinDescLabel)
         barMinDescLabel.topToBottom(of: barPressedTitle, offset: 85)
-        barMinDescLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 60).isActive = true
+        barMinDescLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 60).isActive = true
         
         barSessNumLabel.text = "0"
         barSessNumLabel.textColor = .white
         barSessNumLabel.font = UIFont(name: "Menlo-Bold", size: 50)
-        view.addSubview(barSessNumLabel)
+        containerView.addSubview(barSessNumLabel)
         barSessNumLabel.topToBottom(of: barPressedTitle, offset: 30)
-        barSessNumLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -90).isActive = true
+        barSessNumLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -90).isActive = true
         
         barSessDescLabel.text = "sessions"
         barSessDescLabel.textColor = .white
         barSessDescLabel.font = UIFont(name: "Menlo", size: 25)
-        view.addSubview(barSessDescLabel)
+        containerView.addSubview(barSessDescLabel)
         barSessDescLabel.topToBottom(of: barPressedTitle, offset: 85)
-        barSessDescLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40).isActive = true
+        barSessDescLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -40).isActive = true
     }
     func createObservers() {
            NotificationCenter.default.addObserver(self, selector: #selector(StatisticsController.updateBarChartToWeek(notificaton:)), name: NSNotification.Name(rawValue: weekKey), object: nil)
@@ -197,11 +223,11 @@ class StatisticsController: UIViewController, ChartViewDelegate{
   
     
     private func setUpTabBar() {
-        view.addSubview(menuBar)
+        containerView.addSubview(menuBar)
         menuBar.translatesAutoresizingMaskIntoConstraints = false
-        menuBar.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        menuBar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        menuBar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        menuBar.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
+        menuBar.leadingAnchor.constraint(equalTo: containerView.leadingAnchor).isActive = true
+        menuBar.trailingAnchor.constraint(equalTo: containerView.trailingAnchor).isActive = true
         menuBar.heightAnchor.constraint(equalToConstant: 50).isActive = true
     }
     

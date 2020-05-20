@@ -33,6 +33,7 @@
 		FE577C942470CD1200042819 /* DateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE577C932470CD1200042819 /* DateHelper.swift */; };
 		FE577C9D24748D4200042819 /* StatisticsBarChartLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE577C9C24748D4200042819 /* StatisticsBarChartLogic.swift */; };
 		FE577C9F247491B900042819 /* BarChartDataUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE577C9E247491B900042819 /* BarChartDataUtil.swift */; };
+		FE577CA124757F9700042819 /* StatisticsPieChartLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE577CA024757F9700042819 /* StatisticsPieChartLogic.swift */; };
 		FE6B03E0245F958200C48E27 /* LWAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE6B03DF245F958200C48E27 /* LWAlert.swift */; };
 		FEBC64142431183F00FB082A /* PressStart2P-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FEBC64132431183F00FB082A /* PressStart2P-Regular.ttf */; };
 		FEC28331244B86C200098413 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEC28330244B86C200098413 /* Extensions.swift */; };
@@ -117,6 +118,7 @@
 		FE577C932470CD1200042819 /* DateHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateHelper.swift; sourceTree = "<group>"; };
 		FE577C9C24748D4200042819 /* StatisticsBarChartLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsBarChartLogic.swift; sourceTree = "<group>"; };
 		FE577C9E247491B900042819 /* BarChartDataUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartDataUtil.swift; sourceTree = "<group>"; };
+		FE577CA024757F9700042819 /* StatisticsPieChartLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsPieChartLogic.swift; sourceTree = "<group>"; };
 		FE6B03DF245F958200C48E27 /* LWAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LWAlert.swift; sourceTree = "<group>"; };
 		FEBC64132431183F00FB082A /* PressStart2P-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PressStart2P-Regular.ttf"; sourceTree = "<group>"; };
 		FEC28330244B86C200098413 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -258,6 +260,7 @@
 			children = (
 				FE324976246DFB1C0090759B /* StatisticsControllerUI.swift */,
 				FE577C9C24748D4200042819 /* StatisticsBarChartLogic.swift */,
+				FE577CA024757F9700042819 /* StatisticsPieChartLogic.swift */,
 			);
 			path = Statistics;
 			sourceTree = "<group>";
@@ -686,6 +689,7 @@
 				FED6F636243E69C400553996 /* MenuController.swift in Sources */,
 				E1593605242ACE6F0050E914 /* SceneDelegate.swift in Sources */,
 				FED6F640243EB3A200553996 /* MenuOption.swift in Sources */,
+				FE577CA124757F9700042819 /* StatisticsPieChartLogic.swift in Sources */,
 				FE5395C124311AD100DA83C1 /* Constants.swift in Sources */,
 				FED1FFEA244255900068FD5E /* StoreController.swift in Sources */,
 				FE32497B246F106D0090759B /* MenuBar.swift in Sources */,
