@@ -25,6 +25,7 @@ let lightPurple = hexStringToUIColor(hex: "#B99AFF")
 let superLightLavender = hexStringToUIColor(hex: "#E3DAFA")
 let darkRed = hexStringToUIColor(hex: "#811301")
 let darkPurple = hexStringToUIColor(hex:"#5E558A")
+let darkGreen = hexStringToUIColor(hex: "#165C12")
 let dayKey = "io.focusbyte.day"
 let weekKey = "io.focusbyte.week"
 let killKey = "io.focusbyte.kill"
@@ -36,6 +37,29 @@ let yearKey = "io.focusbyte.year"
     
     struct FStore {
         static let collectionName = "userPreferences"
+    }
+    
+    static func getColor(color: String) -> UIColor {
+        switch color {
+        case "blue":
+            return UIColor.blue
+        case "black":
+            return UIColor.black
+        case "brown":
+            return UIColor.brown
+        case "yellow":
+            return UIColor.yellow
+        case "red":
+            return UIColor.red
+        case "green":
+            return darkGreen
+        case "gray":
+            return UIColor.gray
+        case "purple":
+            return brightPurple
+        default:
+            return UIColor.white
+        }
     }
 }
 
@@ -63,6 +87,38 @@ func hexStringToUIColor (hex:String) -> UIColor {
 
 
 
-
-
+//For some reason this extension gives errors when put
+//into the extensions class..xcode bug
+extension StringProtocol {
+    func index<S: StringProtocol>(of string: S, options: String.CompareOptions = []) -> Index? {
+        range(of: string, options: options)?.lowerBound
+    }
+    func endIndex<S: StringProtocol>(of string: S, options: String.CompareOptions = []) -> Index? {
+        range(of: string, options: options)?.upperBound
+    }
+    func indices<S: StringProtocol>(of string: S, options: String.CompareOptions = []) -> [Index] {
+        var indices: [Index] = []
+        var startIndex = self.startIndex
+        while startIndex < endIndex,
+            let range = self[startIndex...]
+                .range(of: string, options: options) {
+                indices.append(range.lowerBound)
+                startIndex = range.lowerBound < range.upperBound ? range.upperBound :
+                    index(range.lowerBound, offsetBy: 1, limitedBy: endIndex) ?? endIndex
+        }
+        return indices
+    }
+    func ranges<S: StringProtocol>(of string: S, options: String.CompareOptions = []) -> [Range<Index>] {
+        var result: [Range<Index>] = []
+        var startIndex = self.startIndex
+        while startIndex < endIndex,
+            let range = self[startIndex...]
+                .range(of: string, options: options) {
+                result.append(range)
+                startIndex = range.lowerBound < range.upperBound ? range.upperBound :
+                    index(range.lowerBound, offsetBy: 1, limitedBy: endIndex) ?? endIndex
+        }
+        return result
+    }
+}
 

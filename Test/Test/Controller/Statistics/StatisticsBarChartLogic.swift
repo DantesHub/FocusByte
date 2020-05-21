@@ -11,121 +11,7 @@ import UIKit
 import Charts
 
 extension StatisticsController {
-    //MARK: - Logic Functions
-    @objc final func backTapped() {
-        noDataLabel.removeFromSuperview()
-        if menuLabel == "Week" {
-            backWeekTapped()
-        } else if menuLabel == "Month" {
-            backMonthTapped()
-        } else {
-            backYearTapped()
-        }
-    }
-    
-    private final func backYearTapped() {
-        noDataLabel.removeFromSuperview()
-        todayYear = String(Int(todayYear)! - 1)
-        monthSessionDict = [:]
-        createYearBarChart()
-    }
-    private final func backMonthTapped() {
-        let monthNum = dateHelper.getMonthNum(month: todayMonth)
-        if monthNum == 1 {
-            todayYear = String(Int(todayYear)! - 1)
-        }
-        todayMonth = dateHelper.intToMonth(num: monthNum - 1)
-        createMonthBarChart()
-    }
-    
-    private final func backWeekTapped() {
-        begWeekNum -= 7
-        
-        if todayMonth == "Jan" || nextMonth == "Jan"{
-            if begWeekNum < 1 {
-                todayYear = String(Int(todayYear)! - 1)
-            }
-            if todayMonth == "Dec" && nextMonth == "Jan" {
-                todayYear = String(Int(todayYear)! - 1)
-            }
-        }
-        endWeekNum = begWeekNum + 6
-        nextMonth = ""
-        
-        if begWeekNum == -6 {
-            let todayMonthInt = dateHelper.getMonthNum(month: todayMonth)
-            todayMonth = dateHelper.intToMonth(num: todayMonthInt - 1)
-            begWeekNum =  dateHelper.getNumberOfDays(month: todayMonth) - 6
-            endWeekNum = dateHelper.getNumberOfDays(month: todayMonth)
-            createWeekBarChart()
-            return
-        }
-        if begWeekNum <= 0 {
-            let todayMonthInt = dateHelper.getMonthNum(month: todayMonth)
-            nextMonth = todayMonth
-            todayMonth = dateHelper.intToMonth(num: todayMonthInt - 1)
-            begWeekNum = dateHelper.getNumberOfDays(month: todayMonth) + begWeekNum
-        }
-        if todayMonth == "Dec" && nextMonth == "Jan" {
-            todayYear = String(Int(todayYear)! + 1)
-        }
-        createWeekBarChart()
-    }
-    @objc final func nextTapped() {
-        noDataLabel.removeFromSuperview()
-        if menuLabel == "Week" {
-            nextWeekTapped()
-        } else if menuLabel == "Month" {
-            nextMonthTapped()
-        } else {
-            nextYearTapped()
-        }
-    }
-    private final func nextMonthTapped() {
-        let monthNum = dateHelper.getMonthNum(month: todayMonth)
-        if monthNum == 12 {
-            todayYear = String(Int(todayYear)! + 1)
-        }
-        todayMonth = dateHelper.intToMonth(num: monthNum + 1)
-        createMonthBarChart()
-    }
-    private final func nextYearTapped() {
-        noDataLabel.removeFromSuperview()
-        todayYear = String(Int(todayYear)! + 1)
-        monthSessionDict = [:]
-        createYearBarChart()
-    }
-    private final func nextWeekTapped() {
-        begWeekNum += 7
-        endWeekNum = begWeekNum + 6
-        if todayMonth == "Dec"  {
-            if begWeekNum == 32 {
-                todayYear = String(Int(todayYear)! + 1)
-            }
-            if nextMonth != "Jan" && begWeekNum + 6 > 31  {
-                todayYear = String(Int(todayYear)! + 1)
-            }
-        }
-        nextMonth = ""
-        let numOfDays = dateHelper.getNumberOfDays(month: todayMonth)
-        if begWeekNum > numOfDays {
-            begWeekNum -= numOfDays
-            endWeekNum = begWeekNum + 6
-            let todayMonthInt = dateHelper.getMonthNum(month: todayMonth)
-            todayMonth = dateHelper.intToMonth(num: todayMonthInt + 1)
-        } else if begWeekNum == numOfDays {
-            let todayMonthInt = dateHelper.getMonthNum(month: todayMonth)
-            begWeekNum = numOfDays
-            nextMonth = dateHelper.intToMonth(num: todayMonthInt + 1)
-            endWeekNum = 6
-        } else if endWeekNum > numOfDays {
-            let todayMonthInt = dateHelper.getMonthNum(month: todayMonth)
-            nextMonth = dateHelper.intToMonth(num: todayMonthInt + 1)
-            endWeekNum -= numOfDays
-        }
-        
-        createWeekBarChart()
-    }
+    //MARK: - Create Charts
     @objc final func updateBarChartToWeek(notificaton: NSNotification) {
         noDataLabel.removeFromSuperview()
         resetChartValueSelected()
@@ -216,10 +102,12 @@ extension StatisticsController {
         barChartView.animate(xAxisDuration: 1.5, easingOption: .easeOutExpo)
         barChartView.animate(yAxisDuration: 1.5, easingOption: .easeOutExpo)
         totalMinutesLabel.text = "Total: \(totalMinutes) minutes"
+        createWeekPieChart()
+        
     }
     
     
-    private final func createMonthBarChart() {
+     final func createMonthBarChart() {
         dateLabel.text = "\(todayMonth), \(todayYear)"
         let set = createMonthData()
         let yAxis = barChartView.leftAxis
@@ -261,9 +149,10 @@ extension StatisticsController {
         
         
         totalMinutesLabel.text = "Total: \(totalMinutes) minutes"
+        createMonthPieChart()
     }
     
-    func createYearBarChart() {
+    final func createYearBarChart() {
         dateLabel.text = todayYear
         let set = createYearData()
         set.colors = [brightPurple]
@@ -281,13 +170,13 @@ extension StatisticsController {
         let months = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul","Aug","Sep","Oct","Nov","Dec"]
         xAxis.valueFormatter = IndexAxisValueFormatter(values: months)
         
-        
         totalMinutesLabel.text = "Total: \(totalMinutes) minutes"
+        createYearPieChart()
     }
     
     private final func createYearData() -> BarChartDataSet {
         var entries = BarChartUtil.createEmptyYearData()
-        var thisYearArray = [String]()
+        thisYearArray = [String]()
         for day in timeData {
             if day.contains(todayYear) {
                 thisYearArray.append(day)
@@ -299,16 +188,16 @@ extension StatisticsController {
             let equalIndexOffset = day.index(equalIndex!, offsetBy: 1)
             let dashIndex = day.firstIndex(of: "-")
             let spaceIndex = day.firstIndex(of: " ")
+            let plusIndex = day.firstIndex(of: "+")
             let dashIndexOffset = day.index(dashIndex!, offsetBy: 1)
             let totalTimeForDay = String(day[equalIndexOffset..<dashIndex!])
-            let totalSessionsForDay = String(Int(day[dashIndexOffset...])!)
+            let totalSessionsForDay = String(Int(day[dashIndexOffset..<plusIndex!])!)
             let month = String(day[..<spaceIndex!])
             if monthSessionDict[month] == nil {
                 monthSessionDict[month] = Int(totalSessionsForDay)
             } else {
                 monthSessionDict[month]! += Int(totalSessionsForDay)!
             }
-            print(monthSessionDict)
             totalMinutes += Int(totalTimeForDay)!
             if day.contains("Jan") {
                 entries[0].y = entries[0].y + Double(Int(totalTimeForDay)!)
@@ -343,9 +232,8 @@ extension StatisticsController {
     
     //MARK: - Create Chart Data
     private final func createWeekData() -> BarChartDataSet {
-        var thisWeekArray = [String]()
-        var thisMonthArray = [String]()
-        
+        thisWeekArray = [String]()
+        thisMonthArray = [String]()
         for day in timeData {
             if day.contains(todayMonth) {
                 if day.contains(todayYear) {
@@ -382,10 +270,11 @@ extension StatisticsController {
         for day in thisWeekArray {
             let equalIndex = day.firstIndex(of: "=")
             let spaceIndex = day.secondIndex(of: " ")
+            let plusIndex = day.firstIndex(of: "+")
             let equalIndexOffset = day.index(equalIndex!, offsetBy: 1)
             let dashIndex = day.firstIndex(of: "-")
             let dashIndexOffset = day.index(dashIndex!, offsetBy: 1)
-            let totalSessionsForDay = String(Int(day[dashIndexOffset...])!)
+            let totalSessionsForDay = String(Int(day[dashIndexOffset..<plusIndex!])!)
             let date =  String(day[..<spaceIndex!])
             
             daySessionDict[date] = Int(totalSessionsForDay)
@@ -413,7 +302,7 @@ extension StatisticsController {
     
     private final func createMonthData() -> BarChartDataSet {
         var entries = BarChartUtil.createEmptyMonthData()
-        var thisMonthArray = [String]()
+        thisMonthArray = [String]()
         
         for day in timeData {
             if day.contains(todayMonth) {
@@ -434,9 +323,9 @@ extension StatisticsController {
             let dayNum = Int(day[startIndex..<commaIndex!])!
             let equalIndexOffset = day.index(equalIndex!, offsetBy: 1)
             let totalTimeForDay = String(day[equalIndexOffset..<dashIndex!])
-            let totalSessionsForDay = String(Int(day[dashIndexOffset...])!)
+            let plusIndex = day.firstIndex(of: "+")
+            let totalSessionsForDay = String(Int(day[dashIndexOffset..<plusIndex!])!)
             let date =  String(day[..<spaceIndex!])
-            print(daySessionDict)
             daySessionDict[date] = Int(totalSessionsForDay)
             entries[dayNum - 1] = BarChartDataEntry(x: Double(dayNum), y: Double(Int(totalTimeForDay)!))
             totalMinutes += Int(totalTimeForDay)!
@@ -447,7 +336,7 @@ extension StatisticsController {
   
     //MARK: - minute/session logic
     //For Labels below bar chart
-    private final func resetChartValueSelected() {
+    final func resetChartValueSelected() {
         barPressedTitle.text = "No Bar Selected"
         barMinNumLabel.text = "0"
         barSessNumLabel.text = "0"

@@ -14,6 +14,7 @@ class User: Object {
     @objc dynamic var gender: String? = nil
     @objc dynamic var email: String? = nil
     var timeArray = List<String>()
+    var tagDictionary = List<Tag>()
     @objc dynamic var isLoggedIn = false
     @objc dynamic var coins = 0
     @objc dynamic var exp = 0 
@@ -21,6 +22,12 @@ class User: Object {
     override static func primaryKey() -> String? {
         return "email"
     }
+}
+
+class Tag: Object {
+   @objc dynamic var name = ""
+   @objc dynamic var color = ""
+    
 }
 
 extension User {

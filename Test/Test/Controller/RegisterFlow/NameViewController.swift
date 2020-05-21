@@ -18,7 +18,7 @@ class NameViewController: UIViewController {
     let db = Firestore.firestore()
     let container: UIView = UIView()
     var spinner = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.large)
-    
+    var tagDict = ["unset":"gray"]
     //MARK: - init
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,13 +30,15 @@ class NameViewController: UIViewController {
     //MARK: - handlers
     @objc func finishTapped() {
         showSpinner()
+        
         if nameInput.text! != "" {
             if let _ = Auth.auth().currentUser?.email {
                 let email = Auth.auth().currentUser?.email
                 db.collection(K.userPreferenes).document(email!).setData([
                     "gender": chosenGender,
                     "name": nameInput.text!,
-                    "coins": 0
+                    "coins": 0,
+                    "tags": ["unset":"gray"]
                 ]) { (error) in
                     if let e = error {
                         print("There was a issue saving data to firestore \(e) ")
@@ -109,9 +111,15 @@ class NameViewController: UIViewController {
     
     func saveToRealm() {
         let UserToAdd = User()
+        let tagList = List<Tag>()
+        let tagValue = Tag()
+        tagValue.name = "unset"
+        tagValue.color = "gray"
+        tagList.append(tagValue)
         UserToAdd.gender = chosenGender
         UserToAdd.name = nameInput.text!
         UserToAdd.email = Auth.auth().currentUser?.email
+        UserToAdd.tagDictionary = tagList
         UserToAdd.coins = 0
         UserToAdd.isLoggedIn = true
         loggedOut = false

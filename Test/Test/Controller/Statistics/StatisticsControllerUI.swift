@@ -14,9 +14,36 @@ import RealmSwift
 
 var todayYear = ""
 var todayMonth = ""
+var thisWeekArray = [String]()
+var thisMonthArray = [String]()
+var thisYearArray = [String]()
+var tagDictionary = [Tag]()
 class StatisticsController: UIViewController, ChartViewDelegate{
     //MARK: - Properties and Views
-    lazy var contentViewSize = CGSize(width: self.view.frame.width, height: self.view.frame.height + 400)
+        var contentViewSize: CGSize {
+        get {
+            var height: CGFloat = 0.0
+            if UIDevice().userInterfaceIdiom == .phone {
+                switch UIScreen.main.nativeBounds.height {
+                case 1920, 2208:
+                    height = 100
+                    //print("iphone 8plus")
+                case 2436:
+                    height = 300
+                    //print("IPHONE X, IPHONE XS, IPHONE 11 PRO")
+                case 2688:
+                    height = 250
+                    //print("IPHONE XS MAX, IPHONE 11 PRO MAX")
+                case 1792:
+                     height = 200
+                    //print("IPHONE XR, IPHONE 11")
+                default:
+                    height = 430
+                }
+            }
+            return CGSize(width: self.view.frame.width, height: self.view.frame.height + height)
+        }
+    }
     var delegate: ContainerControllerDelegate!
     lazy var barChartView: BarChartView = {
         let barView = BarChartView()
@@ -26,7 +53,9 @@ class StatisticsController: UIViewController, ChartViewDelegate{
     
     lazy var pieChartView: PieChartView = {
         let pieView = PieChartView()
-        pieView.backgroundColor = darkPurple
+        pieView.backgroundColor = superLightLavender
+        pieView.clipsToBounds = true
+        pieView.layer.cornerRadius = 25
         return pieView
     }()
     lazy var scrollView: UIScrollView = {
@@ -88,8 +117,9 @@ class StatisticsController: UIViewController, ChartViewDelegate{
     let dateHelper = DateHelper()
     var daySessionDict: [String : Int] = [:]
     var monthSessionDict: [String : Int] = [:]
-    
-    
+    var tagChartTitle = UILabel()
+    var tagTimeDictionary:[String:Int] = [:]
+    var colors = [NSUIColor]()
     //MARK: - init
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -105,8 +135,10 @@ class StatisticsController: UIViewController, ChartViewDelegate{
           for result  in results {
               if result.isLoggedIn == true {
                 self.timeData = result.timeArray.map{ $0 }
+                tagDictionary = result.tagDictionary.map{ $0 }
               }
           }
+        colors = Array(repeating: NSUIColor(), count: tagDictionary.count)
         createWeekBarChart()
         barChartView.animate(xAxisDuration: 1.5, easingOption: .easeInOutBack)
         barChartView.animate(yAxisDuration: 1.5, easingOption: .easeInOutBack)
@@ -120,14 +152,135 @@ class StatisticsController: UIViewController, ChartViewDelegate{
         barChartView.scaleYEnabled = false
         barChartView.legend.enabled = false
         
-        createWeekPieChart()
-        pieChartView.animate(xAxisDuration: 1.5, easingOption: .easeInOutBack)
-        pieChartView.animate(yAxisDuration: 1.5, easingOption: .easeInOutBack)      }
+        pieChartView.rotationAngle = 0
+        pieChartView.rotationEnabled = false
+        pieChartView.drawHoleEnabled = true
+        pieChartView.holeColor = superLightLavender
+//        pieChartView.line
+        pieChartView.isUserInteractionEnabled = false
+    }
     
     
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
+    //MARK: - Logic Funcs
+    @objc final func backTapped() {
+           resetChartValueSelected()
+           noDataLabel.removeFromSuperview()
+           if menuLabel == "Week" {
+               backWeekTapped()
+           } else if menuLabel == "Month" {
+               backMonthTapped()
+           } else {
+               backYearTapped()
+           }
+       }
+       
+       private final func backYearTapped() {
+           noDataLabel.removeFromSuperview()
+           todayYear = String(Int(todayYear)! - 1)
+           monthSessionDict = [:]
+           createYearBarChart()
+       }
+       private final func backMonthTapped() {
+           let monthNum = dateHelper.getMonthNum(month: todayMonth)
+           if monthNum == 1 {
+               todayYear = String(Int(todayYear)! - 1)
+           }
+           todayMonth = dateHelper.intToMonth(num: monthNum - 1)
+           createMonthBarChart()
+       }
+       
+       private final func backWeekTapped() {
+           begWeekNum -= 7
+           
+           if todayMonth == "Jan" || nextMonth == "Jan"{
+               if begWeekNum < 1 {
+                   todayYear = String(Int(todayYear)! - 1)
+               }
+               if todayMonth == "Dec" && nextMonth == "Jan" {
+                   todayYear = String(Int(todayYear)! - 1)
+               }
+           }
+           endWeekNum = begWeekNum + 6
+           nextMonth = ""
+           
+           if begWeekNum == -6 {
+               let todayMonthInt = dateHelper.getMonthNum(month: todayMonth)
+               todayMonth = dateHelper.intToMonth(num: todayMonthInt - 1)
+               begWeekNum =  dateHelper.getNumberOfDays(month: todayMonth) - 6
+               endWeekNum = dateHelper.getNumberOfDays(month: todayMonth)
+               createWeekBarChart()
+               return
+           }
+           if begWeekNum <= 0 {
+               let todayMonthInt = dateHelper.getMonthNum(month: todayMonth)
+               nextMonth = todayMonth
+               todayMonth = dateHelper.intToMonth(num: todayMonthInt - 1)
+               begWeekNum = dateHelper.getNumberOfDays(month: todayMonth) + begWeekNum
+           }
+           if todayMonth == "Dec" && nextMonth == "Jan" {
+               todayYear = String(Int(todayYear)! + 1)
+           }
+           createWeekBarChart()
+       }
+       @objc final func nextTapped() {
+           resetChartValueSelected()
+           noDataLabel.removeFromSuperview()
+           if menuLabel == "Week" {
+               nextWeekTapped()
+           } else if menuLabel == "Month" {
+               nextMonthTapped()
+           } else {
+               nextYearTapped()
+           }
+       }
+       private final func nextMonthTapped() {
+           let monthNum = dateHelper.getMonthNum(month: todayMonth)
+           if monthNum == 12 {
+               todayYear = String(Int(todayYear)! + 1)
+           }
+           todayMonth = dateHelper.intToMonth(num: monthNum + 1)
+           createMonthBarChart()
+       }
+       private final func nextYearTapped() {
+           noDataLabel.removeFromSuperview()
+           todayYear = String(Int(todayYear)! + 1)
+           monthSessionDict = [:]
+           createYearBarChart()
+       }
+       private final func nextWeekTapped() {
+           begWeekNum += 7
+           endWeekNum = begWeekNum + 6
+           if todayMonth == "Dec"  {
+               if begWeekNum == 32 {
+                   todayYear = String(Int(todayYear)! + 1)
+               }
+               if nextMonth != "Jan" && begWeekNum + 6 > 31  {
+                   todayYear = String(Int(todayYear)! + 1)
+               }
+           }
+           nextMonth = ""
+           let numOfDays = dateHelper.getNumberOfDays(month: todayMonth)
+           if begWeekNum > numOfDays {
+               begWeekNum -= numOfDays
+               endWeekNum = begWeekNum + 6
+               let todayMonthInt = dateHelper.getMonthNum(month: todayMonth)
+               todayMonth = dateHelper.intToMonth(num: todayMonthInt + 1)
+           } else if begWeekNum == numOfDays {
+               let todayMonthInt = dateHelper.getMonthNum(month: todayMonth)
+               begWeekNum = numOfDays
+               nextMonth = dateHelper.intToMonth(num: todayMonthInt + 1)
+               endWeekNum = 6
+           } else if endWeekNum > numOfDays {
+               let todayMonthInt = dateHelper.getMonthNum(month: todayMonth)
+               nextMonth = dateHelper.intToMonth(num: todayMonthInt + 1)
+               endWeekNum -= numOfDays
+           }
+           
+           createWeekBarChart()
+       }
     
     //MARK: - Helper Functions
     func configureUI() {
@@ -176,8 +329,8 @@ class StatisticsController: UIViewController, ChartViewDelegate{
         
         //vertical line
         let path = UIBezierPath()
-        path.move(to: CGPoint(x: containerView.center.x, y: containerView.center.y - 25))
-        path.addLine(to: CGPoint(x: containerView.center.x, y: containerView.center.y - 120))
+        path.move(to: CGPoint(x: containerView.center.x, y: containerView.center.y + 50))
+        path.addLine(to: CGPoint(x: containerView.center.x, y: containerView.center.y - 30))
         let shapeLayer = CAShapeLayer()
         shapeLayer.path = path.cgPath
         shapeLayer.strokeColor = UIColor.white.cgColor
@@ -214,11 +367,22 @@ class StatisticsController: UIViewController, ChartViewDelegate{
         containerView.addSubview(barSessDescLabel)
         barSessDescLabel.topToBottom(of: barPressedTitle, offset: 85)
         barSessDescLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -40).isActive = true
+        
+        tagChartTitle.text = "Tag Distribution"
+        tagChartTitle.font = UIFont(name: "Menlo-Bold", size: 25)
+        tagChartTitle.textColor = .black
+        containerView.addSubview(tagChartTitle)
+        tagChartTitle.topToBottom(of: barSessDescLabel, offset: 45)
+        tagChartTitle.centerX(to: view)
+        containerView.addSubview(pieChartView)
+        pieChartView.edgesToSuperview(excluding: .top, insets:  TinyEdgeInsets(top: 0, left: 25, bottom: 95, right: 25))
+        pieChartView.height(300)
     }
     func createObservers() {
            NotificationCenter.default.addObserver(self, selector: #selector(StatisticsController.updateBarChartToWeek(notificaton:)), name: NSNotification.Name(rawValue: weekKey), object: nil)
            NotificationCenter.default.addObserver(self, selector: #selector(StatisticsController.updateBarChartToMonth(notificaton:)), name: NSNotification.Name(rawValue: monthKey), object: nil)
            NotificationCenter.default.addObserver(self, selector: #selector(StatisticsController.updateBarChartToYear(notificaton:)), name: NSNotification.Name(rawValue: yearKey), object: nil)
+        
        }
   
     

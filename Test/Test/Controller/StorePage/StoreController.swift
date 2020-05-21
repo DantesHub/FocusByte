@@ -28,16 +28,16 @@ class StoreController: UIViewController {
                 switch UIScreen.main.nativeBounds.height {
                 case 1920, 2208:
                     height = 50
-                    print("iphone 8plus")
+                    //("iphone 8plus")
                 case 2436:
                     height = -50
-                    print("IPHONE X, IPHONE XS, IPHONE 11 PRO")
+                    //print("IPHONE X, IPHONE XS, IPHONE 11 PRO")
                 case 2688:
                     height = -50
-                    print("IPHONE XS MAX, IPHONE 11 PRO MAX")
+                    //print("IPHONE XS MAX, IPHONE 11 PRO MAX")
                 case 1792:
                      height = 0
-                    print("IPHONE XR, IPHONE 11")
+                    //print("IPHONE XR, IPHONE 11")
                 default:
                     height = 110
                 }

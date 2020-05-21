@@ -168,6 +168,7 @@ class LoginViewController: UIViewController {
             var gender = ""
             var coins = -1
             var name = ""
+            var tagDict:[String:String] = [:]
             let timeD = List<String>()
             let docRef = db.collection(K.FStore.collectionName).document(email)
             docRef.getDocument { (snapshot, error) in
@@ -190,11 +191,23 @@ class LoginViewController: UIViewController {
                             timeD.append(entry)
                         }
                     }
+                    if let tags = document["tags"] {
+                        tagDict = tags as! [String : String]
+                        print(tagDict)
+                    }
                 } else {
                     print("Document does not exist")
                 }
+                let tagList = List<Tag>()
+                for tag in tagDict {
+                    let tagVar = Tag()
+                    tagVar.name = tag.key
+                    tagVar.color = tag.value
+                    tagList.append(tagVar)
+                }
                 realmUser.timeArray = timeD 
                 realmUser.name = name
+                realmUser.tagDictionary = tagList
                 realmUser.email = Auth.auth().currentUser?.email
                 realmUser.isLoggedIn = true
                 realmUser.gender = gender
