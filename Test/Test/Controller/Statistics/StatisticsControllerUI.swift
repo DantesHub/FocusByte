@@ -17,7 +17,6 @@ var todayMonth = ""
 var thisWeekArray = [String]()
 var thisMonthArray = [String]()
 var thisYearArray = [String]()
-var tagDictionary = [Tag]()
 class StatisticsController: UIViewController, ChartViewDelegate{
     //MARK: - Properties and Views
         var contentViewSize: CGSize {

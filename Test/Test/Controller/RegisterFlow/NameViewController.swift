@@ -112,10 +112,10 @@ class NameViewController: UIViewController {
     func saveToRealm() {
         let UserToAdd = User()
         let tagList = List<Tag>()
-        let tagValue = Tag()
-        tagValue.name = "unset"
-        tagValue.color = "gray"
-        tagList.append(tagValue)
+        tagList.append(unsetTag)
+        tagList.append(studyTag)
+        tagList.append(workTag)
+        tagList.append(readTag)
         UserToAdd.gender = chosenGender
         UserToAdd.name = nameInput.text!
         UserToAdd.email = Auth.auth().currentUser?.email

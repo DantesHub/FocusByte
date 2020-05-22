@@ -31,6 +31,13 @@ let weekKey = "io.focusbyte.week"
 let killKey = "io.focusbyte.kill"
 let monthKey = "io.focusbyte.month"
 let yearKey = "io.focusbyte.year"
+var studyTag = Tag(name: "Study", color: "red", selected: false)
+var unsetTag = Tag(name: "unset", color: "gray", selected: true)
+var readTag = Tag(name: "Read", color: "blue", selected: false)
+var workTag = Tag(name: "Work", color: "green", selected: false)
+
+
+
  struct K {
     static let userPreferenes = "userPreferences"
     static let boxCell = "boxCell"

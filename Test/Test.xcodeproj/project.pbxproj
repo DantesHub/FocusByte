@@ -55,7 +55,6 @@
 		FED0513724411F3700D7B1F0 /* CircularSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED0513624411F3700D7B1F0 /* CircularSlider.swift */; };
 		FED1FFEA244255900068FD5E /* StoreController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED1FFE9244255900068FD5E /* StoreController.swift */; };
 		FED1FFEF24453EC80068FD5E /* ContainerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED1FFEE24453EC80068FD5E /* ContainerController.swift */; };
-		FED36A1324774DBC005DE0FC /* TagCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED36A1224774DBC005DE0FC /* TagCell.swift */; };
 		FED36A15247750B8005DE0FC /* TagViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED36A14247750B8005DE0FC /* TagViewCell.swift */; };
 		FED6F636243E69C400553996 /* MenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED6F635243E69C400553996 /* MenuController.swift */; };
 		FED6F63A243E866400553996 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FED6F639243E866400553996 /* Main.storyboard */; };
@@ -147,7 +146,6 @@
 		FED0513624411F3700D7B1F0 /* CircularSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularSlider.swift; sourceTree = "<group>"; };
 		FED1FFE9244255900068FD5E /* StoreController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreController.swift; sourceTree = "<group>"; };
 		FED1FFEE24453EC80068FD5E /* ContainerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerController.swift; sourceTree = "<group>"; };
-		FED36A1224774DBC005DE0FC /* TagCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagCell.swift; sourceTree = "<group>"; };
 		FED36A14247750B8005DE0FC /* TagViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagViewCell.swift; sourceTree = "<group>"; };
 		FED6F635243E69C400553996 /* MenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuController.swift; sourceTree = "<group>"; };
 		FED6F639243E866400553996 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
@@ -293,7 +291,6 @@
 				FE577C9E247491B900042819 /* BarChartDataUtil.swift */,
 				FE577CA224758EE700042819 /* PieChartUtil.swift */,
 				FE577CA52475A60300042819 /* FirebaseStringUtil.swift */,
-				FED36A1224774DBC005DE0FC /* TagCell.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -685,7 +682,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FED36A1324774DBC005DE0FC /* TagCell.swift in Sources */,
 				FE577CA62475A60300042819 /* FirebaseStringUtil.swift in Sources */,
 				FECA7A8324390D6B00763504 /* ValidateInputs.swift in Sources */,
 				FECA7A8524390E0000763504 /* RegisterViewController.swift in Sources */,

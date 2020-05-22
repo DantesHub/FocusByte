@@ -27,6 +27,14 @@ class User: Object {
 class Tag: Object {
    @objc dynamic var name = ""
    @objc dynamic var color = ""
+   @objc dynamic var selected  = false
+    
+    convenience init(name: String, color: String, selected: Bool) {
+        self.init()
+        self.name = name
+        self.color = color
+        self.selected = selected
+    }
     
 }
 

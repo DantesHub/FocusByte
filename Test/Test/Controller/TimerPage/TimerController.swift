@@ -69,7 +69,7 @@ class TimerController: UIViewController {
     var diffMins = 0
     var diffSecs = 0
     var tagTableView = TagTableView()
-    
+    var searchBar = UISearchBar()
     
     //MARK: -Init
     override func viewDidLoad() {
