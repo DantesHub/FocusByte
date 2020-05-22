@@ -12,7 +12,8 @@ import Firebase
 import RealmSwift
 import FLAnimatedImage
 import AudioToolbox
-
+import TinyConstraints
+import Foundation
 
 var exp = 0
 var coins = 0
@@ -67,6 +68,7 @@ class TimerController: UIViewController {
     var quoteLabel = UILabel()
     var diffMins = 0
     var diffSecs = 0
+    var tagTableView = TagTableView()
     
     
     //MARK: -Init
@@ -227,12 +229,19 @@ class TimerController: UIViewController {
     func displayalert(title:String, message:String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
         alert.addAction((UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
-            
             alert.dismiss(animated: true, completion: nil)
             
         })))
         
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    @objc func tappedTag() {
+        
+        tagTableView = TagTableView(frame: view.bounds)
+    
+        view.addSubview(tagTableView)
+        
     }
     
     
@@ -241,9 +250,7 @@ class TimerController: UIViewController {
         delegate?.handleMenuToggle(forMenuOption: nil)
     }
     
-    @objc func tagtapped() {
-        
-    }
+
     
     
     @objc func handleTap(_ sender: UITapGestureRecognizer? = nil) {
@@ -353,7 +360,7 @@ class TimerController: UIViewController {
         alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { (action) in
             return
         }))
-        self.present(alert, animated: true)
+        navigationController?.present(alert, animated: true)
     }
     func createBasicAnimation() {
         let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")

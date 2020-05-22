@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import RealmSwift
 import Charts
+import SCLAlertView
 
 
 extension Results {
@@ -24,10 +25,13 @@ extension Results {
         return array
     }
 }
-extension TimerController {
-    func createObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(pauseWhenBackground(noti:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
-         NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground(noti:)), name: UIApplication.willEnterForegroundNotification, object: nil)
+
+extension UIAlertController {
+    func addImage(image: UIImage) {
+        let imgAction = UIAlertAction(title: "", style: .default, handler: nil)
+        imgAction.isEnabled = true
+        imgAction.setValue(image.withRenderingMode(.alwaysOriginal), forKey: "image")
+        self.addAction(imgAction)
     }
 }
 

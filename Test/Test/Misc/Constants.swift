@@ -34,6 +34,7 @@ let yearKey = "io.focusbyte.year"
  struct K {
     static let userPreferenes = "userPreferences"
     static let boxCell = "boxCell"
+    static let tagCell = "tagCell"
     
     struct FStore {
         static let collectionName = "userPreferences"
