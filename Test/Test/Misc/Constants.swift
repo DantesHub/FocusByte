@@ -42,6 +42,7 @@ var workTag = Tag(name: "Work", color: "green", selected: false)
     static let userPreferenes = "userPreferences"
     static let boxCell = "boxCell"
     static let tagCell = "tagCell"
+    static let chooseColorCell = "chooseColorCell"
     
     struct FStore {
         static let collectionName = "userPreferences"

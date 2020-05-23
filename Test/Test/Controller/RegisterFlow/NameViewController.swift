@@ -38,7 +38,7 @@ class NameViewController: UIViewController {
                     "gender": chosenGender,
                     "name": nameInput.text!,
                     "coins": 0,
-                    "tags": ["unset":"gray"]
+                    "tags": ["unset":"gray", "Study":"red", "Work":"green", "Read":"blue"]
                 ]) { (error) in
                     if let e = error {
                         print("There was a issue saving data to firestore \(e) ")

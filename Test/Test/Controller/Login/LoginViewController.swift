@@ -207,10 +207,6 @@ class LoginViewController: UIViewController {
                     tagList.append(tagVar)
                 }
                 //import preset tags
-                if !tagList.contains(unsetTag) { tagList.insert(unsetTag, at: 0)}
-                if !tagList.contains(studyTag) { tagList.append(studyTag)}
-                if !tagList.contains(workTag) { tagList.append(workTag)}
-                if !tagList.contains(readTag) { tagList.append(readTag)}
                 realmUser.timeArray = timeD 
                 realmUser.name = name
                 realmUser.tagDictionary = tagList

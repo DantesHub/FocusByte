@@ -132,6 +132,7 @@ extension TimerController {
                         timeData = time as! [String]
                         lastDate = (timeData[timeData.count - 1])
                     }
+   
                     coins = self.updateCoinLabel(numCoins: numCoins)!
                     self.coinsL.text = String(coins)
                     //Check if last entry is equal to today

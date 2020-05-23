@@ -57,7 +57,7 @@ class BoxCell: UICollectionViewCell {
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.textAlignment = .center
         button.titleLabel!.textColor = .white
-        button.sizeToFit()
+        button.sizeToFit() 
         button.layer.cornerRadius = 20
         button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOffset = CGSize(width: 10, height: 10)

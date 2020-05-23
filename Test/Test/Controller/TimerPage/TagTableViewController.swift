@@ -71,6 +71,7 @@ class TagTableView: UIView{
                 tagDictionary = result.tagDictionary.map{ $0 }
             }
         }
+        tagDictionary.insert(Tag(name: "Create Tag", color: "plus", selected: false), at: 0)
         setUpViews()
     }
     
