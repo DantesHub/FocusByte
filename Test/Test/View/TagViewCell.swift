@@ -93,8 +93,8 @@ class TagViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionView
         collectionViewAlert.isScrollEnabled = false
         let appearance = SCLAlertView.SCLAppearance(
             kWindowWidth: 300,
-            kWindowHeight: 100,
-            kButtonHeight: 35,
+            kWindowHeight: 140,
+            kButtonHeight: 45,
             kTitleFont: UIFont(name: "Menlo", size: 18)!,
             kTextFont: UIFont(name: "Menlo", size: 15)!,
             showCloseButton: true,
@@ -106,7 +106,7 @@ class TagViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionView
         let text = alertView.addTextField("Enter Tag name")
         text.overrideUserInterfaceStyle = .light
         text.becomeFirstResponder()
-        alertView.addButton("Done", backgroundColor: brightPurple, textColor: .white, showTimeout: showTimeout) {
+        alertView.addButton("Done\n", backgroundColor: brightPurple, textColor: .white, showTimeout: showTimeout) {
             if text.text!.count == 0 {
                 text.text = "Must Input Text!"
             } else {
@@ -122,6 +122,9 @@ class TagViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionView
                 }
             }
          
+        }
+        alertView.addButton("Cancel", backgroundColor: lightLavender, textColor: .white, showTimeout: showTimeout) {
+            return
         }
 
         let subview = UIView(frame: CGRect(x:0,y:0,width:300,height:120))

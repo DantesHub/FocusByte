@@ -181,6 +181,3 @@ class StoreController: UIViewController {
     }
 }
 
-extension UILabel {
- 
-}

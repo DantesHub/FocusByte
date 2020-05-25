@@ -215,6 +215,7 @@ class LoginViewController: UIViewController {
                 realmUser.tagDictionary = tagList
                 realmUser.email = Auth.auth().currentUser?.email
                 realmUser.isLoggedIn = true
+                realmUser.deepFocusMode = true
                 realmUser.gender = gender
                 realmUser.coins = coins
                 realmUser.writeToRealm()

@@ -64,7 +64,6 @@ class TagTableView: UIView, CustomCellUpdater {
         tableView.tableHeaderView = searchBar
     }
     func setUpTagDictionary() {
-        print("got here")
         tagDictionary = [Tag]()
         results = uiRealm.objects(User.self)
         for result  in results {

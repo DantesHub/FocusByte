@@ -17,7 +17,8 @@ class User: Object {
     var tagDictionary = List<Tag>()
     @objc dynamic var isLoggedIn = false
     @objc dynamic var coins = 0
-    @objc dynamic var exp = 0 
+    @objc dynamic var exp = 0
+    @objc dynamic var deepFocusMode = true
     
     override static func primaryKey() -> String? {
         return "email"

@@ -14,7 +14,10 @@ import FLAnimatedImage
 import AudioToolbox
 import TinyConstraints
 import Foundation
+import TinyConstraints
+import SCLAlertView
 
+var deepFocusMode = true
 var exp = 0
 var coins = 0
 var counter = 0
@@ -41,6 +44,14 @@ class TimerController: UIViewController {
         iv.contentMode = .scaleAspectFit
         return iv
     }()
+    lazy var dfmSwitch: UISwitch = {
+        let dswitch = UISwitch()
+        dswitch.onTintColor = brightPurple
+        if deepFocusMode {
+            dswitch.setOn(true, animated: false)
+        }
+        return dswitch
+    }()
     var howMuchTime: Int = 0
     var mins = 0
     var secs = 0
@@ -49,14 +60,14 @@ class TimerController: UIViewController {
     var coinsReceived: Int! = 0
     var expReceived: Int! = 0
     var coinsImg: UIImageView?
-    var shadowView = UIView()
     var timerButton = UIView()
     var breakButton = UIView()
-    var breakShadow = UIView()
     var breakButtonLbl = UILabel()
     let timerButtonLbl = UILabel()
     var timer = Timer()
     var enteredForeground = false
+    var deepFocusLabel = UILabel()
+    var deepFocusView = UIView()
     var breakTimer = Timer()
     let db = Firestore.firestore()
     var durationString = ""
@@ -87,6 +98,7 @@ class TimerController: UIViewController {
                 coins = result.coins
                 exp = result.exp
                 coinsL.text = String(coins)
+                deepFocusMode = result.deepFocusMode
             }
         }
         coinsL.countFromZero(to: Float(coins), duration: .brisk)
@@ -135,12 +147,13 @@ class TimerController: UIViewController {
         timeL.lineBreakMode = .byClipping
         view.addSubview(timeL)
         
-        timerButton.frame.size.width = 170
+        timerButton.frame.size.width = 140
         timerButton.frame.size.height = 75
         timerButton.center.x = view.center.x
         timerButton.backgroundColor = darkPurple
         timerButton.center.y = timeL.center.y + 100
         timerButton.layer.cornerRadius = 25
+        timerButton.applyDesign(color: darkPurple)
         timerButtonLbl.font = UIFont(name: "Menlo-Bold", size: 20)
         
         if !isPlaying {
@@ -148,22 +161,13 @@ class TimerController: UIViewController {
         }
         view.addSubview(timerButton)
         
-        shadowView = UIView(frame: CGRect(x: view.center.x - 85 , y: timerButton.center.y-30 , width: 170, height: 75))
-        shadowView.backgroundColor = .clear
-        shadowView.layer.cornerRadius = 25
-        shadowView.dropShadow(superview: timerButton)
-        view.addSubview(shadowView)
-        view.insertSubview(timerButton, aboveSubview: shadowView)
+        
         timerButtonLbl.sizeToFit()
         timerButtonLbl.textColor = .white
         timerButtonLbl.center.x = timerButton.center.x
         timerButtonLbl.center.y = timerButton.center.y
         view.addSubview(timerButtonLbl)
         
-        breakShadow = UIView(frame: CGRect(x: view.center.x + 35 , y: timerButton.center.y-30 , width: 130, height: 75))
-        breakShadow.backgroundColor = .clear
-        breakShadow.layer.cornerRadius = 25
-        breakShadow.dropShadow(superview: breakButton)
         
         let breakTapped = UITapGestureRecognizer(target: self, action: #selector(self.breakPressed))
         self.breakButton.addGestureRecognizer(breakTapped)
@@ -299,9 +303,9 @@ class TimerController: UIViewController {
         timeL.font = UIFont(name: "Menlo-Bold", size: 65)
         breakButton.removeFromSuperview()
         breakButtonLbl.removeFromSuperview()
-        breakShadow.removeFromSuperview()
+        deepFocusLabel.removeFromSuperview()
+        deepFocusView.removeFromSuperview()
         timerButton.center.x = view.center.x
-        shadowView.center.x = view.center.x
         timerButtonLbl.center.x = view.center.x
         createCircularSlider()
     }
@@ -401,9 +405,10 @@ class TimerController: UIViewController {
         self.timerButtonLbl.removeFromSuperview()
         self.shapeLayer.removeFromSuperlayer()
         self.tagImageView.removeFromSuperview()
-        self.breakButton.frame.size.width = 130
+        self.breakButton.applyDesign(color: darkRed)
+        self.breakButton.frame.size.width = 110
         self.breakButton.frame.size.height = 75
-        self.breakButton.center.x = self.view.center.x + 110
+        self.breakButton.center.x = self.view.center.x + 120
         self.breakButton.backgroundColor = darkRed
         self.breakButton.center.y = self.timeL.center.y + 100
         self.breakButton.layer.cornerRadius = 25
@@ -412,8 +417,6 @@ class TimerController: UIViewController {
         
         self.breakButton.isUserInteractionEnabled = true
         self.view.addSubview(self.breakButton)
-        self.view.addSubview(self.breakShadow)
-        self.view.insertSubview(self.breakButton, aboveSubview: self.breakShadow)
         
         self.breakButtonLbl.text = "Break"
         self.breakButtonLbl.sizeToFit()
@@ -422,9 +425,9 @@ class TimerController: UIViewController {
         self.view.addSubview(self.breakButtonLbl)
         
         
-        self.timerButton.center.x = self.view.center.x - 70
+        self.timerButton.center.x = self.view.center.x - 20
         self.timerButton.backgroundColor = darkPurple
-        
+        self.timerButton.applyDesign(color: darkPurple)
         self.timeL.numberOfLines = 2
         self.timeL.text = "Let's Go \nAgain!"
         self.timeL.font = UIFont(name: "Menlo-Bold", size: 30)
@@ -432,11 +435,82 @@ class TimerController: UIViewController {
         self.timerButtonLbl.sizeToFit()
         self.timerButtonLbl.center.x = self.timerButton.center.x
         
-        self.shadowView.center.x = self.view.center.x - 70
         self.imageView?.image = UIImage(named: "chest")
         self.view.addSubview(self.timerButtonLbl)
+        
+        let tappedDF = UITapGestureRecognizer(target: self, action: #selector(dfTapped))
+        deepFocusView.addGestureRecognizer(tappedDF)
+        deepFocusView.translatesAutoresizingMaskIntoConstraints = false
+        deepFocusLabel.translatesAutoresizingMaskIntoConstraints = false
+        deepFocusView.backgroundColor = superLightLavender
+        view.addSubview(deepFocusView)
+        deepFocusView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10).isActive = true
+        deepFocusView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -115).isActive = true
+        deepFocusView.heightAnchor.constraint(equalToConstant: 65).isActive = true
+        deepFocusView.widthAnchor.constraint(equalToConstant: 65).isActive = true
+        deepFocusView.layer.cornerRadius = 25
+        deepFocusView.applyDesign(color: superLightLavender)
+        
+        self.deepFocusLabel.text = "🧠"
+        self.deepFocusLabel.font = UIFont(name: "Menlo", size: 35)
+        self.deepFocusLabel.sizeToFit()
+        deepFocusView.addSubview(deepFocusLabel)
+        deepFocusLabel.center(in: deepFocusView)
+       
     }
     
+    @objc func dfTapped() {
+         let appearance = SCLAlertView.SCLAppearance(
+                  kWindowWidth: 300,
+                  kWindowHeight: 100,
+                  kButtonHeight: 35,
+                  kTitleFont: UIFont(name: "Menlo", size: 18)!,
+                  kTextFont: UIFont(name: "Menlo", size: 15)!,
+                  showCloseButton: true,
+                  showCircularIcon: false,
+                  hideWhenBackgroundViewIsTapped: true
+              )
+        let title = UILabel()
+        title.translatesAutoresizingMaskIntoConstraints = false
+        title.numberOfLines = 0
+        title.text = "🧠 Deep Focus Mode"
+        title.font = UIFont(name: "Menlo-Bold", size: 18)
+        let description = UILabel()
+        description.translatesAutoresizingMaskIntoConstraints = false
+        description.numberOfLines = 0
+        description.text = "Leaving the app  will\ncause your treasure\nsearch to end"
+        description.font = UIFont(name: "Menlo", size: 15)
+        let alertView = SCLAlertView(appearance: appearance)
+        let subview = UIView(frame: CGRect(x:0,y:0,width:300,height:100))
+        subview.addSubview(self.dfmSwitch)
+        dfmSwitch.translatesAutoresizingMaskIntoConstraints = false
+        dfmSwitch.leadingAnchor.constraint(equalTo: subview.leadingAnchor, constant: 10).isActive = true
+        dfmSwitch.topAnchor.constraint(equalTo: subview.topAnchor, constant: 30).isActive = true
+        dfmSwitch.addTarget(self, action: #selector(switchToggled), for: .valueChanged)
+        subview.addSubview(title)
+        title.leadingAnchor.constraint(equalTo: dfmSwitch.trailingAnchor, constant: 15).isActive = true
+        title.topAnchor.constraint(equalTo: subview.topAnchor, constant: 10).isActive = true
+        subview.addSubview(description)
+        description.leadingAnchor.constraint(equalTo: dfmSwitch.trailingAnchor, constant: 15).isActive = true
+        description.topToBottom(of: title, offset: 5)
+//        let showTimeout = SCLButton.ShowTimeoutConfiguration(prefix: "(", suffix: " s)")
+//        alertView.addButton("Done", backgroundColor: brightPurple, textColor: .white, showTimeout: showTimeout) {
+//            return
+//        }
+        
+        alertView.customSubview = subview
+        alertView.showCustom("Select Mode", subTitle: "", color: .white, icon: UIImage())
+    }
+    
+    @objc func switchToggled(sender:UISwitch!) {
+        if (sender.isOn == true){
+              deepFocusMode = true
+          }
+          else{
+              deepFocusMode = false
+        }
+        saveToRealm()
+    }
   
     func updateCoinLabel(numCoins: Int) -> Int? {
         let prevNumOfCoins = numCoins

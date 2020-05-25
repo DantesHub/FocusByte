@@ -122,6 +122,7 @@ class NameViewController: UIViewController {
         UserToAdd.email = Auth.auth().currentUser?.email
         UserToAdd.tagDictionary = tagList
         UserToAdd.coins = 0
+        UserToAdd.deepFocusMode = true
         UserToAdd.isLoggedIn = true
         loggedOut = false
         UserToAdd.writeToRealm()

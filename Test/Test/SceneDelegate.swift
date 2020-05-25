@@ -17,7 +17,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let winScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: winScene)
-        let nc =  UINavigationController(rootViewController: StoreController() )
+        let nc =  UINavigationController(rootViewController: WelcomeViewController() )
         window?.rootViewController = nc
         window?.makeKeyAndVisible()
     }
@@ -55,7 +55,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             sleep(1)
         }
         killDate = Date().addingTimeInterval(10000000)
-         if isPlaying && UIScreen.main.brightness != 0 && counter > 6 {
+         if isPlaying && UIScreen.main.brightness != 0 && counter > 6 && deepFocusMode == true{
             let center = UNUserNotificationCenter.current()
             let content = UNMutableNotificationContent()
             content.title = "Come back!"

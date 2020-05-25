@@ -216,12 +216,31 @@ extension TimerController {
                     self.view.addSubview(self.timeL)
                     isPlaying = false
                     self.enteredForeground = false
+                    self.createAlert()
                 } else {
                     print("Document does not exist")
                 }
             }
         }
         return
+    }
+    
+    //MARK: - Alert Func
+    func createAlert() {
+        let appearance = SCLAlertView.SCLAppearance(
+            kWindowWidth: 300,
+            kWindowHeight: 300,
+            kButtonHeight: 35,
+            kTitleFont: UIFont(name: "Menlo", size: 18)!,
+            kTextFont: UIFont(name: "Menlo", size: 15)!,
+            showCloseButton: true,
+            showCircularIcon: false,
+            hideWhenBackgroundViewIsTapped: true
+        )
+        let alertView = SCLAlertView(appearance: appearance)
+        let subview = UIView(frame: CGRect(x:0,y:0,width:300,height:100))
+        alertView.customSubview = subview
+        alertView.showCustom("You Got...", subTitle: "", color: .white, icon: UIImage())
     }
     
     
@@ -319,6 +338,7 @@ extension TimerController {
                     try uiRealm.write {
                         result.setValue(Int(coinsL.text!)!, forKey: "coins")
                         result.setValue(exp, forKey: "exp")
+                        result.setValue(deepFocusMode, forKey: "deepFocusMode")
                         result.setValue(timeData, forKey: "timeArray")
                     }
                 } catch {
