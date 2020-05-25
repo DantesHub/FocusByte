@@ -23,11 +23,11 @@ var totalTime = 0
 var isPro = true
 var timeData = [String]()
 var isPlaying = false
+var tagSelected = "unset"
+var tagColor = "gray"
 class TimerController: UIViewController {
     //MARK: - Properties
     var results: Results<User>!
-    var tagSelected = "baking"
-    var tagColor = "gray"
     let shapeLayer = CAShapeLayer()
     let trackLayer = CAShapeLayer()
     var time = 600
@@ -254,10 +254,7 @@ class TimerController: UIViewController {
     
     
     @objc func handleTap(_ sender: UITapGestureRecognizer? = nil) {
-        if !self.view.subviews.contains(quoteLabel) && self.view.subviews.contains(breakL) {
-            print("add quote label")
-            view.addSubview(quoteLabel)
-        }
+    
         if let colon = self.timeL.text?.firstIndex(of: ":") {
             durationString = String((self.timeL.text?[..<colon])!)
         }
@@ -265,6 +262,10 @@ class TimerController: UIViewController {
             createStartUI()
             return
         }
+        if !self.view.subviews.contains(quoteLabel) && self.view.subviews.contains(breakL) {
+                view.addSubview(quoteLabel)
+            }
+        
         if isPlaying {
             giveUpAlert()
         } else if durationString != "0"{

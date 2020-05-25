@@ -11,17 +11,18 @@ import TinyConstraints
 import RealmSwift
 
 var tagDictionary = [Tag]()
-class TagTableView: UIView{
+class TagTableView: UIView, CustomCellUpdater {
     //MARK: - Views + Properties
     var results: Results<User>!
     var isSearchBarEmpty: Bool {
       return searchBar.text?.isEmpty ?? true
     }
+    var checked = [Bool]()
      var filteredTags = [Tag]()
      let tableView = UITableView()
     var searchBar: UISearchBar! = UISearchBar()
     var isFiltering: Bool = false
-    
+
      //MARK: - Init
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -41,9 +42,8 @@ class TagTableView: UIView{
     func setUpViews() {
         self.backgroundColor = UIColor.rgbColor(r: 0, g: 0, b: 0, a: 0.5)
         self.addSubview(tableView)
-       
-
         tableView.dataSource = self
+        tableView.delegate = self
         tableView.register(TagViewCell.self, forCellReuseIdentifier: K.tagCell)
         tableView.layer.cornerRadius = 25
         tableView.edgesToSuperview(insets: TinyEdgeInsets(top: -150, left: 50, bottom: 550
@@ -64,6 +64,7 @@ class TagTableView: UIView{
         tableView.tableHeaderView = searchBar
     }
     func setUpTagDictionary() {
+        print("got here")
         tagDictionary = [Tag]()
         results = uiRealm.objects(User.self)
         for result  in results {
@@ -82,9 +83,41 @@ class TagTableView: UIView{
       }
       tableView.reloadData()
     }
+    
+    func updateTableView() {
+        tableView.reloadData()
+    }
+    
+    func updateRealm(tag: Tag) {
+        tagSelected = tag.name
+        tagColor = tag.color
+        var tagDict = Array<Tag>()
+        for result  in results {
+            if result.isLoggedIn == true {
+                do {
+                    try uiRealm.write {
+                        tagDict = result.tagDictionary.map{ $0 }
+                        for tagg in tagDict {
+                            if tagg.name == tag.name && tagg.color == tag.color {
+                                tagg.selected = true
+                            } else {
+                                tagg.selected = false
+                            }
+                        }
+                        result.setValue(tagDict, forKey: "tagDictionary")
+                    }
+                } catch {
+                    print(error)
+                }
+            }
+        }
+        tagDictionary = tagDict.map { $0 }
+        tagDictionary.insert(Tag(name: "Create Tag", color: "plus", selected: false), at: 0)
+        tableView.reloadData()
+    }
 }
 
-extension TagTableView: UITableViewDataSource  {
+extension TagTableView: UITableViewDataSource, UITableViewDelegate{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
           if isFiltering {
           return filteredTags.count
@@ -92,7 +125,7 @@ extension TagTableView: UITableViewDataSource  {
         return tagDictionary.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let tagCell: Tag
         if isFiltering {
             tagCell = filteredTags[indexPath.row]
@@ -100,15 +133,29 @@ extension TagTableView: UITableViewDataSource  {
             tagCell = tagDictionary[indexPath.row]
         }
         let cell = TagViewCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: K.tagCell, color: tagCell.color, title: tagCell.name)
-       
+        cell.delegate = self
         cell.accessoryType = tagCell.selected ? .checkmark : .none
         return cell
     }
+   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+       if let cell = tableView.cellForRow(at: indexPath) {
+           cell.accessoryType = .checkmark
+            updateRealm(tag: tagDictionary[indexPath.row])
+       }
+    UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: .curveEaseOut, animations: {
+        self.tableView.transform = CGAffineTransform(translationX: 0, y: 1000)
+    }) { (_) in self.removeFromSuperview()}
+   }
+
+   func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+       if let cell = tableView.cellForRow(at: indexPath) {
+           cell.accessoryType = .none
+       }
+   }
+
 }
 
 extension TagTableView: UISearchBarDelegate {
-
-    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
        filterContentForSearchText(searchBar.text!)
     }

@@ -17,7 +17,7 @@ let lightLavender = hexStringToUIColor(hex: "#ABA9FF")
 let commonBoxColor = hexStringToUIColor(hex: "#A73CDE")
 let backgroundColor = hexStringToUIColor(hex: "#C7B6F5")
 let diamond = hexStringToUIColor(hex: "29d4ff")
-let gold = hexStringToUIColor(hex: "fcff00")
+let gold = hexStringToUIColor(hex: "#F5EB53")
 let goldBox = hexStringToUIColor(hex: "#ECAF3F")
 let darkGold = hexStringToUIColor(hex: "#F7AE03")
 let green = hexStringToUIColor(hex: "#196300")
@@ -26,6 +26,7 @@ let superLightLavender = hexStringToUIColor(hex: "#E3DAFA")
 let darkRed = hexStringToUIColor(hex: "#811301")
 let darkPurple = hexStringToUIColor(hex:"#5E558A")
 let darkGreen = hexStringToUIColor(hex: "#165C12")
+let turq = hexStringToUIColor(hex: "#3CAEA2")
 let dayKey = "io.focusbyte.day"
 let weekKey = "io.focusbyte.week"
 let killKey = "io.focusbyte.kill"
@@ -56,8 +57,18 @@ var workTag = Tag(name: "Work", color: "green", selected: false)
             return UIColor.black
         case "brown":
             return UIColor.brown
+        case "pink":
+            return UIColor.systemPink.withAlphaComponent(0.5)
+        case "orange":
+            return UIColor.orange.withAlphaComponent(0.5)
         case "yellow":
-            return UIColor.yellow
+            return gold
+        case "turq":
+            return turq
+        case "skyblue":
+            return UIColor.blue.withAlphaComponent(0.5)
+        case "lightgreen":
+            return UIColor.green.withAlphaComponent(0.5)
         case "red":
             return UIColor.red
         case "green":

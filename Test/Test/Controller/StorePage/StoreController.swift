@@ -7,9 +7,9 @@
 //
 
 import UIKit
-
+import TinyConstraints
 class StoreController: UIViewController {
-    //MARK: - Properties
+    //MARK: - Properties & Views
     var mysteryBox: UIView!
     let mysteryBoxImage = UIImage(named: "commonmysterybox")
     var mysteryBoxImageView: UIImageView!
@@ -19,8 +19,27 @@ class StoreController: UIViewController {
     var chestBox: UIView!
     var clothes: UIView!
     var delegate: ContainerController!
-
-  
+    var purseImageView: UIImageView = {
+       let iv = UIImageView()
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        iv.image = UIImage(named: "greenpurse")
+        iv.sizeToFit()
+        return iv
+    }()
+    var sneakerImageView: UIImageView = {
+        let iv = UIImageView()
+         iv.translatesAutoresizingMaskIntoConstraints = false
+         iv.image = #imageLiteral(resourceName: "sneakers")
+         iv.sizeToFit()
+         return iv
+     }()
+    var beanieImageView: UIImageView = {
+          let iv = UIImageView()
+           iv.translatesAutoresizingMaskIntoConstraints = false
+           iv.image = #imageLiteral(resourceName: "bluebeanie")
+           iv.sizeToFit()
+           return iv
+       }()
     var contentViewSize: CGSize {
         get {
             var height: CGFloat = 0.0
@@ -134,8 +153,18 @@ class StoreController: UIViewController {
         clothes.addSubview(clothesBoxLabel)
         clothesBoxLabel.topAnchor.constraint(equalTo: clothes.topAnchor, constant: 15).isActive = true
         clothesBoxLabel.leftAnchor.constraint(equalTo: clothes.leftAnchor, constant: 30).isActive = true
+        clothesBoxLabel.addSubview(purseImageView)
+        purseImageView.trailingAnchor.constraint(equalTo: clothes.trailingAnchor, constant: -15).isActive = true
+        purseImageView.topAnchor.constraint(equalTo: clothes.topAnchor, constant: 0).isActive = true
         
-    
+        clothes.addSubview(sneakerImageView)
+        sneakerImageView.topToBottom(of: clothesBoxLabel, offset: 25)
+        sneakerImageView.leadingAnchor.constraint(equalTo: clothes.leadingAnchor,constant: 40).isActive = true
+        
+        clothes.addSubview(beanieImageView)
+        beanieImageView.topToBottom(of: purseImageView, offset: 0)
+        beanieImageView.trailingAnchor.constraint(equalTo: clothes.trailingAnchor, constant: -45).isActive = true
+        
     }
     
     //MARK: - Handlers

@@ -37,6 +37,11 @@ class Tag: Object {
     }
     
 }
+extension Tag {
+    static func == (lhs: Tag, rhs: Tag) -> Bool {
+        return lhs.name == rhs.name && lhs.color == rhs.color
+    }
+}
 
 extension User {
     func writeToRealm() {

@@ -28,7 +28,7 @@ class StatisticsController: UIViewController, ChartViewDelegate{
                     height = 350
                     //print("iphone 8plus")
                 case 2436:
-                    height = 300
+                    height = 280
                     //print("IPHONE X, IPHONE XS, IPHONE 11 PRO")
                 case 2688:
                     height = 250
@@ -53,8 +53,6 @@ class StatisticsController: UIViewController, ChartViewDelegate{
     lazy var pieChartView: PieChartView = {
         let pieView = PieChartView()
         pieView.backgroundColor = superLightLavender
-        pieView.clipsToBounds = true
-        pieView.layer.cornerRadius = 25
         return pieView
     }()
     lazy var scrollView: UIScrollView = {
@@ -76,6 +74,7 @@ class StatisticsController: UIViewController, ChartViewDelegate{
            let mb = MenuBar()
            return mb
     }()
+    var descriptionLabel = UILabel()
     var results: Results<User>!
     var timeData = [String]()
     var dateLabel = UILabel()
@@ -376,6 +375,16 @@ class StatisticsController: UIViewController, ChartViewDelegate{
         containerView.addSubview(pieChartView)
         pieChartView.edgesToSuperview(excluding: .top, insets:  TinyEdgeInsets(top: 0, left: 25, bottom: 95, right: 25))
         pieChartView.height(300)
+        
+        descriptionLabel.numberOfLines = 0
+        descriptionLabel.text = "💡 The percentage of time you spent\non different tags during the week,\nmonth or year"
+        descriptionLabel.textColor = .white
+        descriptionLabel.font = UIFont(name: "Menlo", size: 15)
+        containerView.addSubview(descriptionLabel)
+        descriptionLabel.topToBottom(of: pieChartView, offset: 10)
+        descriptionLabel.centerX(to: view)
+        
+
     }
     func createObservers() {
            NotificationCenter.default.addObserver(self, selector: #selector(StatisticsController.updateBarChartToWeek(notificaton:)), name: NSNotification.Name(rawValue: weekKey), object: nil)

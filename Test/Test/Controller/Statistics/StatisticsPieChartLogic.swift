@@ -17,8 +17,8 @@ extension StatisticsController {
         formatter.percentSymbol = "%"
         data.setValueFormatter(DefaultValueFormatter(formatter: formatter))
         pieChartView.data = data
-        pieChartView.drawSlicesUnderHoleEnabled = true
-        pieChartView.legend.calculateDimensions(labelFont: UIFont(name: "Menlo", size: 10)!, viewPortHandler: .init(width: 1000, height: 1000))
+        pieChartView.drawEntryLabelsEnabled = false
+        pieChartView.legend.calculateDimensions(labelFont: UIFont(name: "Menlo", size: 15)!, viewPortHandler: .init(width: 1000, height: 1000))
 
     }
     
@@ -33,8 +33,8 @@ extension StatisticsController {
         formatter.percentSymbol = "%"
         data.setValueFormatter(DefaultValueFormatter(formatter: formatter))
         pieChartView.data = data
-        pieChartView.drawSlicesUnderHoleEnabled = true
-        pieChartView.legend.calculateDimensions(labelFont: UIFont(name: "Menlo", size: 10)!, viewPortHandler: .init(width: 1000, height: 1000))
+        pieChartView.drawEntryLabelsEnabled = false
+        pieChartView.legend.calculateDimensions(labelFont: UIFont(name: "Menlo", size: 15)!, viewPortHandler: .init(width: 1000, height: 1000))
     }
     
     final func createYearPieChart() {
@@ -48,8 +48,8 @@ extension StatisticsController {
         formatter.percentSymbol = "%"
         data.setValueFormatter(DefaultValueFormatter(formatter: formatter))
         pieChartView.data = data
-        pieChartView.drawSlicesUnderHoleEnabled = true
-        pieChartView.legend.calculateDimensions(labelFont: UIFont(name: "Menlo", size: 10)!, viewPortHandler: .init(width: 100, height: 100))
+        pieChartView.drawEntryLabelsEnabled = false
+        pieChartView.legend.calculateDimensions(labelFont: UIFont(name: "Menlo", size: 15)!, viewPortHandler: .init(width: 100, height: 100))
     }
     
     

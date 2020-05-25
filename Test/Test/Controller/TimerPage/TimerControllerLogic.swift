@@ -157,7 +157,7 @@ extension TimerController {
                             totalSessionsForDay = String(Int(lastDate[dashIndexOffset..<plusIndex!])! + 1)
                             //Removing tag, adding time and putting it back into place
                             var tags = String(lastDate[plusIndex!...])
-                            if let range: Range<String.Index> = tags.range(of: self.tagSelected) {
+                            if let range: Range<String.Index> = tags.range(of: tagSelected) {
                                 idx = tags.distance(from: tags.startIndex, to: range.upperBound) + 1
                                 let indx = tags.index(tags.startIndex, offsetBy: idx)
                                 let nonChoppedTags = String(tags[..<indx])
@@ -173,7 +173,7 @@ extension TimerController {
                                 finalProduct = nonChoppedTags + choppedTags
                             } else {
                                 //first time using tag
-                                tags.append(contentsOf: "+\(self.tagSelected)/\(self.howMuchTime/60)?\(self.tagColor)")
+                                tags.append(contentsOf: "+\(tagSelected)/\(self.howMuchTime/60)")
                                 finalProduct = tags
                             }
                             
@@ -183,14 +183,13 @@ extension TimerController {
                             //first session for that day
                             fbDate = dateFormatterGet.string(from: Date())
                             totalTimeForDay = String(self.howMuchTime/60)
-                            timeData.append(fbDate + "=" + totalTimeForDay + "-1" + "+\(self.tagSelected)/\(self.howMuchTime/60)")
+                            timeData.append(fbDate + "=" + totalTimeForDay + "-1" + "+\(tagSelected)/\(self.howMuchTime/60)")
                         }
-                        
                     } else {
                         //very first session of account
                         fbDate = dateFormatterGet.string(from: Date())
                         totalTimeForDay = String(self.howMuchTime/60)
-                        timeData.append(fbDate + "=" + totalTimeForDay + "-1" + "+\(self.tagSelected)/\(self.howMuchTime/60)")
+                        timeData.append(fbDate + "=" + totalTimeForDay + "-1" + "+\(tagSelected)/\(self.howMuchTime/60)")
                     }
                     //update data in firebase
                     if let _ = Auth.auth().currentUser?.email {

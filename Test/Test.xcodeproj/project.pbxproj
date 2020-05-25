@@ -56,6 +56,7 @@
 		FED1FFEA244255900068FD5E /* StoreController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED1FFE9244255900068FD5E /* StoreController.swift */; };
 		FED1FFEF24453EC80068FD5E /* ContainerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED1FFEE24453EC80068FD5E /* ContainerController.swift */; };
 		FED36A15247750B8005DE0FC /* TagViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED36A14247750B8005DE0FC /* TagViewCell.swift */; };
+		FED36A17247AEA41005DE0FC /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED36A16247AEA41005DE0FC /* Alert.swift */; };
 		FED6F636243E69C400553996 /* MenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED6F635243E69C400553996 /* MenuController.swift */; };
 		FED6F63A243E866400553996 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FED6F639243E866400553996 /* Main.storyboard */; };
 		FED6F63C243EA82700553996 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED6F63B243EA82700553996 /* Protocols.swift */; };
@@ -147,6 +148,7 @@
 		FED1FFE9244255900068FD5E /* StoreController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreController.swift; sourceTree = "<group>"; };
 		FED1FFEE24453EC80068FD5E /* ContainerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerController.swift; sourceTree = "<group>"; };
 		FED36A14247750B8005DE0FC /* TagViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagViewCell.swift; sourceTree = "<group>"; };
+		FED36A16247AEA41005DE0FC /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
 		FED6F635243E69C400553996 /* MenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuController.swift; sourceTree = "<group>"; };
 		FED6F639243E866400553996 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		FED6F63B243EA82700553996 /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
@@ -291,6 +293,7 @@
 				FE577C9E247491B900042819 /* BarChartDataUtil.swift */,
 				FE577CA224758EE700042819 /* PieChartUtil.swift */,
 				FE577CA52475A60300042819 /* FirebaseStringUtil.swift */,
+				FED36A16247AEA41005DE0FC /* Alert.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -370,8 +373,8 @@
 				FECA7A8024390D2600763504 /* Login */,
 				FED1FFE8244255730068FD5E /* TimerPage */,
 				FEC28338244CFCAB00098413 /* AvatarController.swift */,
-				FEF00174243FB635002D6C78 /* SettingsController.swift */,
 				FED6F635243E69C400553996 /* MenuController.swift */,
+				FEF00174243FB635002D6C78 /* SettingsController.swift */,
 				FED1FFEE24453EC80068FD5E /* ContainerController.swift */,
 				FE324974246CB0220090759B /* InventoryController.swift */,
 				FE577C9B24748CFE00042819 /* Statistics */,
@@ -712,6 +715,7 @@
 				E1593605242ACE6F0050E914 /* SceneDelegate.swift in Sources */,
 				FED6F640243EB3A200553996 /* MenuOption.swift in Sources */,
 				FE5395C124311AD100DA83C1 /* Constants.swift in Sources */,
+				FED36A17247AEA41005DE0FC /* Alert.swift in Sources */,
 				FE61EA982477256000A6AE25 /* ImageAlertController.swift in Sources */,
 				FED1FFEA244255900068FD5E /* StoreController.swift in Sources */,
 				FE32497B246F106D0090759B /* MenuBar.swift in Sources */,

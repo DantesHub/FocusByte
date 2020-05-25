@@ -10,6 +10,7 @@ import UIKit
 import Firebase
 import RealmSwift
 
+
 class NameViewController: UIViewController {
     //MARK: - Properties
     var nameInput = UITextField()
@@ -18,7 +19,7 @@ class NameViewController: UIViewController {
     let db = Firestore.firestore()
     let container: UIView = UIView()
     var spinner = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.large)
-    var tagDict = ["unset":"gray"]
+    var tagDict = ["unset":"gray", "Study":"red", "Work":"green", "Read":"blue"]
     //MARK: - init
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,7 +39,7 @@ class NameViewController: UIViewController {
                     "gender": chosenGender,
                     "name": nameInput.text!,
                     "coins": 0,
-                    "tags": ["unset":"gray", "Study":"red", "Work":"green", "Read":"blue"]
+                    "tags": tagDict
                 ]) { (error) in
                     if let e = error {
                         print("There was a issue saving data to firestore \(e) ")
@@ -101,7 +102,7 @@ class NameViewController: UIViewController {
     
     func showSpinner() {
         spinner.hidesWhenStopped = true
-        container.frame = CGRect(x: 0, y: 0, width: 1000, height: 1000) // Set X and Y whatever you want
+        container.frame = CGRect(x: 0, y: 0, width: 1000, height: 1000)
         container.backgroundColor = .clear
         spinner.center = self.view.center
         view.addSubview(container)

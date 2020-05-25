@@ -193,7 +193,6 @@ class LoginViewController: UIViewController {
                     }
                     if let tags = document["tags"] {
                         tagDict = tags as! [String : String]
-                        print(tagDict)
                     }
                 } else {
                     print("Document does not exist")
@@ -204,10 +203,14 @@ class LoginViewController: UIViewController {
                     tagVar.name = tag.key
                     tagVar.color = tag.value
                     tagVar.selected = tag.key == "unset" ? true : false
-                    tagList.append(tagVar)
+                    if tag.key == "unset" {
+                        tagList.insert(tagVar, at: 0)
+                    } else {
+                        tagList.append(tagVar)
+                    }
                 }
                 //import preset tags
-                realmUser.timeArray = timeD 
+                realmUser.timeArray = timeD
                 realmUser.name = name
                 realmUser.tagDictionary = tagList
                 realmUser.email = Auth.auth().currentUser?.email
