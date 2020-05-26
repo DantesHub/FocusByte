@@ -52,6 +52,20 @@ class TimerController: UIViewController {
         }
         return dswitch
     }()
+    lazy var expImageView: UIImageView = {
+        let iv = UIImageView()
+        iv.image = #imageLiteral(resourceName: "exp")
+        iv.sizeToFit()
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        return iv
+    }()
+    lazy var coinImageView: UIImageView = {
+         let iv = UIImageView()
+         iv.image = #imageLiteral(resourceName: "coins")
+         iv.sizeToFit()
+         iv.translatesAutoresizingMaskIntoConstraints = false
+         return iv
+     }()
     var howMuchTime: Int = 0
     var mins = 0
     var secs = 0
@@ -92,6 +106,7 @@ class TimerController: UIViewController {
 
     
     override func viewWillAppear(_ animated: Bool) {
+        createAlert()
         results = uiRealm.objects(User.self)
         for result  in results {
             if result.isLoggedIn == true {
@@ -147,28 +162,9 @@ class TimerController: UIViewController {
         timeL.lineBreakMode = .byClipping
         view.addSubview(timeL)
         
-        timerButton.frame.size.width = 140
-        timerButton.frame.size.height = 75
-        timerButton.center.x = view.center.x
-        timerButton.backgroundColor = darkPurple
-        timerButton.center.y = timeL.center.y + 100
-        timerButton.layer.cornerRadius = 25
-        timerButton.applyDesign(color: darkPurple)
-        timerButtonLbl.font = UIFont(name: "Menlo-Bold", size: 20)
-        
-        if !isPlaying {
-            timerButtonLbl.text = "Start"
-        }
         view.addSubview(timerButton)
-        
-        
-        timerButtonLbl.sizeToFit()
-        timerButtonLbl.textColor = .white
-        timerButtonLbl.center.x = timerButton.center.x
-        timerButtonLbl.center.y = timerButton.center.y
-        view.addSubview(timerButtonLbl)
-        
-        
+        createTimerButton()
+        createTimerButtonLbl()
         let breakTapped = UITapGestureRecognizer(target: self, action: #selector(self.breakPressed))
         self.breakButton.addGestureRecognizer(breakTapped)
         
@@ -182,43 +178,8 @@ class TimerController: UIViewController {
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
         timerButton.addGestureRecognizer(tap)
         
-        tagImageView.frame.size.width = 70
-        tagImageView.frame.size.height = 70
-        tagImageView.center.x = view.center.x - 140
-        tagImageView.center.y = view.center.y + 260
-        tagImageView.isUserInteractionEnabled = true
-        tagImageView.layer.cornerRadius = 10
-        tagImageView.image = #imageLiteral(resourceName: "tagIcon")
-        tagImageView.backgroundColor = superLightLavender
-        tagImageView.layer.cornerRadius = 25
-        tagImageView.contentMode = .scaleAspectFit
-        tagImageView.layer.shadowColor = UIColor.black.cgColor
-        tagImageView.layer.shadowOffset = CGSize(width: 5, height: 5)
-        tagImageView.layer.shadowRadius = 25
-        tagImageView.layer.shadowOpacity = 0.5
-        view.addSubview(tagImageView)
-        let tagTapped = UITapGestureRecognizer(target: self, action: #selector(tappedTag))
-        tagImageView.addGestureRecognizer(tagTapped)
-        
-        xImageView.frame.size.width = 70
-        xImageView.frame.size.height = 70
-        xImageView.center.x = view.center.x + 140
-        xImageView.center.y = view.center.y + 260
-        xImageView.isUserInteractionEnabled = true
-        xImageView.layer.cornerRadius = 10
-        let largeConfiguration = UIImage.SymbolConfiguration(weight: .bold)
-        let img = UIImage(systemName: "xmark", withConfiguration: largeConfiguration)?.withTintColor(.white, renderingMode:.alwaysOriginal)
-        xImageView.image = img
-        let tappedX = UITapGestureRecognizer(target: self, action: #selector(xTapped))
-        xImageView.addGestureRecognizer(tappedX)
-        xImageView.contentMode = .center
-        xImageView.backgroundColor = darkRed
-        xImageView.layer.cornerRadius = 25
-        xImageView.layer.shadowColor = UIColor.black.cgColor
-        xImageView.layer.shadowOffset = CGSize(width: 5, height: 5)
-        xImageView.layer.shadowRadius = 25
-        xImageView.layer.shadowOpacity = 0.5
-        view.addSubview(xImageView)
+        createXImageView()
+        createTagImageView()
         
         view.backgroundColor = backgroundColor
         navigationItem.title = "Home"
@@ -247,6 +208,86 @@ class TimerController: UIViewController {
         view.addSubview(tagTableView)
         
     }
+    //MARK: - Helper UI Funcs
+        private final func createTimerButtonLbl() {
+            timerButtonLbl.translatesAutoresizingMaskIntoConstraints = false
+            if !isPlaying {
+                timerButtonLbl.text = "Start"
+            } else {
+                timerButtonLbl.text = "Give Up"
+            }
+            
+            timerButtonLbl.sizeToFit()
+            timerButtonLbl.textColor = .white
+            timerButton.addSubview(timerButtonLbl)
+            timerButtonLbl.center(in: timerButton)
+            timerButtonLbl.font = UIFont(name: "Menlo-Bold", size: 20)
+        }
+    
+    private final func createTimerButton() {
+        timerButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(timerButton)
+        timerButton.widthAnchor.constraint(equalToConstant: 140).isActive = true
+        timerButton.heightAnchor.constraint(equalToConstant: 75).isActive = true
+        timerButton.centerX(to: view)
+        timerButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -80).isActive = true
+        timerButton.backgroundColor = darkPurple
+        timerButton.layer.cornerRadius = 25
+        timerButton.applyDesign(color: darkPurple)
+    }
+       
+       private final func createXImageView() {
+           xImageView.translatesAutoresizingMaskIntoConstraints = false
+           view.addSubview(xImageView)
+           xImageView.height(70)
+           xImageView.width(70)
+           xImageView.leadingAnchor.constraint(equalTo: timerButton.trailingAnchor, constant: 20).isActive = true
+           xImageView.centerYAnchor.constraint(equalTo: timerButton.centerYAnchor).isActive = true
+           xImageView.isUserInteractionEnabled = true
+           xImageView.layer.cornerRadius = 10
+           let largeConfiguration = UIImage.SymbolConfiguration(weight: .bold)
+           let img = UIImage(systemName: "xmark", withConfiguration: largeConfiguration)?.withTintColor(.white, renderingMode:.alwaysOriginal)
+           xImageView.image = img
+           let tappedX = UITapGestureRecognizer(target: self, action: #selector(xTapped))
+           xImageView.addGestureRecognizer(tappedX)
+           xImageView.contentMode = .center
+           xImageView.backgroundColor = darkRed
+           xImageView.applyDesign(color: darkRed)
+       }
+       
+       private final func createTagImageView() {
+           tagImageView.translatesAutoresizingMaskIntoConstraints = false
+           tagImageView.height(70)
+           tagImageView.width(70)
+           view.addSubview(tagImageView)
+           tagImageView.trailingAnchor.constraint(equalTo: timerButton.leadingAnchor, constant: -20).isActive = true
+           tagImageView.centerYAnchor.constraint(equalTo: timerButton.centerYAnchor).isActive = true
+           tagImageView.isUserInteractionEnabled = true
+           tagImageView.layer.cornerRadius = 10
+           tagImageView.image = #imageLiteral(resourceName: "tagIcon")
+           tagImageView.backgroundColor = superLightLavender
+           tagImageView.layer.cornerRadius = 25
+           tagImageView.contentMode = .scaleAspectFit
+           tagImageView.applyDesign(color: superLightLavender)
+           let tagTapped = UITapGestureRecognizer(target: self, action: #selector(tappedTag))
+           tagImageView.addGestureRecognizer(tagTapped)
+       }
+    
+    final func createStartUI() {
+        timerButton.removeFromSuperview()
+        createTimerButton()
+        createXImageView()
+        createTagImageView()
+        createTimerButtonLbl()
+        timerButtonLbl.text = "Start"
+        imageView?.image = UIImage(named: "chest")
+        timeL.font = UIFont(name: "Menlo-Bold", size: 65)
+        breakButton.removeFromSuperview()
+        breakButtonLbl.removeFromSuperview()
+        deepFocusLabel.removeFromSuperview()
+        deepFocusView.removeFromSuperview()
+        createCircularSlider()
+    }
     
     
     //MARK: - Handlers
@@ -255,7 +296,6 @@ class TimerController: UIViewController {
     }
     
 
-    
     
     @objc func handleTap(_ sender: UITapGestureRecognizer? = nil) {
     
@@ -275,11 +315,9 @@ class TimerController: UIViewController {
         } else if durationString != "0"{
             isPlaying = true
             timerButtonLbl.text = "Give Up"
-            timerButtonLbl.sizeToFit()
-            timerButtonLbl.center.x = view.center.x
+            createTimerButtonLbl()
             timerButton.backgroundColor = darkRed
             imageView?.loadGif(name: "mapGif")
-            view.addSubview(timerButtonLbl)
             // create my track layer
             createShapeLayer()
             createBasicAnimation()
@@ -290,24 +328,6 @@ class TimerController: UIViewController {
             xImageView.removeFromSuperview()
             tagImageView.removeFromSuperview()
         }
-    }
-    func createStartUI() {
-        view.addSubview(xImageView)
-        view.addSubview(tagImageView)
-        timerButtonLbl.text = "Start"
-        timerButton.backgroundColor = darkPurple
-        timerButtonLbl.sizeToFit()
-        imageView?.image = UIImage(named: "chest")
-        timerButtonLbl.center.x = view.center.x
-        view.addSubview(timerButtonLbl)
-        timeL.font = UIFont(name: "Menlo-Bold", size: 65)
-        breakButton.removeFromSuperview()
-        breakButtonLbl.removeFromSuperview()
-        deepFocusLabel.removeFromSuperview()
-        deepFocusView.removeFromSuperview()
-        timerButton.center.x = view.center.x
-        timerButtonLbl.center.x = view.center.x
-        createCircularSlider()
     }
     
     
@@ -405,47 +425,31 @@ class TimerController: UIViewController {
         self.timerButtonLbl.removeFromSuperview()
         self.shapeLayer.removeFromSuperlayer()
         self.tagImageView.removeFromSuperview()
+        self.timerButton.removeFromSuperview()
+        self.xImageView.removeFromSuperview()
         self.breakButton.applyDesign(color: darkRed)
-        self.breakButton.frame.size.width = 110
-        self.breakButton.frame.size.height = 75
-        self.breakButton.center.x = self.view.center.x + 120
-        self.breakButton.backgroundColor = darkRed
-        self.breakButton.center.y = self.timeL.center.y + 100
-        self.breakButton.layer.cornerRadius = 25
-        self.breakButtonLbl.font = UIFont(name: "Menlo-Bold", size: 20)
-        self.breakButtonLbl.textColor = .white
-        
-        self.breakButton.isUserInteractionEnabled = true
-        self.view.addSubview(self.breakButton)
-        
-        self.breakButtonLbl.text = "Break"
-        self.breakButtonLbl.sizeToFit()
-        self.breakButtonLbl.center.x = self.breakButton.center.x
-        self.breakButtonLbl.center.y = self.breakButton.center.y
-        self.view.addSubview(self.breakButtonLbl)
-        
-        
-        self.timerButton.center.x = self.view.center.x - 20
-        self.timerButton.backgroundColor = darkPurple
-        self.timerButton.applyDesign(color: darkPurple)
+   
         self.timeL.numberOfLines = 2
         self.timeL.text = "Let's Go \nAgain!"
         self.timeL.font = UIFont(name: "Menlo-Bold", size: 30)
-        self.timerButtonLbl.text = "Timer"
-        self.timerButtonLbl.sizeToFit()
-        self.timerButtonLbl.center.x = self.timerButton.center.x
         
         self.imageView?.image = UIImage(named: "chest")
-        self.view.addSubview(self.timerButtonLbl)
+        
+        self.timerButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(timerButton)
+        self.timerButton.backgroundColor = darkPurple
+        self.timerButton.applyDesign(color: darkPurple)
+        timerButton.heightAnchor.constraint(equalToConstant: 75).isActive = true
+        timerButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 110).isActive = true
+        timerButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -80).isActive = true
         
         let tappedDF = UITapGestureRecognizer(target: self, action: #selector(dfTapped))
         deepFocusView.addGestureRecognizer(tappedDF)
         deepFocusView.translatesAutoresizingMaskIntoConstraints = false
-        deepFocusLabel.translatesAutoresizingMaskIntoConstraints = false
         deepFocusView.backgroundColor = superLightLavender
         view.addSubview(deepFocusView)
-        deepFocusView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10).isActive = true
-        deepFocusView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -115).isActive = true
+        deepFocusView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
+        deepFocusView.centerYAnchor.constraint(equalTo: timerButton.centerYAnchor).isActive = true
         deepFocusView.heightAnchor.constraint(equalToConstant: 65).isActive = true
         deepFocusView.widthAnchor.constraint(equalToConstant: 65).isActive = true
         deepFocusView.layer.cornerRadius = 25
@@ -456,7 +460,27 @@ class TimerController: UIViewController {
         self.deepFocusLabel.sizeToFit()
         deepFocusView.addSubview(deepFocusLabel)
         deepFocusLabel.center(in: deepFocusView)
-       
+        
+        createTimerButtonLbl()
+        timerButtonLbl.text = "Timer"
+        
+        self.view.addSubview(self.breakButton)
+        breakButton.translatesAutoresizingMaskIntoConstraints = false
+        breakButton.heightAnchor.constraint(equalToConstant: 75).isActive = true
+        breakButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
+        breakButton.centerYAnchor.constraint(equalTo: timerButton.centerYAnchor).isActive = true
+        breakButton.leadingAnchor.constraint(equalTo: timerButton.trailingAnchor, constant: 20).isActive = true
+        self.breakButton.backgroundColor = darkRed
+        self.breakButton.layer.cornerRadius = 25
+        self.breakButton.isUserInteractionEnabled = true
+        
+        self.breakButtonLbl.translatesAutoresizingMaskIntoConstraints = false
+        self.breakButtonLbl.font = UIFont(name: "Menlo-Bold", size: 20)
+        self.breakButtonLbl.textColor = .white
+        self.breakButtonLbl.text = "Break"
+        self.breakButtonLbl.sizeToFit()
+        self.breakButton.addSubview(self.breakButtonLbl)
+        breakButtonLbl.center(in: breakButton)
     }
     
     @objc func dfTapped() {
@@ -466,7 +490,7 @@ class TimerController: UIViewController {
                   kButtonHeight: 35,
                   kTitleFont: UIFont(name: "Menlo", size: 18)!,
                   kTextFont: UIFont(name: "Menlo", size: 15)!,
-                  showCloseButton: true,
+                  showCloseButton: false,
                   showCircularIcon: false,
                   hideWhenBackgroundViewIsTapped: true
               )

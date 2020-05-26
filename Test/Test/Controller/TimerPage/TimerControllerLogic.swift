@@ -13,7 +13,7 @@ import RealmSwift
 import FLAnimatedImage
 import AudioToolbox
 import SCLAlertView
-
+import TinyConstraints
 
 extension TimerController {
     //MARK: - Helper Functions
@@ -210,9 +210,7 @@ extension TimerController {
                     self.timeL.removeFromSuperview()
                     self.twoButtonSetup()
                     self.imageView?.image = #imageLiteral(resourceName: "chest-open")
-                    self.timeL.text = "Great job! You found \(self.coinsReceived!) coins and gained \(self.expReceived!) exp"
-                    self.timeL.font = UIFont(name: "Menlo-Bold", size: 20)
-                    self.timeL.numberOfLines = 3
+                    self.timeL.text = "Look at all \nthis Loot!"
                     self.view.addSubview(self.timeL)
                     isPlaying = false
                     self.enteredForeground = false
@@ -230,16 +228,42 @@ extension TimerController {
         let appearance = SCLAlertView.SCLAppearance(
             kWindowWidth: 300,
             kWindowHeight: 300,
-            kButtonHeight: 35,
-            kTitleFont: UIFont(name: "Menlo", size: 18)!,
+            kButtonHeight: 50,
+            kTitleFont: UIFont(name: "Menlo-Bold", size: 25)!,
             kTextFont: UIFont(name: "Menlo", size: 15)!,
-            showCloseButton: true,
+            showCloseButton: false,
             showCircularIcon: false,
-            hideWhenBackgroundViewIsTapped: true
+            hideWhenBackgroundViewIsTapped: true,
+            titleColor: brightPurple
         )
+        let expDesc = UILabel()
+        expDesc.translatesAutoresizingMaskIntoConstraints = false
+        let coinDesc = UILabel()
+        coinDesc.translatesAutoresizingMaskIntoConstraints = false
+        expDesc.font = UIFont(name: "Menlo", size: 25)
+        expDesc.text = "\(expReceived!) exp"
+        expDesc.sizeToFit()
+        coinDesc.font = UIFont(name: "Menlo", size: 25)
+        coinDesc.text = "\(coinsReceived!) coins"
+        coinDesc.sizeToFit()
         let alertView = SCLAlertView(appearance: appearance)
-        let subview = UIView(frame: CGRect(x:0,y:0,width:300,height:100))
+        let subview = UIView(frame: CGRect(x:0,y:0,width:300,height:200))
+        subview.addSubview(expImageView)
+        expImageView.leadingAnchor.constraint(equalTo: subview.leadingAnchor, constant: 30).isActive = true
+        expImageView.topAnchor.constraint(equalTo: subview.topAnchor, constant: 30).isActive = true
+        subview.addSubview(coinImageView)
+        coinImageView.leadingAnchor.constraint(equalTo: subview.leadingAnchor, constant: 40).isActive = true
+        coinImageView.topAnchor.constraint(equalTo: expImageView.bottomAnchor, constant: 30).isActive = true
+        subview.addSubview(expDesc)
+        expDesc.leadingAnchor.constraint(equalTo: expImageView.trailingAnchor, constant: 20).isActive = true
+        expDesc.topAnchor.constraint(equalTo: subview.topAnchor, constant: 40).isActive = true
+        subview.addSubview(coinDesc)
+        coinDesc.leadingAnchor.constraint(equalTo: coinImageView.trailingAnchor, constant: 26).isActive = true
+        coinDesc.topAnchor.constraint(equalTo: expImageView.bottomAnchor, constant: 30).isActive = true
         alertView.customSubview = subview
+        alertView.addButton("OK", backgroundColor: brightPurple, textColor: .white, showTimeout: .none) {
+            return
+        }
         alertView.showCustom("You Got...", subTitle: "", color: .white, icon: UIImage())
     }
     

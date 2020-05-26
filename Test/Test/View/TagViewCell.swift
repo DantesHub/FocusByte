@@ -97,7 +97,7 @@ class TagViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionView
             kButtonHeight: 45,
             kTitleFont: UIFont(name: "Menlo", size: 18)!,
             kTextFont: UIFont(name: "Menlo", size: 15)!,
-            showCloseButton: true,
+            showCloseButton: false,
             showCircularIcon: false,
             disableTapGesture: true
         )
@@ -133,7 +133,8 @@ class TagViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionView
         let selectedIndexPath = NSIndexPath(item: 0, section: 0)
         collectionViewAlert.selectItem(at: selectedIndexPath as IndexPath, animated: false, scrollPosition: [])
         selectedColor = "red"
-        alertView.showCustom("Choose Color", subTitle: "", color: backgroundColor!, icon: UIImage())
+        alertView.showCustom("Choose Color", subTitle: "Cancel", color: lightLavender, icon: UIImage())
+        
     }
     
     func saveToFirebase(fbTagDict: [String:String]) {
