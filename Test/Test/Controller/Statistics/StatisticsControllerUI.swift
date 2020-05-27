@@ -31,7 +31,7 @@ class StatisticsController: UIViewController, ChartViewDelegate{
                     height = 280
                     //print("IPHONE X, IPHONE XS, IPHONE 11 PRO")
                 case 2688:
-                    height = 250
+                    height = 200
                     //print("IPHONE XS MAX, IPHONE 11 PRO MAX")
                 case 1792:
                      height = 200

@@ -30,11 +30,11 @@ class LoginViewController: UIViewController {
         loginTitle.center.x = view.center.x + 70
         loginTitle.center.y = view.center.y - 180
         loginTitle.text = "Login"
-        loginTitle.font = UIFont(name: "Menlo-Bold", size: 55)
+        loginTitle.font = UIFont(name: "Menlo-Bold", size: CGFloat(titleSize))
         loginTitle.textColor = brightPurple
         view.addSubview(loginTitle)
         
-        loginButtonView =  UIView(frame: CGRect(x: 100, y: 400, width: 350, height: 60))
+        loginButtonView =  UIView(frame: CGRect(x: 100, y: 400, width: buttonWidth, height: 60))
         loginButtonView.applyDesign(color: lightLavender)
         loginButtonView.center.x = view.center.x
         loginButtonView.center.y = view.center.y + 200
@@ -62,7 +62,7 @@ class LoginViewController: UIViewController {
             if let emailString = alert.textFields?.first?.text {
                 Auth.auth().sendPasswordReset(withEmail: emailString) { error in
                     if error != nil {
-                        self.errorLabel =  UILabel(frame: CGRect(x: self.view.center.x - 100, y: self.password.center.y + 50 , width: 350, height: 50))
+                        self.errorLabel =  UILabel(frame: CGRect(x: self.view.center.x - 100, y: self.password.center.y + 50 , width: buttonWidth, height: 50))
                         self.errorLabel.text =  "Email does not exist"
                         self.errorLabel.textColor = .red
                         self.view.addSubview(self.errorLabel)
@@ -94,7 +94,7 @@ class LoginViewController: UIViewController {
         showSpinner()
         Auth.auth().signIn(withEmail: email.text!, password: password.text!) { result, error in
             if error != nil {
-                self.errorLabel =  UILabel(frame: CGRect(x: self.view.center.x - 130, y: self.password.center.y + 50 , width: 350, height: 50))
+                self.errorLabel =  UILabel(frame: CGRect(x: self.view.center.x - 130, y: self.password.center.y + 50 , width: buttonWidth, height: 50))
                 self.errorLabel.text = "username or password is incorrect"
                 self.errorLabel.textColor = .red
                 self.view.addSubview(self.errorLabel)
@@ -115,20 +115,20 @@ class LoginViewController: UIViewController {
         view.addSubview(email)
         email.addDoneButtonOnKeyboard()
         email.topAnchor.constraint(equalTo: loginTitle.bottomAnchor, constant: 25).isActive = true
-        email.applyDesign(view, x: -165, y: -110)
+        email.applyDesign(view, x: xPadding, y: -110)
         email.placeholder = "Email"
         password.addDoneButtonOnKeyboard()
         password.isSecureTextEntry = true
         view.addSubview(password)
         password.topAnchor.constraint(equalTo: email.bottomAnchor, constant: 30).isActive = true
-        password.applyDesign(view, x: -165, y: -5)
+        password.applyDesign(view, x: xPadding, y: -5)
         password.placeholder = "Password"   
         
     }
     
     
     func loadForgotPassword() {
-        forgotPassword = UILabel(frame: CGRect(x: view.center.x - 100, y: loginButtonView.center.y + 30 , width: 350, height: 50))
+        forgotPassword = UILabel(frame: CGRect(x: view.center.x - 100, y: loginButtonView.center.y + 30 , width: buttonWidth, height: 50))
         forgotPassword.attributedText = NSAttributedString(string: "Forgot my password", attributes: [.underlineStyle: NSUnderlineStyle.single.rawValue])
         forgotPassword.textColor = .blue
         forgotPassword.font = UIFont(name: "Menlo", size: 18)

@@ -230,7 +230,7 @@ class TimerController: UIViewController {
         timerButton.widthAnchor.constraint(equalToConstant: 140).isActive = true
         timerButton.heightAnchor.constraint(equalToConstant: 75).isActive = true
         timerButton.centerX(to: view)
-        timerButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -80).isActive = true
+        timerButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -80 + CGFloat(iphone8Padding)).isActive = true
         timerButton.backgroundColor = darkPurple
         timerButton.layer.cornerRadius = 25
         timerButton.applyDesign(color: darkPurple)
@@ -441,7 +441,7 @@ class TimerController: UIViewController {
         self.timerButton.applyDesign(color: darkPurple)
         timerButton.heightAnchor.constraint(equalToConstant: 75).isActive = true
         timerButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 110).isActive = true
-        timerButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -80).isActive = true
+        timerButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -80 + CGFloat(iphone8Padding)).isActive = true
         
         let tappedDF = UITapGestureRecognizer(target: self, action: #selector(dfTapped))
         deepFocusView.addGestureRecognizer(tappedDF)
@@ -543,19 +543,19 @@ class TimerController: UIViewController {
         switch howMuchTime {
         case 599...1499:
             numOfCoins += 5
-            exp += 1
+            exp += 3
         case 1500...2999:
             numOfCoins += 10
-            exp += 3
+            exp += 5
         case 3000...4499:
             numOfCoins += 20
-            exp += 6
+            exp += 8
         case 4500...5999:
             numOfCoins += 30
-            exp += 9
+            exp += 11
         case 6000...7201:
             numOfCoins += 40
-            exp += 12
+            exp += 14
         default:
             numOfCoins += 7
             exp += 1

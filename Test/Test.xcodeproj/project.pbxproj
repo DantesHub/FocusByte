@@ -28,6 +28,8 @@
 		FE324975246CB0220090759B /* InventoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE324974246CB0220090759B /* InventoryController.swift */; };
 		FE324977246DFB1C0090759B /* StatisticsControllerUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE324976246DFB1C0090759B /* StatisticsControllerUI.swift */; };
 		FE32497B246F106D0090759B /* MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE32497A246F106D0090759B /* MenuBar.swift */; };
+		FE33D509247D8AF000A93C2F /* InventoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE33D508247D8AF000A93C2F /* InventoryCell.swift */; };
+		FE33D50B247D96D200A93C2F /* ColumnFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE33D50A247D96D200A93C2F /* ColumnFlowLayout.swift */; };
 		FE5395C124311AD100DA83C1 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE5395C024311AD100DA83C1 /* Constants.swift */; };
 		FE577C9224704D6800042819 /* mapGif.gif in Resources */ = {isa = PBXBuildFile; fileRef = FE577C9124704D6800042819 /* mapGif.gif */; };
 		FE577C942470CD1200042819 /* DateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE577C932470CD1200042819 /* DateHelper.swift */; };
@@ -120,6 +122,8 @@
 		FE324974246CB0220090759B /* InventoryController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InventoryController.swift; sourceTree = "<group>"; };
 		FE324976246DFB1C0090759B /* StatisticsControllerUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsControllerUI.swift; sourceTree = "<group>"; };
 		FE32497A246F106D0090759B /* MenuBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBar.swift; sourceTree = "<group>"; };
+		FE33D508247D8AF000A93C2F /* InventoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InventoryCell.swift; sourceTree = "<group>"; };
+		FE33D50A247D96D200A93C2F /* ColumnFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColumnFlowLayout.swift; sourceTree = "<group>"; };
 		FE5395C024311AD100DA83C1 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		FE577C9124704D6800042819 /* mapGif.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = mapGif.gif; sourceTree = "<group>"; };
 		FE577C932470CD1200042819 /* DateHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateHelper.swift; sourceTree = "<group>"; };
@@ -360,6 +364,8 @@
 				FED6F63D243EAC6100553996 /* MenuOptionCell.swift */,
 				FE3249622469CA2F0090759B /* BoxCell.swift */,
 				FED36A14247750B8005DE0FC /* TagViewCell.swift */,
+				FE33D508247D8AF000A93C2F /* InventoryCell.swift */,
+				FE33D50A247D96D200A93C2F /* ColumnFlowLayout.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -710,6 +716,7 @@
 				FE324973246CA1380090759B /* swiftgif.swift in Sources */,
 				FED0513724411F3700D7B1F0 /* CircularSlider.swift in Sources */,
 				FEF55DCC2430275E00B4C0E1 /* WelcomeViewController.swift in Sources */,
+				FE33D50B247D96D200A93C2F /* ColumnFlowLayout.swift in Sources */,
 				FE32495B24689A670090759B /* GifController.swift in Sources */,
 				FED6F636243E69C400553996 /* MenuController.swift in Sources */,
 				E1593605242ACE6F0050E914 /* SceneDelegate.swift in Sources */,
@@ -723,6 +730,7 @@
 				FE61EA9424770BCE00A6AE25 /* TimerControllerLogic.swift in Sources */,
 				FEC28331244B86C200098413 /* Extensions.swift in Sources */,
 				FEF00175243FB635002D6C78 /* SettingsController.swift in Sources */,
+				FE33D509247D8AF000A93C2F /* InventoryCell.swift in Sources */,
 				FEC28339244CFCAB00098413 /* AvatarController.swift in Sources */,
 				FECA7A7D243909CF00763504 /* ValidationError.swift in Sources */,
 				FECA7A8D2439135300763504 /* NameViewController.swift in Sources */,

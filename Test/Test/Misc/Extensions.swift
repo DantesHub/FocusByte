@@ -11,7 +11,7 @@ import UIKit
 import RealmSwift
 import Charts
 import SCLAlertView
-
+import TinyConstraints
 
 extension Results {
     func toArray<T>(ofType: T.Type) -> [T] {
@@ -197,7 +197,7 @@ extension UITextField {
     
     func applyDesign(_ view: UIView, x: CGFloat, y: CGFloat) {
         
-        let paddingView = UIView(frame: CGRect(x:0,y:0,width:15, height: self.frame.height))
+        let paddingView = UIView(frame: CGRect(x:0,y:0,width:(15 + CGFloat(titlePadding)), height: self.frame.height))
         self.leftView = paddingView
         self.leftViewMode = UITextField.ViewMode.always
         self.attributedPlaceholder = NSAttributedString(string: "placeholder text", attributes: [NSAttributedString.Key.foregroundColor: UIColor.placeholderGray])
@@ -209,7 +209,7 @@ extension UITextField {
         let widthConstraint = self.widthAnchor.constraint(equalToConstant: 300)
         let heightConstraint = self.heightAnchor.constraint(equalToConstant: 75)
         view.addConstraints([horizontalConstraint, widthConstraint, heightConstraint])
-        let shadowView = UIView(frame: CGRect(x: view.center.x + x , y: view.center.y + y , width: 340, height: 75))
+        let shadowView = UIView(frame: CGRect(x: view.center.x + x , y: view.center.y + y , width: buttonWidth, height: 75))
         shadowView.backgroundColor = .white
         shadowView.layer.cornerRadius = 25.0
         shadowView.dropShadow(superview: view)

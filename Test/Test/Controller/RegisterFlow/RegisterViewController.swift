@@ -15,7 +15,7 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
     var passwordConfirmation = UITextField()
     var signUpView = UIView()
     var signUpLabel = UILabel()
-    var registerErrorLabel = UILabel(frame: CGRect(x: 100, y: 620, width: 350, height: 45))
+    var registerErrorLabel = UILabel(frame: CGRect(x: 100, y: 620, width: buttonWidth, height: 45))
     var emailIsValid = false
     var passwordIsValid = false
     var passwordConfirmationIsValid = false
@@ -160,7 +160,7 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
     func configureUI() {
         registerTitle.text = "Sign up"
         registerTitle.textAlignment = .center
-        registerTitle.font = UIFont(name:"Menlo-Bold", size: 55)
+        registerTitle.font = UIFont(name:"Menlo-Bold", size: CGFloat(titleSize))
         registerTitle.textColor = brightPurple
         registerTitle.frame.size.width = 300
         registerTitle.frame.size.height = 100
@@ -168,7 +168,7 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
         registerTitle.center.y = view.center.y - 230
         view.addSubview(registerTitle)
         
-        signUpView =  UIView(frame: CGRect(x: 100, y: view.center.y + 270, width: 350, height: 60))
+        signUpView =  UIView(frame: CGRect(x: 100, y: view.center.y + 270, width: buttonWidth, height: 60))
         signUpView.applyDesign(color: lightLavender)
         signUpView.center.x = view.center.x
         signUpView.center.y = view.center.y + 270
@@ -191,7 +191,7 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
         view.addSubview(email)
         email.topAnchor.constraint(equalTo: self.registerTitle.bottomAnchor, constant: 15).isActive = true
         email.addDoneButtonOnKeyboard()
-        email.applyDesign(view, x: -165, y: -170)
+        email.applyDesign(view, x: xPadding, y: -170)
         email.placeholder = "Email"
         
         
@@ -199,7 +199,7 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
         view.addSubview(password)
         password.topAnchor.constraint(equalTo: email.bottomAnchor, constant: 28).isActive = true
         password.addDoneButtonOnKeyboard()
-        password.applyDesign(view, x: -165, y: -70)
+        password.applyDesign(view, x: xPadding, y: -70)
         password.placeholder = "Password"
 
         
@@ -207,7 +207,7 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
         passwordConfirmation.addDoneButtonOnKeyboard()
         view.addSubview(passwordConfirmation)
         passwordConfirmation.topAnchor.constraint(equalTo: password.bottomAnchor, constant: 32).isActive = true
-        passwordConfirmation.applyDesign(view, x: -165, y: 40)
+        passwordConfirmation.applyDesign(view, x: xPadding, y: 40)
         passwordConfirmation.placeholder = "Password Confirmation"
 
     }
