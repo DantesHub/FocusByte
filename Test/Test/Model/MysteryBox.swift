@@ -13,4 +13,5 @@ struct MysteryBox {
     var image: UIImage
     var title: String
     var color: UIColor
+    var price: Int
 }

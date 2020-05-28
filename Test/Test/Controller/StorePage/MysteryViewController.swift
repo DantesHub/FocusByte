@@ -10,7 +10,7 @@ import UIKit
 var name: String = ""
 
 class MysteryViewController: UIViewController {
-   //MARK: - Properties
+    //MARK: - Properties
     var goldMysteryBox = UIImageView()
     var goldMysteryImage = UIImage()
     var diamondMysteryBox = UIImageView()
@@ -21,7 +21,7 @@ class MysteryViewController: UIViewController {
         return pc
     }()
     lazy var nextButton: UIButton? = {
-       let button = UIButton()
+        let button = UIButton()
         let largeConfiguration = UIImage.SymbolConfiguration(weight: .bold)
         let carrotGreat = UIImage(systemName: "greaterthan", withConfiguration: largeConfiguration)
         let carrotGreat2 = carrotGreat?.resized(to: CGSize(width: 50, height: 50)).withTintColor(.white, renderingMode:.alwaysOriginal)
@@ -31,17 +31,17 @@ class MysteryViewController: UIViewController {
         return button
     }()
     lazy var backButton: UIButton = {
-         let button = UIButton()
-          let largeConfiguration = UIImage.SymbolConfiguration(weight: .bold)
-          let carrotGreat = UIImage(systemName: "lessthan", withConfiguration: largeConfiguration)
-          let carrotGreat2 = carrotGreat?.resized(to: CGSize(width: 50, height: 50)).withTintColor(.white, renderingMode:.alwaysOriginal)
-          button.translatesAutoresizingMaskIntoConstraints = false
-          button.setImage(carrotGreat2, for: .normal)
-          button.addTarget(self, action: #selector(backTapped), for: .touchUpInside)
-          return button
-      }()
+        let button = UIButton()
+        let largeConfiguration = UIImage.SymbolConfiguration(weight: .bold)
+        let carrotGreat = UIImage(systemName: "lessthan", withConfiguration: largeConfiguration)
+        let carrotGreat2 = carrotGreat?.resized(to: CGSize(width: 50, height: 50)).withTintColor(.white, renderingMode:.alwaysOriginal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(carrotGreat2, for: .normal)
+        button.addTarget(self, action: #selector(backTapped), for: .touchUpInside)
+        return button
+    }()
     fileprivate let collectionView: UICollectionView = {
-       let layout = UICollectionViewFlowLayout()
+        let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 30
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -51,11 +51,11 @@ class MysteryViewController: UIViewController {
     }()
     
     let data = [
-        MysteryBox(description: "There are 100 different items in the Common Mystery Box", image: UIImage(named: "commonmysterybox")!, title: "Common Box", color: .black),
-         MysteryBox(description: "There are 40 different items in the Gold Mystery Box", image: UIImage(named: "goldmysterybox")!, title: "Gold Box", color: gold),
-         MysteryBox(description: "There are 20 different items in the Diamond Mystery Box", image: UIImage(named: "diamondmysterybox")!, title: "Diamond Box", color: diamond)
-
-     ]
+        MysteryBox(description: "-Box contains 1 common item or 1 rare item. \n-(70% Common/30% Rare)", image: UIImage(named: "commonmysterybox")!, title: "Common Box", color: .black, price: 15),
+        MysteryBox(description: "-Box contains 1 common item and 1 rare or super rare item\n-(70% Rare/30% Super Rare)", image: UIImage(named: "goldmysterybox")!, title: "Gold Box", color: gold, price: 45),
+        MysteryBox(description: "Box contains:\n-1 Common Item\n-1 Rare Item\n-1 Super Rare or Extremely Rare Item", image: UIImage(named: "diamondmysterybox")!, title: "Diamond Box", color: diamond, price: 100)
+        
+    ]
     
     //MARK: - Init
     override func viewDidLoad() {
@@ -78,10 +78,10 @@ class MysteryViewController: UIViewController {
         
         collectionView.backgroundColor = backgroundColor
         collectionView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-
+        
         collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30).isActive = true
         collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30).isActive = true
-        collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -40).isActive = true
+        collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: boxPadding).isActive = true
         collectionView.isPagingEnabled = true;
         
         view.addSubview(nextButton!)
@@ -89,7 +89,7 @@ class MysteryViewController: UIViewController {
         nextButton?.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
         
-
+        
     }
     
     @objc func nextTapped() {
@@ -97,9 +97,7 @@ class MysteryViewController: UIViewController {
         
         var minItem: NSIndexPath = visibleItems.object(at: 0) as! NSIndexPath
         for itr in visibleItems {
-            print("itr \(itr)")
             if minItem.row > (itr as AnyObject).row {
-                print("minItem \(minItem)")
                 minItem = itr as! NSIndexPath
             }
         }
@@ -109,7 +107,6 @@ class MysteryViewController: UIViewController {
     }
     
     @objc func backTapped() {
-        print("back")
         let visibleItems: NSArray = self.collectionView.indexPathsForVisibleItems as NSArray
         
         var minItem: NSIndexPath = visibleItems.object(at: 0) as! NSIndexPath
@@ -123,7 +120,7 @@ class MysteryViewController: UIViewController {
         let nextItem = NSIndexPath(row: minItem.row - 1, section: 0)
         self.collectionView.scrollToItem(at: nextItem as IndexPath, at: .right, animated: true)
     }
-
+    
 }
 
 extension MysteryViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
@@ -135,7 +132,6 @@ extension MysteryViewController: UICollectionViewDelegateFlowLayout, UICollectio
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        print(indexPath)
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: K.boxCell, for: indexPath) as! BoxCell
         if indexPath.row == 1 {
             view.addSubview(backButton)
@@ -154,7 +150,7 @@ extension MysteryViewController: UICollectionViewDelegateFlowLayout, UICollectio
             nextButton?.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
             backButton.removeFromSuperview()
         }
-        name  = self.data[indexPath.row].title
+        name = self.data[indexPath.row].title
         cell.data = self.data[indexPath.row]
         cell.clipsToBounds = false
         cell.desc.text = self.data[indexPath.row].description
@@ -167,22 +163,38 @@ extension MysteryViewController: UICollectionViewDelegateFlowLayout, UICollectio
         cell.buyButton.isUserInteractionEnabled = true
         let tap = UITapGestureRecognizer(target: self, action: #selector(tappedBuy))
         cell.buyButton.addGestureRecognizer(tap)
+        cell.priceLabel.text = "Price: \(self.data[indexPath.row].price)"
         return cell
     }
     
     @objc func tappedBuy() {
-        print("bought")
         let controller = GifController()
+        switch name {
+        case "Common Box":
+            if coins < 15 {
+                return
+            }
+        case "Gold Box":
+            if coins < 45 {
+                return
+            }
+        case "Diamond Box":
+            if coins < 100 {
+                return
+            }
+        default:
+            return
+        }
         controller.modalPresentationStyle = .fullScreen
         controller.modalTransitionStyle = .crossDissolve
         self.present(controller, animated: true, completion: nil)
         return
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return CGFloat(minLineSpace)
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0, left: (CGFloat(minLineSpace / 2)), bottom: 0, right: (CGFloat(minLineSpace / 2)))
     }

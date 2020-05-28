@@ -106,12 +106,17 @@ class TimerController: UIViewController {
 
     
     override func viewWillAppear(_ animated: Bool) {
-        createAlert()
         results = uiRealm.objects(User.self)
         for result  in results {
             if result.isLoggedIn == true {
                 coins = result.coins
                 exp = result.exp
+                for tag in result.tagDictionary {
+                    if tag.selected == true {
+                        tagSelected = tag.name
+                    }
+                }
+                inventoryArray = result.inventoryArray.map{ $0 }
                 coinsL.text = String(coins)
                 deepFocusMode = result.deepFocusMode
             }

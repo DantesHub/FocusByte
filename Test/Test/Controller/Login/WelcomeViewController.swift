@@ -1,6 +1,6 @@
 import UIKit
 import RealmSwift
-
+import TinyConstraints
 
 var xPadding: CGFloat = 0
 var buttonWidth: CGFloat = 0
@@ -116,38 +116,44 @@ class WelcomeViewController: UIViewController {
         middleText.numberOfLines = 0;
         middleText.font = UIFont(name: "Hiragino Sans", size: CGFloat(middleTextSize))
         
-        registerView =  UIView(frame: CGRect(x: 100, y: 400, width: buttonWidth, height: 80))
-        registerView.applyDesign(color: lightLavender)
-        registerView.center.x = view.center.x
-        registerView.center.y = view.center.y + 250
-        let tap = UITapGestureRecognizer(target: self, action: #selector(tappedRegister))
-        registerView.addGestureRecognizer(tap)
         
-        loginView =  UIView(frame: CGRect(x: 100, y: 400, width: buttonWidth, height: 80))
+        view.addSubview(loginView)
+        loginView.translatesAutoresizingMaskIntoConstraints = false
         loginView.applyDesign(color: brightPurple)
-        loginView.center.x = view.center.x
-        loginView.center.y = view.center.y + 140
+        loginView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        loginView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 140).isActive = true
+        loginView.heightAnchor.constraint(equalToConstant: 80).isActive = true
+        loginView.widthAnchor.constraint(lessThanOrEqualToConstant: 350).isActive = true
+        loginView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8).isActive = true
         let tap2 = UITapGestureRecognizer(target: self, action: #selector(tappedLogin))
         loginView.addGestureRecognizer(tap2)
         
+        view.addSubview(registerView)
+           registerView.translatesAutoresizingMaskIntoConstraints = false
+           registerView.applyDesign(color: lightLavender)
+           registerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+           registerView.topAnchor.constraint(equalTo: loginView.bottomAnchor, constant: 20).isActive = true
+           registerView.heightAnchor.constraint(equalToConstant: 80).isActive = true
+           registerView.widthAnchor.constraint(lessThanOrEqualToConstant: 350).isActive = true
+           registerView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8).isActive = true
+           let tap = UITapGestureRecognizer(target: self, action: #selector(tappedRegister))
+           registerView.addGestureRecognizer(tap)
+        
+        
+        view.addSubview(registerLabel)
         registerLabel.applyDesign(text: "Register")
         registerLabel.sizeToFit()
-        registerLabel.center.x = view.center.x
-        registerLabel.center.y = view.center.y + 250
+        registerLabel.center(in: registerView)
         
-        
+        view.addSubview(loginLabel)
         loginLabel.applyDesign(text: "Login")
         loginLabel.sizeToFit()
-        loginLabel.center.x = view.center.x
-        loginLabel.center.y = view.center.y + 140
+        loginLabel.center(in: loginView)
+        
        
 
         view.addSubview(titleLabel1)
         view.addSubview(titleLabel2)
-        view.addSubview(loginView)
-        view.addSubview(registerView)
-        view.addSubview(loginLabel)
-        view.addSubview(registerLabel)
         view.addSubview(middleText)
     }
 

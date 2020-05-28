@@ -121,8 +121,8 @@ class StoreController: UIViewController {
         
         mysteryBox.addSubview(mysteryBoxImageView)
         mysteryBoxImageView.translatesAutoresizingMaskIntoConstraints = false
-        mysteryBoxImageView.heightAnchor.constraint(equalToConstant: 180).isActive = true
-        mysteryBoxImageView.widthAnchor.constraint(equalToConstant: 180).isActive = true
+        mysteryBoxImageView.heightAnchor.constraint(equalToConstant: 150).isActive = true
+        mysteryBoxImageView.widthAnchor.constraint(equalToConstant: 150).isActive = true
         mysteryBoxImageView.centerXAnchor.constraint(lessThanOrEqualTo: mysteryBox.centerXAnchor, constant: 80).isActive = true
         mysteryBoxImageView.topAnchor.constraint(equalTo: mysteryBox.topAnchor, constant: 35).isActive = true
         

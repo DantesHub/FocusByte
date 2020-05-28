@@ -57,7 +57,7 @@ class GenderViewController: UIViewController {
         boyImageView.addGestureRecognizer(tappedBoy)
         view.addSubview(boyImageView)
         
-        girlImageView.center.x = view.center.x + 30
+        girlImageView.center.x = view.center.x + 10
         girlImageView.center.y = view.center.y - 100
         girlImageView.image = girlImage
         girlImageView.layer.cornerRadius = 25

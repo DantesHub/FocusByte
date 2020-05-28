@@ -24,7 +24,6 @@ class GifController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        print(name)
         switch name {
         case "Common Box":
             imageData = try! Data(contentsOf: Bundle.main.url(forResource: "commonBox", withExtension: "gif")!)
@@ -45,7 +44,17 @@ class GifController: UIViewController {
         gifView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         self.gifView.loopCompletionBlock = {_ in
             self.gifView.stopAnimating()
-            let controller = NewitemViewController()
+            var controller = NewitemViewController()
+            switch name {
+            case "Common Box":
+                controller = NewitemViewController()
+            case "Gold Box":
+                controller = TwoItemViewController()
+            case "Diamond Box":
+                controller = ThreeItemViewController()
+            default:
+                print("")
+            }
             controller.modalPresentationStyle = .fullScreen
             self.present(controller, animated: true, completion: nil)
         }

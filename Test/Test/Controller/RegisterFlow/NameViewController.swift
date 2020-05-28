@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 import RealmSwift
-
+import TinyConstraints
 
 class NameViewController: UIViewController {
     //MARK: - Properties
@@ -38,6 +38,7 @@ class NameViewController: UIViewController {
                 db.collection(K.userPreferenes).document(email!).setData([
                     "gender": chosenGender,
                     "name": nameInput.text!,
+                    "inventoryArray": [],
                     "coins": 0,
                     "tags": tagDict
                 ]) { (error) in
@@ -64,10 +65,12 @@ class NameViewController: UIViewController {
         configureNavigationBar(color: backgroundColor, isTrans: true)
         self.navigationItem.setHidesBackButton(true, animated: false)
         UINavigationBar.appearance().barTintColor = lightLavender
-        nameLabel.text = "What's your name?"
+        nameLabel.text = "What's your\nname?"
+        nameLabel.textAlignment = .center
+        nameLabel.numberOfLines = 0
         nameLabel.textColor = .white
         nameLabel.font = UIFont(name: "Menlo", size: 35)
-        nameLabel.center.x = view.center.x - 170
+        nameLabel.center.x = view.center.x - 200
         nameLabel.center.y = view.center.y - 180
         nameLabel.frame.size.width = 400
         nameLabel.frame.size.height = 130
@@ -77,7 +80,7 @@ class NameViewController: UIViewController {
         view.addSubview(nameInput)
         nameInput.addDoneButtonOnKeyboard()
         nameInput.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 25).isActive = true
-        nameInput.applyDesign(view, x: -170, y: -30)
+        nameInput.applyDesign(view, x: xPadding, y: -30)
         finishButton = UILabel(frame: CGRect(x: view.center.x - 100, y: view.center.y + 240, width: 200, height: 60))
         nameInput.placeholder = "Steve"
 
@@ -118,6 +121,7 @@ class NameViewController: UIViewController {
         tagList.append(workTag)
         tagList.append(readTag)
         UserToAdd.gender = chosenGender
+        UserToAdd.inventoryArray = List<String>()
         UserToAdd.name = nameInput.text!
         UserToAdd.email = Auth.auth().currentUser?.email
         UserToAdd.tagDictionary = tagList

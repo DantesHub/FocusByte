@@ -102,10 +102,8 @@ class LoginViewController: UIViewController {
                 self.spinner.stopAnimating()
                 self.container.removeFromSuperview()
             } else {
-                let timerVC = ContainerController(center: TimerController())
-                timerVC.modalPresentationStyle = .fullScreen
-                self.navigationController?.pushViewController(timerVC, animated: true)
                 self.saveToRealm()
+               
             }
         }
     }
@@ -170,6 +168,7 @@ class LoginViewController: UIViewController {
             var name = ""
             var tagDict:[String:String] = [:]
             let timeD = List<String>()
+            var inventoryArray = List<String>()
             let docRef = db.collection(K.FStore.collectionName).document(email)
             docRef.getDocument { (snapshot, error) in
                 if let document = snapshot, document.exists {
@@ -185,7 +184,6 @@ class LoginViewController: UIViewController {
                         coins = c  as! Int
                     }
                     if let timeData = document["TimeData"] {
-                        print(timeData)
                         let entries = timeData as! [String]
                         for entry in entries {
                             timeD.append(entry)
@@ -194,9 +192,20 @@ class LoginViewController: UIViewController {
                     if let tags = document["tags"] {
                         tagDict = tags as! [String : String]
                     }
+                    if let itemArray = document["inventoryArray"] {
+                        let items = itemArray as! [String]
+                        for item in items {
+                            inventoryArray.append(item)
+                        }
+                    }
                 } else {
-                    print("Document does not exist")
+                    let genderVC = GenderViewController()
+                    self.navigationController?.pushViewController(genderVC, animated: true)
+                    return
                 }
+                let timerVC = ContainerController(center: TimerController())
+                timerVC.modalPresentationStyle = .fullScreen
+                self.navigationController?.pushViewController(timerVC, animated: true)
                 let tagList = List<Tag>()
                 for tag in tagDict {
                     let tagVar = Tag()
@@ -209,9 +218,10 @@ class LoginViewController: UIViewController {
                         tagList.append(tagVar)
                     }
                 }
-                //import preset tags
+        
                 realmUser.timeArray = timeD
                 realmUser.name = name
+                realmUser.inventoryArray = inventoryArray
                 realmUser.tagDictionary = tagList
                 realmUser.email = Auth.auth().currentUser?.email
                 realmUser.isLoggedIn = true
@@ -220,6 +230,8 @@ class LoginViewController: UIViewController {
                 realmUser.coins = coins
                 realmUser.writeToRealm()
             }
+        } else {
+            print("boing")
         }
     }
     

@@ -19,7 +19,7 @@ class User: Object {
     @objc dynamic var coins = 0
     @objc dynamic var exp = 0
     @objc dynamic var deepFocusMode = true
-    
+    var inventoryArray = List<String>()
     override static func primaryKey() -> String? {
         return "email"
     }

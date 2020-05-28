@@ -133,6 +133,9 @@ extension TimerController {
                         timeData = time as! [String]
                         lastDate = (timeData[timeData.count - 1])
                     }
+                    if let itemArray = document["inventoryArray"] {
+                        inventoryArray = itemArray as! [String]
+                    }
    
                     coins = self.updateCoinLabel(numCoins: numCoins)!
                     self.coinsL.text = String(coins)

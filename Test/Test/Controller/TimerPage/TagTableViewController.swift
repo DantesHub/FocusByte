@@ -142,7 +142,7 @@ extension TagTableView: UITableViewDataSource, UITableViewDelegate{
             updateRealm(tag: tagDictionary[indexPath.row])
        }
     UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: .curveEaseOut, animations: {
-        self.tableView.transform = CGAffineTransform(translationX: 0, y: 1000)
+        self.tableView.transform = CGAffineTransform(translationX: 0, y: 1200)
     }) { (_) in self.removeFromSuperview()}
    }
 
