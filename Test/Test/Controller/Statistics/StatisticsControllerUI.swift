@@ -71,8 +71,11 @@ class StatisticsController: UIViewController, ChartViewDelegate{
         return view
     }()
     let menuBar: MenuBar = {
-           let mb = MenuBar()
-           return mb
+        let mb = MenuBar()
+        mb.categoryNames = ["Week", "Month", "Year"]
+        menuLabel = "Week"
+        mb.createCollectionView()
+        return mb
     }()
     var descriptionLabel = UILabel()
     var results: Results<User>!

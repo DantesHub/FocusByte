@@ -46,6 +46,7 @@
 		FE61EA982477256000A6AE25 /* ImageAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE61EA972477256000A6AE25 /* ImageAlertController.swift */; };
 		FE6B03E0245F958200C48E27 /* LWAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE6B03DF245F958200C48E27 /* LWAlert.swift */; };
 		FE805AB6247F1C7400A82880 /* MysteryItemLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE805AB5247F1C7400A82880 /* MysteryItemLogic.swift */; };
+		FE830E652480358F00D80076 /* DisplayItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE830E642480358F00D80076 /* DisplayItem.swift */; };
 		FEBC64142431183F00FB082A /* PressStart2P-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FEBC64132431183F00FB082A /* PressStart2P-Regular.ttf */; };
 		FEC28331244B86C200098413 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEC28330244B86C200098413 /* Extensions.swift */; };
 		FEC28333244B87E100098413 /* MysteryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEC28332244B87E100098413 /* MysteryViewController.swift */; };
@@ -144,6 +145,7 @@
 		FE61EA972477256000A6AE25 /* ImageAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageAlertController.swift; sourceTree = "<group>"; };
 		FE6B03DF245F958200C48E27 /* LWAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LWAlert.swift; sourceTree = "<group>"; };
 		FE805AB5247F1C7400A82880 /* MysteryItemLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MysteryItemLogic.swift; sourceTree = "<group>"; };
+		FE830E642480358F00D80076 /* DisplayItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayItem.swift; sourceTree = "<group>"; };
 		FEBC64132431183F00FB082A /* PressStart2P-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PressStart2P-Regular.ttf"; sourceTree = "<group>"; };
 		FEC28330244B86C200098413 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		FEC28332244B87E100098413 /* MysteryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MysteryViewController.swift; sourceTree = "<group>"; };
@@ -308,6 +310,7 @@
 				FED36A16247AEA41005DE0FC /* Alert.swift */,
 				FE33D50E247F082800A93C2F /* RarityEnum.swift */,
 				FE805AB5247F1C7400A82880 /* MysteryItemLogic.swift */,
+				FE830E642480358F00D80076 /* DisplayItem.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -735,6 +738,7 @@
 				FE32495B24689A670090759B /* GifController.swift in Sources */,
 				FED6F636243E69C400553996 /* MenuController.swift in Sources */,
 				E1593605242ACE6F0050E914 /* SceneDelegate.swift in Sources */,
+				FE830E652480358F00D80076 /* DisplayItem.swift in Sources */,
 				FED6F640243EB3A200553996 /* MenuOption.swift in Sources */,
 				FE5395C124311AD100DA83C1 /* Constants.swift in Sources */,
 				FED36A17247AEA41005DE0FC /* Alert.swift in Sources */,

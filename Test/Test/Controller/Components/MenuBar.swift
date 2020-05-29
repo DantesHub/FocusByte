@@ -7,22 +7,26 @@ class MenuBar: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UIC
         layout.scrollDirection = .horizontal
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.backgroundColor = backgroundColor
+    
         cv.dataSource = self
         cv.showsHorizontalScrollIndicator = false
         cv.delegate = self
         return cv
     }()
-    var categoryNames: [String] = ["Week", "Month", "Year"]
+    var categoryNames: [String] = [""]
     let cellId = "cellId"
     override init(frame: CGRect) {
         super.init(frame: frame)
+    }
+    
+    func createCollectionView() {
         collectionView.register(MenuCell.self, forCellWithReuseIdentifier: cellId)
         addSubview(collectionView)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.topAnchor.constraint(equalTo: self.topAnchor, constant: 20).isActive = true
         collectionView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 40).isActive = true
         collectionView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -40).isActive = true
-//        collectionView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20).isActive = true
+        //        collectionView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20).isActive = true
         collectionView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive = true
         collectionView.layer.cornerRadius = 25
         
@@ -35,7 +39,7 @@ class MenuBar: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UIC
         fatalError("init(coder:) has not been implemented")
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        return categoryNames.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -60,6 +64,24 @@ class MenuBar: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UIC
         case "Year":
             menuLabel = "Year"
             NotificationCenter.default.post(name: Notification.Name(rawValue: yearKey), object: nil)
+        case "Common":
+            menuLabel = "Common"
+            NotificationCenter.default.post(name: Notification.Name(rawValue: commonKey), object: nil)
+        case "Rare":
+            menuLabel = "Rare"
+            NotificationCenter.default.post(name: Notification.Name(rawValue: rareKey), object: nil)
+        case "Super R":
+            menuLabel = "Super R"
+            NotificationCenter.default.post(name: Notification.Name(rawValue: superKey), object: nil)
+        case "Epic":
+            menuLabel = "Epic"
+            NotificationCenter.default.post(name: Notification.Name(rawValue: epicKey), object: nil)
+        case "Pets":
+            menuLabel = "Pets"
+            NotificationCenter.default.post(name: Notification.Name(rawValue: petsKey), object: nil)
+        case "Closet":
+            menuLabel = "Closet"
+            NotificationCenter.default.post(name: Notification.Name(rawValue: closetKey), object: nil)
         default:
             print("Default")
             return
@@ -67,8 +89,14 @@ class MenuBar: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UIC
       }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.width/3, height: collectionView.frame.height/1.5)
+        if categoryNames.count == 3 {
+            return CGSize(width: collectionView.frame.width/3, height: collectionView.frame.height/1.5)
+        } else {
+            return CGSize(width: collectionView.frame.width/2.6, height: collectionView.frame.height/1.3)
+        }
     }
+    
+    
 }
 
 class MenuCell: UICollectionViewCell {
