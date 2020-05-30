@@ -23,7 +23,7 @@ class TagTableView: UIView, CustomCellUpdater {
     var searchBar: UISearchBar! = UISearchBar()
     var isFiltering: Bool = false
 
-     //MARK: - Init
+     //MARK: - Inita=
     override init(frame: CGRect) {
         super.init(frame: frame)
         overrideUserInterfaceStyle = .light

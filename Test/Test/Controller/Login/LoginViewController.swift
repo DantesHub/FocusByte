@@ -168,12 +168,11 @@ class LoginViewController: UIViewController {
             var name = ""
             var tagDict:[String:String] = [:]
             let timeD = List<String>()
-            var inventoryArray = List<String>()
+            let inventoryArray = List<String>()
             let docRef = db.collection(K.FStore.collectionName).document(email)
             docRef.getDocument { (snapshot, error) in
                 if let document = snapshot, document.exists {
                     let dataDescription = document.data().map(String.init(describing:)) ?? "nil"
-                    print("Document data: \(dataDescription)")
                     if let g = document["gender"]  {
                         gender = g as! String
                     }
@@ -231,7 +230,6 @@ class LoginViewController: UIViewController {
                 realmUser.writeToRealm()
             }
         } else {
-            print("boing")
         }
     }
     

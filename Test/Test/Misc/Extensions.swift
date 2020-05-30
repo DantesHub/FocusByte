@@ -52,6 +52,7 @@ extension Collection where Element: Equatable {
 }
 
 extension UIView {
+
     func asImage(viewLayer: CALayer, viewBounds: CGRect) -> UIImage {
         if #available(iOS 10.0, *) {
             let renderer = UIGraphicsImageRenderer(bounds: viewBounds)

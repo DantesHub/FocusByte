@@ -188,12 +188,16 @@ class TimerController: UIViewController {
         
         view.backgroundColor = backgroundColor
         navigationItem.title = "Home"
-        navigationItem.leftBarButtonItem =  UIBarButtonItem(image: resizedMenuImage?.withTintColor(.white), style: .plain, target: self, action: #selector(handleMenuToggle))
+        createBarItem()
         navigationController?.navigationBar.addSubview(coinsL)
         navigationController?.navigationBar.addSubview(coinsImg!)
         
         createCircularSlider()
         
+    }
+    
+    private func createBarItem() {
+        navigationItem.leftBarButtonItem =  UIBarButtonItem(image: resizedMenuImage?.withTintColor(.white), style: .plain, target: self, action: #selector(handleMenuToggle))
     }
     
     func displayalert(title:String, message:String) {
@@ -207,27 +211,25 @@ class TimerController: UIViewController {
     }
     
     @objc func tappedTag() {
-        
         tagTableView = TagTableView(frame: view.bounds)
-    
         view.addSubview(tagTableView)
         
     }
     //MARK: - Helper UI Funcs
-        private final func createTimerButtonLbl() {
-            timerButtonLbl.translatesAutoresizingMaskIntoConstraints = false
-            if !isPlaying {
-                timerButtonLbl.text = "Start"
-            } else {
-                timerButtonLbl.text = "Give Up"
-            }
-            
-            timerButtonLbl.sizeToFit()
-            timerButtonLbl.textColor = .white
-            timerButton.addSubview(timerButtonLbl)
-            timerButtonLbl.center(in: timerButton)
-            timerButtonLbl.font = UIFont(name: "Menlo-Bold", size: 20)
+    private final func createTimerButtonLbl() {
+        timerButtonLbl.translatesAutoresizingMaskIntoConstraints = false
+        if !isPlaying {
+            timerButtonLbl.text = "Start"
+        } else {
+            timerButtonLbl.text = "Give Up"
         }
+        
+        timerButtonLbl.sizeToFit()
+        timerButtonLbl.textColor = .white
+        timerButton.addSubview(timerButtonLbl)
+        timerButtonLbl.center(in: timerButton)
+        timerButtonLbl.font = UIFont(name: "Menlo-Bold", size: 20)
+    }
     
     private final func createTimerButton() {
         timerButton.translatesAutoresizingMaskIntoConstraints = false
@@ -297,7 +299,9 @@ class TimerController: UIViewController {
     
     //MARK: - Handlers
     @objc func handleMenuToggle() {
-        delegate?.handleMenuToggle(forMenuOption: nil)
+        if !isPlaying {
+            delegate?.handleMenuToggle(forMenuOption: nil)
+        }
     }
     
 

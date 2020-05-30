@@ -120,6 +120,7 @@ class NameViewController: UIViewController {
         tagList.append(studyTag)
         tagList.append(workTag)
         tagList.append(readTag)
+        UserToAdd.hair = "brown+DefaultManHair"
         UserToAdd.gender = chosenGender
         UserToAdd.inventoryArray = List<String>()
         UserToAdd.name = nameInput.text!

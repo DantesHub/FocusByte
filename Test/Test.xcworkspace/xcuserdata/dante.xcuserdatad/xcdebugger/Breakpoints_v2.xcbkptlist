@@ -14,8 +14,8 @@
             filePath = "Test/Controller/TimerPage/TimerController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "323"
-            endingLineNumber = "323"
+            startingLineNumber = "327"
+            endingLineNumber = "327"
             landmarkName = "handleTap(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -50,6 +50,54 @@
             endingLineNumber = "71"
             landmarkName = "configureUI()"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "030C8173-6467-44E3-8FFE-BCB04B35B4E8"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Test/Controller/Avatar/AvatarSideBar.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "12"
+            endingLineNumber = "12"
+            landmarkName = "unknown"
+            landmarkType = "0">
+            <Locations>
+               <Location
+                  uuid = "030C8173-6467-44E3-8FFE-BCB04B35B4E8 - 7adab56d80e7693a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "globalinit_33_5707556915A1B17D0CFE397B5E613F90_func0"
+                  moduleName = "FocusByte"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/dante/Desktop/FocusByte-Master/Test/Test/Controller/Avatar/AvatarSideBar.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "13"
+                  endingLineNumber = "13"
+                  offsetFromSymbolStart = "4">
+               </Location>
+               <Location
+                  uuid = "030C8173-6467-44E3-8FFE-BCB04B35B4E8 - 1e487c27b43c3cf2"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "FocusByte.selectedHair.unsafeMutableAddressor : Swift.String"
+                  moduleName = "FocusByte"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/dante/Desktop/FocusByte-Master/Test/Test/Controller/Avatar/AvatarSideBar.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "13"
+                  endingLineNumber = "13"
+                  offsetFromSymbolStart = "4">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

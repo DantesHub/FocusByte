@@ -47,6 +47,10 @@
 		FE6B03E0245F958200C48E27 /* LWAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE6B03DF245F958200C48E27 /* LWAlert.swift */; };
 		FE805AB6247F1C7400A82880 /* MysteryItemLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE805AB5247F1C7400A82880 /* MysteryItemLogic.swift */; };
 		FE830E652480358F00D80076 /* DisplayItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE830E642480358F00D80076 /* DisplayItem.swift */; };
+		FE830E682481746F00D80076 /* AvatarSideBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE830E672481746F00D80076 /* AvatarSideBar.swift */; };
+		FE830E6C24818D6C00D80076 /* HairCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE830E6B24818D6C00D80076 /* HairCell.swift */; };
+		FE830E6E2481A5A400D80076 /* Feature.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE830E6D2481A5A400D80076 /* Feature.swift */; };
+		FE830E722481D30900D80076 /* ColorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE830E712481D30900D80076 /* ColorCell.swift */; };
 		FEBC64142431183F00FB082A /* PressStart2P-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FEBC64132431183F00FB082A /* PressStart2P-Regular.ttf */; };
 		FEC28331244B86C200098413 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEC28330244B86C200098413 /* Extensions.swift */; };
 		FEC28333244B87E100098413 /* MysteryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEC28332244B87E100098413 /* MysteryViewController.swift */; };
@@ -146,6 +150,10 @@
 		FE6B03DF245F958200C48E27 /* LWAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LWAlert.swift; sourceTree = "<group>"; };
 		FE805AB5247F1C7400A82880 /* MysteryItemLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MysteryItemLogic.swift; sourceTree = "<group>"; };
 		FE830E642480358F00D80076 /* DisplayItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayItem.swift; sourceTree = "<group>"; };
+		FE830E672481746F00D80076 /* AvatarSideBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarSideBar.swift; sourceTree = "<group>"; };
+		FE830E6B24818D6C00D80076 /* HairCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HairCell.swift; sourceTree = "<group>"; };
+		FE830E6D2481A5A400D80076 /* Feature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Feature.swift; sourceTree = "<group>"; };
+		FE830E712481D30900D80076 /* ColorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCell.swift; sourceTree = "<group>"; };
 		FEBC64132431183F00FB082A /* PressStart2P-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PressStart2P-Regular.ttf"; sourceTree = "<group>"; };
 		FEC28330244B86C200098413 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		FEC28332244B87E100098413 /* MysteryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MysteryViewController.swift; sourceTree = "<group>"; };
@@ -294,6 +302,15 @@
 			path = Statistics;
 			sourceTree = "<group>";
 		};
+		FE830E662481708B00D80076 /* Avatar */ = {
+			isa = PBXGroup;
+			children = (
+				FEC28338244CFCAB00098413 /* AvatarController.swift */,
+				FE830E672481746F00D80076 /* AvatarSideBar.swift */,
+			);
+			path = Avatar;
+			sourceTree = "<group>";
+		};
 		FECA7A7B243909C200763504 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -311,6 +328,7 @@
 				FE33D50E247F082800A93C2F /* RarityEnum.swift */,
 				FE805AB5247F1C7400A82880 /* MysteryItemLogic.swift */,
 				FE830E642480358F00D80076 /* DisplayItem.swift */,
+				FE830E6D2481A5A400D80076 /* Feature.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -381,6 +399,8 @@
 				FED36A14247750B8005DE0FC /* TagViewCell.swift */,
 				FE33D508247D8AF000A93C2F /* InventoryCell.swift */,
 				FE33D50A247D96D200A93C2F /* ColumnFlowLayout.swift */,
+				FE830E6B24818D6C00D80076 /* HairCell.swift */,
+				FE830E712481D30900D80076 /* ColorCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -393,7 +413,7 @@
 				FECA7A8124390D3500763504 /* RegisterFlow */,
 				FECA7A8024390D2600763504 /* Login */,
 				FED1FFE8244255730068FD5E /* TimerPage */,
-				FEC28338244CFCAB00098413 /* AvatarController.swift */,
+				FE830E662481708B00D80076 /* Avatar */,
 				FED6F635243E69C400553996 /* MenuController.swift */,
 				FEF00174243FB635002D6C78 /* SettingsController.swift */,
 				FED1FFEE24453EC80068FD5E /* ContainerController.swift */,
@@ -406,10 +426,10 @@
 		FEF55DC924301EA500B4C0E1 /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				FEC28330244B86C200098413 /* Extensions.swift */,
 				E1D2BF93242B9CCB004AC477 /* animatedLabel.swift */,
 				FE5395C024311AD100DA83C1 /* Constants.swift */,
 				FED6F63B243EA82700553996 /* Protocols.swift */,
-				FEC28330244B86C200098413 /* Extensions.swift */,
 			);
 			path = Misc;
 			sourceTree = "<group>";
@@ -712,6 +732,7 @@
 				FEF55DCF2430346D00B4C0E1 /* LoginViewController.swift in Sources */,
 				E1593607242ACE6F0050E914 /* TimerController.swift in Sources */,
 				FE324977246DFB1C0090759B /* StatisticsControllerUI.swift in Sources */,
+				FE830E6E2481A5A400D80076 /* Feature.swift in Sources */,
 				FE33D50D247EE1C800A93C2F /* TwoItemViewController.swift in Sources */,
 				FE577CA324758EE700042819 /* PieChartUtil.swift in Sources */,
 				FED05132243FD25600D7B1F0 /* RealmObjects.swift in Sources */,
@@ -738,13 +759,16 @@
 				FE32495B24689A670090759B /* GifController.swift in Sources */,
 				FED6F636243E69C400553996 /* MenuController.swift in Sources */,
 				E1593605242ACE6F0050E914 /* SceneDelegate.swift in Sources */,
+				FE830E722481D30900D80076 /* ColorCell.swift in Sources */,
 				FE830E652480358F00D80076 /* DisplayItem.swift in Sources */,
+				FE830E6C24818D6C00D80076 /* HairCell.swift in Sources */,
 				FED6F640243EB3A200553996 /* MenuOption.swift in Sources */,
 				FE5395C124311AD100DA83C1 /* Constants.swift in Sources */,
 				FED36A17247AEA41005DE0FC /* Alert.swift in Sources */,
 				FE61EA982477256000A6AE25 /* ImageAlertController.swift in Sources */,
 				FED1FFEA244255900068FD5E /* StoreController.swift in Sources */,
 				FE32497B246F106D0090759B /* MenuBar.swift in Sources */,
+				FE830E682481746F00D80076 /* AvatarSideBar.swift in Sources */,
 				FE3249612468F7BE0090759B /* NewitemViewController.swift in Sources */,
 				FE61EA9424770BCE00A6AE25 /* TimerControllerLogic.swift in Sources */,
 				FEC28331244B86C200098413 /* Extensions.swift in Sources */,

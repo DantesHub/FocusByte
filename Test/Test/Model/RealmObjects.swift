@@ -19,6 +19,13 @@ class User: Object {
     @objc dynamic var coins = 0
     @objc dynamic var exp = 0
     @objc dynamic var deepFocusMode = true
+    @objc dynamic var hair: String? = nil
+    @objc dynamic var eyes: String? = nil
+    @objc dynamic var glasses: String? = nil
+    @objc dynamic var shirt: String? = nil
+    @objc dynamic var pants: String? = nil
+    @objc dynamic var shoes: String? = nil
+
     var inventoryArray = List<String>()
     override static func primaryKey() -> String? {
         return "email"
