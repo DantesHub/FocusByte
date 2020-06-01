@@ -30,6 +30,8 @@ let blonde = hexStringToUIColor(hex: "#F6CD7F")
 let turq = hexStringToUIColor(hex: "#3CAEA2")
 let brown = hexStringToUIColor(hex: "#663932")
 let black = hexStringToUIColor(hex: "#000000")
+let skyBlue = hexStringToUIColor(hex: "#05BAF6")
+let tan = hexStringToUIColor(hex: "#F9AA71")
 let dayKey = "io.focusbyte.day"
 let weekKey = "io.focusbyte.week"
 let killKey = "io.focusbyte.kill"
@@ -59,6 +61,7 @@ struct K {
     static let inventoryCell = "inventoryCell"
     static let hairCell = "hairCell"
     static let avatarColorCell = "avatarColorCell"
+    static let eyeColorCell = "eyeColorCell"
     struct FStore {
         static let collectionName = "userPreferences"
     }
@@ -72,6 +75,14 @@ struct K {
             return darkRed
         case "blonde":
             return blonde
+        case "green":
+            return darkGreen
+        case "blue":
+            return skyBlue
+        case "tan":
+            return tan
+        case "gray":
+            return UIColor.gray
         default:
             return .white
         }

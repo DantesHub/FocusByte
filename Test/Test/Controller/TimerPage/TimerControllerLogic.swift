@@ -218,7 +218,6 @@ extension TimerController {
                     self.view.addSubview(self.timeL)
                     isPlaying = false
                     self.enteredForeground = false
-                    self.createAlert()
                 } else {
                     print("Document does not exist")
                 }
@@ -228,10 +227,10 @@ extension TimerController {
     }
     
     //MARK: - Alert Func
-    func createAlert() {
+    func createAlert(leveled: Bool = false, evolved:Int = 34) {
         let appearance = SCLAlertView.SCLAppearance(
             kWindowWidth: 300,
-            kWindowHeight: 300,
+            kWindowHeight:evolved == 15 || evolved == 34 ? 400 : 300,
             kButtonHeight: 50,
             kTitleFont: UIFont(name: "Menlo-Bold", size: 25)!,
             kTextFont: UIFont(name: "Menlo", size: 15)!,
@@ -240,35 +239,76 @@ extension TimerController {
             hideWhenBackgroundViewIsTapped: true,
             titleColor: brightPurple
         )
-        let expDesc = UILabel()
-        expDesc.translatesAutoresizingMaskIntoConstraints = false
-        let coinDesc = UILabel()
-        coinDesc.translatesAutoresizingMaskIntoConstraints = false
-        expDesc.font = UIFont(name: "Menlo", size: 25)
-        expDesc.text = "\(expReceived!) exp"
-        expDesc.sizeToFit()
-        coinDesc.font = UIFont(name: "Menlo", size: 25)
-        coinDesc.text = "\(coinsReceived!) coins"
-        coinDesc.sizeToFit()
         let alertView = SCLAlertView(appearance: appearance)
-        let subview = UIView(frame: CGRect(x:0,y:0,width:300,height:200))
-        subview.addSubview(expImageView)
-        expImageView.leadingAnchor.constraint(equalTo: subview.leadingAnchor, constant: 30).isActive = true
-        expImageView.topAnchor.constraint(equalTo: subview.topAnchor, constant: 30).isActive = true
-        subview.addSubview(coinImageView)
-        coinImageView.leadingAnchor.constraint(equalTo: subview.leadingAnchor, constant: 40).isActive = true
-        coinImageView.topAnchor.constraint(equalTo: expImageView.bottomAnchor, constant: 30).isActive = true
-        subview.addSubview(expDesc)
-        expDesc.leadingAnchor.constraint(equalTo: expImageView.trailingAnchor, constant: 20).isActive = true
-        expDesc.topAnchor.constraint(equalTo: subview.topAnchor, constant: 40).isActive = true
-        subview.addSubview(coinDesc)
-        coinDesc.leadingAnchor.constraint(equalTo: coinImageView.trailingAnchor, constant: 26).isActive = true
-        coinDesc.topAnchor.constraint(equalTo: expImageView.bottomAnchor, constant: 30).isActive = true
+        let subview = UIView(frame: CGRect(x:0,y:0,width:300,height: evolved == 15 || evolved == 34 ? 300 : 200))
+        if evolved != 15 && evolved != 34 {
+            let expDesc = UILabel()
+                  expDesc.translatesAutoresizingMaskIntoConstraints = false
+                  let coinDesc = UILabel()
+                  let plusOne = UIImageView()
+                  plusOne.translatesAutoresizingMaskIntoConstraints = false
+                  coinDesc.translatesAutoresizingMaskIntoConstraints = false
+                  expDesc.font = UIFont(name: "Menlo", size: 25)
+                  expDesc.text = "\(expReceived!) exp"
+                  expDesc.sizeToFit()
+                  coinDesc.font = UIFont(name: "Menlo", size: 25)
+                  coinDesc.text = "\(coinsReceived!) coins"
+                  coinDesc.sizeToFit()
+           
+                  subview.addSubview(expImageView)
+                  if leveled {
+                            subview.addSubview(plusOne)
+                            plusOne.contentMode = .scaleAspectFill
+                            plusOne.image = UIImage(named: "plusOne")
+                            plusOne.leadingAnchor.constraint(equalTo: subview.leadingAnchor, constant: 60).isActive = true
+                      plusOne.width(subview.frame.width * 0.50)
+                            plusOne.topAnchor.constraint(equalTo: subview.topAnchor, constant: 0).isActive = true
+                        }
+                  expImageView.leadingAnchor.constraint(equalTo: subview.leadingAnchor, constant: 30).isActive = true
+                  expImageView.topAnchor.constraint(equalTo: subview.topAnchor, constant: leveled ? 60 : 30).isActive = true
+                  subview.addSubview(coinImageView)
+                  coinImageView.leadingAnchor.constraint(equalTo: subview.leadingAnchor, constant: 40).isActive = true
+                  coinImageView.topAnchor.constraint(equalTo: expImageView.bottomAnchor, constant: 30).isActive = true
+                  subview.addSubview(expDesc)
+                  expDesc.leadingAnchor.constraint(equalTo: expImageView.trailingAnchor, constant: 20).isActive = true
+                  expDesc.topAnchor.constraint(equalTo: subview.topAnchor, constant: leveled ? 70 : 40).isActive = true
+                  subview.addSubview(coinDesc)
+                  coinDesc.leadingAnchor.constraint(equalTo: coinImageView.trailingAnchor, constant: 26).isActive = true
+                  coinDesc.topAnchor.constraint(equalTo: expImageView.bottomAnchor, constant: 30).isActive = true
+        } else {
+            let evolvedImageView = UIImageView()
+            evolvedImageView.translatesAutoresizingMaskIntoConstraints = false
+            if evolved == 34 && gender == "male" {
+                evolvedImageView.image = UIImage(named: "defaultMan")
+                evolvedImageView.height(300)
+            } else if evolved == 34 && gender == "female" {
+                evolvedImageView.image = UIImage(named: "defaultWoman")
+            } else if evolved == 15 && gender == "female"{
+                evolvedImageView.image = UIImage(named: "defaultGirl")
+            } else {
+                evolvedImageView.image = UIImage(named: "defaultBoy")
+            }
+            subview.addSubview(evolvedImageView)
+            evolvedImageView.centerY(to: subview)
+            evolvedImageView.leadingAnchor.constraint(equalTo: subview.leadingAnchor, constant: 80).isActive = true
+            alertView.addButton("Share", backgroundColor: darkPurple, textColor: .white, showTimeout: .none) {
+                let imgToShare = evolvedImageView.image
+                let myURL = URL(string: "https:/focusbyte.io")
+                let objectToshare = [imgToShare!, myURL!] as [Any]
+                let activityVC = UIActivityViewController(activityItems: objectToshare, applicationActivities: nil)
+                activityVC.excludedActivityTypes = [UIActivity.ActivityType.postToFacebook, UIActivity.ActivityType.postToTwitter, UIActivity.ActivityType.message, UIActivity.ActivityType.saveToCameraRoll]
+                activityVC.popoverPresentationController?.sourceView = self.view
+                self.present(activityVC, animated: true, completion: nil)
+                return
+            }
+        }
+      
+      
         alertView.customSubview = subview
         alertView.addButton("OK", backgroundColor: brightPurple, textColor: .white, showTimeout: .none) {
             return
         }
-        alertView.showCustom("You Got...", subTitle: "", color: .white, icon: UIImage())
+        alertView.showCustom(evolved == 15 || evolved == 34 ? "You EVOLVED!" : leveled ? "Look who's growing!":"You Got...", subTitle: "", color: .white, icon: UIImage())
     }
     
     

@@ -15,8 +15,10 @@ class MenuBar: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UIC
     }()
     var categoryNames: [String] = [""]
     let cellId = "cellId"
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    var tab = ""
+    init(tab: String) {
+        super.init(frame: UIScreen.main.bounds)
+        self.tab = tab
     }
     
     func createCollectionView() {
@@ -30,8 +32,18 @@ class MenuBar: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UIC
         collectionView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive = true
         collectionView.layer.cornerRadius = 25
         
-        let selectedIndexPath = NSIndexPath(item: 0, section: 0)
-        collectionView.selectItem(at: selectedIndexPath as IndexPath, animated: false, scrollPosition: [])
+//        switch tab {
+//        case "pets":
+//            print("got here")
+//            selectedIndexPath = NSIndexPath(item: 4, section: 0)
+//        case "shoes":
+//            selectedIndexPath = NSIndexPath(item: 5, section: 0)
+//        default:
+//            print("default")
+//            selectedIndexPath = NSIndexPath(item: 0, section: 0)
+//        }
+  
+       
     }
 
     

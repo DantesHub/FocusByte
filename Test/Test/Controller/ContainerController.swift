@@ -96,7 +96,7 @@ class ContainerController: UIViewController {
         case .timer:
             let controller = ContainerController(center: TimerController())
             controller.modalPresentationStyle = .fullScreen
-            presentInFullScreen(UINavigationController(rootViewController: controller), animated: false, completion: nil)
+             presentInFullScreen(UINavigationController(rootViewController: controller), animated: false, completion: nil)
         case .store:
             let controller = ContainerController(center: StoreController())
             controller.modalPresentationStyle = .fullScreen

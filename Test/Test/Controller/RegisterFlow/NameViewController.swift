@@ -39,7 +39,11 @@ class NameViewController: UIViewController {
                     "gender": chosenGender,
                     "name": nameInput.text!,
                     "inventoryArray": [],
+                    "exp": 1,
                     "coins": 0,
+                    "hair": chosenGender == "Male" ? "brown+defaultManHair":"blonde+defaultWomanHair",
+                    "eyes": "black",
+                    "skin": "tan",
                     "tags": tagDict
                 ]) { (error) in
                     if let e = error {
@@ -120,7 +124,10 @@ class NameViewController: UIViewController {
         tagList.append(studyTag)
         tagList.append(workTag)
         tagList.append(readTag)
-        UserToAdd.hair = "brown+DefaultManHair"
+        UserToAdd.hair = chosenGender == "male" ? "black+defaultManHair":"blonde+defaultWomanHair"
+        UserToAdd.eyes = "black"
+        UserToAdd.skin = "tan"
+        UserToAdd.exp = 1
         UserToAdd.gender = chosenGender
         UserToAdd.inventoryArray = List<String>()
         UserToAdd.name = nameInput.text!

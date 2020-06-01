@@ -10,7 +10,6 @@ import UIKit
 import TinyConstraints
 class AvatarColorCell: UICollectionViewCell {
     //MARK: - Properties
-    
     var colorView: UIView = {
         let cv = UIView()
         cv.translatesAutoresizingMaskIntoConstraints = false

@@ -40,6 +40,7 @@
 		FE577C9F247491B900042819 /* BarChartDataUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE577C9E247491B900042819 /* BarChartDataUtil.swift */; };
 		FE577CA324758EE700042819 /* PieChartUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE577CA224758EE700042819 /* PieChartUtil.swift */; };
 		FE577CA62475A60300042819 /* FirebaseStringUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE577CA52475A60300042819 /* FirebaseStringUtil.swift */; };
+		FE5A7DC42482E59A00F89392 /* EyeColorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE5A7DC32482E59A00F89392 /* EyeColorCell.swift */; };
 		FE61EA922475F8F200A6AE25 /* StatisticsPieChartLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE61EA912475F8F200A6AE25 /* StatisticsPieChartLogic.swift */; };
 		FE61EA9424770BCE00A6AE25 /* TimerControllerLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE61EA9324770BCE00A6AE25 /* TimerControllerLogic.swift */; };
 		FE61EA9624771D9600A6AE25 /* TagTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE61EA9524771D9600A6AE25 /* TagTableViewController.swift */; };
@@ -143,6 +144,7 @@
 		FE577C9E247491B900042819 /* BarChartDataUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartDataUtil.swift; sourceTree = "<group>"; };
 		FE577CA224758EE700042819 /* PieChartUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieChartUtil.swift; sourceTree = "<group>"; };
 		FE577CA52475A60300042819 /* FirebaseStringUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseStringUtil.swift; sourceTree = "<group>"; };
+		FE5A7DC32482E59A00F89392 /* EyeColorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EyeColorCell.swift; sourceTree = "<group>"; };
 		FE61EA912475F8F200A6AE25 /* StatisticsPieChartLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsPieChartLogic.swift; sourceTree = "<group>"; };
 		FE61EA9324770BCE00A6AE25 /* TimerControllerLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerControllerLogic.swift; sourceTree = "<group>"; };
 		FE61EA9524771D9600A6AE25 /* TagTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagTableViewController.swift; sourceTree = "<group>"; };
@@ -401,6 +403,7 @@
 				FE33D50A247D96D200A93C2F /* ColumnFlowLayout.swift */,
 				FE830E6B24818D6C00D80076 /* HairCell.swift */,
 				FE830E712481D30900D80076 /* ColorCell.swift */,
+				FE5A7DC32482E59A00F89392 /* EyeColorCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -415,8 +418,8 @@
 				FED1FFE8244255730068FD5E /* TimerPage */,
 				FE830E662481708B00D80076 /* Avatar */,
 				FED6F635243E69C400553996 /* MenuController.swift */,
-				FEF00174243FB635002D6C78 /* SettingsController.swift */,
 				FED1FFEE24453EC80068FD5E /* ContainerController.swift */,
+				FEF00174243FB635002D6C78 /* SettingsController.swift */,
 				FE324974246CB0220090759B /* InventoryController.swift */,
 				FE577C9B24748CFE00042819 /* Statistics */,
 			);
@@ -749,6 +752,7 @@
 				FEC28333244B87E100098413 /* MysteryViewController.swift in Sources */,
 				FED6F63E243EAC6100553996 /* MenuOptionCell.swift in Sources */,
 				FE6B03E0245F958200C48E27 /* LWAlert.swift in Sources */,
+				FE5A7DC42482E59A00F89392 /* EyeColorCell.swift in Sources */,
 				FECA7A8F2439136700763504 /* GenderViewController.swift in Sources */,
 				FED1FFEF24453EC80068FD5E /* ContainerController.swift in Sources */,
 				FE324973246CA1380090759B /* swiftgif.swift in Sources */,

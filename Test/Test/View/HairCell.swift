@@ -19,7 +19,8 @@ class HairCell: UICollectionViewCell {
     var hairView: UIImageView = {
         let iv = UIImageView()
         iv.translatesAutoresizingMaskIntoConstraints = false
-        iv.contentMode = .scaleAspectFit
+        iv.width(40)
+        iv.height(30)
         iv.clipsToBounds = true
         iv.isUserInteractionEnabled = true
         let tap = UIGestureRecognizer(target: self, action: #selector(tappedHair))

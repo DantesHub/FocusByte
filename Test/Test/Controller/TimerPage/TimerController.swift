@@ -28,6 +28,7 @@ var timeData = [String]()
 var isPlaying = false
 var tagSelected = "unset"
 var tagColor = "gray"
+var level = 0
 class TimerController: UIViewController {
     //MARK: - Properties
     var results: Results<User>!
@@ -116,12 +117,14 @@ class TimerController: UIViewController {
                         tagSelected = tag.name
                     }
                 }
+                gender = result.gender!
                 inventoryArray = result.inventoryArray.map{ $0 }
                 coinsL.text = String(coins)
                 deepFocusMode = result.deepFocusMode
             }
         }
         coinsL.countFromZero(to: Float(coins), duration: .brisk)
+        level = Int(floor(sqrt(Double(exp))))
     }
     
     deinit {
@@ -549,6 +552,8 @@ class TimerController: UIViewController {
         let prevNumOfCoins = numCoins
         var numOfCoins = numCoins
         let prevExp = exp
+        let  prevLevel = Int((pow(Double(exp), 1.0/2.0)))
+        print(prevLevel)
         switch howMuchTime {
         case 599...1499:
             numOfCoins += 5
@@ -569,13 +574,22 @@ class TimerController: UIViewController {
             numOfCoins += 7
             exp += 1
         }
-        //experience algo
-        let  level = ((pow(Double(exp), 1.0/3.0)))
-        if (level - floor(level) == 0) { // 0.000001 can be changed depending on the level of precision you need
-            displayalert(title: "You Leveled Up!", message: "Congratulations you have leveled up!\n You are now level \(Int(level))")
-        }
+      
         expReceived = exp - prevExp
         coinsReceived = numOfCoins - prevNumOfCoins
+        //experience algo
+        let  level = Int((pow(Double(exp), 1.0/2.0)))
+        if (prevLevel != level) { // 0.000001 can be changed depending on the level of precision you need
+            if level == 15 {
+                createAlert(evolved: 15)
+            } else if level == 34 {
+                createAlert(evolved: 34)
+            } else {
+                createAlert(leveled: true)
+            }
+        } else {
+            createAlert()
+        }
         return numOfCoins
     }
     

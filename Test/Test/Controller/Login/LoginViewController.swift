@@ -170,9 +170,12 @@ class LoginViewController: UIViewController {
             let timeD = List<String>()
             let inventoryArray = List<String>()
             let docRef = db.collection(K.FStore.collectionName).document(email)
+            var hair = ""
+            var eyes = ""
+            var skin = ""
             docRef.getDocument { (snapshot, error) in
                 if let document = snapshot, document.exists {
-                    let dataDescription = document.data().map(String.init(describing:)) ?? "nil"
+                    _ = document.data().map(String.init(describing:)) ?? "nil"
                     if let g = document["gender"]  {
                         gender = g as! String
                     }
@@ -181,6 +184,15 @@ class LoginViewController: UIViewController {
                     }
                     if let c = document["coins"] {
                         coins = c  as! Int
+                    }
+                    if let hairr = document["hair"] {
+                        hair = hairr as! String
+                    }
+                    if let eyess = document["eyes"] {
+                        eyes = eyess as! String
+                    }
+                    if let skinn = document["skin"] {
+                        skin = skinn as! String
                     }
                     if let timeData = document["TimeData"] {
                         let entries = timeData as! [String]
@@ -225,6 +237,9 @@ class LoginViewController: UIViewController {
                 realmUser.email = Auth.auth().currentUser?.email
                 realmUser.isLoggedIn = true
                 realmUser.deepFocusMode = true
+                realmUser.skin = skin
+                realmUser.hair = hair
+                realmUser.eyes = eyes
                 realmUser.gender = gender
                 realmUser.coins = coins
                 realmUser.writeToRealm()

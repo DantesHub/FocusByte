@@ -30,15 +30,21 @@ class InventoryController: UIViewController {
 
         return cv
     }()
-    let menuBar: MenuBar = {
-        let mb = MenuBar()
-        mb.categoryNames = ["Common", "Rare", "Super R", "Epic", "Pets", "Closet"]
-        menuLabel = "Common"
-        mb.createCollectionView()
-           return mb
-    }()
+     var menuBar: MenuBar!
+    var whichTab = ""
     
     //MARK: - init
+    init(whichTab: String = "") {
+        super.init(nibName: nil, bundle: nil)
+        self.whichTab = whichTab
+        print("\(self.whichTab) WATSSUP")
+
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -164,12 +170,30 @@ class InventoryController: UIViewController {
     }
     
     private func setUpTabBar() {
+             menuBar = MenuBar(tab: self.whichTab)
+            menuBar.categoryNames = ["Common", "Rare", "Super R", "Epic", "Pets", "Closet"]
+            menuLabel = "Common"
+            menuBar.createCollectionView()
+            menuBar.tab = whichTab
           view.addSubview(menuBar)
           menuBar.translatesAutoresizingMaskIntoConstraints = false
           menuBar.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
           menuBar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
           menuBar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
           menuBar.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        var selectedIndexPath = NSIndexPath(item: 0, section: 0)
+
+        if pets {
+            selectedIndexPath = NSIndexPath(item: 4, section: 0)
+            pets = false
+        } else if shoes {
+            selectedIndexPath = NSIndexPath(item: 5, section: 0)
+            shoes = false
+        }
+        menuBar.collectionView.reloadData()
+        menuBar.collectionView.layoutIfNeeded()
+        menuBar.collectionView.selectItem(at: selectedIndexPath as IndexPath, animated: true, scrollPosition: UICollectionView.ScrollPosition.centeredHorizontally)
+        menuBar.collectionView.scrollToItem(at: selectedIndexPath as IndexPath, at: UICollectionView.ScrollPosition.centeredHorizontally, animated: true)
       }
     
     //MARK: - Handlers
