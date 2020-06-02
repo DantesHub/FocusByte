@@ -52,6 +52,10 @@
 		FE830E6C24818D6C00D80076 /* HairCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE830E6B24818D6C00D80076 /* HairCell.swift */; };
 		FE830E6E2481A5A400D80076 /* Feature.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE830E6D2481A5A400D80076 /* Feature.swift */; };
 		FE830E722481D30900D80076 /* ColorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE830E712481D30900D80076 /* ColorCell.swift */; };
+		FE8E61F4248580ED001E1D07 /* SectionHeaderViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE8E61F3248580ED001E1D07 /* SectionHeaderViewCell.swift */; };
+		FE8E61F624859611001E1D07 /* AvatarStoreController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE8E61F524859611001E1D07 /* AvatarStoreController.swift */; };
+		FE8E61F82485A7AB001E1D07 /* AvatarStoreCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE8E61F72485A7AB001E1D07 /* AvatarStoreCell.swift */; };
+		FE8E61FA2485B458001E1D07 /* AvatarAccessory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE8E61F92485B458001E1D07 /* AvatarAccessory.swift */; };
 		FEBC64142431183F00FB082A /* PressStart2P-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FEBC64132431183F00FB082A /* PressStart2P-Regular.ttf */; };
 		FEC28331244B86C200098413 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEC28330244B86C200098413 /* Extensions.swift */; };
 		FEC28333244B87E100098413 /* MysteryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEC28332244B87E100098413 /* MysteryViewController.swift */; };
@@ -156,6 +160,10 @@
 		FE830E6B24818D6C00D80076 /* HairCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HairCell.swift; sourceTree = "<group>"; };
 		FE830E6D2481A5A400D80076 /* Feature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Feature.swift; sourceTree = "<group>"; };
 		FE830E712481D30900D80076 /* ColorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCell.swift; sourceTree = "<group>"; };
+		FE8E61F3248580ED001E1D07 /* SectionHeaderViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderViewCell.swift; sourceTree = "<group>"; };
+		FE8E61F524859611001E1D07 /* AvatarStoreController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarStoreController.swift; sourceTree = "<group>"; };
+		FE8E61F72485A7AB001E1D07 /* AvatarStoreCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarStoreCell.swift; sourceTree = "<group>"; };
+		FE8E61F92485B458001E1D07 /* AvatarAccessory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarAccessory.swift; sourceTree = "<group>"; };
 		FEBC64132431183F00FB082A /* PressStart2P-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PressStart2P-Regular.ttf"; sourceTree = "<group>"; };
 		FEC28330244B86C200098413 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		FEC28332244B87E100098413 /* MysteryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MysteryViewController.swift; sourceTree = "<group>"; };
@@ -331,6 +339,7 @@
 				FE805AB5247F1C7400A82880 /* MysteryItemLogic.swift */,
 				FE830E642480358F00D80076 /* DisplayItem.swift */,
 				FE830E6D2481A5A400D80076 /* Feature.swift */,
+				FE8E61F92485B458001E1D07 /* AvatarAccessory.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -387,6 +396,7 @@
 				FE3249602468F7BE0090759B /* NewitemViewController.swift */,
 				FE33D50C247EE1C800A93C2F /* TwoItemViewController.swift */,
 				FE33D510247F12E900A93C2F /* ThreeItemViewController.swift */,
+				FE8E61F524859611001E1D07 /* AvatarStoreController.swift */,
 			);
 			path = StorePage;
 			sourceTree = "<group>";
@@ -404,6 +414,8 @@
 				FE830E6B24818D6C00D80076 /* HairCell.swift */,
 				FE830E712481D30900D80076 /* ColorCell.swift */,
 				FE5A7DC32482E59A00F89392 /* EyeColorCell.swift */,
+				FE8E61F3248580ED001E1D07 /* SectionHeaderViewCell.swift */,
+				FE8E61F72485A7AB001E1D07 /* AvatarStoreCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -739,6 +751,7 @@
 				FE33D50D247EE1C800A93C2F /* TwoItemViewController.swift in Sources */,
 				FE577CA324758EE700042819 /* PieChartUtil.swift in Sources */,
 				FED05132243FD25600D7B1F0 /* RealmObjects.swift in Sources */,
+				FE8E61F82485A7AB001E1D07 /* AvatarStoreCell.swift in Sources */,
 				E1D2BF94242B9CCB004AC477 /* animatedLabel.swift in Sources */,
 				FE577C942470CD1200042819 /* DateHelper.swift in Sources */,
 				E1593603242ACE6F0050E914 /* AppDelegate.swift in Sources */,
@@ -753,6 +766,7 @@
 				FED6F63E243EAC6100553996 /* MenuOptionCell.swift in Sources */,
 				FE6B03E0245F958200C48E27 /* LWAlert.swift in Sources */,
 				FE5A7DC42482E59A00F89392 /* EyeColorCell.swift in Sources */,
+				FE8E61F624859611001E1D07 /* AvatarStoreController.swift in Sources */,
 				FECA7A8F2439136700763504 /* GenderViewController.swift in Sources */,
 				FED1FFEF24453EC80068FD5E /* ContainerController.swift in Sources */,
 				FE324973246CA1380090759B /* swiftgif.swift in Sources */,
@@ -774,6 +788,7 @@
 				FE32497B246F106D0090759B /* MenuBar.swift in Sources */,
 				FE830E682481746F00D80076 /* AvatarSideBar.swift in Sources */,
 				FE3249612468F7BE0090759B /* NewitemViewController.swift in Sources */,
+				FE8E61FA2485B458001E1D07 /* AvatarAccessory.swift in Sources */,
 				FE61EA9424770BCE00A6AE25 /* TimerControllerLogic.swift in Sources */,
 				FEC28331244B86C200098413 /* Extensions.swift in Sources */,
 				FEF00175243FB635002D6C78 /* SettingsController.swift in Sources */,
@@ -784,6 +799,7 @@
 				FECA7A8D2439135300763504 /* NameViewController.swift in Sources */,
 				FE577C9F247491B900042819 /* BarChartDataUtil.swift in Sources */,
 				FED6F63C243EA82700553996 /* Protocols.swift in Sources */,
+				FE8E61F4248580ED001E1D07 /* SectionHeaderViewCell.swift in Sources */,
 				FED36A15247750B8005DE0FC /* TagViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -227,7 +227,7 @@ extension TimerController {
     }
     
     //MARK: - Alert Func
-    func createAlert(leveled: Bool = false, evolved:Int = 34) {
+    func createAlert(leveled: Bool = false, evolved:Int = 0) {
         let appearance = SCLAlertView.SCLAppearance(
             kWindowWidth: 300,
             kWindowHeight:evolved == 15 || evolved == 34 ? 400 : 300,

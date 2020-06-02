@@ -142,7 +142,7 @@ class BoxCell: UICollectionViewCell {
         contentView.addSubview(boxView)
         contentView.addSubview(desc)
         contentView.addSubview(buyButton)
-        contentView.backgroundColor = superLightLavender
+        contentView.backgroundColor = lightLavender
         contentView.layer.cornerRadius = 25
         contentView.layer.shadowColor = UIColor.black.cgColor
         contentView.layer.shadowOffset = CGSize(width: 0, height: 10)

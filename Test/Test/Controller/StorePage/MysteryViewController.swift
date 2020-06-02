@@ -69,14 +69,15 @@ class MysteryViewController: UIViewController {
     
     //MARK: - Helper Functions
     func configureUI() {
-        view.backgroundColor = backgroundColor
+        view.backgroundColor = darkPurple
         view.addSubview(collectionView)
         collectionView.showsHorizontalScrollIndicator = false
         self.title = "Mystery Boxes"
         configureNavigationBar(color: backgroundColor, isTrans: false)
+        navigationController?.navigationBar.barTintColor = darkPurple
         navigationController?.navigationBar.tintColor = .white
         
-        collectionView.backgroundColor = backgroundColor
+        collectionView.backgroundColor = darkPurple
         collectionView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         
         collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30).isActive = true

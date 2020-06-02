@@ -32,18 +32,7 @@ class MenuBar: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UIC
         collectionView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive = true
         collectionView.layer.cornerRadius = 25
         
-//        switch tab {
-//        case "pets":
-//            print("got here")
-//            selectedIndexPath = NSIndexPath(item: 4, section: 0)
-//        case "shoes":
-//            selectedIndexPath = NSIndexPath(item: 5, section: 0)
-//        default:
-//            print("default")
-//            selectedIndexPath = NSIndexPath(item: 0, section: 0)
-//        }
-  
-       
+
     }
 
     

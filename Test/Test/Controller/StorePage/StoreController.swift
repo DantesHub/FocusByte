@@ -87,8 +87,10 @@ class StoreController: UIViewController {
         view.addSubview(scrollView)
         scrollView.addSubview(containerView)
         configureUI()
-       
+    }
     
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.navigationBar.barTintColor = backgroundColor
     }
     
     //MARK: - Helper Functions
@@ -147,6 +149,8 @@ class StoreController: UIViewController {
         clothes = createBox(color: superLightLavender, handler: #selector(mysteryTapped))
         clothes.topAnchor.constraint(equalTo: chestBox.bottomAnchor, constant: 30).isActive = true
         
+        let clothesTapped = UITapGestureRecognizer(target: self, action: #selector(tappedClothes))
+        clothes.addGestureRecognizer(clothesTapped)
         clothesBoxLabel.text = "Avatar\nClothes"
         clothesBoxLabel.textColor = brightPurple
         clothesBoxLabel.applyDesign()
@@ -176,8 +180,14 @@ class StoreController: UIViewController {
         self.navigationController?.pushViewController(MysteryViewController(), animated: true)
     }
     
+    @objc func tappedClothes() {
+          self.navigationController?.pushViewController(AvatarStoreController(), animated: true)
+    }
+    
     @objc func handleMenuToggle() {
         delegate?.handleMenuToggle(forMenuOption: nil)
     }
+    
+    
 }
 

@@ -59,58 +59,72 @@ class InventoryCell: UICollectionViewCell {
                 hideWhenBackgroundViewIsTapped: true,
                 contentViewColor: superLightLavender
             )
-            let itemIV = UIImageView()
-            itemIV.translatesAutoresizingMaskIntoConstraints = false
-            itemIV.contentMode = .scaleAspectFit
-            itemIV.image = img
-            
             let alertView = SCLAlertView(appearance: appearance)
-            let rarityLabel = UILabel()
-            rarityLabel.text = "Rarity:"
-            rarityLabel.font = UIFont(name: "Menlo", size: 20)
-            rarityLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            let scarcity = UILabel()
-            scarcity.text = "\(rarity)"
-            scarcity.font = UIFont(name: "Menlo", size: 20)
-            switch rarity {
-            case "Common":
-                scarcity.textColor = .black
-            case "Rare":
-                scarcity.textColor = .black
-                scarcity.font =  UIFont(name: "Menlo-Bold", size: 20)
-            case "Super Rare":
-                scarcity.textColor = diamond
-                scarcity.font =  UIFont(name: "Menlo-Bold", size: 20)
-            case "Epic":
-                scarcity.textColor = brightPurple
-                scarcity.font =  UIFont(name: "Menlo-Bold", size: 20)
-            default:
-                print("default")
-            }
-            scarcity.translatesAutoresizingMaskIntoConstraints = false
-            
-            let stockLabel = UILabel()
-            stockLabel.text = "Stock: \(count)"
-            stockLabel.font = UIFont(name: "Menlo", size: 20)
-            stockLabel.translatesAutoresizingMaskIntoConstraints = false
-            
             let subview = UIView(frame: CGRect(x:0,y:0,width:300,height:350))
-            subview.addSubview(itemIV)
-            itemIV.translatesAutoresizingMaskIntoConstraints = false
-            itemIV.edges(to: subview, insets: TinyEdgeInsets(top: 10, left: 0, bottom: 70, right: 25))
-            subview.addSubview(rarityLabel)
-            rarityLabel.topToBottom(of: itemIV)
-            rarityLabel.leadingAnchor.constraint(equalTo: subview.leadingAnchor, constant: 15).isActive = true
-            subview.addSubview(scarcity)
-            scarcity.leftToRight(of: rarityLabel, offset: 10)
-            scarcity.topToBottom(of: itemIV)
+            if count != -1 {
+                let itemIV = UIImageView()
+                itemIV.translatesAutoresizingMaskIntoConstraints = false
+                itemIV.contentMode = .scaleAspectFit
+                itemIV.image = img
+                
+                let rarityLabel = UILabel()
+                rarityLabel.text = "Rarity:"
+                rarityLabel.font = UIFont(name: "Menlo", size: 20)
+                rarityLabel.translatesAutoresizingMaskIntoConstraints = false
+                
+                let scarcity = UILabel()
+                scarcity.text = "\(rarity)"
+                scarcity.font = UIFont(name: "Menlo", size: 20)
+                switch rarity {
+                case "Common":
+                    scarcity.textColor = .black
+                case "Rare":
+                    scarcity.textColor = .black
+                    scarcity.font =  UIFont(name: "Menlo-Bold", size: 20)
+                case "Super Rare":
+                    scarcity.textColor = diamond
+                    scarcity.font =  UIFont(name: "Menlo-Bold", size: 20)
+                case "Epic":
+                    scarcity.textColor = brightPurple
+                    scarcity.font =  UIFont(name: "Menlo-Bold", size: 20)
+                default:
+                    print("default")
+                }
+                scarcity.translatesAutoresizingMaskIntoConstraints = false
+                
+                let stockLabel = UILabel()
+                stockLabel.text = "Stock: \(count)"
+                stockLabel.font = UIFont(name: "Menlo", size: 20)
+                stockLabel.translatesAutoresizingMaskIntoConstraints = false
+                
+                subview.addSubview(itemIV)
+                itemIV.translatesAutoresizingMaskIntoConstraints = false
+                itemIV.edges(to: subview, insets: TinyEdgeInsets(top: 10, left: 0, bottom: 70, right: 25))
+                subview.addSubview(rarityLabel)
+                rarityLabel.topToBottom(of: itemIV)
+                rarityLabel.leadingAnchor.constraint(equalTo: subview.leadingAnchor, constant: 15).isActive = true
+                subview.addSubview(scarcity)
+                scarcity.leftToRight(of: rarityLabel, offset: 10)
+                scarcity.topToBottom(of: itemIV)
+                
+                subview.addSubview(stockLabel)
+                stockLabel.bottomAnchor.constraint(equalTo: subview.bottomAnchor, constant: -10).isActive = true
+                stockLabel.leadingAnchor.constraint(equalTo: subview.leadingAnchor, constant: 15).isActive = true
+            } else {  //this is a clothing item
+                let itemIV = UIImageView()
+                itemIV.translatesAutoresizingMaskIntoConstraints = false
+                itemIV.contentMode = .scaleAspectFit
+                itemIV.image = img
+                
+                subview.addSubview(itemIV)
+                itemIV.translatesAutoresizingMaskIntoConstraints = false
+                itemIV.edges(to: subview, insets: TinyEdgeInsets(top: 10, left: 0, bottom: 70, right: 25))
+                //create equip button
+            }
             
-            subview.addSubview(stockLabel)
-            stockLabel.bottomAnchor.constraint(equalTo: subview.bottomAnchor, constant: -10).isActive = true
-            stockLabel.leadingAnchor.constraint(equalTo: subview.leadingAnchor, constant: 15).isActive = true
             alertView.customSubview = subview
             alertView.showCustom(imgName, subTitle: "", color: .white, icon: UIImage())
+            
         }
         
     }

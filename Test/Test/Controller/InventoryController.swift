@@ -32,13 +32,22 @@ class InventoryController: UIViewController {
     }()
      var menuBar: MenuBar!
     var whichTab = ""
+    struct Section {
+        var sectionName: String
+        var rowData: [DisplayItem]
+    }
+    var shirtArray = [DisplayItem(count: -1, name: "green sweater", rarity: "None"), DisplayItem(count: -1, name: "blue sweater", rarity: "None"),DisplayItem(count: -1, name: "yellowSweater", rarity: "None"),DisplayItem(count: -1, name: "black sweater", rarity: "None"),DisplayItem(count: -1, name: "purpleSweater", rarity: "None")]
+    var pantsArray = [DisplayItem(count: -1, name: "gray joggers", rarity: "None"),DisplayItem(count: -1, name: "blueJeans", rarity: "None"),DisplayItem(count: -1, name: "blackPants", rarity: "None")]
+    var glassesArray = [DisplayItem]()
+    var hatsArray = [DisplayItem]()
+    var suitsARray = [DisplayItem]()
+    var sections = [Section]()
     
     //MARK: - init
     init(whichTab: String = "") {
         super.init(nibName: nil, bundle: nil)
         self.whichTab = whichTab
-        print("\(self.whichTab) WATSSUP")
-
+        sections = [Section(sectionName: "Shirts/Sweaters", rowData: shirtArray), Section(sectionName: "Pants", rowData: pantsArray), Section(sectionName: "Hats", rowData: pantsArray),Section(sectionName: "Shirts/Sweaters", rowData: shirtArray), Section(sectionName: "Pants", rowData: pantsArray), Section(sectionName: "Hats", rowData: pantsArray)]
     }
     
     required init?(coder: NSCoder) {
@@ -47,6 +56,7 @@ class InventoryController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+ 
     }
     override func viewWillAppear(_ animated: Bool) {
         getItems()
@@ -131,7 +141,8 @@ class InventoryController: UIViewController {
         collectionView.reloadData()
     }
     @objc final func updateToCloset(notificaton: NSNotification) {
-     
+        
+     collectionView.reloadData()
     }
     func getItems() {
         displayArray = [DisplayItem]()
@@ -163,6 +174,7 @@ class InventoryController: UIViewController {
         collectionView.dataSource = self
         view.addSubview(collectionView)
         collectionView.register(InventoryCell.self, forCellWithReuseIdentifier: K.inventoryCell)
+        collectionView.register(SectionHeaderViewCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: SectionHeaderViewCell.reuseId)
         collectionView.topToBottom(of: menuBar, offset: 20)
         collectionView.leadingToSuperview(offset: 20)
         collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
@@ -204,22 +216,75 @@ class InventoryController: UIViewController {
 
 extension InventoryController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 100
+        if menuLabel != "Closet" {
+            return 100
+        } else {
+            if sections[section].rowData.count > 12 {
+                return sections[section].rowData.count
+            } else {
+                return 12
+            }
+        }
     }
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        if menuLabel == "Closet" {
+            return 5
+        } else {
+            return 1
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                     layout collectionViewLayout: UICollectionViewLayout,
+                     referenceSizeForHeaderInSection section: Int) -> CGSize{
+        return menuLabel == "Closet" ? CGSize(width: CGFloat(signOf: collectionView.frame.size.width, magnitudeOf: CGFloat(30)), height: 30):CGSize(width: 0, height: 0) // you can change here
+    }
+    
+  // MARK: Header
+       func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+
+           switch kind {
+           case UICollectionView.elementKindSectionHeader:
+
+               let cell = self.collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: SectionHeaderViewCell.reuseId, for: indexPath) as! SectionHeaderViewCell
+               cell.initializeUI()
+               cell.createConstraints()
+               cell.setTitle(title: self.sections[indexPath.section].sectionName)
+               return cell
+           default:  fatalError("Unexpected element kind")
+           }
+       }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: K.inventoryCell, for: indexPath) as! InventoryCell
-        if displayArray.indices.contains(indexPath.row){
-            cell.setImage(image: UIImage(named: displayArray[indexPath.row].name)!)
-            cell.imgName = displayArray[indexPath.row].name
-            cell.count = displayArray[indexPath.row].count
-            cell.rarity = displayArray[indexPath.row].rarity
-            return cell
+        if menuLabel != "Closet" {
+            if displayArray.indices.contains(indexPath.row){
+                 cell.setImage(image: UIImage(named: displayArray[indexPath.row].name)!)
+                 cell.imgName = displayArray[indexPath.row].name
+                 cell.count = displayArray[indexPath.row].count
+                 cell.rarity = displayArray[indexPath.row].rarity
+                 return cell
+             } else {
+                 cell.setImage(image: UIImage())
+                 cell.imgName = "blank"
+                 return cell
+             }
         } else {
-            cell.setImage(image: UIImage())
-            cell.imgName = "blank"
-            return cell
+            if sections[indexPath.section].rowData.indices.contains(indexPath.row) {
+                cell.setImage(image: UIImage(named: sections[indexPath.section].rowData[indexPath.row].name)!)
+                cell.imgName = sections[indexPath.section].rowData[indexPath.row].name
+                cell.count = -1
+                cell.rarity = "None"
+                return cell
+            } else {
+                cell.setImage(image: UIImage())
+                cell.imgName = "blank"
+                return cell
+            }
+           
         }
     }
     
 }
+
+

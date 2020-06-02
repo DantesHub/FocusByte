@@ -176,7 +176,7 @@ class AvatarController: UIViewController {
         iv.translatesAutoresizingMaskIntoConstraints = false
         iv.width(max:265)
         iv.height(max: 235)
-        iv.image = UIImage(named: "blackSweater")
+        iv.image = UIImage(named: "black sweater")
         iv.contentMode = .scaleAspectFit
         iv.clipsToBounds = false
         iv.backgroundColor = .clear
@@ -189,7 +189,7 @@ class AvatarController: UIViewController {
         iv.translatesAutoresizingMaskIntoConstraints = false
         iv.width(max:155)
         iv.height(max: 223)
-        iv.image = UIImage(named: "blackpants")
+        iv.image = UIImage(named: "blackPants")
         iv.contentMode = .scaleAspectFit
         iv.clipsToBounds = false
         iv.backgroundColor = .clear

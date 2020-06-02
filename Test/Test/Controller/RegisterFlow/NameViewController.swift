@@ -41,7 +41,7 @@ class NameViewController: UIViewController {
                     "inventoryArray": [],
                     "exp": 1,
                     "coins": 0,
-                    "hair": chosenGender == "Male" ? "brown+defaultManHair":"blonde+defaultWomanHair",
+                    "hair": chosenGender == "male" ? "brown+defaultManHair":"blonde+defaultWomanHair",
                     "eyes": "black",
                     "skin": "tan",
                     "tags": tagDict
