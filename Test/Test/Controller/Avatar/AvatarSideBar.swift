@@ -18,10 +18,11 @@ var selectedEyeColor = "black"
 var skinColor = "tan"
 var pets = false
 var shoes = false
-var maleHairImages = [Feature(name: "defaultManHair", isSelected: false),Feature(name: "none", isSelected: false)]
-var femaleHairImages = [Feature(name: "defaultWomanHair", isSelected: false),Feature(name: "none", isSelected: false)]
- var hairColors = [SelectedColor(color: "black", isSelected: false), SelectedColor(color: "brown", isSelected: false), SelectedColor(color: "blonde", isSelected: false), SelectedColor(color: "darkRed", isSelected: false),SelectedColor(color: "gray", isSelected: false),SelectedColor(color: "green", isSelected: false), SelectedColor(color: "skyBlue", isSelected: false)]
-var eyeColors = [SelectedEyeColor(color: "blue", isSelected: false), SelectedEyeColor(color: "brown", isSelected: false), SelectedEyeColor(color: "green", isSelected: false), SelectedEyeColor(color: "darkRed", isSelected: false),SelectedEyeColor(color: "gray", isSelected: false),SelectedEyeColor(color: "black", isSelected: false)]
+var maleHairImages = [Feature(name: "defaultManHair", isSelected: false),Feature(name: "manHair2", isSelected: false),Feature(name: "manHair3", isSelected: false),Feature(name: "manHair4", isSelected: false),Feature(name: "manHair5", isSelected: false),Feature(name: "none", isSelected: false)]
+var femaleHairImages = [Feature(name: "womanHair1", isSelected: false),Feature(name: "womanHair2", isSelected: false),Feature(name: "womanHair3", isSelected: false),Feature(name: "womanHair4", isSelected: false), Feature(name: "none", isSelected: false)]
+ var hairColors = [SelectedColor(color: "black", isSelected: false), SelectedColor(color: "brown", isSelected: false), SelectedColor(color: "blonde", isSelected: false), SelectedColor(color: "darkRed", isSelected: false),SelectedColor(color: "gray", isSelected: false)]
+ var skinColors = [SelectedColor(color: "tan", isSelected: false),SelectedColor(color: "darkTan", isSelected: false),SelectedColor(color: "brown", isSelected: false), SelectedColor(color: "brightGreen", isSelected: false), SelectedColor(color: "blue", isSelected: false)]
+var eyeColors = [SelectedEyeColor(color: "black", isSelected: false),SelectedEyeColor(color: "blue", isSelected: false), SelectedEyeColor(color: "brown", isSelected: false), SelectedEyeColor(color: "yellow", isSelected: false), SelectedEyeColor(color: "darkRed", isSelected: false),SelectedEyeColor(color: "gray", isSelected: false),SelectedEyeColor(color: "emeraldGreen", isSelected: false)]
 
 class AvatarSideBar: UIView {
     var results: Results<User>!
@@ -69,7 +70,15 @@ class AvatarSideBar: UIView {
            return cv
     }()
     lazy var eyeColorCollectionView: UICollectionView = {
-        print("added eye color")
+        let layout = ColumnFlowLayout(cellsPerRow: 1, minimumInteritemSpacing: 5, minimumLineSpacing: 15, sectionInset: UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5))
+        layout.scrollDirection = .vertical
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.register(EyeColorCell.self, forCellWithReuseIdentifier: K.eyeColorCell)
+        cv.translatesAutoresizingMaskIntoConstraints = false
+        cv.showsVerticalScrollIndicator = false
+        return cv
+       }()
+    lazy var skinColorCollectionView: UICollectionView = {
         let layout = ColumnFlowLayout(cellsPerRow: 1, minimumInteritemSpacing: 5, minimumLineSpacing: 15, sectionInset: UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5))
         layout.scrollDirection = .vertical
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -141,6 +150,15 @@ class AvatarSideBar: UIView {
         iv.addGestureRecognizer(shoeTapped)
         return iv
     }()
+    lazy var skinImageView: UIImageView = {
+           let iv = UIImageView()
+           iv.translatesAutoresizingMaskIntoConstraints = false
+           iv.image = UIImage(named: "skinIcon")
+        iv.frame.size = CGSize(width: 100, height: 100)
+           iv.backgroundColor = .white
+           iv.isUserInteractionEnabled = true
+           return iv
+       }()
     
     //MARK: - Init
     override init(frame: CGRect) {
@@ -205,13 +223,22 @@ class AvatarSideBar: UIView {
         eyeImageView.applyDesign(color: .white)
         let eyeTapped = UITapGestureRecognizer(target: self, action: #selector(tappedEye))
         eyeImageView.addGestureRecognizer(eyeTapped)
+        
+        self.addSubview(skinImageView)
+        skinImageView.topToBottom(of: eyeImageView,offset: 15)
+        skinImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -15).isActive = true
+        skinImageView.applyDesign(color: .white)
+        let skinTapped = UITapGestureRecognizer(target: self, action: #selector(tappedSkin))
+        skinImageView.addGestureRecognizer(skinTapped)
+               
     }
     
     private final func createHairCollectionView() {
+        backArrowView.removeFromSuperview()
         hairCollectionView.delegate = self
         hairCollectionView.dataSource = self
         self.addSubview(hairCollectionView)
-        hairCollectionView.topToBottom(of: backArrowView, offset: 15)
+        hairCollectionView.topAnchor.constraint(equalTo: self.topAnchor, constant: 140).isActive = true
         hairCollectionView.backgroundColor = backgroundColor
         hairCollectionView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10).isActive = true
         hairCollectionView.width(self.frame.width * 0.20)
@@ -227,7 +254,20 @@ class AvatarSideBar: UIView {
         eyeColorCollectionView.backgroundColor = backgroundColor
         eyeColorCollectionView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10).isActive = true
         eyeColorCollectionView.width(self.frame.width * 0.20)
-        eyeColorCollectionView.height(self.frame.height * 0.35)
+        eyeColorCollectionView.height(self.frame.height * 0.45)
+        createSaveButton()
+    }
+    
+    private final func createSkinColorCollectionView() {
+        skinColorCollectionView.delegate = self
+        skinColorCollectionView.dataSource = self
+        self.addSubview(skinColorCollectionView)
+        skinColorCollectionView.topToBottom(of: skinImageView, offset: 15)
+        skinColorCollectionView.backgroundColor = backgroundColor
+        skinColorCollectionView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10).isActive = true
+        skinColorCollectionView.width(self.frame.width * 0.20)
+        skinColorCollectionView.height(self.frame.height * 0.45
+        )
         createSaveButton()
     }
     
@@ -293,20 +333,23 @@ class AvatarSideBar: UIView {
      }
      
      @objc func tappedShoe() {
-        print("tappedShoe")
+        menuLabel = "Closet"
+        shoes = true
         let controller = ContainerController(center: InventoryController(whichTab: "shoes"))
         controller.modalPresentationStyle = .fullScreen
-        shoes = true
         var topVC = UIApplication.shared.windows.filter {$0.isKeyWindow}.first!.rootViewController
         while((topVC!.presentedViewController) != nil){
              topVC = topVC!.presentedViewController
         }
         topVC!.present(controller,animated: true,completion: nil)
+    
+
      }
     
     @objc func tappedPet() {
-        print("tappedPet")
         pets = true
+        menuLabel = "Pets"
+
         let controller = ContainerController(center: InventoryController(whichTab: "pets"))
          controller.modalPresentationStyle = .fullScreen
 
@@ -315,7 +358,22 @@ class AvatarSideBar: UIView {
               topVC = topVC!.presentedViewController
          }
          topVC!.present(controller,animated: true,completion: nil)
+        menuLabel = "Pets"
+           NotificationCenter.default.post(name: Notification.Name(rawValue: petsKey), object: nil)
 
+    }
+    
+    @objc func tappedSkin() {
+        hairImageViewIcon.removeFromSuperview()
+        eyeImageView.removeFromSuperview()
+        skinImageView.removeFromSuperview()
+        backArrowView.removeFromSuperview()
+        self.addSubview(skinImageView)
+        skinImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 140).isActive = true
+        skinImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -15).isActive = true
+        skinImageView.applyDesign(color: .white)
+        createSkinColorCollectionView()
+        createSaveButton()
     }
     
     @objc func tappedBack() {
@@ -325,14 +383,17 @@ class AvatarSideBar: UIView {
         eyeColorCollectionView.removeFromSuperview()
         hairCollectionView.removeFromSuperview()
         saveButton.removeFromSuperview()
+        skinImageView.removeFromSuperview()
         createStartView()
     }
      
      @objc func tappedEye() {
          hairImageViewIcon.removeFromSuperview()
          eyeImageView.removeFromSuperview()
+            skinImageView.removeFromSuperview()
+        backArrowView.removeFromSuperview()
          self.addSubview(eyeImageView)
-        eyeImageView.topToBottom(of: backArrowView, offset: 15)
+        eyeImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 140).isActive = true
          eyeImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -15).isActive = true
          eyeImageView.applyDesign(color: .white)
         createEyeColorCollectionView()
@@ -342,6 +403,7 @@ class AvatarSideBar: UIView {
      @objc func tappedHair() {
          hairImageViewIcon.removeFromSuperview()
          eyeImageView.removeFromSuperview()
+        skinImageView.removeFromSuperview()
          createColorCollectionView()
          createHairCollectionView()
     }
@@ -352,6 +414,8 @@ class AvatarSideBar: UIView {
          colorCollectionView.removeFromSuperview()
         eyeImageView.removeFromSuperview()
         eyeColorCollectionView.removeFromSuperview()
+        skinColorCollectionView.removeFromSuperview()
+        skinImageView.removeFromSuperview()
          saveToRealm()
          createFeatures()
      }
@@ -366,6 +430,7 @@ class AvatarSideBar: UIView {
     
                         result.setValue("\(selectedHairColor)+\(selectedHair)", forKey:"hair")
                         result.setValue("\(selectedEyeColor)", forKey: "eyes")
+                        result.setValue(skinColor, forKey: "skin")
                     }
                 } catch {
                     print(error)
@@ -397,11 +462,13 @@ class AvatarSideBar: UIView {
 extension AvatarSideBar: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == self.hairCollectionView {
-            return maleHairImages.count
+            return gender == "male" ? maleHairImages.count : femaleHairImages.count
         } else if collectionView == self.colorCollectionView{
             return hairColors.count
         } else if collectionView == self.eyeColorCollectionView {
             return eyeColors.count
+        } else if collectionView == self.skinColorCollectionView {
+            return skinColors.count
         } else {
             return 4
         }
@@ -431,7 +498,10 @@ extension AvatarSideBar: UICollectionViewDelegateFlowLayout, UICollectionViewDat
             cell.setBorder(border: eyeColors[indexPath.row].isSelected)
             return cell
         } else {
-            return UICollectionViewCell()
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: K.eyeColorCell, for: indexPath) as! EyeColorCell
+            cell.setColor(color: skinColors[indexPath.row].color)
+            cell.setBorder(border: skinColors[indexPath.row].isSelected)
+            return cell
         }
         
     }
@@ -450,7 +520,7 @@ extension AvatarSideBar: UICollectionViewDelegateFlowLayout, UICollectionViewDat
                         selectedHairColor = ""
                         createColorCollectionView()
                     }
-                    hairImageView.image = UIImage(named: "defaultManHair")
+                    hairImageView.image = UIImage(named: selectedHair)
                     if selectedHairColor == "" {
                         hairImageView.image = hairImageView.image?.withRenderingMode(.alwaysTemplate)
                         hairImageView.tintColor = black
@@ -476,7 +546,7 @@ extension AvatarSideBar: UICollectionViewDelegateFlowLayout, UICollectionViewDat
                     if selectedHairColor == "" {
                         hairImageView.image = UIImage(named: "black+defaultWomanHair")
                     } else {
-                        hairImageView.image = UIImage(named: "\(selectedHairColor)+defaultWomanHair")
+                        hairImageView.image = UIImage(named: "\(selectedHairColor)+\(selectedHair)")
                     }
                 }
                   updateOtherImages(num: indexPath.row, array: femaleHairImages, type: "femaleHairImages")
@@ -486,7 +556,7 @@ extension AvatarSideBar: UICollectionViewDelegateFlowLayout, UICollectionViewDat
             hairColors[indexPath.row].isSelected = true
             selectedHairColor = hairColors[indexPath.row].color
             if gender == "male" {
-                hairImageView.image = UIImage(named: "defaultManHair")
+                hairImageView.image = UIImage(named: selectedHair)
                 hairImageView.image = hairImageView.image?.withRenderingMode(.alwaysTemplate)
                 hairImageView.tintColor = K.getAvatarColor(selectedHairColor)
             } else {
@@ -502,6 +572,12 @@ extension AvatarSideBar: UICollectionViewDelegateFlowLayout, UICollectionViewDat
             eyesImageView.image = eyesImageView.image?.withRenderingMode(.alwaysTemplate)
             eyesImageView.tintColor =  K.getAvatarColor(selectedEyeColor)
             updateOtherImages(num: indexPath.row, array: eyeColors, type: "eyeColors")
+        } else if collectionView == self.skinColorCollectionView {
+            skinColors[indexPath.row].isSelected = true
+            skinColor = skinColors[indexPath.row].color
+            faceImageView.image = gender == "female" ? UIImage(named: "\(skinColor)+womanFace") : UIImage(named: "\(skinColor)+manFace")
+            armsImageView.image = UIImage(named: "\(skinColor)+womanArms")
+            updateOtherImages(num: indexPath.row, array: skinColors, type: "skinColors")
         }
 
         collectionView.reloadData()
@@ -519,6 +595,8 @@ extension AvatarSideBar: UICollectionViewDelegateFlowLayout, UICollectionViewDat
                     eyeColors[i].isSelected = false
                 } else if type == "femaleHairImages" {
                     femaleHairImages[i].isSelected = false
+                } else if type == "skinColors" {
+                    skinColors[i].isSelected = false
                 }
             }
         }

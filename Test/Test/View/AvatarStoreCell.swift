@@ -62,8 +62,14 @@ class AvatarStoreCell: UICollectionViewCell {
         priceLabel.font = UIFont(name: "Menlo", size: 21)
         priceLabel.width()
         priceLabel.translatesAutoresizingMaskIntoConstraints = false
-        priceLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 70).isActive = true
+        priceLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 60).isActive = true
         priceLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 0).isActive = true
+        
+        self.addSubview(coinImageView)
+          coinImageView.height(20)
+          coinImageView.width(15)
+          coinImageView.leftToRight(of: priceLabel,offset: 5)
+          coinImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5).isActive = true
         
         self.addSubview(itemImageView)
         itemImageView.height(100)
@@ -83,10 +89,10 @@ class AvatarStoreCell: UICollectionViewCell {
             showCloseButton: false,
             showCircularIcon: false,
             hideWhenBackgroundViewIsTapped: true,
-            contentViewColor: superLightLavender
+            contentViewColor: .white
         )
         let alertView = SCLAlertView(appearance: appearance)
-        let subview = UIView(frame: CGRect(x:0,y:0,width:300,height:350))
+        let subview = UIView(frame: CGRect(x:0,y:0,width:280,height:350))
         let itemIV = UIImageView()
         let coinIV = UIImageView()
         coinIV.translatesAutoresizingMaskIntoConstraints = false
@@ -96,14 +102,17 @@ class AvatarStoreCell: UICollectionViewCell {
         priceLabel.text = String(price)
         priceLabel.font = UIFont(name: "Menlo", size: 30)
         
+  
+        
         itemIV.translatesAutoresizingMaskIntoConstraints = false
         itemIV.contentMode = .scaleAspectFit
         itemIV.image = img
         subview.addSubview(itemIV)
         itemIV.translatesAutoresizingMaskIntoConstraints = false
-        itemIV.edges(to: subview, insets: TinyEdgeInsets(top: 10, left: 30, bottom: 70, right: 45))
-        
+        itemIV.edges(to: subview, insets: TinyEdgeInsets(top: 10, left: 30, bottom: 70, right: 40))
         subview.addSubview(priceLabel)
+        subview.backgroundColor = superLightLavender
+        subview.layer.cornerRadius = 25
         priceLabel.leadingAnchor.constraint(equalTo: subview.leadingAnchor, constant: 110).isActive = true
         priceLabel.topAnchor.constraint(equalTo: itemIV.bottomAnchor, constant: 35).isActive = true
         
@@ -179,22 +188,12 @@ class AvatarStoreCell: UICollectionViewCell {
     func setImageName(name: String) {
         self.imgName = name
         titleLabel.text = imgName
-        let allClothes = topBook.merging(pantsBook, uniquingKeysWith: { (current, _) in current })
            for piece in allClothes {
             if piece.key == imgName {
                 price = piece.value
                 priceLabel.text = String(piece.value)
             }
            }
-        if !inventoryArray.contains(imgName) && price != 0 {
-            self.addSubview(coinImageView)
-            coinImageView.height(20)
-            coinImageView.width(15)
-            coinImageView.leftToRight(of: priceLabel,offset: 5)
-            coinImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -14).isActive = true
-        } else {
-            priceLabel.text = ""
-        }
     }
     
 

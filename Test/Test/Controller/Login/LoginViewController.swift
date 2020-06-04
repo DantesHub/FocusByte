@@ -173,6 +173,7 @@ class LoginViewController: UIViewController {
             var hair = ""
             var eyes = ""
             var skin = ""
+            var xp = 0
             docRef.getDocument { (snapshot, error) in
                 if let document = snapshot, document.exists {
                     _ = document.data().map(String.init(describing:)) ?? "nil"
@@ -187,6 +188,9 @@ class LoginViewController: UIViewController {
                     }
                     if let hairr = document["hair"] {
                         hair = hairr as! String
+                    }
+                    if let exp = document["exp"] {
+                        xp = exp as! Int
                     }
                     if let eyess = document["eyes"] {
                         eyes = eyess as! String
@@ -222,6 +226,7 @@ class LoginViewController: UIViewController {
                     let tagVar = Tag()
                     tagVar.name = tag.key
                     tagVar.color = tag.value
+                    
                     tagVar.selected = tag.key == "unset" ? true : false
                     if tag.key == "unset" {
                         tagList.insert(tagVar, at: 0)
@@ -238,6 +243,7 @@ class LoginViewController: UIViewController {
                 realmUser.isLoggedIn = true
                 realmUser.deepFocusMode = true
                 realmUser.skin = skin
+                realmUser.exp = xp
                 realmUser.hair = hair
                 realmUser.eyes = eyes
                 realmUser.gender = gender

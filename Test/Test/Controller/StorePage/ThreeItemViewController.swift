@@ -48,8 +48,9 @@ class ThreeItemViewController: TwoItemViewController {
         
         rareItemImageView.image = UIImage(named: diamondItemArray[1])
         rareItemLabel.text = "\(diamondItemArray[1])"
-        rarityLabel.text = (itemBook[diamondItemArray[1]]!) == "Epic" ? "-\(itemBook[diamondItemArray[1]]!)!" : "-\(itemBook[diamondItemArray[1]]!)!!"
+        rarityLabel.text = (itemBook[diamondItemArray[1]]!) == "Rare" ? "-\(itemBook[diamondItemArray[1]]!)!" : "-\(itemBook[diamondItemArray[1]]!)!!"
         rarityLabel.textColor = itemBook[diamondItemArray[1]]! == "Rare" ?  darkRed : diamond
+        
         view.addSubview(epicImageView)
         epicImageView.image = UIImage(named: diamondItemArray[2])
         epicImageView.width(itemImageSize)

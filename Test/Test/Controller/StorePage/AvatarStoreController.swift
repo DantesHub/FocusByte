@@ -27,10 +27,12 @@ class AvatarStoreController: UIViewController {
     }()
     struct Section {
         var sectionName: String
-        var rowData: [DisplayItem]
+        var rowData: [String]
     }
-    var shirtArray = [DisplayItem(count: -1, name: "green sweater", rarity: "None"), DisplayItem(count: -1, name: "blue sweater", rarity: "None"),DisplayItem(count: -1, name: "yellow sweater", rarity: "None"),DisplayItem(count: -1, name: "black sweater", rarity: "None"),DisplayItem(count: -1, name: "purple sweater", rarity: "None")]
-    var pantsArray = [DisplayItem(count: -1, name: "gray joggers", rarity: "None"),DisplayItem(count: -1, name: "blue jeans", rarity: "None"),DisplayItem(count: -1, name: "black pants", rarity: "None")]
+    var shirtArray = [String]()
+    var pantsArray = [String]()
+    var backpackArray = [String]()
+    var shoeArray = [String]()
     var sections = [Section]()
     
     //MARK: - init
@@ -39,12 +41,29 @@ class AvatarStoreController: UIViewController {
         navigationController?.navigationBar.barTintColor = backgroundColor
         
         //load store data
-        sections = [Section(sectionName: "Shirts/Sweaters", rowData: shirtArray), Section(sectionName: "Pants", rowData: pantsArray), Section(sectionName: "Hats", rowData: pantsArray),Section(sectionName: "Shirts/Sweaters", rowData: shirtArray), Section(sectionName: "Pants", rowData: pantsArray), Section(sectionName: "Hats", rowData: pantsArray),Section(sectionName: "Pants", rowData: pantsArray), Section(sectionName: "Hats", rowData: pantsArray)]
+        getArrays()
+        sections = [Section(sectionName: "Shirts/Sweaters", rowData: shirtArray), Section(sectionName: "Pants", rowData: pantsArray), Section(sectionName: "Hats", rowData: pantsArray),Section(sectionName: "Shoes", rowData: shoeArray), Section(sectionName: "Backpacks/Luggage", rowData: backpackArray), Section(sectionName: "Hats", rowData: pantsArray),Section(sectionName: "Pants", rowData: pantsArray), Section(sectionName: "Suits Level 70+", rowData: pantsArray)]
         configureUI()
  
     }
     
     //MARK: - Helper Functions
+    func getArrays() {
+        for item in allClothes {
+            if !inventoryArray.contains(item.key) {
+                if topBook.contains(where: {$0.key == item.key}) {
+                    shirtArray.append(item.key)
+                } else if pantsBook.contains(where: {$0.key == item.key}) {
+                    pantsArray.append(item.key)
+                } else if shoeBook.contains(where: {$0.key == item.key}) {
+                    shoeArray.append(item.key)
+                } else if backpackBook.contains(where: {$0.key == item.key}) {
+                    backpackArray.append(item.key)
+                }
+            }
+        }
+    }
+    
     func configureUI() {
         view.backgroundColor = backgroundColor
         navigationItem.title = "Clothing"
@@ -93,8 +112,8 @@ extension AvatarStoreController: UICollectionViewDataSource, UICollectionViewDel
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AvatarStoreCell.cellId, for: indexPath) as! AvatarStoreCell
-        cell.setImage(image: UIImage(named: sections[indexPath.section].rowData[indexPath.row].name)!)
-        cell.setImageName(name: sections[indexPath.section].rowData[indexPath.row].name)
+        cell.setImage(image: UIImage(named: sections[indexPath.section].rowData[indexPath.row])!)
+        cell.setImageName(name: sections[indexPath.section].rowData[indexPath.row])
             return cell
     }
     

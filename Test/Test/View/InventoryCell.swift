@@ -9,9 +9,12 @@
 import UIKit
 import TinyConstraints
 import SCLAlertView
+import RealmSwift
+
 
 class InventoryCell: UICollectionViewCell {
     //MARK: - Properties
+    var results: Results<User>!
     var img = UIImage()
     var imgName = ""
     lazy var itemImageView: UIImageView = {
@@ -26,6 +29,7 @@ class InventoryCell: UICollectionViewCell {
     var count = 0
     var rarity = ""
     let label = UILabel()
+    var type = ""
     //MARK: - init
     override init(frame:CGRect) {
         super.init(frame: frame)
@@ -50,8 +54,8 @@ class InventoryCell: UICollectionViewCell {
         if imgName != "blank" {
             let appearance = SCLAlertView.SCLAppearance(
                 kWindowWidth: 300,
-                kWindowHeight: 380,
-                kButtonHeight: 35,
+                kWindowHeight: count > -1 ? 330 : 280,
+                kButtonHeight: 50,
                 kTitleFont: UIFont(name: "Menlo-Bold", size: 25)!,
                 kTextFont: UIFont(name: "Menlo", size: 15)!,
                 showCloseButton: false,
@@ -60,8 +64,8 @@ class InventoryCell: UICollectionViewCell {
                 contentViewColor: superLightLavender
             )
             let alertView = SCLAlertView(appearance: appearance)
-            let subview = UIView(frame: CGRect(x:0,y:0,width:300,height:350))
-            if count != -1 {
+            let subview = UIView(frame: CGRect(x:0,y:0,width:300,height:count > -1 ? 350:250))
+            if count > -1{
                 let itemIV = UIImageView()
                 itemIV.translatesAutoresizingMaskIntoConstraints = false
                 itemIV.contentMode = .scaleAspectFit
@@ -118,8 +122,30 @@ class InventoryCell: UICollectionViewCell {
                 
                 subview.addSubview(itemIV)
                 itemIV.translatesAutoresizingMaskIntoConstraints = false
-                itemIV.edges(to: subview, insets: TinyEdgeInsets(top: 10, left: 0, bottom: 70, right: 25))
+                itemIV.edges(to: subview, insets: TinyEdgeInsets(top: 10, left: 0, bottom: 30, right: 25))
                 //create equip button
+                if count == -1 {
+                    alertView.addButton("Equip", backgroundColor: darkRed, textColor: .white, showTimeout: .none) {
+                        if topBook.contains(where: {$0.key == self.imgName }) {
+                            sweaterImageView.image = UIImage(named: self.imgName)
+                            self.type = "shirt"
+                        } else if shoeBook.contains(where: {$0.key == self.imgName }) {
+                            shoesImageView.image = UIImage(named: self.imgName)
+                            self.type = "shoes"
+                        } else if backpackBook.contains(where: {$0.key == self.imgName }) {
+                            backpackView.image = UIImage(named: self.imgName)
+                            self.type = "backpack"
+                        } else if pantsBook.contains(where: {$0.key == self.imgName }) {
+                            pantsImageView.image = UIImage(named: self.imgName)
+                            self.type = "pants"
+                        } else if self.imgName == "none" {
+                            backpackView.image = UIImage(named: "blank")
+                            self.type = "backpack"
+                        }
+                        self.saveToRealm()
+                        return
+                    }
+                }
             }
             
             alertView.customSubview = subview
@@ -127,6 +153,22 @@ class InventoryCell: UICollectionViewCell {
             
         }
         
+    }
+    
+    func saveToRealm() {
+        self.results = uiRealm.objects(User.self)
+        for result  in self.results {
+            if result.isLoggedIn == true {
+                do {
+                    try uiRealm.write {
+                        result.setValue(imgName, forKey: type)
+                    }
+                } catch {
+                    print(error)
+                }
+            }
+        }
+        self.superview?.setNeedsDisplay()
     }
     
     required init?(coder: NSCoder) {

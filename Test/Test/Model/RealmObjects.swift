@@ -25,6 +25,9 @@ class User: Object {
     @objc dynamic var shirt: String? = nil
     @objc dynamic var pants: String? = nil
     @objc dynamic var shoes: String? = nil
+    @objc dynamic var backpack: String? = nil
+    @objc dynamic var glasses: String? = nil
+
 
     var inventoryArray = List<String>()
     override static func primaryKey() -> String? {

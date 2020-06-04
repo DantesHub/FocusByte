@@ -38,10 +38,10 @@ class NameViewController: UIViewController {
                 db.collection(K.userPreferenes).document(email!).setData([
                     "gender": chosenGender,
                     "name": nameInput.text!,
-                    "inventoryArray": [],
+                    "inventoryArray": ["green sweater", "blue jeans", "default shoes"],
                     "exp": 1,
                     "coins": 0,
-                    "hair": chosenGender == "male" ? "brown+defaultManHair":"blonde+defaultWomanHair",
+                    "hair": chosenGender == "male" ? "brown+defaultManHair":"blonde+womanHair1",
                     "eyes": "black",
                     "skin": "tan",
                     "tags": tagDict
@@ -118,18 +118,22 @@ class NameViewController: UIViewController {
     }
     
     func saveToRealm() {
+        let itemArray = List<String>()
+        itemArray.append("green sweater")
+        itemArray.append("blue jeans")
+        itemArray.append("default shoes")
         let UserToAdd = User()
         let tagList = List<Tag>()
         tagList.append(unsetTag)
         tagList.append(studyTag)
         tagList.append(workTag)
         tagList.append(readTag)
-        UserToAdd.hair = chosenGender == "male" ? "black+defaultManHair":"blonde+defaultWomanHair"
+        UserToAdd.hair = chosenGender == "male" ? "black+defaultManHair":"blonde+womanHair4"
         UserToAdd.eyes = "black"
         UserToAdd.skin = "tan"
         UserToAdd.exp = 1
         UserToAdd.gender = chosenGender
-        UserToAdd.inventoryArray = List<String>()
+        UserToAdd.inventoryArray = itemArray
         UserToAdd.name = nameInput.text!
         UserToAdd.email = Auth.auth().currentUser?.email
         UserToAdd.tagDictionary = tagList

@@ -15,6 +15,32 @@ var avatarArmWidth: CGFloat = 1.7
 var avatarBottomPadding:CGFloat = -30
 var colorCollectionPadding: CGFloat = -100
 //135 x 112
+//135 x 87
+   var armsImageView: UIImageView = {
+      let iv = UIImageView()
+      iv.translatesAutoresizingMaskIntoConstraints = false
+      iv.contentMode = .scaleAspectFit
+      iv.image = gender == "male" ? UIImage(named: "womanArms") : UIImage(named: "womanArms")
+      iv.clipsToBounds = false
+      return iv
+  }()
+//113 x 118
+  var faceImageView: UIImageView = {
+     let iv = UIImageView()
+     iv.translatesAutoresizingMaskIntoConstraints = false
+     iv.image = gender == "male" ? UIImage(named: "manFace") : UIImage(named: "womanFace")
+     iv.clipsToBounds = false
+     iv.backgroundColor = .clear
+     return iv
+ }()
+
+var backpackView: UIImageView = {
+    let iv = UIImageView()
+    iv.translatesAutoresizingMaskIntoConstraints = false
+    iv.clipsToBounds = false
+    iv.backgroundColor = .clear
+    return iv
+}()
 var hairImageView: UIImageView = {
     let iv = UIImageView()
     iv.translatesAutoresizingMaskIntoConstraints = false
@@ -33,6 +59,18 @@ var eyesImageView: UIImageView = {
     iv.clipsToBounds = false
     return iv
 }()
+//shoes 175 x 45
+var shoesImageView: UIImageView = {
+    let iv = UIImageView()
+    iv.translatesAutoresizingMaskIntoConstraints = false
+    iv.width(max:175)
+    iv.height(max: 45)
+    iv.image = UIImage(named: "default shoes")
+    iv.contentMode = .scaleAspectFit
+    iv.clipsToBounds = false
+    iv.backgroundColor = .clear
+    return iv
+}()
 var gender = ""
 var evolveLabel: UILabel = {
     let label = UILabel()
@@ -42,6 +80,30 @@ var evolveLabel: UILabel = {
     label.text = "You Evolve at level: \(evolveLevel)"
     return label
 }()
+//265x235
+var sweaterImageView: UIImageView = {
+    let iv = UIImageView()
+    iv.translatesAutoresizingMaskIntoConstraints = false
+    iv.width(max:265)
+    iv.height(max: 235)
+    iv.image = UIImage(named: "green sweater")
+    iv.contentMode = .scaleAspectFit
+    iv.clipsToBounds = false
+    iv.backgroundColor = .clear
+    return iv
+}()
+//pants 155 x 223
+var pantsImageView: UIImageView = {
+     let iv = UIImageView()
+     iv.translatesAutoresizingMaskIntoConstraints = false
+     iv.width(max:155)
+     iv.height(max: 223)
+     iv.image = UIImage(named: "blue jeans")
+     iv.contentMode = .scaleAspectFit
+     iv.clipsToBounds = false
+     iv.backgroundColor = .clear
+     return iv
+ }()
 
 class AvatarController: UIViewController {
     var avatarMultipler: CGFloat = 0.20
@@ -64,7 +126,7 @@ class AvatarController: UIViewController {
                     saveButtonPadding = -75
                     saveButtonWidth = 55
                     saveFontSize = 15
-                    avatarBottomPadding = 60
+                    avatarBottomPadding = 0
                     characterBackgroundBottom = -80
                     colorCollectionPadding = -70
                 case 1920, 2208:
@@ -75,7 +137,7 @@ class AvatarController: UIViewController {
                     avatarArmWidth = 2
                     saveButtonPadding = -75
                     saveButtonWidth = 55
-                    avatarBottomPadding = 60
+                    avatarBottomPadding = 0
                     saveFontSize = 15
                     colorCollectionPadding = -70
                     characterBackgroundBottom = -80
@@ -150,64 +212,9 @@ class AvatarController: UIViewController {
         
         return label
     }()
-    //135 x 87
-    lazy var armsImageView: UIImageView = {
-        let iv = UIImageView()
-        iv.translatesAutoresizingMaskIntoConstraints = false
-        iv.contentMode = .scaleAspectFit
-        iv.image = gender == "male" ? UIImage(named: "womanArms") : UIImage(named: "womanArms")
-        iv.clipsToBounds = false
-        return iv
-    }()
-    //113 x 118
-    lazy var faceImageView: UIImageView = {
-        let iv = UIImageView()
-        iv.translatesAutoresizingMaskIntoConstraints = false
-        iv.image = gender == "male" ? UIImage(named: "manFace") : UIImage(named: "womanFace")
-        iv.clipsToBounds = false
-        iv.backgroundColor = .clear
-        return iv
-    }()
-    
-    
-    //265x235
-    lazy var sweaterImageView: UIImageView = {
-        let iv = UIImageView()
-        iv.translatesAutoresizingMaskIntoConstraints = false
-        iv.width(max:265)
-        iv.height(max: 235)
-        iv.image = UIImage(named: "black sweater")
-        iv.contentMode = .scaleAspectFit
-        iv.clipsToBounds = false
-        iv.backgroundColor = .clear
-        return iv
-    }()
+
     //eye level
-    //pants 155 x 223
-    lazy var pantsImageView: UIImageView = {
-        let iv = UIImageView()
-        iv.translatesAutoresizingMaskIntoConstraints = false
-        iv.width(max:155)
-        iv.height(max: 223)
-        iv.image = UIImage(named: "blackPants")
-        iv.contentMode = .scaleAspectFit
-        iv.clipsToBounds = false
-        iv.backgroundColor = .clear
-        return iv
-    }()
-    
-    //shoes 175 x 45
-    lazy var shoesImageView: UIImageView = {
-        let iv = UIImageView()
-        iv.translatesAutoresizingMaskIntoConstraints = false
-        iv.width(max:175)
-        iv.height(max: 45)
-        iv.image = UIImage(named: "chelseaBoots")
-        iv.contentMode = .scaleAspectFit
-        iv.clipsToBounds = false
-        iv.backgroundColor = .clear
-        return iv
-    }()
+ 
     
     lazy var experienceLabel: UILabel = {
         let label = UILabel()
@@ -344,13 +351,18 @@ class AvatarController: UIViewController {
                 pantsImageView.heightAnchor.constraint(equalTo: view.widthAnchor, multiplier: avatarMultipler * 0.90 * 1.2).isActive = true
             }
             
+            //backpack
+            characterBackground.addSubview(backpackView)
+            backpackView.leadingAnchor.constraint(equalTo: characterBackground.leadingAnchor, constant: 20).isActive = true
+            backpackView.bottomAnchor.constraint(equalTo: characterBackground.bottomAnchor, constant: -50).isActive = true
+            
             //arms
             characterBackground.insertSubview(armsImageView, aboveSubview: characterBackground)
             armsImageView.centerX(to: characterBackground)
             if gender == "male" {
                 armsImageView.centerYAnchor.constraint(equalTo: characterBackground.centerYAnchor, constant: 25).isActive = true
-                armsImageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: avatarMultipler * 1.5).isActive = true
-                armsImageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: avatarMultipler * 1.5 * 0.40).isActive = true
+                armsImageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: avatarMultipler * 1.6).isActive = true
+                armsImageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: avatarMultipler * 1.6 * 0.40).isActive = true
             } else {
                 armsImageView.centerYAnchor.constraint(equalTo: characterBackground.centerYAnchor, constant: 30).isActive = true
                 armsImageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: avatarMultipler * avatarArmWidth).isActive = true
@@ -364,8 +376,8 @@ class AvatarController: UIViewController {
                 characterBackground.insertSubview(sweaterImageView, aboveSubview: characterBackground)
                 sweaterImageView.centerX(to: characterBackground)
                 sweaterImageView.centerYAnchor.constraint(equalTo: characterBackground.centerYAnchor, constant: 15).isActive = true
-                sweaterImageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: avatarMultipler * 1.35).isActive = true
-                sweaterImageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: avatarMultipler * 1.35 * 0.95).isActive = true
+                sweaterImageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: avatarMultipler * 1.4).isActive = true
+                sweaterImageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: avatarMultipler * 1.4 * 0.95).isActive = true
             } else {
                 characterBackground.insertSubview(sweaterImageView, aboveSubview: characterBackground)
                 sweaterImageView.centerX(to: characterBackground)
@@ -425,19 +437,56 @@ class AvatarController: UIViewController {
         results = uiRealm.objects(User.self)
         var hair = ""
         var eyeColor = ""
+        var pack = ""
+        var shirt = ""
+        var pants = ""
+        var glasses = ""
+        var shoe = ""
         for result in results {
             if result.isLoggedIn == true {
                 name = result.name
-                gender = result.gender!
+                gender = "male"
                 hair = result.hair!
                 eyeColor = result.eyes!
+                shirt = result.shirt ?? "none"
+                pants = result.pants ?? "none"
+                shoe = result.shoes ?? "none"
+                glasses = result.glasses ?? "none"
+                skinColor = result.skin!
                 lvlData = Int(pow(Double(result.exp), 1.0/2.0))
+                pack = result.backpack ?? "none"
                 //set experience
             }
         }
+        level = lvlData
+        if pack != "none" {
+            backpackView.image = UIImage(named: pack)
+        }
+        if shirt != "none" {
+            sweaterImageView.image = UIImage(named: shirt)
+        }
+        if pants != "none" {
+            pantsImageView.image = UIImage(named: pants)
+        }
+        if shoe != "none" {
+            shoesImageView.image = UIImage(named: shoe)
+        }
         updateHair(hair: hair)
         updateEyes(color: eyeColor)
+        updateSkin()
     }
+    private func updateSkin() {
+        faceImageView.image = gender == "male" ? UIImage(named: "\(skinColor)+manFace") : UIImage(named: "\(skinColor)+womanFace")
+        armsImageView.image = UIImage(named: "\(skinColor)+womanArms")
+        for (i,color) in skinColors.enumerated() {
+            if color.color == skinColor {
+                skinColors[i].isSelected = true
+            } else {
+                skinColors[i].isSelected = false
+            }
+        }
+    }
+    
     private func updateEyes(color: String) {
         selectedEyeColor = color
         eyesImageView.image = eyesImageView.image?.withRenderingMode(.alwaysTemplate)

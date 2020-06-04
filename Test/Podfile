@@ -19,8 +19,7 @@ target 'Test' do
 	pod "TinyConstraints"
 	pod 'Charts'
 	pod 'SCLAlertView'
-
-
+	pod 'IQKeyboardManagerSwift'
 
 
 	

@@ -10,8 +10,14 @@ import UIKit
 import RealmSwift
 import TinyConstraints
 
+var shirt = ""
+var shoe = ""
+var backpack = ""
+var pants = ""
+
 class InventoryController: UIViewController {
     //MARK: - properties
+    var results: Results<User>!
     var delegate: ContainerControllerDelegate!
     var displayArray = [DisplayItem]()
     lazy var collectionView: UICollectionView = {
@@ -30,41 +36,95 @@ class InventoryController: UIViewController {
 
         return cv
     }()
+
      var menuBar: MenuBar!
     var whichTab = ""
     struct Section {
         var sectionName: String
         var rowData: [DisplayItem]
     }
-    var shirtArray = [DisplayItem(count: -1, name: "green sweater", rarity: "None"), DisplayItem(count: -1, name: "blue sweater", rarity: "None"),DisplayItem(count: -1, name: "yellowSweater", rarity: "None"),DisplayItem(count: -1, name: "black sweater", rarity: "None"),DisplayItem(count: -1, name: "purpleSweater", rarity: "None")]
-    var pantsArray = [DisplayItem(count: -1, name: "gray joggers", rarity: "None"),DisplayItem(count: -1, name: "blueJeans", rarity: "None"),DisplayItem(count: -1, name: "blackPants", rarity: "None")]
-    var glassesArray = [DisplayItem]()
-    var hatsArray = [DisplayItem]()
-    var suitsARray = [DisplayItem]()
     var sections = [Section]()
     
     //MARK: - init
     init(whichTab: String = "") {
         super.init(nibName: nil, bundle: nil)
         self.whichTab = whichTab
-        sections = [Section(sectionName: "Shirts/Sweaters", rowData: shirtArray), Section(sectionName: "Pants", rowData: pantsArray), Section(sectionName: "Hats", rowData: pantsArray),Section(sectionName: "Shirts/Sweaters", rowData: shirtArray), Section(sectionName: "Pants", rowData: pantsArray), Section(sectionName: "Hats", rowData: pantsArray)]
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+
     override func viewDidLoad() {
         super.viewDidLoad()
  
     }
     override func viewWillAppear(_ animated: Bool) {
-        getItems()
-        addObservers()
+        getRealmData()
+        if shoes {
+            addObservers()
+            setUpTabBar()
+        } else if pets {
+           addObservers()
+            setUpTabBar()
+        } else {
+            setUpTabBar()
+            getItems()
+            addObservers()
+        }
+ 
     }
     
     
     //MARK: - Helper Functions
+    private final func getRealmData() {
+        results = uiRealm.objects(User.self)
+            for result  in results {
+                if result.isLoggedIn == true {
+                    shirt = result.shirt ?? "none"
+                    shoe = result.shoes ?? "none"
+                    pants = result.pants ?? "none"
+                    backpack = result.backpack ?? "none"
+                }
+            }
+    }
+    @objc final func updateToCloset(notificaton: NSNotification) {
+        var topArray = [DisplayItem]()
+        var pantsArray = [DisplayItem]()
+        var backpackArray = [DisplayItem(count: -1, name: "none", rarity: "None")]
+        var shoeArray = [DisplayItem]()
+        for item in allClothes {
+            var count = -1
+            if inventoryArray.contains(item.key) {
+                if topBook.contains(where: {$0.key == item.key}) {
+                    if shirt == item.key {
+                        count = -2
+                    }
+                    topArray.append(DisplayItem(count: count, name: item.key, rarity: "None"))
+                } else if pantsBook.contains(where: {$0.key == item.key}) {
+                    if pants == item.key {
+                        count = -2
+                    }
+                      pantsArray.append(DisplayItem(count: count, name: item.key, rarity: "None"))
+                } else if shoeBook.contains(where: {$0.key == item.key}) {
+                    print(shoe)
+                    if shoe == item.key {
+                        count = -2
+                    }
+                shoeArray.append(DisplayItem(count: count, name: item.key, rarity: "None"))
+                } else if backpackBook.contains(where: {$0.key == item.key}) {
+                    if backpack == item.key {
+                        count = -2
+                    }
+                backpackArray.append(DisplayItem(count: count, name: item.key, rarity: "None"))
+                }
+            }
+            sections = [Section(sectionName: "Shirts/Sweaters", rowData: topArray), Section(sectionName: "Pants", rowData: pantsArray), Section(sectionName: "Hats", rowData: pantsArray) ,Section(sectionName: "Shoes", rowData: shoeArray), Section(sectionName: "Backpacks", rowData: backpackArray), Section(sectionName: "Hats", rowData: pantsArray)]
+        }
+     configureUI()
+     collectionView.reloadData()
+    }
     private final func addObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(InventoryController.updateToCommon(notificaton:)), name: NSNotification.Name(rawValue: commonKey), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(InventoryController.updateToRare(notificaton:)), name: NSNotification.Name(rawValue: rareKey), object: nil)
@@ -140,10 +200,7 @@ class InventoryController: UIViewController {
         }
         collectionView.reloadData()
     }
-    @objc final func updateToCloset(notificaton: NSNotification) {
-        
-     collectionView.reloadData()
-    }
+
     func getItems() {
         displayArray = [DisplayItem]()
         if menuLabel == "Common" {
@@ -163,7 +220,6 @@ class InventoryController: UIViewController {
     }
     
     func configureUI() {
-        setUpTabBar()
         configureNavigationBar(color: backgroundColor, isTrans: false)
         navigationItem.title = "Inventory"
          navigationItem.leftBarButtonItem =  UIBarButtonItem(image: resizedMenuImage?.withTintColor(.white), style: .plain, target: self, action: #selector(handleMenuToggle))
@@ -201,6 +257,8 @@ class InventoryController: UIViewController {
         } else if shoes {
             selectedIndexPath = NSIndexPath(item: 5, section: 0)
             shoes = false
+            menuLabel = "Closet"
+                NotificationCenter.default.post(name: Notification.Name(rawValue: closetKey), object: nil)
         }
         menuBar.collectionView.reloadData()
         menuBar.collectionView.layoutIfNeeded()
@@ -273,7 +331,7 @@ extension InventoryController: UICollectionViewDataSource, UICollectionViewDeleg
             if sections[indexPath.section].rowData.indices.contains(indexPath.row) {
                 cell.setImage(image: UIImage(named: sections[indexPath.section].rowData[indexPath.row].name)!)
                 cell.imgName = sections[indexPath.section].rowData[indexPath.row].name
-                cell.count = -1
+                cell.count = sections[indexPath.section].rowData[indexPath.row].count
                 cell.rarity = "None"
                 return cell
             } else {

@@ -31,8 +31,6 @@ class MenuBar: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UIC
         //        collectionView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20).isActive = true
         collectionView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive = true
         collectionView.layer.cornerRadius = 25
-        
-
     }
 
     

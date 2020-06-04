@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import IQKeyboardManagerSwift
+
 var isActive = false
 var dateResignActive : Date?
 var dateAppDidBack : Date?
@@ -18,6 +20,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let winScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: winScene)
         let nc =  UINavigationController(rootViewController: WelcomeViewController())
+        IQKeyboardManager.shared.enable = true
+        self.window?.overrideUserInterfaceStyle = .light
         window?.rootViewController = nc
         window?.makeKeyAndVisible()
     }

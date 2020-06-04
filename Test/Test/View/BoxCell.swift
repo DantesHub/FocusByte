@@ -23,7 +23,7 @@ var boxPadding: CGFloat {
                 itemImageSize = 125
                 boxSize = 150
                 youGotFontSize = 30
-                commonItemPadding = 70
+                commonItemPadding = 20
             //("iphone 8plus ")
             case 1334:
                 //Iphone 8
@@ -31,8 +31,8 @@ var boxPadding: CGFloat {
                 boxSize = 150
                 itemImageSize = 125
                 youGotFontSize = 30
-                boxDescFontSize = 18
-                commonItemPadding = 70
+                boxDescFontSize = 16
+                commonItemPadding = 20
             case 2436:
                 size = -5
                 boxDescFontSize = 21

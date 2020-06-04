@@ -16,11 +16,12 @@ class HairCell: UICollectionViewCell {
             hairView.image = UIImage(named: image)
            }
        }
+    var imgName = ""
     var hairView: UIImageView = {
         let iv = UIImageView()
         iv.translatesAutoresizingMaskIntoConstraints = false
-        iv.width(40)
-        iv.height(30)
+        iv.width(50)
+        iv.height(50)
         iv.clipsToBounds = true
         iv.isUserInteractionEnabled = true
         let tap = UIGestureRecognizer(target: self, action: #selector(tappedHair))
@@ -47,7 +48,15 @@ class HairCell: UICollectionViewCell {
     }
     
     func setImage(image: String) {
-        hairView.image = UIImage(named: image)
+        if image == "manHair3" {
+            hairView.image = UIImage(named: "manHair3Icon")
+        } else if image == "manHair4" {
+            hairView.image = UIImage(named: "manHair4Icon")
+        } else if image == "manHair5" {
+        hairView.image = UIImage(named: "manHair5Icon")
+        } else {
+            hairView.image = UIImage(named: image)
+        }
     }
     
     func setBorder(border: Bool) {

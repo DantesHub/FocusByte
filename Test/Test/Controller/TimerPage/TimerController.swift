@@ -117,6 +117,7 @@ class TimerController: UIViewController {
                         tagSelected = tag.name
                     }
                 }
+                self.overrideUserInterfaceStyle = .light
                 gender = result.gender!
                 inventoryArray = result.inventoryArray.map{ $0 }
                 coinsL.text = String(coins)
@@ -412,7 +413,7 @@ class TimerController: UIViewController {
         if let colon = self.timeL.text?.firstIndex(of: ":") {
             durationString = String((self.timeL.text?[..<colon])!)
         }
-        counter = 15
+        counter = 5
         howMuchTime = ((Int(durationString) ?? 10) * 60)
         basicAnimation.duration = CFTimeInterval(counter + (counter/4))
         self.shapeLayer.add(basicAnimation, forKey: "basic")
@@ -577,6 +578,7 @@ class TimerController: UIViewController {
       
         expReceived = exp - prevExp
         coinsReceived = numOfCoins - prevNumOfCoins
+        print(coinsReceived!)
         //experience algo
         let  level = Int((pow(Double(exp), 1.0/2.0)))
         if (prevLevel != level) { // 0.000001 can be changed depending on the level of precision you need
