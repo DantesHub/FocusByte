@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SCLAlertView
 var name: String = ""
 
 class MysteryViewController: UIViewController {
@@ -170,17 +171,32 @@ extension MysteryViewController: UICollectionViewDelegateFlowLayout, UICollectio
     
     @objc func tappedBuy() {
         let controller = GifController()
+        let appearance = SCLAlertView.SCLAppearance(
+                  kWindowWidth: 300,
+                  kWindowHeight: 250,
+                  kButtonHeight: 50,
+                  kTitleFont: UIFont(name: "Menlo-Bold", size: 25)!,
+                  kTextFont: UIFont(name: "Menlo", size: 15)!,
+                  showCloseButton: false,
+                  showCircularIcon: false,
+                  hideWhenBackgroundViewIsTapped: true,
+                  contentViewColor: .white
+              )
+        let alertView = SCLAlertView(appearance: appearance)
         switch name {
         case "Common Box":
             if coins < 15 {
+                alertView.showNotice("Not Enough Coins", subTitle: "")
                 return
             }
         case "Gold Box":
             if coins < 45 {
+                alertView.showNotice("Not Enough Coins", subTitle: "")
                 return
             }
         case "Diamond Box":
             if coins < 100 {
+                alertView.showNotice("Not Enough Coins", subTitle: "")
                 return
             }
         default:

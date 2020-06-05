@@ -68,6 +68,19 @@ extension StatisticsController {
             print("rise")
         }
         endWeekNum = begWeekNum + 6
+        if begWeekNum == 0 {
+            nextMonth = todayMonth
+            let thisMonth = dateHelper.getMonthNum(month: todayMonth)
+            let lastMonth = dateHelper.intToMonth(num: thisMonth - 1)
+            todayMonth = lastMonth
+            begWeekNum = dateHelper.getNumberOfDays(month: lastMonth)
+            if menuLabel == "Month" {
+                    todayMonth = nextMonth
+                }
+        }
+      
+    
+        
     }
     
     //MARK: - create charts
@@ -234,10 +247,28 @@ extension StatisticsController {
     private final func createWeekData() -> BarChartDataSet {
         thisWeekArray = [String]()
         thisMonthArray = [String]()
+       
         for day in timeData {
             if day.contains(todayMonth) {
                 if day.contains(todayYear) {
                     thisMonthArray.append(day)
+                } else if todayMonth == "Dec" && nextMonth == "Jan" {
+                    if day.contains(String(Int(todayYear)! - 1)) {
+                        thisMonthArray.append(day)
+                    }
+                }
+            }
+        }
+        if nextMonth != "" {
+            for day in timeData {
+                if day.contains(nextMonth) {
+                    if day.contains(todayYear) {
+                        thisMonthArray.append(day)
+                    } else if todayMonth == "Dec" && nextMonth == "Jan" {
+                        if day.contains(String(Int(todayYear)! - 1)) {
+                            thisMonthArray.append(day)
+                        }
+                    }
                 }
             }
         }
@@ -304,13 +335,13 @@ extension StatisticsController {
         var entries = BarChartUtil.createEmptyMonthData()
         thisMonthArray = [String]()
         
-        for day in timeData {
-            if day.contains(todayMonth) {
-                if day.contains(todayYear) {
-                    thisMonthArray.append(day)
+      for day in timeData {
+                if day.contains(todayMonth) {
+                    if day.contains(todayYear) {
+                        thisMonthArray.append(day)
+                    }
                 }
             }
-        }
         totalMinutes = 0
         for day in thisMonthArray {
             let equalIndex = day.firstIndex(of: "=")
@@ -345,9 +376,24 @@ extension StatisticsController {
     
     final func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
         var sessNum = 0
+        let numDays = dateHelper.getNumberOfDays(month: todayMonth)
+        print(entry.x)
+        print(begWeekNum)
         if menuLabel == "Week" {
-            barPressedTitle.text = "\(todayMonth) \(begWeekNum + Int(entry.x) - 1), \(todayYear)"
-            sessNum = daySessionDict["\(todayMonth) \(begWeekNum + Int(entry.x) - 1),\(todayYear)"] ?? 0
+            if nextMonth == "" {
+                barPressedTitle.text = "\(todayMonth) \(begWeekNum + Int(entry.x) - 1), \(todayYear)"
+                sessNum = daySessionDict["\(todayMonth) \(begWeekNum + Int(entry.x) - 1),\(todayYear)"] ?? 0
+            } else {
+                if begWeekNum + Int(entry.x) > numDays + 1 {
+                    let start = numDays - begWeekNum + 1
+                    barPressedTitle.text = "\(nextMonth) \(Int(entry.x) - start), \(todayYear)"
+                    sessNum = daySessionDict["\(nextMonth) \(Int(entry.x) - start),\(todayYear)"] ?? 0
+                } else {
+                    barPressedTitle.text = "\(todayMonth) \(begWeekNum + Int(entry.x)  - 1), \(todayYear)"
+                    sessNum = daySessionDict["\(todayMonth) \(begWeekNum + Int(entry.x) - 1),\(todayYear)"] ?? 0
+                }
+            }
+       
         } else if menuLabel == "Month" {
             barPressedTitle.text = "\(todayMonth) \(Int(entry.x)), \(todayYear)"
             sessNum = daySessionDict["\(todayMonth) \(Int(entry.x)),\(todayYear)"] ?? 0
@@ -355,13 +401,10 @@ extension StatisticsController {
             barPressedTitle.text = dateHelper.intToMonth(num: Int(entry.x))
             let getMonth = dateHelper.intToMonth(num: Int(entry.x))
             sessNum = monthSessionDict[getMonth] ?? 0
-            
         }
-        
         barMinNumLabel.removeFromSuperview()
         barMinNumLabel.text = String(Int(entry.y))
         barMinNumLabel.sizeToFit()
-        
         
         barSessNumLabel.removeFromSuperview()
         barSessNumLabel.text = String(sessNum)

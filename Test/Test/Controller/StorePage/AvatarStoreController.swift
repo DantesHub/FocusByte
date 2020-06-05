@@ -33,21 +33,33 @@ class AvatarStoreController: UIViewController {
     var pantsArray = [String]()
     var backpackArray = [String]()
     var shoeArray = [String]()
+    var glassesArray = [String]()
     var sections = [Section]()
     
     //MARK: - init
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.navigationBar.barTintColor = backgroundColor
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(AvatarStoreController.reloadView(notificaton:)), name: NSNotification.Name(rawValue: updateCollection), object: nil)
         //load store data
         getArrays()
-        sections = [Section(sectionName: "Shirts/Sweaters", rowData: shirtArray), Section(sectionName: "Pants", rowData: pantsArray), Section(sectionName: "Hats", rowData: pantsArray),Section(sectionName: "Shoes", rowData: shoeArray), Section(sectionName: "Backpacks/Luggage", rowData: backpackArray), Section(sectionName: "Hats", rowData: pantsArray),Section(sectionName: "Pants", rowData: pantsArray), Section(sectionName: "Suits Level 70+", rowData: pantsArray)]
+        sections = [Section(sectionName: "Glasses", rowData: glassesArray),Section(sectionName: "Shirts/Sweaters", rowData: shirtArray), Section(sectionName: "Pants", rowData: pantsArray), Section(sectionName: "Shoes", rowData: shoeArray), Section(sectionName: "Backpacks/Luggage", rowData: backpackArray), Section(sectionName: "Hats", rowData: pantsArray),Section(sectionName: "Pants", rowData: pantsArray), Section(sectionName: "Suits Level 70+", rowData: pantsArray)]
         configureUI()
  
     }
     
     //MARK: - Helper Functions
+    @objc final func reloadView(notificaton: NSNotification) {
+        shirtArray = [String]()
+        pantsArray = [String]()
+        shoeArray = [String]()
+        backpackArray = [String]()
+        glassesArray = [String]()
+        getArrays()
+        sections = [Section(sectionName: "Glasses", rowData: glassesArray),Section(sectionName: "Shirts/Sweaters", rowData: shirtArray), Section(sectionName: "Pants", rowData: pantsArray), Section(sectionName: "Shoes", rowData: shoeArray), Section(sectionName: "Backpacks/Luggage", rowData: backpackArray), Section(sectionName: "Hats", rowData: pantsArray),Section(sectionName: "Pants", rowData: pantsArray), Section(sectionName: "Suits Level 70+", rowData: pantsArray)]
+        collectionView.reloadData()
+    }
+    
     func getArrays() {
         for item in allClothes {
             if !inventoryArray.contains(item.key) {
@@ -59,6 +71,8 @@ class AvatarStoreController: UIViewController {
                     shoeArray.append(item.key)
                 } else if backpackBook.contains(where: {$0.key == item.key}) {
                     backpackArray.append(item.key)
+                } else if frameBook.contains(where: {$0.key == item.key}) {
+                    glassesArray.append(item.key)
                 }
             }
         }

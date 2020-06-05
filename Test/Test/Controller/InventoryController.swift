@@ -14,6 +14,7 @@ var shirt = ""
 var shoe = ""
 var backpack = ""
 var pants = ""
+var glasses = ""
 
 class InventoryController: UIViewController {
     //MARK: - properties
@@ -86,6 +87,7 @@ class InventoryController: UIViewController {
                     shoe = result.shoes ?? "none"
                     pants = result.pants ?? "none"
                     backpack = result.backpack ?? "none"
+                    glasses = result.glasses ?? "none"
                 }
             }
     }
@@ -94,6 +96,7 @@ class InventoryController: UIViewController {
         var pantsArray = [DisplayItem]()
         var backpackArray = [DisplayItem(count: -1, name: "none", rarity: "None")]
         var shoeArray = [DisplayItem]()
+        var glassesArray = [DisplayItem(count: -1, name: "none", rarity: "None")]
         for item in allClothes {
             var count = -1
             if inventoryArray.contains(item.key) {
@@ -118,9 +121,15 @@ class InventoryController: UIViewController {
                         count = -2
                     }
                 backpackArray.append(DisplayItem(count: count, name: item.key, rarity: "None"))
+                } else if frameBook.contains(where: {$0.key == item.key}) {
+                    if glasses == item.key {
+                        count = -2
+                    }
+                    glassesArray.append(DisplayItem(count: count, name: item.key, rarity: "None"))
                 }
             }
-            sections = [Section(sectionName: "Shirts/Sweaters", rowData: topArray), Section(sectionName: "Pants", rowData: pantsArray), Section(sectionName: "Hats", rowData: pantsArray) ,Section(sectionName: "Shoes", rowData: shoeArray), Section(sectionName: "Backpacks", rowData: backpackArray), Section(sectionName: "Hats", rowData: pantsArray)]
+            sections = [ Section(sectionName: "Glasses", rowData: glassesArray),Section(sectionName: "Shirts/Sweaters", rowData: topArray), Section(sectionName: "Pants", rowData: pantsArray), Section(sectionName: "Hats", rowData: pantsArray) ,Section(sectionName: "Shoes", rowData: shoeArray),
+               Section(sectionName: "Backpacks", rowData: backpackArray)]
         }
      configureUI()
      collectionView.reloadData()
@@ -132,7 +141,11 @@ class InventoryController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(InventoryController.updateToEpic(notificaton:)), name: NSNotification.Name(rawValue: epicKey), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(InventoryController.updateToPets(notificaton:)), name: NSNotification.Name(rawValue: petsKey), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(InventoryController.updateToCloset(notificaton:)), name: NSNotification.Name(rawValue: closetKey), object: nil)
+     
+
+
     }
+
     @objc final func updateToCommon(notificaton: NSNotification) {
         getItems()
     }
@@ -198,6 +211,7 @@ class InventoryController: UIViewController {
                 }
             }
         }
+        configureUI()
         collectionView.reloadData()
     }
 
@@ -254,6 +268,8 @@ class InventoryController: UIViewController {
         if pets {
             selectedIndexPath = NSIndexPath(item: 4, section: 0)
             pets = false
+            menuLabel = "Pets"
+            NotificationCenter.default.post(name: Notification.Name(rawValue: petsKey), object: nil)
         } else if shoes {
             selectedIndexPath = NSIndexPath(item: 5, section: 0)
             shoes = false
@@ -275,7 +291,20 @@ class InventoryController: UIViewController {
 extension InventoryController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if menuLabel != "Closet" {
-            return 100
+            switch menuLabel {
+            case "Pets":
+            return petBook.count
+            case "Common":
+                return 112
+            case "Rare":
+                return 54
+            case "Epic":
+                return 15
+            case "Super R":
+                return 30
+            default:
+                return 100
+            }
         } else {
             if sections[section].rowData.count > 12 {
                 return sections[section].rowData.count
@@ -317,7 +346,7 @@ extension InventoryController: UICollectionViewDataSource, UICollectionViewDeleg
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: K.inventoryCell, for: indexPath) as! InventoryCell
         if menuLabel != "Closet" {
             if displayArray.indices.contains(indexPath.row){
-                 cell.setImage(image: UIImage(named: displayArray[indexPath.row].name)!)
+                cell.setImage(image: UIImage(named: displayArray[indexPath.row].name) ?? UIImage(named: "hot dog")!)
                  cell.imgName = displayArray[indexPath.row].name
                  cell.count = displayArray[indexPath.row].count
                  cell.rarity = displayArray[indexPath.row].rarity

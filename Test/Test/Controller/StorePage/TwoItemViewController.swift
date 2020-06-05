@@ -44,6 +44,18 @@ class TwoItemViewController: NewitemViewController {
     override func configureUI() {
         if name == "Diamond Box" {
             goldItemArray = MysteryItemLogic.getGoldItems()
+        } else {
+            if UIDevice().userInterfaceIdiom == .phone {
+                switch UIScreen.main.nativeBounds.height {
+                case 1920, 2208:
+                    commonItemPadding = 60
+                //("iphone 8plus ")
+                case 1334:
+                    commonItemPadding = 60
+                default:
+                    print("kobe")
+                }
+            }
         }
         view.backgroundColor = superLightLavender
         view.addSubview(youGotLabel)
@@ -87,10 +99,9 @@ class TwoItemViewController: NewitemViewController {
         view.addSubview(rareItemLabel)
         rareItemLabel.leftToRight(of: rareItemImageView, offset: 5)
         rareItemLabel.centerYAnchor.constraint(equalTo: rareItemImageView.centerYAnchor).isActive = true
-        
         rarityLabel.translatesAutoresizingMaskIntoConstraints = false
         rarityLabel.font = UIFont(name: "Menlo-Bold",size:20)
-        rarityLabel.text = (itemBook[goldItemArray[1]]!) == "Rare" ? "-\(itemBook[goldItemArray[1]]!)!" : "-\(itemBook[goldItemArray[1]]!)!!"
+        rarityLabel.text = itemBook[goldItemArray[1]]! == "Rare" ? "-\(itemBook[goldItemArray[1]]!)!" : "-\(itemBook[goldItemArray[1]]!)!!"
         rarityLabel.textColor = itemBook[goldItemArray[1]]! == "Rare" ?  darkRed : diamond
         view.addSubview(rarityLabel)
         rarityLabel.leftToRight(of: rareItemImageView, offset: 10)

@@ -11,7 +11,7 @@ import TinyConstraints
 import Charts
 import Realm
 import RealmSwift
-
+import Photos
 var todayYear = ""
 var todayMonth = ""
 var thisWeekArray = [String]()
@@ -131,7 +131,6 @@ class StatisticsController: UIViewController, ChartViewDelegate{
     
     override func viewWillAppear(_ animated: Bool) {
         setDateToToday()
-        endWeekNum = begWeekNum + 6
           results = uiRealm.objects(User.self)
           for result  in results {
               if result.isLoggedIn == true {
@@ -284,8 +283,54 @@ class StatisticsController: UIViewController, ChartViewDelegate{
        }
     
     //MARK: - Helper Functions
+    
+    func snapshot() -> UIImage?
+       {
+        let savedContentOffset = scrollView.contentOffset
+        let savedFrame = scrollView.frame
+        let savedContentSize = scrollView.contentSize
+        scrollView.contentOffset = CGPoint.zero
+        scrollView.frame = CGRect(x: 0, y: 100, width: scrollView.contentSize.width, height: scrollView.contentSize.height - 85)
+        scrollView.contentSize = CGSize(width: scrollView.contentSize.width, height: scrollView.contentSize.height - 80 )
+        UIGraphicsBeginImageContext(scrollView.contentSize)
+        scrollView.layer.render(in: UIGraphicsGetCurrentContext()!)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        scrollView.contentSize = savedContentSize
+        scrollView.contentOffset = savedContentOffset
+        scrollView.frame = savedFrame
+        UIGraphicsEndImageContext()
+        return image
+       }
+    
+    @objc func shareTapped() {
+        PHPhotoLibrary.requestAuthorization { (status) in
+           // No crash
+        }
+        let snap = snapshot()
+                let myURL = URL(string: "https://focusbyte.io")
+        let objectToshare = [snap!, myURL!] as [Any]
+                let activityVC = UIActivityViewController(activityItems: objectToshare, applicationActivities: nil)
+       
+                activityVC.popoverPresentationController?.sourceView = self.view
+                self.present(activityVC, animated: true, completion: nil)
+                return
+    }
+    
     func configureUI() {
         self.navigationItem.title = "Statistics"
+        let shareIcon = UIImage(systemName: "square.and.arrow.up", withConfiguration: largeConfiguration)
+        let resizedShareIcon = shareIcon?.resized(to: CGSize(width: 35, height: 40)).withTintColor(.white, renderingMode:.alwaysOriginal)
+        let rightBarButtonItemView = UIView.init(frame: CGRect(x: 0, y: 0, width: 35, height: 40))
+        let rightButton = UIButton.init(type: .system)
+        rightButton.backgroundColor = .clear
+        rightButton.frame = rightBarButtonItemView.frame
+        rightButton.setImage(resizedShareIcon, for: .normal)
+        rightButton.autoresizesSubviews = true
+        rightButton.addTarget(self, action: #selector(shareTapped), for: .touchUpInside)
+        rightButton.autoresizingMask = [.flexibleWidth , .flexibleHeight]
+        rightBarButtonItemView.addSubview(rightButton)
+        let rightBarButton = UIBarButtonItem.init(customView: rightBarButtonItemView)
+        navigationItem.rightBarButtonItem = rightBarButton
         setUpTabBar()
         configureNavigationBar(color: backgroundColor, isTrans: false)
          navigationItem.leftBarButtonItem =  UIBarButtonItem(image: resizedMenuImage?.withTintColor(.white), style: .plain, target: self, action: #selector(handleMenuToggle))
@@ -404,6 +449,8 @@ class StatisticsController: UIViewController, ChartViewDelegate{
         menuBar.leadingAnchor.constraint(equalTo: containerView.leadingAnchor).isActive = true
         menuBar.trailingAnchor.constraint(equalTo: containerView.trailingAnchor).isActive = true
         menuBar.heightAnchor.constraint(equalToConstant: 50).isActive = true
+         let selectedIndexPath = NSIndexPath(item: 0, section: 0)
+        menuBar.collectionView.selectItem(at: selectedIndexPath as IndexPath, animated: true, scrollPosition: UICollectionView.ScrollPosition.centeredHorizontally)
     }
     
     //MARK: - Handlers

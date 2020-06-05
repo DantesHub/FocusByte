@@ -11,6 +11,7 @@ import UIKit
 
 struct MysteryItemLogic {
     static func getCommonItem() -> String {
+        let commonNumber = Int.random(in: 0..<166)
         var commonAndRareItems = [String]()
         for item in itemBook.shuffled() {
             if item.value == "Common" || item.value == "Rare" {
@@ -19,7 +20,7 @@ struct MysteryItemLogic {
         }
         print(commonAndRareItems.shuffled())
         print(commonAndRareItems.count)
-        let randomItem = commonAndRareItems.shuffled()[0]
+        let randomItem = commonAndRareItems.shuffled()[commonNumber]
         return randomItem
     }
     
@@ -27,6 +28,9 @@ struct MysteryItemLogic {
         var commonItems = [String]()
         var rareAndSuperItems = [String]()
         var returnArray = [String]()
+        
+        let commonNumber = Int.random(in: 0..<112)
+        let rareNumber = Int.random(in: 0..<84)
         
         for (i,item) in itemBook.shuffled().enumerated() {
             if item.value == "Common" {
@@ -39,12 +43,15 @@ struct MysteryItemLogic {
                 rareAndSuperItems.append(item.key)
             }
         }
-        returnArray.insert(commonItems.shuffled()[0], at: 0)
-        returnArray.insert(rareAndSuperItems.shuffled()[0], at: 1)
+        returnArray.insert(commonItems.shuffled()[commonNumber], at: 0)
+        returnArray.insert(rareAndSuperItems.shuffled()[rareNumber], at: 1)
         return returnArray
     }
     
     static func getDiamondItems() -> [String] {
+        let commonNumber = Int.random(in: 0..<112)
+        let rareNumber = Int.random(in: 0..<54)
+        let epicNumber = Int.random(in: 0..<44)
         var commonItems = [String]()
         var rareItems = [String]()
         var epicAndSuperRareItems = [String]()
@@ -63,9 +70,9 @@ struct MysteryItemLogic {
                 epicAndSuperRareItems.append(item.key)
             }
         }
-        returnArray.insert(commonItems.shuffled()[0], at: 0)
-        returnArray.insert(rareItems.shuffled()[0], at: 1)
-        returnArray.insert(epicAndSuperRareItems.shuffled()[0], at: 2)
+        returnArray.insert(commonItems.shuffled()[commonNumber], at: 0)
+        returnArray.insert(rareItems.shuffled()[rareNumber], at: 1)
+        returnArray.insert(epicAndSuperRareItems.shuffled()[epicNumber], at: 2)
         return returnArray
         
     }

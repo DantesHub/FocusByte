@@ -349,7 +349,6 @@ class AvatarSideBar: UIView {
     @objc func tappedPet() {
         pets = true
         menuLabel = "Pets"
-
         let controller = ContainerController(center: InventoryController(whichTab: "pets"))
          controller.modalPresentationStyle = .fullScreen
 
@@ -358,7 +357,6 @@ class AvatarSideBar: UIView {
               topVC = topVC!.presentedViewController
          }
          topVC!.present(controller,animated: true,completion: nil)
-        menuLabel = "Pets"
            NotificationCenter.default.post(name: Notification.Name(rawValue: petsKey), object: nil)
 
     }

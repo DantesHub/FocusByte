@@ -64,8 +64,9 @@ class ThreeItemViewController: TwoItemViewController {
         epicItemLabel.centerYAnchor.constraint(equalTo: epicImageView.centerYAnchor).isActive = true
         
         view.addSubview(epicRareLabel)
-        epicRareLabel.text = (itemBook[diamondItemArray[2]]!) == "Epic" ? "-\(itemBook[diamondItemArray[2]]!)!!!" : "-\(itemBook[diamondItemArray[2]]!)!!"
-        epicRareLabel.textColor = (diamondItemArray[2]) == "Epic" ? brightPurple : diamond
+        print(itemBook[diamondItemArray[2]]!)
+        epicRareLabel.text = itemBook[diamondItemArray[2]]! == "Epic" ? "-\(itemBook[diamondItemArray[2]]!)!!!" : "-\(itemBook[diamondItemArray[2]]!)!!"
+        epicRareLabel.textColor = itemBook[diamondItemArray[2]]! == "Epic" ? brightPurple : diamond
         epicRareLabel.topToBottom(of: epicItemLabel, offset: 5)
         epicRareLabel.leftToRight(of: epicImageView, offset: 10)
     }

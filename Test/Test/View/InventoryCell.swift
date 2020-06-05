@@ -65,7 +65,7 @@ class InventoryCell: UICollectionViewCell {
             )
             let alertView = SCLAlertView(appearance: appearance)
             let subview = UIView(frame: CGRect(x:0,y:0,width:300,height:count > -1 ? 350:250))
-            if count > -1{
+            if count > -1 && menuLabel != "Pets" {
                 let itemIV = UIImageView()
                 itemIV.translatesAutoresizingMaskIntoConstraints = false
                 itemIV.contentMode = .scaleAspectFit
@@ -124,7 +124,7 @@ class InventoryCell: UICollectionViewCell {
                 itemIV.translatesAutoresizingMaskIntoConstraints = false
                 itemIV.edges(to: subview, insets: TinyEdgeInsets(top: 10, left: 0, bottom: 30, right: 25))
                 //create equip button
-                if count == -1 {
+                if count == -1 || menuLabel == "Pets"{
                     alertView.addButton("Equip", backgroundColor: darkRed, textColor: .white, showTimeout: .none) {
                         if topBook.contains(where: {$0.key == self.imgName }) {
                             sweaterImageView.image = UIImage(named: self.imgName)
@@ -141,6 +141,12 @@ class InventoryCell: UICollectionViewCell {
                         } else if self.imgName == "none" {
                             backpackView.image = UIImage(named: "blank")
                             self.type = "backpack"
+                        } else if petBook.contains(where: {$0 == self.imgName}) {
+                            petImageView.image = UIImage(named: self.imgName)
+                            self.type = "pet"
+                        } else if frameBook.contains(where: {$0.key == self.imgName}) {
+                            glassesImageView.image = UIImage(named: self.imgName)
+                            self.type = "glasses"
                         }
                         self.saveToRealm()
                         return

@@ -24,6 +24,7 @@ class User: Object {
     @objc dynamic var skin: String? = nil
     @objc dynamic var shirt: String? = nil
     @objc dynamic var pants: String? = nil
+    @objc dynamic var pet: String? = nil
     @objc dynamic var shoes: String? = nil
     @objc dynamic var backpack: String? = nil
     @objc dynamic var glasses: String? = nil

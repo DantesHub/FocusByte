@@ -89,6 +89,12 @@ class NewitemViewController: UIViewController {
         presentInFullScreen(UINavigationController(rootViewController: controller), animated: false, completion: nil)
     }
     
+    @objc func tappedItems() {
+        let controller = ContainerController(center: InventoryController())
+        controller.modalPresentationStyle = .fullScreen
+        presentInFullScreen(UINavigationController(rootViewController: controller), animated: false, completion: nil)
+    }
+    
     func configureBottomButtons() {
         view.addSubview(timerImageView)
         timerImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
@@ -130,6 +136,8 @@ class NewitemViewController: UIViewController {
         //        inventoryView.widthAnchor.constraint(equalToConstant: 120).isActive = true
         inventoryView.heightAnchor.constraint(equalToConstant: 75).isActive = true
         inventoryView.applyDesign(color: .white)
+        let tapItems = UITapGestureRecognizer(target: self, action: #selector(tappedItems))
+         inventoryView.addGestureRecognizer(tapItems)
         
         inventoryLabel.font = UIFont(name: "Menlo-Bold", size: 20)
         inventoryLabel.text = "Items"

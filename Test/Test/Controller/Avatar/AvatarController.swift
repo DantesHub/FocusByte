@@ -14,6 +14,8 @@ var saveButtonWidth: CGFloat = 80
 var avatarArmWidth: CGFloat = 1.7
 var avatarBottomPadding:CGFloat = -30
 var colorCollectionPadding: CGFloat = -100
+var petSize: CGFloat = 100
+var frameWidth: CGFloat = 70
 //135 x 112
 //135 x 87
    var armsImageView: UIImageView = {
@@ -33,7 +35,14 @@ var colorCollectionPadding: CGFloat = -100
      iv.backgroundColor = .clear
      return iv
  }()
-
+var petImageView: UIImageView = {
+    let iv = UIImageView()
+    iv.translatesAutoresizingMaskIntoConstraints = false
+    iv.contentMode = .scaleAspectFit
+    iv.width(petSize)
+    iv.height(petSize)
+    return iv
+}()
 var backpackView: UIImageView = {
     let iv = UIImageView()
     iv.translatesAutoresizingMaskIntoConstraints = false
@@ -92,6 +101,17 @@ var sweaterImageView: UIImageView = {
     iv.backgroundColor = .clear
     return iv
 }()
+var hatImageView: UIImageView = {
+    let iv = UIImageView()
+    iv.translatesAutoresizingMaskIntoConstraints = false
+    iv.width(max:235)
+    iv.height(max: 235)
+    iv.image = UIImage(named: "witch hat")
+    iv.contentMode = .scaleAspectFit
+    iv.clipsToBounds = false
+    iv.backgroundColor = .clear
+    return iv
+}()
 //pants 155 x 223
 var pantsImageView: UIImageView = {
      let iv = UIImageView()
@@ -104,9 +124,21 @@ var pantsImageView: UIImageView = {
      iv.backgroundColor = .clear
      return iv
  }()
+var glassesImageView: UIImageView = {
+    let iv = UIImageView()
+    iv.translatesAutoresizingMaskIntoConstraints = false
+    iv.image = UIImage(named: "winged frame")
+    iv.width(frameWidth)
+    iv.height(30)
+    iv.clipsToBounds = false
+    iv.backgroundColor = .clear
+    return iv
+}()
+
 
 class AvatarController: UIViewController {
     var avatarMultipler: CGFloat = 0.20
+    var avatarArmMultiplier: CGFloat = 0.20
     var avatarHairPadding: CGFloat = -20
     var petLabelSize:CGFloat = 25
     var avatarPantsPadding:CGFloat = 105
@@ -126,7 +158,9 @@ class AvatarController: UIViewController {
                     saveButtonPadding = -75
                     saveButtonWidth = 55
                     saveFontSize = 15
+                    avatarArmMultiplier = 0.25
                     avatarBottomPadding = 0
+                    petSize = 75
                     characterBackgroundBottom = -80
                     colorCollectionPadding = -70
                 case 1920, 2208:
@@ -136,7 +170,9 @@ class AvatarController: UIViewController {
                     avatarPantsPadding = 95
                     avatarArmWidth = 2
                     saveButtonPadding = -75
+                    petSize = 75
                     saveButtonWidth = 55
+                    avatarArmMultiplier = 0.24
                     avatarBottomPadding = 0
                     saveFontSize = 15
                     colorCollectionPadding = -70
@@ -190,13 +226,7 @@ class AvatarController: UIViewController {
         iv.backgroundColor = .clear
         return iv
     }()
-    lazy var petImageView: UIView = {
-        let iv = UIImageView()
-        iv.translatesAutoresizingMaskIntoConstraints = false
-        iv.contentMode = .scaleAspectFit
-        iv.image = #imageLiteral(resourceName: "cat")
-        return iv
-    }()
+
     lazy var petLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -318,7 +348,7 @@ class AvatarController: UIViewController {
             avatarImageView.leadingAnchor.constraint(equalTo: characterBackground.leadingAnchor, constant: 15).isActive = true
             avatarImageView.trailingAnchor.constraint(equalTo: characterBackground.trailingAnchor, constant: -15).isActive = true
         } else {
-            //        face
+            //face
             characterBackground.insertSubview(faceImageView, aboveSubview: characterBackground)
             faceImageView.centerX(to: characterBackground)
             faceImageView.topAnchor.constraint(equalTo: petLabel.bottomAnchor, constant: avatarTopPadding).isActive = true
@@ -350,6 +380,7 @@ class AvatarController: UIViewController {
                 pantsImageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: avatarMultipler * 0.90).isActive = true
                 pantsImageView.heightAnchor.constraint(equalTo: view.widthAnchor, multiplier: avatarMultipler * 0.90 * 1.2).isActive = true
             }
+      
             
             //backpack
             characterBackground.addSubview(backpackView)
@@ -361,8 +392,8 @@ class AvatarController: UIViewController {
             armsImageView.centerX(to: characterBackground)
             if gender == "male" {
                 armsImageView.centerYAnchor.constraint(equalTo: characterBackground.centerYAnchor, constant: 25).isActive = true
-                armsImageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: avatarMultipler * 1.6).isActive = true
-                armsImageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: avatarMultipler * 1.6 * 0.40).isActive = true
+                armsImageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: avatarArmMultiplier * 1.6).isActive = true
+                armsImageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: avatarArmMultiplier * 1.6 * 0.40).isActive = true
             } else {
                 armsImageView.centerYAnchor.constraint(equalTo: characterBackground.centerYAnchor, constant: 30).isActive = true
                 armsImageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: avatarMultipler * avatarArmWidth).isActive = true
@@ -398,9 +429,14 @@ class AvatarController: UIViewController {
                 hairImageView.topAnchor.constraint(equalTo: petLabel.bottomAnchor, constant: avatarHairPadding + 30).isActive = true
                 hairImageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: avatarMultipler + 0.080).isActive = true
             }
+              hairImageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: avatarMultipler - 0.0225).isActive = true
+            //hat
+            characterBackground.insertSubview(hatImageView, aboveSubview: characterBackground)
+            hatImageView.centerX(to: characterBackground)
+            hatImageView.topAnchor.constraint(equalTo: petLabel.bottomAnchor, constant: avatarHairPadding + 20
+            ).isActive = true
             
-            
-            hairImageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: avatarMultipler - 0.0225).isActive = true
+          
             
             //shoes
             characterBackground.insertSubview(shoesImageView, aboveSubview: characterBackground)
@@ -410,7 +446,10 @@ class AvatarController: UIViewController {
             shoesImageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: avatarMultipler * 0.25).isActive = true
         }
         
-        
+        //glasses
+        characterBackground.insertSubview(glassesImageView, aboveSubview: hairImageView)
+        glassesImageView.centerX(to: faceImageView)
+        glassesImageView.topAnchor.constraint(equalTo: faceImageView.topAnchor, constant: 20).isActive = true
         
         
         //
@@ -435,6 +474,7 @@ class AvatarController: UIViewController {
     //MARK: - Helper Functions
     func getRealmData() {
         results = uiRealm.objects(User.self)
+        _ = characterBackgroundBottom
         var hair = ""
         var eyeColor = ""
         var pack = ""
@@ -442,6 +482,7 @@ class AvatarController: UIViewController {
         var pants = ""
         var glasses = ""
         var shoe = ""
+        var pet = ""
         for result in results {
             if result.isLoggedIn == true {
                 name = result.name
@@ -451,6 +492,7 @@ class AvatarController: UIViewController {
                 shirt = result.shirt ?? "none"
                 pants = result.pants ?? "none"
                 shoe = result.shoes ?? "none"
+                pet = result.pet ?? "none"
                 glasses = result.glasses ?? "none"
                 skinColor = result.skin!
                 lvlData = Int(pow(Double(result.exp), 1.0/2.0))
@@ -462,6 +504,9 @@ class AvatarController: UIViewController {
         if pack != "none" {
             backpackView.image = UIImage(named: pack)
         }
+        if pet != "none" {
+            petImageView.image = UIImage(named: pet)
+        }
         if shirt != "none" {
             sweaterImageView.image = UIImage(named: shirt)
         }
@@ -470,6 +515,9 @@ class AvatarController: UIViewController {
         }
         if shoe != "none" {
             shoesImageView.image = UIImage(named: shoe)
+        }
+        if glasses != "none" {
+            glassesImageView.image = UIImage(named: glasses)
         }
         updateHair(hair: hair)
         updateEyes(color: eyeColor)
@@ -506,7 +554,6 @@ class AvatarController: UIViewController {
         selectedHairColor = (String(hair[..<hairPlusIndex!]))
         selectedHair = String(hair[hairPlusOffset...])
         if selectedHair != "none" {
-            print(selectedHair)
             hairImageView.image = UIImage(named: "\(selectedHair)")
             if gender == "male"{
                 hairImageView.image = hairImageView.image?.withRenderingMode(.alwaysTemplate)
@@ -517,6 +564,7 @@ class AvatarController: UIViewController {
         } else {
             hairImageView.image = UIImage()
         }
+    
         updateHairArrays()
     }
     

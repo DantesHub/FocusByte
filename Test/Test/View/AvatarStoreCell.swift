@@ -14,6 +14,27 @@ import Foundation
 import RealmSwift
 
 class AvatarStoreCell: UICollectionViewCell {
+    var leadingPrice = 60
+    var coinPadding: CGFloat {
+        get {
+            var coinPadding: CGFloat = 0
+            if UIDevice().userInterfaceIdiom == .phone {
+                switch UIScreen.main.nativeBounds.height {
+                case 2688:
+                    leadingPrice = 95
+                    coinPadding = -13
+                //print("IPHONE XS MAX, IPHONE 11 PRO MAX")
+                case 1792:
+                    leadingPrice = 95
+                    coinPadding = -13
+                //print("IPHONE XR, IPHONE 11")
+                default:
+                    coinPadding = -5
+                }
+            }
+            return coinPadding
+        }
+    }
     //MARK: - properties
     static var cellId = "AvatarStoreCellId"
     var img = UIImage()
@@ -69,7 +90,7 @@ class AvatarStoreCell: UICollectionViewCell {
           coinImageView.height(20)
           coinImageView.width(15)
           coinImageView.leftToRight(of: priceLabel,offset: 5)
-          coinImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5).isActive = true
+          coinImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: coinPadding).isActive = true
         
         self.addSubview(itemImageView)
         itemImageView.height(100)
@@ -127,10 +148,11 @@ class AvatarStoreCell: UICollectionViewCell {
             if coins >= self.price {
                 //saveToRealm and firebase
                 inventoryArray.append(self.imgName)
+                coins = coins - self.price
                 self.save()
                 //add to clothesarray
                 //reload collectionView
-                print("bought")
+                NotificationCenter.default.post(name: NSNotification.Name(updateCollection), object: nil)
                 return
             } else {
                 let alertView = SCLAlertView()
