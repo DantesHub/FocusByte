@@ -52,10 +52,9 @@ class MysteryViewController: UIViewController {
     }()
     
     let data = [
-        MysteryBox(description: "-Box contains 1 common item or 1 rare item. \n-(70% Common/30% Rare)", image: UIImage(named: "commonmysterybox")!, title: "Common Box", color: .black, price: 15),
-        MysteryBox(description: "-Box contains 1 common item and 1 rare or super rare item\n-(70% Rare/30% Super Rare)", image: UIImage(named: "goldmysterybox")!, title: "Gold Box", color: gold, price: 45),
-        MysteryBox(description: "Box contains:\n-1 Common Item\n-1 Rare Item\n-1 Super Rare or Extremely Rare Item", image: UIImage(named: "diamondmysterybox")!, title: "Diamond Box", color: diamond, price: 100)
-        
+        MysteryBox(description: "-Box contains 1 common item or 1 rare item. \n-(70% Common/30% Rare)", image: UIImage(named: "commonmysterybox")!, title: "Common Box", color: .black, price: "15"),
+        MysteryBox(description: "-Box contains 1 common item and 1 rare or super rare item\n-(70% Rare/30% Super Rare)", image: UIImage(named: "goldmysterybox")!, title: "Gold Box", color: gold, price: "45"),
+        MysteryBox(description: "Box contains:\n-1 Common Item\n-1 Rare Item\n-1 Super Rare or Extremely Rare Item", image: UIImage(named: "diamondmysterybox")!, title: "Diamond Box", color: diamond, price: "100")
     ]
     
     //MARK: - Init
@@ -89,9 +88,6 @@ class MysteryViewController: UIViewController {
         view.addSubview(nextButton!)
         nextButton?.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
         nextButton?.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        
-        
-        
     }
     
     @objc func nextTapped() {

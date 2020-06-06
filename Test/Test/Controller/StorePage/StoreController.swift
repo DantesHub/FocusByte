@@ -33,6 +33,13 @@ class StoreController: UIViewController {
          iv.sizeToFit()
          return iv
      }()
+    var goldChestImageView: UIImageView = {
+        let iv = UIImageView()
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        iv.image = UIImage(named: "goldChest")
+        iv.sizeToFit()
+        return iv
+    }()
     var beanieImageView: UIImageView = {
           let iv = UIImageView()
            iv.translatesAutoresizingMaskIntoConstraints = false
@@ -139,12 +146,27 @@ class StoreController: UIViewController {
         chestBox = createBox(color: brightPurple, handler: #selector(mysteryTapped))
         chestBox.topAnchor.constraint(equalTo: mysteryBox.bottomAnchor, constant: 30).isActive = true
         
+        chestBox.addSubview(goldChestImageView)
+        goldChestImageView.trailingAnchor.constraint(equalTo: chestBox.trailingAnchor, constant: -15).isActive = true
+        goldChestImageView.bottomAnchor.constraint(equalTo: chestBox.bottomAnchor, constant: 10).isActive = true
+        goldChestImageView.width(max: view.frame.width * 0.38)
+        goldChestImageView.height(max: view.frame.height * 0.20)
+        
         chestBoxLabel.textColor = .white
-        chestBoxLabel.text = "Upgrade\nChests"
         chestBoxLabel.applyDesign()
         chestBox.addSubview(chestBoxLabel)
         chestBoxLabel.topAnchor.constraint(equalTo: chestBox.topAnchor, constant: 15).isActive = true
         chestBoxLabel.leftAnchor.constraint(equalTo: chestBox.leftAnchor, constant: 30).isActive = true
+        if expDate == "" {
+            chestBoxLabel.text = "Upgrade\nChests"
+            let tappedChest = UITapGestureRecognizer(target: self, action: #selector(chestTapped))
+               chestBox.addGestureRecognizer(tappedChest)
+        } else {
+            chestBoxLabel.font = UIFont(name: "Menlo-Bold", size: 25)
+            chestBoxLabel.text = "Chest Expires:\n\(expDate)"
+        }
+        
+
         
         clothes = createBox(color: superLightLavender, handler: #selector(mysteryTapped))
         clothes.topAnchor.constraint(equalTo: chestBox.bottomAnchor, constant: 30).isActive = true
@@ -178,6 +200,10 @@ class StoreController: UIViewController {
     
     @objc func mysteryTapped() {
         self.navigationController?.pushViewController(MysteryViewController(), animated: true)
+    }
+    
+    @objc func chestTapped() {
+        self.navigationController?.pushViewController(UpgradeChestController(), animated: true)
     }
     
     @objc func tappedClothes() {

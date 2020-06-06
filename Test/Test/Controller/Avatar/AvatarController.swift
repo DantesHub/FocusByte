@@ -101,17 +101,7 @@ var sweaterImageView: UIImageView = {
     iv.backgroundColor = .clear
     return iv
 }()
-var hatImageView: UIImageView = {
-    let iv = UIImageView()
-    iv.translatesAutoresizingMaskIntoConstraints = false
-    iv.width(max:235)
-    iv.height(max: 235)
-    iv.image = UIImage(named: "witch hat")
-    iv.contentMode = .scaleAspectFit
-    iv.clipsToBounds = false
-    iv.backgroundColor = .clear
-    return iv
-}()
+
 //pants 155 x 223
 var pantsImageView: UIImageView = {
      let iv = UIImageView()
@@ -430,12 +420,7 @@ class AvatarController: UIViewController {
                 hairImageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: avatarMultipler + 0.080).isActive = true
             }
               hairImageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: avatarMultipler - 0.0225).isActive = true
-            //hat
-            characterBackground.insertSubview(hatImageView, aboveSubview: characterBackground)
-            hatImageView.centerX(to: characterBackground)
-            hatImageView.topAnchor.constraint(equalTo: petLabel.bottomAnchor, constant: avatarHairPadding + 20
-            ).isActive = true
-            
+    
           
             
             //shoes
@@ -444,13 +429,15 @@ class AvatarController: UIViewController {
             shoesImageView.topToBottom(of: pantsImageView, offset: -12)
             shoesImageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: avatarMultipler).isActive = true
             shoesImageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: avatarMultipler * 0.25).isActive = true
+            
+            //glasses
+             characterBackground.insertSubview(glassesImageView, aboveSubview: hairImageView)
+             glassesImageView.centerX(to: faceImageView)
+             glassesImageView.topAnchor.constraint(equalTo: faceImageView.topAnchor, constant: 20).isActive = true
+             
         }
         
-        //glasses
-        characterBackground.insertSubview(glassesImageView, aboveSubview: hairImageView)
-        glassesImageView.centerX(to: faceImageView)
-        glassesImageView.topAnchor.constraint(equalTo: faceImageView.topAnchor, constant: 20).isActive = true
-        
+ 
         
         //
         //type label
@@ -486,22 +473,22 @@ class AvatarController: UIViewController {
         for result in results {
             if result.isLoggedIn == true {
                 name = result.name
-                gender = "male"
+                gender = result.gender!
                 hair = result.hair!
                 eyeColor = result.eyes!
                 shirt = result.shirt ?? "none"
                 pants = result.pants ?? "none"
                 shoe = result.shoes ?? "none"
                 pet = result.pet ?? "none"
-                glasses = result.glasses ?? "none"
+                glasses = result.glasses ?? "noframe"
                 skinColor = result.skin!
                 lvlData = Int(pow(Double(result.exp), 1.0/2.0))
-                pack = result.backpack ?? "none"
+                pack = result.backpack ?? "nobag"
                 //set experience
             }
         }
         level = lvlData
-        if pack != "none" {
+        if pack != "nobag" {
             backpackView.image = UIImage(named: pack)
         }
         if pet != "none" {
@@ -516,7 +503,7 @@ class AvatarController: UIViewController {
         if shoe != "none" {
             shoesImageView.image = UIImage(named: shoe)
         }
-        if glasses != "none" {
+        if glasses != "noframe" {
             glassesImageView.image = UIImage(named: glasses)
         }
         updateHair(hair: hair)

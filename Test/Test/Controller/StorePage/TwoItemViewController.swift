@@ -65,6 +65,9 @@ class TwoItemViewController: NewitemViewController {
         youGotLabel.topToSuperview(offset: commonItemPadding)
         youGotLabel.centerX(to: view)
         
+        createShareButton()
+        shareButton.topToBottom(of: youGotLabel)
+        
         view.addSubview(commonItemImageView)
         if name == "Gold Box" {
             commonItemImageView.topAnchor.constraint(equalTo: youGotLabel.bottomAnchor, constant: commonItemPadding).isActive = true

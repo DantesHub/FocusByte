@@ -145,19 +145,25 @@ class AvatarStoreCell: UICollectionViewCell {
         
         
         alertView.addButton("Buy", backgroundColor: brightPurple, textColor: .white, showTimeout: .none) {
-            if coins >= self.price {
-                //saveToRealm and firebase
-                inventoryArray.append(self.imgName)
-                coins = coins - self.price
-                self.save()
-                //add to clothesarray
-                //reload collectionView
-                NotificationCenter.default.post(name: NSNotification.Name(updateCollection), object: nil)
-                return
-            } else {
+            if level < 34 {
                 let alertView = SCLAlertView()
-                alertView.showNotice("Not Enough Coins", subTitle: "")
+                alertView.showNotice("Must be at level 34 to purchase", subTitle: "")
+            } else {
+                if coins >= self.price {
+                    //saveToRealm and firebase
+                    inventoryArray.append(self.imgName)
+                    coins = coins - self.price
+                    self.save()
+                    //add to clothesarray
+                    //reload collectionView
+                    NotificationCenter.default.post(name: NSNotification.Name(updateCollection), object: nil)
+                    return
+                } else {
+                    let alertView = SCLAlertView()
+                    alertView.showNotice("Not Enough Coins", subTitle: "")
+                }
             }
+           
         }
         alertView.addButton("Cancel", backgroundColor: .gray, textColor: .white, showTimeout: .none) {
             return

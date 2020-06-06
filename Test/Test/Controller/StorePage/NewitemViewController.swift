@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import RealmSwift
+import Photos
 var inventoryArray = [String]()
 class NewitemViewController: UIViewController {
     //MARK: - Views & Properties
@@ -16,6 +17,8 @@ class NewitemViewController: UIViewController {
         let iv = UIImageView()
         iv.translatesAutoresizingMaskIntoConstraints = false
         iv.contentMode = .scaleAspectFit
+        iv.width(max: 300)
+        iv.height(max: 300)
         return iv
     }()
     var results: Results<User>!
@@ -33,12 +36,14 @@ class NewitemViewController: UIViewController {
         iv.applyDesign(color: .black)
         iv.layer.cornerRadius = 25
         iv.isUserInteractionEnabled = true
-        iv.backgroundColor = .white
         iv.contentMode = .scaleAspectFit
+        iv.backgroundColor = .white
         return iv
     }()
     var itemName = ""
     var itemLabel = UILabel()
+    var shareButton = UIView()
+    var shareLabel = UILabel()
     
     //MARK: - init
     override func viewDidLoad() {
@@ -61,7 +66,7 @@ class NewitemViewController: UIViewController {
         itemLabel.text = itemName
         view.addSubview(itemLabel)
         itemLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        itemLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 80).isActive = true
+        itemLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: commonTitlePadding).isActive = true
         itemImageView.image = UIImage(named: itemName)
         view.addSubview(itemImageView)
         itemImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
@@ -72,11 +77,53 @@ class NewitemViewController: UIViewController {
         view.addSubview(rarityLabel)
         rarityLabel.translatesAutoresizingMaskIntoConstraints = false
         rarityLabel.text = "-\(itemBook[itemName]!)"
+        rarityLabel.textColor = itemBook[itemName] == "Common" ? black : darkRed
         rarityLabel.font = UIFont(name:"Menlo", size: 35)
         rarityLabel.topToBottom(of: itemLabel)
         rarityLabel.centerX(to: view)
         
+        createShareButton()
+        shareButton.topToBottom(of: rarityLabel)
     }
+    
+    func createShareButton() {
+        view.addSubview(shareButton)
+        shareButton.addSubview(shareLabel)
+        shareLabel.text = "Share"
+        shareButton.width(100)
+        shareButton.height(50)
+        shareButton.backgroundColor = brightPurple
+        shareButton.applyDesign(color: brightPurple)
+        shareLabel.center(in: shareButton)
+        shareLabel.font = UIFont(name: "Menlo-Bold", size: 17)
+        shareLabel.textColor = .white
+        shareButton.centerXToSuperview()
+        let tappedShare = UITapGestureRecognizer(target: self, action: #selector(shareTapped))
+        shareButton.addGestureRecognizer(tappedShare)
+    }
+    func getScreenshoot() -> UIImage {
+        var window: UIWindow? = UIApplication.shared.windows.filter {$0.isKeyWindow}.first!
+        window = UIApplication.shared.windows[0]
+        UIGraphicsBeginImageContextWithOptions(window!.frame.size, window!.isOpaque, 0.0)
+        window!.layer.render(in: UIGraphicsGetCurrentContext()!)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image!;
+    }
+    @objc func shareTapped() {
+        PHPhotoLibrary.requestAuthorization { (status) in
+            // No crash
+        }
+        let snap = getScreenshoot()
+        let myURL = URL(string: "https://focusbyte.io")
+        let objectToshare = [snap, myURL!] as [Any]
+        let activityVC = UIActivityViewController(activityItems: objectToshare, applicationActivities: nil)
+        
+        activityVC.popoverPresentationController?.sourceView = self.view
+        self.present(activityVC, animated: true, completion: nil)
+        return
+    }
+    
     @objc func tappedStore() {
         let controller = ContainerController(center: StoreController())
         controller.modalPresentationStyle = .fullScreen

@@ -29,6 +29,8 @@ var isPlaying = false
 var tagSelected = "unset"
 var tagColor = "gray"
 var level = 0
+var chestBought = false
+var expDate = ""
 class TimerController: UIViewController {
     //MARK: - Properties
     var results: Results<User>!
@@ -96,17 +98,22 @@ class TimerController: UIViewController {
     var diffSecs = 0
     var tagTableView = TagTableView()
     var searchBar = UISearchBar()
+    var chest = "chest"
     
     //MARK: -Init
     override func viewDidLoad() {
         super.viewDidLoad()
         createObservers()
-        configureUI()
         configureNavigationBar(color: backgroundColor, isTrans: true)
     }
 
     
     override func viewWillAppear(_ animated: Bool) {
+        if boughtChest == true {
+            let alertView = SCLAlertView()
+            alertView.showSuccess("Succesfully upgraded chest!", subTitle: "")
+            boughtChest = false
+        }
         results = uiRealm.objects(User.self)
         for result  in results {
             if result.isLoggedIn == true {
@@ -124,8 +131,39 @@ class TimerController: UIViewController {
                 deepFocusMode = result.deepFocusMode
             }
         }
+        let today = Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM-dd-yyyy HH:mm"
+        for item in inventoryArray {
+            if item.contains("Gold Chest") {
+                let plusIndex = item.firstIndex(of: "+")
+                let date = String(item[..<plusIndex!]).toDate()
+                if today < date! {
+                    self.chest = "goldChest"
+                }
+                expDate = (date?.toString())!
+                chestBought = true
+            } else if item.contains("Epic Chest") {
+                let plusIndex = item.firstIndex(of: "+")
+                let date = String(item[..<plusIndex!]).toDate()
+                if today < date! {
+                    self.chest = "epicChest"
+                }
+                expDate = (date?.toString())!
+                chestBought = true
+            } else if item.contains("Diamond Chest") {
+                let plusIndex = item.firstIndex(of: "+")
+                let date = String(item[..<plusIndex!]).toDate()
+                if today < date! {
+                    self.chest = "diamondChest"
+                }
+                expDate = (date?.toString())!
+                chestBought = true
+            }
+        }
         coinsL.countFromZero(to: Float(coins), duration: .brisk)
         level = Int(floor(sqrt(Double(exp))))
+        configureUI()
     }
     
     deinit {
@@ -177,7 +215,7 @@ class TimerController: UIViewController {
         let breakTapped = UITapGestureRecognizer(target: self, action: #selector(self.breakPressed))
         self.breakButton.addGestureRecognizer(breakTapped)
         
-        imageView?.image =  UIImage(named: "chest")!
+        imageView?.image =  UIImage(named: chest)!
         imageView?.sizeToFit()
         imageView?.center.x = view.center.x
         imageView?.center.y = view.center.y - 50
@@ -291,7 +329,7 @@ class TimerController: UIViewController {
         createTagImageView()
         createTimerButtonLbl()
         timerButtonLbl.text = "Start"
-        imageView?.image = UIImage(named: "chest")
+        imageView?.image = UIImage(named: chest)
         timeL.font = UIFont(name: "Menlo-Bold", size: 65)
         breakButton.removeFromSuperview()
         breakButtonLbl.removeFromSuperview()
@@ -446,7 +484,7 @@ class TimerController: UIViewController {
         self.timeL.text = "Let's Go \nAgain!"
         self.timeL.font = UIFont(name: "Menlo-Bold", size: 30)
         
-        self.imageView?.image = UIImage(named: "chest")
+        self.imageView?.image = UIImage(named: chest)
         
         self.timerButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(timerButton)
@@ -554,26 +592,38 @@ class TimerController: UIViewController {
         var numOfCoins = numCoins
         let prevExp = exp
         let  prevLevel = Int((pow(Double(exp), 1.0/2.0)))
-        print(prevLevel)
+        var coinMultiplier = 1
+        var expMultiplier = 1
+        switch self.chest {
+        case "goldChest":
+            coinMultiplier = 2
+        case "epicChest":
+            expMultiplier = 2
+        case "diamondChest":
+            coinMultiplier = 2
+            expMultiplier = 2
+        default:
+            print("default")
+        }
         switch howMuchTime {
         case 599...1499:
-            numOfCoins += 5
-            exp += 3
+            numOfCoins += 5 * coinMultiplier
+            exp += 3 * expMultiplier
         case 1500...2999:
-            numOfCoins += 10
-            exp += 5
+            numOfCoins += 10 * coinMultiplier
+            exp += 5 * expMultiplier
         case 3000...4499:
-            numOfCoins += 20
-            exp += 8
+            numOfCoins += 20 * coinMultiplier
+            exp += 8 * expMultiplier
         case 4500...5999:
-            numOfCoins += 30
-            exp += 11
+            numOfCoins += 30 * coinMultiplier
+            exp += 11 * expMultiplier
         case 6000...7201:
-            numOfCoins += 40
-            exp += 14
+            numOfCoins += 40 * coinMultiplier
+            exp += 14 * expMultiplier
         default:
-            numOfCoins += 7
-            exp += 1
+            numOfCoins += 7 * coinMultiplier
+            exp += 1 * expMultiplier
         }
       
         expReceived = exp - prevExp

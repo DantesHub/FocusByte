@@ -138,9 +138,12 @@ class InventoryCell: UICollectionViewCell {
                         } else if pantsBook.contains(where: {$0.key == self.imgName }) {
                             pantsImageView.image = UIImage(named: self.imgName)
                             self.type = "pants"
-                        } else if self.imgName == "none" {
+                        } else if self.imgName == "nobag" {
                             backpackView.image = UIImage(named: "blank")
                             self.type = "backpack"
+                        } else if self.imgName == "noframe" {
+                            glassesImageView.image = UIImage()
+                            self.type = "glasses"
                         } else if petBook.contains(where: {$0 == self.imgName}) {
                             petImageView.image = UIImage(named: self.imgName)
                             self.type = "pet"

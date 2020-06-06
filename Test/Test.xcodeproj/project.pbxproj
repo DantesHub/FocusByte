@@ -18,6 +18,8 @@
 		E1593625242ACE720050E914 /* TestUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1593624242ACE720050E914 /* TestUITests.swift */; };
 		E1D2BF94242B9CCB004AC477 /* animatedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D2BF93242B9CCB004AC477 /* animatedLabel.swift */; };
 		E1D3DD6344DE28CAD00B6EF5 /* Pods_Test.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 245EF7B0E3A6BFD4FA53736C /* Pods_Test.framework */; };
+		FE2FBC39248AC737006A3304 /* UpgradeChestController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE2FBC38248AC737006A3304 /* UpgradeChestController.swift */; };
+		FE2FBC3B248B27C5006A3304 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE2FBC3A248B27C5006A3304 /* StoreKit.framework */; };
 		FE32495B24689A670090759B /* GifController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE32495A24689A670090759B /* GifController.swift */; };
 		FE32495F2468F63C0090759B /* diamondBox.gif in Resources */ = {isa = PBXBuildFile; fileRef = FE32495E2468F63C0090759B /* diamondBox.gif */; };
 		FE3249612468F7BE0090759B /* NewitemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE3249602468F7BE0090759B /* NewitemViewController.swift */; };
@@ -126,6 +128,8 @@
 		E1593632242AD4EC0050E914 /* Test.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Test.entitlements; sourceTree = "<group>"; };
 		E1D2BF93242B9CCB004AC477 /* animatedLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = animatedLabel.swift; sourceTree = "<group>"; };
 		EF394C7703292696B34653F3 /* Pods-Test.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Test.release.xcconfig"; path = "Target Support Files/Pods-Test/Pods-Test.release.xcconfig"; sourceTree = "<group>"; };
+		FE2FBC38248AC737006A3304 /* UpgradeChestController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradeChestController.swift; sourceTree = "<group>"; };
+		FE2FBC3A248B27C5006A3304 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		FE32495A24689A670090759B /* GifController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifController.swift; sourceTree = "<group>"; };
 		FE32495E2468F63C0090759B /* diamondBox.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = diamondBox.gif; sourceTree = "<group>"; };
 		FE3249602468F7BE0090759B /* NewitemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewitemViewController.swift; sourceTree = "<group>"; };
@@ -198,6 +202,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E1D3DD6344DE28CAD00B6EF5 /* Pods_Test.framework in Frameworks */,
+				FE2FBC3B248B27C5006A3304 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,6 +241,7 @@
 		DA87EF452B852E47CD378FE9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FE2FBC3A248B27C5006A3304 /* StoreKit.framework */,
 				245EF7B0E3A6BFD4FA53736C /* Pods_Test.framework */,
 				DE0D8F656C5ED605DAF71900 /* Pods_Test_TestUITests.framework */,
 				20A9CCEF961C1E1149DBF4FD /* Pods_TestTests.framework */,
@@ -397,6 +403,7 @@
 				FE33D50C247EE1C800A93C2F /* TwoItemViewController.swift */,
 				FE33D510247F12E900A93C2F /* ThreeItemViewController.swift */,
 				FE8E61F524859611001E1D07 /* AvatarStoreController.swift */,
+				FE2FBC38248AC737006A3304 /* UpgradeChestController.swift */,
 			);
 			path = StorePage;
 			sourceTree = "<group>";
@@ -794,6 +801,7 @@
 				FEF00175243FB635002D6C78 /* SettingsController.swift in Sources */,
 				FE33D509247D8AF000A93C2F /* InventoryCell.swift in Sources */,
 				FEC28339244CFCAB00098413 /* AvatarController.swift in Sources */,
+				FE2FBC39248AC737006A3304 /* UpgradeChestController.swift in Sources */,
 				FECA7A7D243909CF00763504 /* ValidationError.swift in Sources */,
 				FE33D50F247F082800A93C2F /* RarityEnum.swift in Sources */,
 				FECA7A8D2439135300763504 /* NameViewController.swift in Sources */,

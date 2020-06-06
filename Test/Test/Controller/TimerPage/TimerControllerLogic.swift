@@ -212,7 +212,7 @@ extension TimerController {
                     }
                     self.timeL.removeFromSuperview()
                     self.twoButtonSetup()
-                    self.imageView?.image = #imageLiteral(resourceName: "chest-open")
+                    self.imageView?.image = UIImage(named: "\(self.chest)-open")
                     self.timeL.text = "Look at all \nthis Loot!"
                     self.view.addSubview(self.timeL)
                     isPlaying = false

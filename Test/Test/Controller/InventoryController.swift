@@ -94,9 +94,9 @@ class InventoryController: UIViewController {
     @objc final func updateToCloset(notificaton: NSNotification) {
         var topArray = [DisplayItem]()
         var pantsArray = [DisplayItem]()
-        var backpackArray = [DisplayItem(count: -1, name: "none", rarity: "None")]
+        var backpackArray = [DisplayItem(count: -1, name: "nobag", rarity: "None")]
         var shoeArray = [DisplayItem]()
-        var glassesArray = [DisplayItem(count: -1, name: "none", rarity: "None")]
+        var glassesArray = [DisplayItem(count: -1, name: "noframe", rarity: "None")]
         for item in allClothes {
             var count = -1
             if inventoryArray.contains(item.key) {
@@ -128,8 +128,7 @@ class InventoryController: UIViewController {
                     glassesArray.append(DisplayItem(count: count, name: item.key, rarity: "None"))
                 }
             }
-            sections = [ Section(sectionName: "Glasses", rowData: glassesArray),Section(sectionName: "Shirts/Sweaters", rowData: topArray), Section(sectionName: "Pants", rowData: pantsArray), Section(sectionName: "Hats", rowData: pantsArray) ,Section(sectionName: "Shoes", rowData: shoeArray),
-               Section(sectionName: "Backpacks", rowData: backpackArray)]
+            sections = [ Section(sectionName: "Glasses", rowData: glassesArray),Section(sectionName: "Shirts/Sweaters", rowData: topArray), Section(sectionName: "Pants", rowData: pantsArray), Section(sectionName: "Hats", rowData: pantsArray) ,Section(sectionName: "Shoes", rowData: shoeArray),Section(sectionName: "Backpacks", rowData: backpackArray)]
         }
      configureUI()
      collectionView.reloadData()
@@ -306,16 +305,16 @@ extension InventoryController: UICollectionViewDataSource, UICollectionViewDeleg
                 return 100
             }
         } else {
-            if sections[section].rowData.count > 12 {
+            if sections[section].rowData.count > 9 {
                 return sections[section].rowData.count
             } else {
-                return 12
+                return 9
             }
         }
     }
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         if menuLabel == "Closet" {
-            return 5
+            return 6
         } else {
             return 1
         }
@@ -358,7 +357,12 @@ extension InventoryController: UICollectionViewDataSource, UICollectionViewDeleg
              }
         } else {
             if sections[indexPath.section].rowData.indices.contains(indexPath.row) {
-                cell.setImage(image: UIImage(named: sections[indexPath.section].rowData[indexPath.row].name)!)
+                let imgName = sections[indexPath.section].rowData[indexPath.row].name
+                if imgName == "nobag" || imgName == "noframe" {
+                    cell.setImage(image: UIImage(named: "none")!)
+                } else {
+                    cell.setImage(image: UIImage(named: sections[indexPath.section].rowData[indexPath.row].name)!)
+                }
                 cell.imgName = sections[indexPath.section].rowData[indexPath.row].name
                 cell.count = sections[indexPath.section].rowData[indexPath.row].count
                 cell.rarity = "None"

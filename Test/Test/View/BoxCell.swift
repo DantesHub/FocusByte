@@ -12,6 +12,9 @@ var boxDescFontSize:CGFloat = 21
 var commonItemPadding: CGFloat = 70
 var youGotFontSize:CGFloat = 35
 var itemImageSize: CGFloat = 150
+var commonTitlePadding: CGFloat = 80
+var chestFont: CGFloat = 30
+var titleFont: CGFloat = 35
 var boxPadding: CGFloat {
     get {
         var size: CGFloat = 0
@@ -20,22 +23,31 @@ var boxPadding: CGFloat {
             case 1920, 2208:
                 size = -5
                 boxDescFontSize = 21
-                itemImageSize = 125
+                itemImageSize = 100
                 boxSize = 150
                 youGotFontSize = 30
                 commonItemPadding = 20
+                commonTitlePadding = 30
+                titleFont = 30
+                chestFont = 20
             //("iphone 8plus ")
             case 1334:
                 //Iphone 8
                 size = -5
                 boxSize = 150
-                itemImageSize = 125
+                itemImageSize = 100
                 youGotFontSize = 30
                 boxDescFontSize = 16
+                titleFont = 30
                 commonItemPadding = 20
+                commonTitlePadding = 30
+                chestFont = 20
             case 2436:
                 size = -5
+                titleFont = 30
+                youGotFontSize = 28
                 boxDescFontSize = 21
+                chestFont = 25
             //print("IPHONE X, IPHONE XS, IPHONE 11 PRO")
             case 2688:
                 size = -30
@@ -77,6 +89,7 @@ class BoxCell: UICollectionViewCell {
            iv.translatesAutoresizingMaskIntoConstraints = false
            iv.contentMode = .scaleAspectFit
            iv.clipsToBounds = true
+
            return iv
        }()
     let desc : UILabel = {
@@ -105,11 +118,17 @@ class BoxCell: UICollectionViewCell {
          label.numberOfLines = 0
          label.textColor = .black
          label.clipsToBounds = true
-         label.font = UIFont(name: "Menlo-Bold", size: 35)
+         label.font = UIFont(name: "Menlo-Bold", size: titleFont)
          return label
 
     }()
-    
+    let dollarIconView: UIImageView = {
+        let iv = UIImageView()
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        iv.contentMode = .scaleAspectFit
+        iv.image = UIImage(named: "dollarIcon")
+        return iv
+    }()
     let priceLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -123,7 +142,7 @@ class BoxCell: UICollectionViewCell {
         let button = UIButton()
         button.isUserInteractionEnabled = true
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.titleLabel!.font = UIFont(name: "Menlo-Bold", size: 30)
+        button.titleLabel!.font = UIFont(name: "Menlo-Bold", size: youGotFontSize)
         button.setTitle("BUY", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.textAlignment = .center
@@ -158,11 +177,12 @@ class BoxCell: UICollectionViewCell {
         boxView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20).isActive = true
         boxView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10).isActive = true
         boxView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10).isActive = true
-//
+
         
         desc.topAnchor.constraint(equalTo: boxView.bottomAnchor, constant: 20).isActive = true
-        desc.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 60).isActive = true
-        desc.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -30).isActive = true
+        desc.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: onUpgrade ? 45:60).isActive = true
+        desc.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: onUpgrade ? -45:-60
+        ).isActive = true
         
     
         
@@ -170,17 +190,30 @@ class BoxCell: UICollectionViewCell {
         buyButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 60).isActive = true
         buyButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -60).isActive = true
         buyButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -30).isActive = true
+        if onUpgrade {
+            buyButton.addSubview(dollarIconView)
+            dollarIconView.leadingAnchor.constraint(equalTo: buyButton.leadingAnchor, constant: 30).isActive = true
+            dollarIconView.centerY(to: buyButton)
+            dollarIconView.height(max: buyButton.frame.height * 1.50)
+            dollarIconView.width(max: buyButton.frame.width * 0.80)
+        }
         
-        contentView.addSubview(priceLabel)
+        
+        if !onUpgrade {
+            contentView.addSubview(priceLabel)
             priceLabel.text = "Price: 70"
-        priceLabel.bottomAnchor.constraint(equalTo: buyButton.topAnchor, constant: -10).isActive = true
-        priceLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 70).isActive = true
+            priceLabel.bottomAnchor.constraint(equalTo: buyButton.topAnchor, constant: -10).isActive = true
+            priceLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 70).isActive = true
+            
+            contentView.addSubview(coinImageView)
+              coinImageView.width(25)
+              coinImageView.height(30)
+              coinImageView.bottomAnchor.constraint(equalTo: buyButton.topAnchor, constant: -10).isActive = true
+              coinImageView.leadingAnchor.constraint(equalTo: priceLabel.trailingAnchor, constant: 10).isActive = true
+        }
+     
         
-        contentView.addSubview(coinImageView)
-        coinImageView.width(25)
-        coinImageView.height(30)
-        coinImageView.bottomAnchor.constraint(equalTo: buyButton.topAnchor, constant: -10).isActive = true
-        coinImageView.leadingAnchor.constraint(equalTo: priceLabel.trailingAnchor, constant: 10).isActive = true
+  
 
     }
     

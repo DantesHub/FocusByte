@@ -193,6 +193,43 @@ extension UILabel {
         self.attributedText = attributedString
     }
 }
+extension String {
+
+    func toDate(withFormat format: String = "MM-dd-yyyy HH:mm")-> Date?{
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = TimeZone(identifier: "Asia/Tehran")
+        dateFormatter.locale = Locale(identifier: "fa-IR")
+        dateFormatter.calendar = Calendar(identifier: .gregorian)
+        dateFormatter.dateFormat = format
+        let date = dateFormatter.date(from: self)
+
+        return date
+
+    }
+    func attributedStringWithColor(_ strings: [String], color: UIColor, characterSpacing: UInt? = nil) -> NSAttributedString {
+         let attributedString = NSMutableAttributedString(string: self)
+         for string in strings {
+             let range = (self as NSString).range(of: string)
+             attributedString.addAttribute(NSAttributedString.Key.foregroundColor, value: color, range: range)
+         }
+
+         guard let characterSpacing = characterSpacing else {return attributedString}
+
+         attributedString.addAttribute(NSAttributedString.Key.kern, value: characterSpacing, range: NSRange(location: 0, length: attributedString.length))
+
+         return attributedString
+     }
+}
+
+extension Date {
+    func toString(withFormat format: String = "MM/dd/yyyy HH:mm") -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = format
+        let str = dateFormatter.string(from: self)
+        return str
+    }
+}
 
 extension UITextField {
     
