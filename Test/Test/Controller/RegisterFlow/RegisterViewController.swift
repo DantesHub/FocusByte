@@ -19,8 +19,14 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
     var emailIsValid = false
     var passwordIsValid = false
     var passwordConfirmationIsValid = false
-    let googleImage = UIImage(named: "googleButton")
-    let facebookImage = UIImage(named: "facebookButton")
+    var googleImage: UIImageView = {
+        let iv = UIImageView()
+        iv.image = UIImage(named: "googleButton")
+        iv.isUserInteractionEnabled = true
+        iv.contentMode = .scaleAspectFit
+        iv.layer.cornerRadius = 25
+        return iv
+    }()
     var ValInput = ValidateInputs()
     let container: UIView = UIView()
     var spinner = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.large)
@@ -35,10 +41,17 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        view.insertSubview(background, at: 0)
+        NSLayoutConstraint.activate([
+            background.topAnchor.constraint(equalTo: view.topAnchor),
+            background.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            background.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            background.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
         super.viewWillAppear(animated)
         GIDSignIn.sharedInstance()?.presentingViewController = self
         GIDSignIn.sharedInstance().delegate = self
-       
+        
     }
     
     //MARK: - Handlers
@@ -47,33 +60,51 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
     }
     
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error?) {
-          // ...
-          if let error = error {
-              print(error)
-              return
-          }
-          
-          guard let authentication = user.authentication else { return }
-         
-          let credential = GoogleAuthProvider.credential(withIDToken: authentication.idToken,
-                                                         accessToken: authentication.accessToken)
-          Auth.auth().signIn(with: credential) { (authResult, error) in
-              if let error = error {
-                 self.registerErrorLabel.text = "Something went wrong"
-                 self.registerErrorLabel.textColor = .red
-                 self.registerErrorLabel.center.y = self.view.center.y + 220
-                 self.view.addSubview(self.registerErrorLabel)
-                 print(error)
-              } else {
-                 self.registerErrorLabel.removeFromSuperview()
-                  print("user is signed in")
-                 userEmail = String(signIn.currentUser.userID)
-                 let genderVC = GenderViewController()
-                 genderVC.modalPresentationStyle = .fullScreen
-                 self.navigationController?.pushViewController(genderVC, animated: true)
-              }
-          }
-      }
+        if let error = error {
+            print(error)
+            return
+        }
+        Auth.auth().fetchSignInMethods(forEmail: user.profile.email, completion: {
+            (providers, error) in
+            if let error = error {
+                print(error.localizedDescription)
+                print("gung")
+            } else if let providers = providers {
+                if providers.count != 0 {
+                    print("pros")
+                    self.registerErrorLabel.text = "Please use the login page"
+                    self.registerErrorLabel.textColor = .red
+                    self.registerErrorLabel.center.y = self.view.center.y + 220
+                    self.view.addSubview(self.registerErrorLabel)
+                    return
+                }
+            }
+            guard let authentication = user.authentication else { return }
+            
+            let credential = GoogleAuthProvider.credential(withIDToken: authentication.idToken,
+                                                           accessToken: authentication.accessToken)
+            
+            
+            Auth.auth().signIn(with: credential) { (authResult, error) in
+                if let error = error {
+                    self.registerErrorLabel.text = "Something went wrong"
+                    self.registerErrorLabel.textColor = .red
+                    self.registerErrorLabel.center.y = self.view.center.y + 220
+                    self.view.addSubview(self.registerErrorLabel)
+                    print(error)
+                } else {
+                    self.registerErrorLabel.removeFromSuperview()
+                    print("user is signed in")
+                    userEmail = String(signIn.currentUser.userID)
+                    let genderVC = GenderViewController()
+                    genderVC.modalPresentationStyle = .fullScreen
+                    self.navigationController?.pushViewController(genderVC, animated: true)
+                }
+            }
+            
+        })
+        
+    }
     
     @objc func tappedRegister() {
         showSpinner()
@@ -148,14 +179,13 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
                     return
                 }
                 userEmail = self.ValInput.email
-                print(userEmail)
                 self.spinner.stopAnimating()
                 let genderVC = GenderViewController()
                 self.navigationController?.pushViewController(genderVC, animated: true)
             }
         }
     }
-
+    
     //MARK: - Helper functions
     func configureUI() {
         registerTitle.text = "Sign up"
@@ -171,7 +201,7 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
         signUpView =  UIView(frame: CGRect(x: 100, y: view.center.y + 270, width: buttonWidth, height: 60))
         signUpView.applyDesign(color: lightLavender)
         signUpView.center.x = view.center.x
-        signUpView.center.y = view.center.y + 270
+        signUpView.center.y = view.center.y + registerPadding
         let tap = UITapGestureRecognizer(target: self, action: #selector(tappedRegister))
         signUpView.addGestureRecognizer(tap)
         view.addSubview(signUpView)
@@ -179,12 +209,12 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
         signUpLabel.applyDesign(text: "Register")
         signUpLabel.sizeToFit()
         signUpLabel.center.x = view.center.x
-        signUpLabel.center.y = view.center.y + 270
+        signUpLabel.center.y = view.center.y + registerPadding
         view.addSubview(signUpLabel)
         
         configureNavigationBar(color: .white, isTrans: true)
-        loadButtons()
         loadTextFields()
+        loadButtons()
     }
     
     func loadTextFields() {
@@ -199,9 +229,9 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
         view.addSubview(password)
         password.topAnchor.constraint(equalTo: email.bottomAnchor, constant: 28).isActive = true
         password.addDoneButtonOnKeyboard()
-        password.applyDesign(view, x: xPadding, y: -70)
+        password.applyDesign(view, x: xPadding, y: -65)
         password.placeholder = "Password"
-
+        
         
         passwordConfirmation.isSecureTextEntry = true
         passwordConfirmation.addDoneButtonOnKeyboard()
@@ -209,12 +239,12 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
         passwordConfirmation.topAnchor.constraint(equalTo: password.bottomAnchor, constant: 32).isActive = true
         passwordConfirmation.applyDesign(view, x: xPadding, y: 40)
         passwordConfirmation.placeholder = "Password Confirmation"
-
+        
     }
     
     func showSpinner() {
         spinner.hidesWhenStopped = true
-        container.frame = CGRect(x: 0, y: 0, width: 1000, height: 1000) // Set X and Y whatever you want
+        container.frame = CGRect(x: 0, y: 0, width: 1000, height: 1000)
         container.backgroundColor = .clear
         spinner.center = self.view.center
         view.addSubview(container)
@@ -223,45 +253,20 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
     }
     
     func loadButtons() {
-        let googleImageView = GIDSignInButton(frame: CGRect(x: view.center.x - 150 , y: signUpView.center.y - 125, width: 130, height: 50))
-        googleImageView.clipsToBounds = true
-        let shadowView = UIView(frame: CGRect(x:view.center.x - 150 , y: signUpView.center.y - 125 , width: 130, height: 50))
-        shadowView.backgroundColor = .white
-        shadowView.dropShadow(superview: view)
-        view.addSubview(shadowView)
-        view.insertSubview(googleImageView, aboveSubview: shadowView)
-        view.addSubview(googleImageView)
-//        let facebookLoginButton = FBSDKLoginButton()
-//        loginButton.delegate = self
-        let facebookImageView = UIImageView(image: facebookImage)
-        facebookImageView.frame = CGRect(x: view.center.x + 30, y: signUpView.center.y - 125  , width: 130, height: 58)
-        facebookImageView.clipsToBounds = true
-        let shadowView2 = UIView(frame: CGRect(x: view.center.x + 30 , y: signUpView.center.y - 125 , width: 130, height: 58))
-        shadowView2.backgroundColor = .white
-        shadowView2.dropShadow(superview: view)
-        view.addSubview(shadowView2)
-        view.insertSubview(facebookImageView, aboveSubview: shadowView2)
-        view.addSubview(facebookImageView)
+        view.addSubview(googleImage)
+        let tappedGoogle = UITapGestureRecognizer(target: self, action: #selector(googleTapped))
+        googleImage.addGestureRecognizer(tappedGoogle)
+        googleImage.centerX(to: view)
+        googleImage.topToBottom(of: passwordConfirmation, offset: 20)
+        googleImage.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        googleImage.widthAnchor.constraint(lessThanOrEqualToConstant: lessThanConstant).isActive = true
+        googleImage.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: onPad ? 0.4 : 0.8).isActive = true
+        googleImage.applyDesign(color: .white)
     }
     
-    func firebaseFacebookLogin(accessToken: String) {
-        let credential = FacebookAuthProvider.credential(withAccessToken: accessToken)
-        Auth.auth().signIn(with: credential) { (authResult, error) in
-            if let error = error {
-                self.registerErrorLabel.text = "Something went wrong"
-                self.registerErrorLabel.textColor = .red
-                self.registerErrorLabel.center.y = self.view.center.y + 220
-                self.view.addSubview(self.registerErrorLabel)
-                print(error)
-            } else {
-                self.registerErrorLabel.removeFromSuperview()
-                let genderVC = GenderViewController()
-                genderVC.modalPresentationStyle = .fullScreen
-                self.navigationController?.pushViewController(genderVC, animated: true)
-            }
-        }
+    @objc func googleTapped() {
+        GIDSignIn.sharedInstance()?.signIn()
     }
-
 }
 
 

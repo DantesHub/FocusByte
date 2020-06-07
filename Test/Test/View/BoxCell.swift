@@ -18,7 +18,7 @@ var titleFont: CGFloat = 35
 var boxPadding: CGFloat {
     get {
         var size: CGFloat = 0
-        if UIDevice().userInterfaceIdiom == .phone {
+        if UIDevice().userInterfaceIdiom == .phone || UIDevice().userInterfaceIdiom == .pad {
             switch UIScreen.main.nativeBounds.height {
             case 1920, 2208:
                 size = -5
@@ -61,8 +61,11 @@ var boxPadding: CGFloat {
             //print("IPHONE XR, IPHONE 11")
             default:
                 size = -30
+                titleFont = 60
                 titlePadding = 9
-                boxDescFontSize = 21
+                itemImageSize = 200
+                boxDescFontSize = 30
+                chestFont = 45
             }
         }
         return size
@@ -123,7 +126,7 @@ class BoxCell: UICollectionViewCell {
 
     }()
     let dollarIconView: UIImageView = {
-        let iv = UIImageView()
+        let iv = UIImageView ()
         iv.translatesAutoresizingMaskIntoConstraints = false
         iv.contentMode = .scaleAspectFit
         iv.image = UIImage(named: "dollarIcon")
@@ -134,7 +137,7 @@ class BoxCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
         label.textColor = .black
-        label.font = UIFont(name: "Menlo", size: 25)
+        label.font = UIFont(name: "Menlo", size: UIDevice().userInterfaceIdiom == .pad ? 40 : 25)
         return label
     }()
     
@@ -203,18 +206,14 @@ class BoxCell: UICollectionViewCell {
             contentView.addSubview(priceLabel)
             priceLabel.text = "Price: 70"
             priceLabel.bottomAnchor.constraint(equalTo: buyButton.topAnchor, constant: -10).isActive = true
-            priceLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 70).isActive = true
+            priceLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: UIDevice().userInterfaceIdiom == .pad ? 200:70).isActive = true
             
             contentView.addSubview(coinImageView)
-              coinImageView.width(25)
-              coinImageView.height(30)
+            coinImageView.width(UIDevice().userInterfaceIdiom == .pad ? 40:25)
+            coinImageView.height(UIDevice().userInterfaceIdiom == .pad ? 50:30)
               coinImageView.bottomAnchor.constraint(equalTo: buyButton.topAnchor, constant: -10).isActive = true
-              coinImageView.leadingAnchor.constraint(equalTo: priceLabel.trailingAnchor, constant: 10).isActive = true
+            coinImageView.leadingAnchor.constraint(equalTo: priceLabel.trailingAnchor, constant:10).isActive = true
         }
-     
-        
-  
-
     }
     
     required init?(coder: NSCoder) {

@@ -20,6 +20,7 @@
 		E1D3DD6344DE28CAD00B6EF5 /* Pods_Test.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 245EF7B0E3A6BFD4FA53736C /* Pods_Test.framework */; };
 		FE2FBC39248AC737006A3304 /* UpgradeChestController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE2FBC38248AC737006A3304 /* UpgradeChestController.swift */; };
 		FE2FBC3B248B27C5006A3304 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE2FBC3A248B27C5006A3304 /* StoreKit.framework */; };
+		FE2FBC3D248C4AA5006A3304 /* SettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE2FBC3C248C4AA5006A3304 /* SettingsCell.swift */; };
 		FE32495B24689A670090759B /* GifController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE32495A24689A670090759B /* GifController.swift */; };
 		FE32495F2468F63C0090759B /* diamondBox.gif in Resources */ = {isa = PBXBuildFile; fileRef = FE32495E2468F63C0090759B /* diamondBox.gif */; };
 		FE3249612468F7BE0090759B /* NewitemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE3249602468F7BE0090759B /* NewitemViewController.swift */; };
@@ -130,6 +131,7 @@
 		EF394C7703292696B34653F3 /* Pods-Test.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Test.release.xcconfig"; path = "Target Support Files/Pods-Test/Pods-Test.release.xcconfig"; sourceTree = "<group>"; };
 		FE2FBC38248AC737006A3304 /* UpgradeChestController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradeChestController.swift; sourceTree = "<group>"; };
 		FE2FBC3A248B27C5006A3304 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		FE2FBC3C248C4AA5006A3304 /* SettingsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCell.swift; sourceTree = "<group>"; };
 		FE32495A24689A670090759B /* GifController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifController.swift; sourceTree = "<group>"; };
 		FE32495E2468F63C0090759B /* diamondBox.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = diamondBox.gif; sourceTree = "<group>"; };
 		FE3249602468F7BE0090759B /* NewitemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewitemViewController.swift; sourceTree = "<group>"; };
@@ -423,6 +425,7 @@
 				FE5A7DC32482E59A00F89392 /* EyeColorCell.swift */,
 				FE8E61F3248580ED001E1D07 /* SectionHeaderViewCell.swift */,
 				FE8E61F72485A7AB001E1D07 /* AvatarStoreCell.swift */,
+				FE2FBC3C248C4AA5006A3304 /* SettingsCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -772,6 +775,7 @@
 				FEC28333244B87E100098413 /* MysteryViewController.swift in Sources */,
 				FED6F63E243EAC6100553996 /* MenuOptionCell.swift in Sources */,
 				FE6B03E0245F958200C48E27 /* LWAlert.swift in Sources */,
+				FE2FBC3D248C4AA5006A3304 /* SettingsCell.swift in Sources */,
 				FE5A7DC42482E59A00F89392 /* EyeColorCell.swift in Sources */,
 				FE8E61F624859611001E1D07 /* AvatarStoreController.swift in Sources */,
 				FECA7A8F2439136700763504 /* GenderViewController.swift in Sources */,

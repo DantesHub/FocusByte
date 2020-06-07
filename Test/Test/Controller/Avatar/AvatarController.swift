@@ -117,7 +117,7 @@ var pantsImageView: UIImageView = {
 var glassesImageView: UIImageView = {
     let iv = UIImageView()
     iv.translatesAutoresizingMaskIntoConstraints = false
-    iv.image = UIImage(named: "winged frame")
+
     iv.width(frameWidth)
     iv.height(30)
     iv.clipsToBounds = false

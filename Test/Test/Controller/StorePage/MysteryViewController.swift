@@ -21,6 +21,13 @@ class MysteryViewController: UIViewController {
         pc.pageIndicatorTintColor = .lightGray
         return pc
     }()
+    var sidePadding: CGFloat {
+        if UIDevice().userInterfaceIdiom == .pad {
+            return 80
+        } else {
+            return 30
+        }
+    }
     lazy var nextButton: UIButton? = {
         let button = UIButton()
         let largeConfiguration = UIImage.SymbolConfiguration(weight: .bold)
@@ -80,8 +87,8 @@ class MysteryViewController: UIViewController {
         collectionView.backgroundColor = darkPurple
         collectionView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         
-        collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30).isActive = true
-        collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30).isActive = true
+        collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: sidePadding).isActive = true
+        collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -(sidePadding)).isActive = true
         collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: boxPadding).isActive = true
         collectionView.isPagingEnabled = true;
         
@@ -179,6 +186,7 @@ extension MysteryViewController: UICollectionViewDelegateFlowLayout, UICollectio
                   contentViewColor: .white
               )
         let alertView = SCLAlertView(appearance: appearance)
+        print(coins)
         switch name {
         case "Common Box":
             if coins < 15 {

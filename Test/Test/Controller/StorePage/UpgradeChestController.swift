@@ -14,10 +14,10 @@ import StoreKit
 var onUpgrade = false
 var boughtChest = false
 class UpgradeChestController: UIViewController, SKPaymentTransactionObserver, SKProductsRequestDelegate{
-    var myProduct: SKProduct?
+    var myProducts = [SKProduct?]()
     let goldId = "co.byteteam.focusbyte.GoldChest"
-    let epicId = ""
-    let diamondId = ""
+    let epicId = "co.byteteam.focusbyte.EpicChest"
+    let diamondId = "co.byteteam.focusbyte.DiamondChest"
     
     let data = [
         MysteryBox(description: "Receive 2x (double) coins for the next seven days", image: UIImage(named: "goldChest")!, title: "Gold Chest", color: gold, price: "  0.99"),
@@ -132,11 +132,11 @@ class UpgradeChestController: UIViewController, SKPaymentTransactionObserver, SK
         self.collectionView.scrollToItem(at: nextItem as IndexPath, at: .right, animated: true)
     }
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-        if let product = response.products.first {
-            myProduct = product
-           print(product.productIdentifier)
-            print(product.price)
+        for product in response.products {
+            print(product.productIdentifier)
+            myProducts.append(product)
         }
+        
     }
     
     func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
@@ -148,7 +148,8 @@ class UpgradeChestController: UIViewController, SKPaymentTransactionObserver, SK
                 //unlock their item
                 SKPaymentQueue.default().finishTransaction(transaction)
                 SKPaymentQueue.default().remove(self)
-                print("sucess")
+                save()
+                print("success")
                 break
             case .failed, .deferred:
                 SKPaymentQueue.default().finishTransaction(transaction)
@@ -218,12 +219,23 @@ extension UpgradeChestController: UICollectionViewDelegateFlowLayout, UICollecti
       //lock upgrade chests
     }
     func fetchProducts() {
-        let request = SKProductsRequest(productIdentifiers: [goldId])
+        let request = SKProductsRequest(productIdentifiers: [diamondId, epicId, goldId])
         request.delegate = self
         request.start()
     }
     private final func startPurchase() {
-        guard let myProduct = myProduct else {
+        var num = 0
+        switch name {
+               case "Gold Chest":
+                   num = 2
+               case "Epic Chest":
+                   num = 1
+               case "Diamond Chest":
+                   num = 0
+               default:
+                   print("im still")
+               }
+        guard let myProduct = myProducts[num] else {
             return
         }
         if SKPaymentQueue.canMakePayments() {

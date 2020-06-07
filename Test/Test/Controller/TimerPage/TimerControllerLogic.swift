@@ -105,7 +105,6 @@ extension TimerController {
     func focusTimerComplete() {
         AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
         self.timer.invalidate()
-        print("entered foreground \(enteredForeground)")
         if enteredForeground {
             self.timeL.text = "You found..."
             self.timeL.font = UIFont(name: "Menlo-Bold", size: 20)
@@ -341,7 +340,6 @@ extension TimerController {
             
             if let savedDate = UserDefaults.standard.object(forKey: "savedTime") as? Date{
                 (self.diffMins, self.diffSecs) = TimerController.getTimeDifference(startDate: savedDate)
-                print(" willenterforeground, Min: \(diffMins), Sec: \(diffSecs)")
                 self.refresh(mins: diffMins, secs: diffSecs)
             }
             
@@ -351,7 +349,6 @@ extension TimerController {
             center.removeAllPendingNotificationRequests()
             if let savedDate = UserDefaults.standard.object(forKey: "savedBreakTime") as? Date {
                 (self.diffMins, self.diffSecs) = TimerController.getTimeDifference(startDate: savedDate)
-                print(" willenterforeground, Min: \(diffMins), Sec: \(diffSecs)")
                 self.refresh(mins: diffMins, secs: diffSecs)
             }
         }
@@ -392,7 +389,6 @@ extension TimerController {
     static func getTimeDifference(startDate: Date) -> (Int, Int) {
         let calendar = Calendar.current
         let components = calendar.dateComponents([.minute, .second], from: startDate, to: Date())
-        print(components)
         return (components.minute!, components.second!)
     }
     

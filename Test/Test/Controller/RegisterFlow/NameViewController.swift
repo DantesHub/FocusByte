@@ -31,11 +31,11 @@ class NameViewController: UIViewController {
     //MARK: - handlers
     @objc func finishTapped() {
         showSpinner()
-        
+          let email = Auth.auth().currentUser?.email
+   
         if nameInput.text! != "" {
             if let _ = Auth.auth().currentUser?.email {
-                let email = Auth.auth().currentUser?.email
-                db.collection(K.userPreferenes).document(email!).setData([
+          db.collection(K.userPreferenes).document(email!).setData([
                     "gender": chosenGender,
                     "name": nameInput.text!,
                     "inventoryArray": ["green sweater", "blue jeans", "default shoes"],
@@ -118,6 +118,7 @@ class NameViewController: UIViewController {
     }
     
     func saveToRealm() {
+        UserDefaults.standard.set(true, forKey: "quotes")
         let itemArray = List<String>()
         itemArray.append("green sweater")
         itemArray.append("blue jeans")

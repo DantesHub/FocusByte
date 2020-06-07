@@ -2,8 +2,7 @@ import UIKit
 import Firebase
 import GoogleSignIn
 import RealmSwift
-let realmUser = User()
-class LoginViewController: UIViewController {
+class LoginViewController: UIViewController,GIDSignInDelegate {
     var goToTimerView = UIView()
     var goToTimerLabel = UILabel()
     var results: Results<User>!
@@ -20,15 +19,43 @@ class LoginViewController: UIViewController {
     let container: UIView = UIView()
     var spinner = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.large)
     var forgotPassword: UILabel!
-    
+    var googleImage: UIImageView = {
+       let iv = UIImageView()
+        iv.image = UIImage(named: "googleButton")
+        iv.isUserInteractionEnabled = true
+        iv.contentMode = .scaleAspectFit
+        iv.layer.cornerRadius = 25
+        return iv
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+   
+        configureUI()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        view.insertSubview(background, at: 0)
+                NSLayoutConstraint.activate([
+                    background.topAnchor.constraint(equalTo: view.topAnchor),
+                    background.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                    background.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                    background.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+                ])
+        super.viewWillAppear(animated)
+        GIDSignIn.sharedInstance()?.presentingViewController = self
+        GIDSignIn.sharedInstance().delegate = self
+    
+    }
+    
+    //MARK: - Helper Functions
+    func configureUI() {
+    
         view.backgroundColor = .white
         loginTitle.frame.size.width = 300
         loginTitle.frame.size.height = 100
         loginTitle.center.x = view.center.x + 70
-        loginTitle.center.y = view.center.y - 180
+        loginTitle.center.y = view.center.y - 230
         loginTitle.text = "Login"
         loginTitle.font = UIFont(name: "Menlo-Bold", size: CGFloat(titleSize))
         loginTitle.textColor = brightPurple
@@ -50,6 +77,7 @@ class LoginViewController: UIViewController {
         // Do any additional setup after loading the view.
         loadTextViews()
         loadForgotPassword()
+        loadButtons()
     }
     
     @objc func forgotPasswordTapped() {
@@ -87,6 +115,31 @@ class LoginViewController: UIViewController {
         spinner.startAnimating()
     }
     
+    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error?) {
+            showSpinner()
+             if let error = error {
+                 print(error)
+                 return
+             }
+             
+             guard let authentication = user.authentication else { return }
+            
+             let credential = GoogleAuthProvider.credential(withIDToken: authentication.idToken,
+                                                            accessToken: authentication.accessToken)
+             Auth.auth().signIn(with: credential) { (authResult, error) in
+                 if let error = error {
+                    print(error)
+                    self.errorLabel.text = "Something went wrong"
+                    self.errorLabel.textColor = .red
+                    self.errorLabel.center.y = self.view.center.y + 220
+                    self.view.addSubview(self.errorLabel)
+                    self.spinner.stopAnimating()
+                 } else {
+                     self.saveToRealm()
+                 }
+             }
+         }
+    
     
     
     @objc func tappedLogin() {
@@ -94,7 +147,7 @@ class LoginViewController: UIViewController {
         showSpinner()
         Auth.auth().signIn(withEmail: email.text!, password: password.text!) { result, error in
             if error != nil {
-                self.errorLabel =  UILabel(frame: CGRect(x: self.view.center.x - 130, y: self.password.center.y + 50 , width: buttonWidth, height: 50))
+                self.errorLabel =  UILabel(frame: CGRect(x: self.view.center.x - 130, y: self.password.center.y + 20 , width: buttonWidth, height: 50))
                 self.errorLabel.text = "username or password is incorrect"
                 self.errorLabel.textColor = .red
                 self.view.addSubview(self.errorLabel)
@@ -107,19 +160,34 @@ class LoginViewController: UIViewController {
             }
         }
     }
+    func loadButtons() {
+        view.addSubview(googleImage)
+        let tappedGoogle = UITapGestureRecognizer(target: self, action: #selector(googleTapped))
+        googleImage.addGestureRecognizer(tappedGoogle)
+        googleImage.centerX(to: view)
+         googleImage.topToBottom(of: password, offset: 30)
+         googleImage.heightAnchor.constraint(equalToConstant: 50).isActive = true
+         googleImage.widthAnchor.constraint(lessThanOrEqualToConstant: lessThanConstant).isActive = true
+         googleImage.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: onPad ? 0.4 : 0.8).isActive = true
+        googleImage.applyDesign(color: .white)
+    }
+    
+    @objc func googleTapped() {
+        GIDSignIn.sharedInstance()?.signIn()
+    }
     
     
     func loadTextViews() {
         view.addSubview(email)
         email.addDoneButtonOnKeyboard()
         email.topAnchor.constraint(equalTo: loginTitle.bottomAnchor, constant: 25).isActive = true
-        email.applyDesign(view, x: xPadding, y: -110)
+        email.applyDesign(view, x: xPadding, y: -160)
         email.placeholder = "Email"
         password.addDoneButtonOnKeyboard()
         password.isSecureTextEntry = true
         view.addSubview(password)
         password.topAnchor.constraint(equalTo: email.bottomAnchor, constant: 30).isActive = true
-        password.applyDesign(view, x: xPadding, y: -5)
+        password.applyDesign(view, x: xPadding, y: -55)
         password.placeholder = "Password"   
         
     }
@@ -138,29 +206,14 @@ class LoginViewController: UIViewController {
     }
     
     func saveToRealm() {
-        results = uiRealm.objects(User.self)
-        for result  in results {
-            if result.email == Auth.auth().currentUser?.email {
-                do {
-                    try uiRealm.write {
-                        print("saved")
-                        loggedOut = false
-                        result.setValue(true, forKey: "isLoggedIn")
-                    }
-                    
-                } catch {
-                    print(error)
-                    
-                }
-              return
-            }
-        }
+    
         createRealmData()
     }
     
     func createRealmData() {
         //did not find result
         //User logged into a new phone, so we have to recreate realm data
+        let realmUser = User()
         if let email = Auth.auth().currentUser?.email {
             loggedOut = false
             var gender = ""
@@ -174,6 +227,7 @@ class LoginViewController: UIViewController {
             var eyes = ""
             var skin = ""
             var xp = 0
+            print("seez")
             docRef.getDocument { (snapshot, error) in
                 if let document = snapshot, document.exists {
                     _ = document.data().map(String.init(describing:)) ?? "nil"
@@ -218,9 +272,6 @@ class LoginViewController: UIViewController {
                     self.navigationController?.pushViewController(genderVC, animated: true)
                     return
                 }
-                let timerVC = ContainerController(center: TimerController())
-                timerVC.modalPresentationStyle = .fullScreen
-                self.navigationController?.pushViewController(timerVC, animated: true)
                 let tagList = List<Tag>()
                 for tag in tagDict {
                     let tagVar = Tag()
@@ -234,24 +285,70 @@ class LoginViewController: UIViewController {
                         tagList.append(tagVar)
                     }
                 }
-        
-                realmUser.timeArray = timeD
-                realmUser.name = name
-                realmUser.inventoryArray = inventoryArray
-                realmUser.tagDictionary = tagList
-                realmUser.email = Auth.auth().currentUser?.email
-                realmUser.isLoggedIn = true
-                realmUser.deepFocusMode = true
-                realmUser.skin = skin
-                realmUser.exp = xp
-                realmUser.hair = hair
-                realmUser.eyes = eyes
-                realmUser.gender = gender
-                realmUser.coins = coins
-                realmUser.writeToRealm()
+                let doesExist = self.checkIfUserExists()
+                
+                if !doesExist {
+                    realmUser.timeArray = timeD
+                    realmUser.name = name
+                    realmUser.inventoryArray = inventoryArray
+                    realmUser.tagDictionary = tagList
+                    realmUser.email = Auth.auth().currentUser?.email
+                    realmUser.isLoggedIn = true
+                    realmUser.deepFocusMode = true
+                    realmUser.skin = skin
+                    realmUser.exp = xp
+                    realmUser.hair = hair
+                    realmUser.eyes = eyes
+                    realmUser.gender = gender
+                    realmUser.coins = coins
+                    realmUser.writeToRealm()
+                } else {
+                    for result  in self.results {
+                      //same phone
+                        if result.email == Auth.auth().currentUser?.email {
+                            do {
+                           try uiRealm.write {
+                                result.timeArray = timeD
+                                result.name = name
+                                result.inventoryArray = inventoryArray
+                                result.tagDictionary = tagList
+                                result.isLoggedIn = true
+                                result.deepFocusMode = true
+                                result.skin = skin
+                                result.exp = xp
+                                result.hair = hair
+                                result.eyes = eyes
+                                result.gender = gender
+                                result.coins = coins
+                            
+                                }
+                            } catch {
+                                print(error)
+                            }
+                            
+                        }
+                    }
+                }
+                UserDefaults.standard.set(true, forKey: "quotes")
+                let timerVC = ContainerController(center: TimerController())
+                timerVC.modalPresentationStyle = .fullScreen
+                self.navigationController?.pushViewController(timerVC, animated: true)
             }
+            
         } else {
+            print("firebase error")
         }
+    }
+    
+    func checkIfUserExists() -> Bool{
+        results = uiRealm.objects(User.self)
+        for result  in results {
+            //same phone
+             if result.email == Auth.auth().currentUser?.email {
+                return true
+             }
+         }
+        return false
     }
     
 }

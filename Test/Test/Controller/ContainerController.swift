@@ -56,6 +56,11 @@ class ContainerController: UIViewController {
                 statisticsController.delegate = self
                 centerController = UINavigationController(rootViewController: statisticsController)
             }
+            if centerController is SettingsController {
+                let settingsController = SettingsController()
+                settingsController.delegate = self
+                centerController = UINavigationController(rootViewController: settingsController)
+            }
            view.addSubview(centerController.view)
            addChild(centerController)
            centerController.didMove(toParent: self)
@@ -114,7 +119,7 @@ class ContainerController: UIViewController {
             controller.modalPresentationStyle = .fullScreen
             presentInFullScreen(UINavigationController(rootViewController: controller), animated: false, completion: nil)
         case .settings:
-            let controller = SettingsController()
+            let controller = ContainerController(center: SettingsController())
             controller.modalPresentationStyle = .fullScreen
             presentInFullScreen(UINavigationController(rootViewController: controller), animated: true, completion: nil)
         }

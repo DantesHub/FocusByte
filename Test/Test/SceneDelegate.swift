@@ -45,15 +45,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillEnterForeground(_ scene: UIScene) {
         sceneTimer.invalidate()
     }
-    @objc func decrementCounter() {
-        print("counter")
-    }
-    @objc func killChest() {
-      
-    }
     
     func sceneDidEnterBackground(_ scene: UIScene) {
-        print("entered backgroundd")
         //allow brightnesss of screen to equal 0 if phone locks
         do {
             sleep(1)

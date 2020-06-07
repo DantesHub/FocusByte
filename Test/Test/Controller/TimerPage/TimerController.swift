@@ -103,67 +103,70 @@ class TimerController: UIViewController {
     //MARK: -Init
     override func viewDidLoad() {
         super.viewDidLoad()
-        createObservers()
-        configureNavigationBar(color: backgroundColor, isTrans: true)
+        if boughtChest == true {
+                  let alertView = SCLAlertView()
+                  alertView.showSuccess("Succesfully upgraded chest!", subTitle: "")
+                  boughtChest = false
+              }
+              results = uiRealm.objects(User.self)
+              for result  in results {
+                  if result.isLoggedIn == true {
+                      coins = result.coins
+                    print("coins: \(coins)")
+                      exp = result.exp
+                      for tag in result.tagDictionary {
+                          if tag.selected == true {
+                              tagSelected = tag.name
+                          }
+                      }
+                      self.overrideUserInterfaceStyle = .light
+                      gender = result.gender!
+                      inventoryArray = result.inventoryArray.map{ $0 }
+                      coinsL.text = String(coins)
+                      deepFocusMode = result.deepFocusMode
+                  }
+              }
+              let today = Date()
+              let formatter = DateFormatter()
+              formatter.dateFormat = "MM-dd-yyyy HH:mm"
+              for item in inventoryArray {
+                  if item.contains("Gold Chest") {
+                      let plusIndex = item.firstIndex(of: "+")
+                      let date = String(item[..<plusIndex!]).toDate()
+                      if today < date! {
+                          self.chest = "goldChest"
+                      }
+                      expDate = (date?.toString())!
+                      chestBought = true
+                  } else if item.contains("Epic Chest") {
+                      let plusIndex = item.firstIndex(of: "+")
+                      let date = String(item[..<plusIndex!]).toDate()
+                      if today < date! {
+                          self.chest = "epicChest"
+                      }
+                      expDate = (date?.toString())!
+                      chestBought = true
+                  } else if item.contains("Diamond Chest") {
+                      let plusIndex = item.firstIndex(of: "+")
+                      let date = String(item[..<plusIndex!]).toDate()
+                      if today < date! {
+                          self.chest = "diamondChest"
+                      }
+                      expDate = (date?.toString())!
+                      chestBought = true
+                  }
+              }
+       
     }
 
     
     override func viewWillAppear(_ animated: Bool) {
-        if boughtChest == true {
-            let alertView = SCLAlertView()
-            alertView.showSuccess("Succesfully upgraded chest!", subTitle: "")
-            boughtChest = false
-        }
-        results = uiRealm.objects(User.self)
-        for result  in results {
-            if result.isLoggedIn == true {
-                coins = result.coins
-                exp = result.exp
-                for tag in result.tagDictionary {
-                    if tag.selected == true {
-                        tagSelected = tag.name
-                    }
-                }
-                self.overrideUserInterfaceStyle = .light
-                gender = result.gender!
-                inventoryArray = result.inventoryArray.map{ $0 }
-                coinsL.text = String(coins)
-                deepFocusMode = result.deepFocusMode
-            }
-        }
-        let today = Date()
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MM-dd-yyyy HH:mm"
-        for item in inventoryArray {
-            if item.contains("Gold Chest") {
-                let plusIndex = item.firstIndex(of: "+")
-                let date = String(item[..<plusIndex!]).toDate()
-                if today < date! {
-                    self.chest = "goldChest"
-                }
-                expDate = (date?.toString())!
-                chestBought = true
-            } else if item.contains("Epic Chest") {
-                let plusIndex = item.firstIndex(of: "+")
-                let date = String(item[..<plusIndex!]).toDate()
-                if today < date! {
-                    self.chest = "epicChest"
-                }
-                expDate = (date?.toString())!
-                chestBought = true
-            } else if item.contains("Diamond Chest") {
-                let plusIndex = item.firstIndex(of: "+")
-                let date = String(item[..<plusIndex!]).toDate()
-                if today < date! {
-                    self.chest = "diamondChest"
-                }
-                expDate = (date?.toString())!
-                chestBought = true
-            }
-        }
         coinsL.countFromZero(to: Float(coins), duration: .brisk)
         level = Int(floor(sqrt(Double(exp))))
         configureUI()
+        createObservers()
+        configureNavigationBar(color: backgroundColor, isTrans: true)
+        print("finished view will appear")
     }
     
     deinit {
@@ -405,7 +408,6 @@ class TimerController: UIViewController {
     }
     
     @objc func breakPressed() {
-        print("pressed")
         let alert = LWAlert.init(customData: [["1", "2", "3", "4", "5","6","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28",
                                                "29","30"], ["minutes", "seconds"]])
         alert.customPickerBlock = { str in
@@ -414,7 +416,7 @@ class TimerController: UIViewController {
         }
         alert.show()
     }
-    
+
     
     @objc func xTapped() {
         circularSlider.removeFromSuperview()
@@ -451,7 +453,7 @@ class TimerController: UIViewController {
         if let colon = self.timeL.text?.firstIndex(of: ":") {
             durationString = String((self.timeL.text?[..<colon])!)
         }
-        counter = 5
+        counter = ((Int(durationString) ?? 10) * 60)
         howMuchTime = ((Int(durationString) ?? 10) * 60)
         basicAnimation.duration = CFTimeInterval(counter + (counter/4))
         self.shapeLayer.add(basicAnimation, forKey: "basic")
@@ -568,10 +570,7 @@ class TimerController: UIViewController {
         subview.addSubview(description)
         description.leadingAnchor.constraint(equalTo: dfmSwitch.trailingAnchor, constant: 15).isActive = true
         description.topToBottom(of: title, offset: 5)
-//        let showTimeout = SCLButton.ShowTimeoutConfiguration(prefix: "(", suffix: " s)")
-//        alertView.addButton("Done", backgroundColor: brightPurple, textColor: .white, showTimeout: showTimeout) {
-//            return
-//        }
+
         
         alertView.customSubview = subview
         alertView.showCustom("Select Mode", subTitle: "", color: .white, icon: UIImage())
