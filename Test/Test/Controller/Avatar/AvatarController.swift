@@ -16,6 +16,7 @@ var avatarBottomPadding:CGFloat = -30
 var colorCollectionPadding: CGFloat = -100
 var petSize: CGFloat = 100
 var frameWidth: CGFloat = 70
+var hasSuit = false
 //135 x 112
 //135 x 87
    var armsImageView: UIImageView = {
@@ -124,7 +125,15 @@ var glassesImageView: UIImageView = {
     iv.backgroundColor = .clear
     return iv
 }()
-
+var avatarImageView: UIImageView = {
+    let iv = UIImageView()
+    iv.translatesAutoresizingMaskIntoConstraints = false
+    iv.contentMode = .scaleAspectFit
+    iv.clipsToBounds = false
+    iv.image = UIImage(named: "Armored Suit")
+    iv.backgroundColor = .clear
+    return iv
+}()
 
 class AvatarController: UIViewController {
     var avatarMultipler: CGFloat = 0.20
@@ -133,6 +142,7 @@ class AvatarController: UIViewController {
     var petLabelSize:CGFloat = 25
     var avatarPantsPadding:CGFloat = 105
     var avatarTopPadding: CGFloat = 0
+    var avatarSuitPadding: CGFloat = 50
     var characterBackgroundBottom: CGFloat {
         get {
             var characterBackgroundBottom: CGFloat = 0
@@ -146,6 +156,7 @@ class AvatarController: UIViewController {
                     avatarPantsPadding = 90
                     avatarArmWidth = 2
                     saveButtonPadding = -75
+                    avatarSuitPadding = 30
                     saveButtonWidth = 55
                     saveFontSize = 15
                     avatarArmMultiplier = 0.25
@@ -161,6 +172,7 @@ class AvatarController: UIViewController {
                     avatarArmWidth = 2
                     saveButtonPadding = -75
                     petSize = 75
+                    avatarSuitPadding = 30
                     saveButtonWidth = 55
                     avatarArmMultiplier = 0.24
                     avatarBottomPadding = 0
@@ -207,15 +219,8 @@ class AvatarController: UIViewController {
     var name: String?
     var type = ""
     //    Int((pow(Double(exp), 1.0/3.0)))
-    var lvlData: Int = 0
-    var avatarImageView: UIImageView = {
-        let iv = UIImageView()
-        iv.translatesAutoresizingMaskIntoConstraints = false
-        iv.contentMode = .scaleAspectFit
-        iv.clipsToBounds = false
-        iv.backgroundColor = .clear
-        return iv
-    }()
+    var lvlData: Int = 1
+
 
     lazy var petLabel: UILabel = {
         let label = UILabel()
@@ -272,6 +277,7 @@ class AvatarController: UIViewController {
     //MARK: - init
     override func viewDidLoad() {
         getRealmData()
+        getType()
         super.viewDidLoad()
         configureNavigationBar(color: backgroundColor, isTrans: false)
         configureUI()
@@ -283,7 +289,6 @@ class AvatarController: UIViewController {
     
     //MARK: - Helper functions
     func configureUI() {
-        getType()
         self.title = name
         navigationItem.leftBarButtonItem =  UIBarButtonItem(image: resizedMenuImage?.withTintColor(.white), style: .plain, target: self, action: #selector(handleMenuToggle))
         view.addSubview(levelLabel)
@@ -331,13 +336,16 @@ class AvatarController: UIViewController {
         characterBackground.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant:characterBackgroundBottom).isActive = true
         characterBackground.addSubview(petLabel)
         characterBackground.addSubview(petImageView)
-        if lvlData < 34 {
-            characterBackground.addSubview(avatarImageView)
-            avatarImageView.bottomAnchor.constraint(equalTo: characterBackground.bottomAnchor, constant: avatarBottomPadding).isActive = true
-//            avatarImageView.topAnchor.constraint(equalTo: characterBackground.topAnchor, constant: 30).isActive = true
-            avatarImageView.leadingAnchor.constraint(equalTo: characterBackground.leadingAnchor, constant: 15).isActive = true
-            avatarImageView.trailingAnchor.constraint(equalTo: characterBackground.trailingAnchor, constant: -15).isActive = true
-        } else {
+        //Avatar
+        characterBackground.addSubview(avatarImageView)
+        avatarImageView.bottomAnchor.constraint(equalTo: characterBackground.bottomAnchor, constant: avatarBottomPadding).isActive = true
+        
+        avatarImageView.leadingAnchor.constraint(equalTo: characterBackground.leadingAnchor, constant: 15).isActive = true
+        avatarImageView.trailingAnchor.constraint(equalTo: characterBackground.trailingAnchor, constant: -15).isActive = true
+
+        if lvlData > 33 {
+            //for suits
+            avatarImageView.topAnchor.constraint(equalTo: characterBackground.topAnchor, constant: avatarSuitPadding).isActive = true
             //face
             characterBackground.insertSubview(faceImageView, aboveSubview: characterBackground)
             faceImageView.centerX(to: characterBackground)
@@ -434,8 +442,8 @@ class AvatarController: UIViewController {
              characterBackground.insertSubview(glassesImageView, aboveSubview: hairImageView)
              glassesImageView.centerX(to: faceImageView)
              glassesImageView.topAnchor.constraint(equalTo: faceImageView.topAnchor, constant: 20).isActive = true
-             
         }
+    
         
  
         
@@ -470,6 +478,7 @@ class AvatarController: UIViewController {
         var glasses = ""
         var shoe = ""
         var pet = ""
+        var suit = ""
         for result in results {
             if result.isLoggedIn == true {
                 name = result.name
@@ -480,6 +489,7 @@ class AvatarController: UIViewController {
                 pants = result.pants ?? "none"
                 shoe = result.shoes ?? "none"
                 pet = result.pet ?? "none"
+                suit = result.suit ?? "nosuit"
                 glasses = result.glasses ?? "noframe"
                 skinColor = result.skin!
                 lvlData = Int(pow(Double(result.exp), 1.0/2.0))
@@ -488,6 +498,14 @@ class AvatarController: UIViewController {
             }
         }
         level = lvlData
+        if suit != "nosuit" {
+            hasSuit = true
+            avatarImageView.image = UIImage(named: suit)
+            hideAvatar(hide: true)
+        } else {
+            hasSuit = false
+        }
+        
         if pack != "nobag" {
             backpackView.image = UIImage(named: pack)
         }
@@ -497,9 +515,10 @@ class AvatarController: UIViewController {
         if shirt != "none" {
             sweaterImageView.image = UIImage(named: shirt)
         }
-        if pants != "none" {
-            pantsImageView.image = UIImage(named: pants)
-        }
+//        if pants != "none" {
+//            pantsImageView.image = UIImage(named: pants)
+//        }
+        pantsImageView.image = UIImage(named: "long dress")
         if shoe != "none" {
             shoesImageView.image = UIImage(named: shoe)
         }
@@ -537,7 +556,7 @@ class AvatarController: UIViewController {
     
     private func updateHair(hair: String) {
         let hairPlusIndex = hair.firstIndex(of: "+")
-        let hairPlusOffset = hair.index(hairPlusIndex!, offsetBy: 1)
+         let hairPlusOffset = hair.index(hairPlusIndex!, offsetBy: 1)
         selectedHairColor = (String(hair[..<hairPlusIndex!]))
         selectedHair = String(hair[hairPlusOffset...])
         if selectedHair != "none" {
@@ -599,12 +618,15 @@ class AvatarController: UIViewController {
         case 0...14:
             type = "Toddler"
             avatarImageView.image = gender == "male" ? UIImage(named: "boyToddler") : UIImage(named: "girlToddler")
-        case 15...34:
+        case 15..<34:
             type = "Kid"
             avatarImageView.image = gender == "male" ? UIImage(named: "boy") : UIImage(named: "boy")
         case 34...:
             type = "Adult"
-            avatarImageView.image = gender == "male" ? UIImage(named: "man") : UIImage(named: "woman")
+            if !hasSuit {
+                //if avatar doesnt have suit
+                avatarImageView.image = gender == "male" ? UIImage() : UIImage()
+            }
         default: type = ""
         }
     }
@@ -614,4 +636,15 @@ class AvatarController: UIViewController {
         delegate?.handleMenuToggle(forMenuOption: nil)
     }
     
+}
+
+func hideAvatar(hide: Bool) {
+    faceImageView.isHidden = hide
+    glassesImageView.isHidden = hide
+    pantsImageView.isHidden = hide
+    shoesImageView.isHidden = hide
+    armsImageView.isHidden = hide
+    sweaterImageView.isHidden = hide
+    hairImageView.isHidden = hide
+    eyesImageView.isHidden = hide
 }

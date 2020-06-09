@@ -16,8 +16,9 @@ import TinyConstraints
 import Foundation
 import TinyConstraints
 import SCLAlertView
-
+var enteredForeground = false
 var deepFocusMode = true
+var locked = false
 var exp = 0
 var coins = 0
 var counter = 0
@@ -28,15 +29,16 @@ var timeData = [String]()
 var isPlaying = false
 var tagSelected = "unset"
 var tagColor = "gray"
-var level = 0
+var level = 1
 var chestBought = false
 var expDate = ""
+var randomNum = 0
+var upgradedToPro = false
 class TimerController: UIViewController {
     //MARK: - Properties
     var results: Results<User>!
     let shapeLayer = CAShapeLayer()
     let trackLayer = CAShapeLayer()
-    var time = 600
     let timeL = UILabel()
     var motivationalQuote = ""
     var circularSlider = CircularSlider()
@@ -82,7 +84,6 @@ class TimerController: UIViewController {
     var breakButtonLbl = UILabel()
     let timerButtonLbl = UILabel()
     var timer = Timer()
-    var enteredForeground = false
     var deepFocusLabel = UILabel()
     var deepFocusView = UIView()
     var breakTimer = Timer()
@@ -99,20 +100,30 @@ class TimerController: UIViewController {
     var tagTableView = TagTableView()
     var searchBar = UISearchBar()
     var chest = "chest"
+    var onHome = false
     
     //MARK: -Init
     override func viewDidLoad() {
         super.viewDidLoad()
+        onHome = true
         if boughtChest == true {
-                  let alertView = SCLAlertView()
-                  alertView.showSuccess("Succesfully upgraded chest!", subTitle: "")
-                  boughtChest = false
-              }
+            let alertView = SCLAlertView()
+            alertView.showSuccess("Succesfully upgraded chest!", subTitle: "")
+            boughtChest = false
+        }
+        if upgradedToPro {
+            let alertView = SCLAlertView()
+                      alertView.iconTintColor = brightPurple
+             alertView.showCustom("Succesfully Upgraded To Pro!", subTitle: "", color: brightPurple, icon: .checkmark)
+            upgradedToPro = false
+        }
+ 
+         
+        
               results = uiRealm.objects(User.self)
               for result  in results {
                   if result.isLoggedIn == true {
                       coins = result.coins
-                    print("coins: \(coins)")
                       exp = result.exp
                       for tag in result.tagDictionary {
                           if tag.selected == true {
@@ -161,23 +172,31 @@ class TimerController: UIViewController {
 
     
     override func viewWillAppear(_ animated: Bool) {
+        createObservers()
         coinsL.countFromZero(to: Float(coins), duration: .brisk)
         level = Int(floor(sqrt(Double(exp))))
         configureUI()
-        createObservers()
         configureNavigationBar(color: backgroundColor, isTrans: true)
-        print("finished view will appear")
+        print("view finished appearing")
     }
     
-    deinit {
-        self.timer.invalidate()
-        self.breakTimer.invalidate()
-        NotificationCenter.default.removeObserver(self)
+    override func viewWillDisappear(_ animated: Bool) {
+             onHome = false
+             counter = 0
+             self.timer.invalidate()
+             self.timer = Timer()
+             self.breakTimer.invalidate()
+             self.breakTimer = Timer()
+             NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
+             NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
+             NotificationCenter.default.removeObserver(self, name: UIApplication.protectedDataWillBecomeUnavailableNotification, object: nil)
+            NotificationCenter.default.removeObserver(self, name: UIApplication.protectedDataDidBecomeAvailableNotification, object: nil)
     }
+    
     
     //MARK: - helper functions
     func configureUI() {
-        UIApplication.shared.isIdleTimerDisabled = true
+//        UIApplication.shared.isIdleTimerDisabled = true
         coinsImg = UIImageView(image: UIImage(named: "coins")!)
         coinsImg!.frame.size.width = 25
         coinsImg!.frame.size.height = 30
@@ -191,15 +210,6 @@ class TimerController: UIViewController {
         coinsL.center.y = 30
         coinsL.font = UIFont(name: "Menlo-Bold", size: 20)
         
-        quoteLabel.numberOfLines = 0
-        quoteLabel.text = "Whatever you do, do it well. \n– Walt Disney"
-        quoteLabel.textAlignment = .center
-        quoteLabel.textColor = .white
-        quoteLabel.font = UIFont(name: "Menlo-Bold", size: 15)
-        quoteLabel.sizeToFit()
-        quoteLabel.center.x = view.center.x
-        quoteLabel.center.y = view.center.y - 250
-        view.addSubview(quoteLabel)
         
         timeL.font = .boldSystemFont(ofSize: 20)
         timeL.font = UIFont(name: "Menlo-Bold", size: 65)
@@ -224,6 +234,7 @@ class TimerController: UIViewController {
         imageView?.center.y = view.center.y - 50
         view.insertSubview(imageView!, at: 10)
         
+        createQuoteLabel()
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
         timerButton.addGestureRecognizer(tap)
@@ -239,6 +250,26 @@ class TimerController: UIViewController {
         
         createCircularSlider()
         
+    }
+    
+    private func createQuoteLabel() {
+        if UserDefaults.standard.bool(forKey: "quotes") == true {
+            view.addSubview(quoteLabel)
+            quoteLabel.numberOfLines = 0
+            quoteLabel.adjustsFontSizeToFitWidth = true
+            quoteLabel.translatesAutoresizingMaskIntoConstraints = false
+            quoteLabel.width(view.frame.width * 0.95)
+            quoteLabel.height(view.frame.height * 0.10)
+            let num = UserDefaults.standard.bool(forKey: "isPro") ? quotesPro.count : quotes.count
+            let randQuoteNum = Int.random(in: 0..<num)
+            quoteLabel.text = num > 15 ? quotesPro[randQuoteNum] : quotes[randQuoteNum]
+            quoteLabel.textAlignment = .center
+            quoteLabel.textColor = .white
+            quoteLabel.font = UIFont(name: "Menlo-Bold", size: 15)
+            //        quoteLabel.sizeToFit()
+            quoteLabel.centerX(to: view)
+            quoteLabel.bottomAnchor.constraint(equalTo: imageView!.topAnchor, constant: -80).isActive = true
+        }
     }
     
     private func createBarItem() {
@@ -352,7 +383,10 @@ class TimerController: UIViewController {
 
     
     @objc func handleTap(_ sender: UITapGestureRecognizer? = nil) {
-    
+        let center = UNUserNotificationCenter.current()
+        center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if let _ = error {}
+        }
         if let colon = self.timeL.text?.firstIndex(of: ":") {
             durationString = String((self.timeL.text?[..<colon])!)
         }
@@ -361,13 +395,16 @@ class TimerController: UIViewController {
             return
         }
         if !self.view.subviews.contains(quoteLabel) && self.view.subviews.contains(breakL) {
-                view.addSubview(quoteLabel)
+                createQuoteLabel()
             }
         
-        if isPlaying {
+        if isPlaying && timerButtonLbl.text == "Give Up" {
+            print("give up alert")
             giveUpAlert()
         } else if durationString != "0"{
+            print("insiede here")
             isPlaying = true
+            counter = ((Int(durationString) ?? 10) * 60)
             timerButtonLbl.text = "Give Up"
             createTimerButtonLbl()
             timerButton.backgroundColor = darkRed
@@ -427,6 +464,7 @@ class TimerController: UIViewController {
     func giveUpAlert() {
         let alert = UIAlertController(title: "Are you sure you want to give up?", message:"The search for treasure will stop", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action) in
+            counter = 0
             DispatchQueue.main.async {
                 self.timer.invalidate()
             }
@@ -449,11 +487,7 @@ class TimerController: UIViewController {
         shapeLayer.add(basicAnimation, forKey: "basic")
         let defaults = UserDefaults.standard
         defaults.set("playing", forKey: "status")
-        
-        if let colon = self.timeL.text?.firstIndex(of: ":") {
-            durationString = String((self.timeL.text?[..<colon])!)
-        }
-        counter = ((Int(durationString) ?? 10) * 60)
+
         howMuchTime = ((Int(durationString) ?? 10) * 60)
         basicAnimation.duration = CFTimeInterval(counter + (counter/4))
         self.shapeLayer.add(basicAnimation, forKey: "basic")
@@ -621,13 +655,12 @@ class TimerController: UIViewController {
             numOfCoins += 40 * coinMultiplier
             exp += 14 * expMultiplier
         default:
-            numOfCoins += 7 * coinMultiplier
+            numOfCoins += 2 * coinMultiplier
             exp += 1 * expMultiplier
         }
       
         expReceived = exp - prevExp
         coinsReceived = numOfCoins - prevNumOfCoins
-        print(coinsReceived!)
         //experience algo
         let  level = Int((pow(Double(exp), 1.0/2.0)))
         if (prevLevel != level) { // 0.000001 can be changed depending on the level of precision you need

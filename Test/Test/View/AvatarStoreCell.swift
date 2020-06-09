@@ -145,25 +145,45 @@ class AvatarStoreCell: UICollectionViewCell {
         
         
         alertView.addButton("Buy", backgroundColor: brightPurple, textColor: .white, showTimeout: .none) {
-            if level < 34 {
-                let alertView = SCLAlertView()
-                alertView.showNotice("Must be at level 34 to purchase", subTitle: "")
-            } else {
-                if coins >= self.price {
-                    //saveToRealm and firebase
-                    inventoryArray.append(self.imgName)
-                    coins = coins - self.price
-                    self.save()
-                    //add to clothesarray
-                    //reload collectionView
-                    NotificationCenter.default.post(name: NSNotification.Name(updateCollection), object: nil)
-                    return
-                } else {
+            if suitBook.contains(where: {$0.key == self.imgName}) {
+                if level < 70 {
                     let alertView = SCLAlertView()
-                    alertView.showNotice("Not Enough Coins", subTitle: "")
+                              alertView.showNotice("Must be at least level 70 to purchase", subTitle: "")
+                } else {
+                    if coins >= self.price {
+                        //saveToRealm and firebase
+                        inventoryArray.append(self.imgName)
+                        coins = coins - self.price
+                        self.save()
+                        //add to clothesarray
+                        //reload collectionView
+                        NotificationCenter.default.post(name: NSNotification.Name(updateCollection), object: nil)
+                        return
+                    } else {
+                        let alertView = SCLAlertView()
+                        alertView.showNotice("Not Enough Coins", subTitle: "")
+                    }
+                }
+            } else {
+                if level < 34 {
+                    let alertView = SCLAlertView()
+                    alertView.showNotice("Must be at least level 34 to purchase", subTitle: "")
+                } else {
+                    if coins >= self.price {
+                        //saveToRealm and firebase
+                        inventoryArray.append(self.imgName)
+                        coins = coins - self.price
+                        self.save()
+                        //add to clothesarray
+                        //reload collectionView
+                        NotificationCenter.default.post(name: NSNotification.Name(updateCollection), object: nil)
+                        return
+                    } else {
+                        let alertView = SCLAlertView()
+                        alertView.showNotice("Not Enough Coins", subTitle: "")
+                    }
                 }
             }
-           
         }
         alertView.addButton("Cancel", backgroundColor: .gray, textColor: .white, showTimeout: .none) {
             return
@@ -173,19 +193,21 @@ class AvatarStoreCell: UICollectionViewCell {
 
     }
     func save() {
-        //update data in firebase
-        if let _ = Auth.auth().currentUser?.email {
-            let email = Auth.auth().currentUser?.email
-            self.db.collection(K.userPreferenes).document(email!).updateData([
-                "coins": coins,
-                "inventoryArray": inventoryArray
-            ]) { (error) in
-                if let e = error {
-                    print("There was a issue saving data to firestore \(e) ")
-                } else {
-                    print("Succesfully saved new items")
-                }
-            }
+        if UserDefaults.standard.bool(forKey: "isPro") == true {
+            //update data in firebase
+                 if let _ = Auth.auth().currentUser?.email {
+                     let email = Auth.auth().currentUser?.email
+                     self.db.collection(K.userPreferenes).document(email!).updateData([
+                         "coins": coins,
+                         "inventoryArray": inventoryArray
+                     ]) { (error) in
+                         if let e = error {
+                             print("There was a issue saving data to firestore \(e) ")
+                         } else {
+                             print("Succesfully saved new items")
+                         }
+                     }
+                 }
         }
         
         //saveToRealm

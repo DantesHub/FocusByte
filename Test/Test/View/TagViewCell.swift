@@ -24,17 +24,6 @@ class TagViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionView
     var titleLabel = UILabel()
     var colors = ["red","pink","orange","yellow","lightgreen","green","turq", "blue","skyblue","purple"]
     var collectionViewAlert: UICollectionView!
-//    override var isSelected: Bool {
-//          didSet {
-//            print("setting")
-//              if isSelected {
-//                self.accessoryType = .checkmark
-//                self.delegate?.updateTableView()
-//              } else {
-//                self.accessoryType = .none
-//              }
-//          }
-//      }
      //MARK: - Init
     init(style: UITableViewCell.CellStyle, reuseIdentifier: String?, color: String, title: String) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -107,20 +96,31 @@ class TagViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionView
         text.overrideUserInterfaceStyle = .light
         text.becomeFirstResponder()
         alertView.addButton("Done\n", backgroundColor: brightPurple, textColor: .white, showTimeout: showTimeout) {
-            if text.text!.count == 0 {
-                text.text = "Must Input Text!"
-            } else {
-                let tag = Tag(name: text.text!, color: selectedColor, selected: true)
-                //save to firebase & realm
-                if tagDictionary.contains(where: { $0.name == tag.name }) {
+            if UserDefaults.standard.bool(forKey: "isPro") == true {
+                if text.text!.count == 0 {
                     return
                 } else {
-                    self.saveToRealm(tag: tag)
-                    tagSelected = tag.name
-                    tagColor = tag.color
-                    self.delegate?.updateTableView()
+                    let tag = Tag(name: text.text!, color: selectedColor, selected: true)
+                    //save to firebase & realm
+                    if tagDictionary.contains(where: { $0.name == tag.name }) {
+                        return
+                    } else {
+                        self.saveToRealm(tag: tag)
+                        tagSelected = tag.name
+                        tagColor = tag.color
+                        self.delegate?.updateTableView()
+                    }
                 }
+            } else {
+                let controller = GoProViewController()
+                controller.modalPresentationStyle = .fullScreen
+                self.parentViewController!.presentInFullScreen(UINavigationController(rootViewController: controller), animated: true, completion: nil)
+                self.superview?.superview?.backgroundColor = origBackgroundColor
+                self.superview?.removeFromSuperview()
+                self.removeFromSuperview()
+                
             }
+
          
         }
         alertView.addButton("Cancel", backgroundColor: lightLavender, textColor: .white, showTimeout: showTimeout) {
@@ -205,6 +205,7 @@ class TagViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionView
 
 
 //MARK: - COLOR Cell
+@available(iOS 13.0, *)
 class ColorCell: UICollectionViewCell {
     lazy var checked: UILabel = {
        let label = UILabel()

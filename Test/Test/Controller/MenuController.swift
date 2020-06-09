@@ -45,13 +45,16 @@ class MenuController: UIViewController {
 
 extension MenuController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 6
+        return UserDefaults.standard.bool(forKey: "isPro") ? 6 : 7
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifer, for: indexPath) as! MenuOptionCell
         let menuOption = MenuOption(rawValue: indexPath.row)
         cell.descriptionLabel.text = menuOption?.description
+        if indexPath.row == 6 {
+            cell.descriptionLabel.textColor = darkGold
+        }
         cell.iconImageView.image = menuOption?.image
         return cell
     }

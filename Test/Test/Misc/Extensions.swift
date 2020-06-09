@@ -146,6 +146,17 @@ extension UIViewController {
         self.navigationController?.navigationBar.isTranslucent = isTrans;
     }
 }
+
+extension UINavigationController {
+    func customPopView(_ viewController: UIViewController) {
+        let transition: CATransition = CATransition()
+        transition.duration = 0.25
+        transition.type = CATransitionType.push
+        transition.subtype = CATransitionSubtype.fromTop
+        view.layer.add(transition, forKey: nil)
+        pushViewController(viewController, animated: false)
+    }
+}
 extension UIColor {
     static var placeholderGray: UIColor {
         return UIColor(red: 0, green: 0, blue: 0.0980392, alpha: 0.22)

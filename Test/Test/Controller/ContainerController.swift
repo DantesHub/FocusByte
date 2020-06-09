@@ -111,9 +111,17 @@ class ContainerController: UIViewController {
             controller.modalPresentationStyle = .fullScreen
             presentInFullScreen(UINavigationController(rootViewController: controller), animated: false, completion: nil)
         case .statistics:
-            let controller = ContainerController(center: StatisticsController())
+            var controller = UIViewController()
+            var animated = false
+            if UserDefaults.standard.bool(forKey: "isPro") == true {
+                controller = ContainerController(center: StatisticsController())
+            } else {
+                controller = GoProViewController()
+                animated = true
+            }
             controller.modalPresentationStyle = .fullScreen
-            presentInFullScreen(UINavigationController(rootViewController: controller), animated:false, completion: nil)
+                      presentInFullScreen(UINavigationController(rootViewController: controller), animated:animated, completion: nil)
+           
         case .inventory:
             let controller = ContainerController(center: InventoryController())
             controller.modalPresentationStyle = .fullScreen
@@ -121,8 +129,13 @@ class ContainerController: UIViewController {
         case .settings:
             let controller = ContainerController(center: SettingsController())
             controller.modalPresentationStyle = .fullScreen
+            presentInFullScreen(UINavigationController(rootViewController: controller), animated: false, completion: nil)
+        case .goPro:
+            let controller = GoProViewController()
+            controller.modalPresentationStyle = .fullScreen
             presentInFullScreen(UINavigationController(rootViewController: controller), animated: true, completion: nil)
         }
+            
     }
 }
 

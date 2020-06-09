@@ -15,7 +15,7 @@ var shoe = ""
 var backpack = ""
 var pants = ""
 var glasses = ""
-
+var suit = ""
 class InventoryController: UIViewController {
     //MARK: - properties
     var results: Results<User>!
@@ -97,6 +97,7 @@ class InventoryController: UIViewController {
         var backpackArray = [DisplayItem(count: -1, name: "nobag", rarity: "None")]
         var shoeArray = [DisplayItem]()
         var glassesArray = [DisplayItem(count: -1, name: "noframe", rarity: "None")]
+        var suitArray = [DisplayItem(count: -1, name: "nosuit", rarity: "None")]
         for item in allClothes {
             var count = -1
             if inventoryArray.contains(item.key) {
@@ -126,9 +127,14 @@ class InventoryController: UIViewController {
                         count = -2
                     }
                     glassesArray.append(DisplayItem(count: count, name: item.key, rarity: "None"))
+                } else if suitBook.contains(where: {$0.key == item.key}) {
+                    if suit == item.key {
+                        count = -2
+                    }
+                    suitArray.append(DisplayItem(count: count, name: item.key, rarity: "None"))
                 }
             }
-            sections = [ Section(sectionName: "Glasses", rowData: glassesArray),Section(sectionName: "Shirts/Sweaters", rowData: topArray), Section(sectionName: "Pants", rowData: pantsArray), Section(sectionName: "Hats", rowData: pantsArray) ,Section(sectionName: "Shoes", rowData: shoeArray),Section(sectionName: "Backpacks", rowData: backpackArray)]
+            sections = [ Section(sectionName: "Glasses", rowData: glassesArray),Section(sectionName: "Shirts/Sweaters", rowData: topArray), Section(sectionName: "Pants", rowData: pantsArray) ,Section(sectionName: "Shoes", rowData: shoeArray),Section(sectionName: "Backpacks", rowData: backpackArray), Section(sectionName: "Suits", rowData: suitArray)]
         }
      configureUI()
      collectionView.reloadData()
@@ -358,7 +364,7 @@ extension InventoryController: UICollectionViewDataSource, UICollectionViewDeleg
         } else {
             if sections[indexPath.section].rowData.indices.contains(indexPath.row) {
                 let imgName = sections[indexPath.section].rowData[indexPath.row].name
-                if imgName == "nobag" || imgName == "noframe" {
+                if imgName == "nobag" || imgName == "noframe" || imgName == "nosuit" {
                     cell.setImage(image: UIImage(named: "none")!)
                 } else {
                     cell.setImage(image: UIImage(named: sections[indexPath.section].rowData[indexPath.row].name)!)

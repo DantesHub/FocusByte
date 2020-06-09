@@ -28,6 +28,7 @@ class User: Object {
     @objc dynamic var shoes: String? = nil
     @objc dynamic var backpack: String? = nil
     @objc dynamic var glasses: String? = nil
+    @objc dynamic var suit: String? = nil
 
 
     var inventoryArray = List<String>()

@@ -210,18 +210,20 @@ class NewitemViewController: UIViewController {
             return
         }
         //update data in firebase
-        if let _ = Auth.auth().currentUser?.email {
-            let email = Auth.auth().currentUser?.email
-            self.db.collection(K.userPreferenes).document(email!).updateData([
-                "coins": coins,
-                "inventoryArray": inventoryArray
-            ]) { (error) in
-                if let e = error {
-                    print("There was a issue saving data to firestore \(e) ")
-                } else {
-                    print("Succesfully saved new items")
-                }
-            }
+        if UserDefaults.standard.bool(forKey: "isPro") {
+            if let _ = Auth.auth().currentUser?.email {
+                   let email = Auth.auth().currentUser?.email
+                   self.db.collection(K.userPreferenes).document(email!).updateData([
+                       "coins": coins,
+                       "inventoryArray": inventoryArray
+                   ]) { (error) in
+                       if let e = error {
+                           print("There was a issue saving data to firestore \(e) ")
+                       } else {
+                           print("Succesfully saved new items")
+                       }
+                   }
+               }
         }
         
         //save To Realm

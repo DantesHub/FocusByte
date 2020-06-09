@@ -15,8 +15,39 @@ var uiRealm = try! Realm()
     var count = 0
     var window: UIWindow?
     func applicationDidEnterBackground(_ application: UIApplication) {
- 
+        print("going")
+        if isPlaying {
+                _ = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+                self.count += 1
+                counter -= 1
+                if self.count == 1 {
+                    let center = UNUserNotificationCenter.current()
+                    let content = UNMutableNotificationContent()
+                    content.title = "Come back!"
+                    content.body = "If you don't come back the treasure will be lost!"
+                    // Step 3: Create the notification trigger
+                    let date = Date().addingTimeInterval(15)
+                    let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+                    let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+                    
+                    // Step 4: Create the request
+                    let uuidString = UUID().uuidString
+                    let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
+                    
+                    // Step 5: Register the request
+                    center.add(request) { (error) in
+                        // Check the error parameter and handle any errors
+                    }
+                    
+                }
+            }
+        }
     }
+    func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any])
+        -> Bool {
+            return GIDSignIn.sharedInstance().handle(url)
+    }
+    
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -24,13 +55,12 @@ var uiRealm = try! Realm()
         FirebaseApp.configure()
         Firestore.firestore()
         GIDSignIn.sharedInstance().clientID = FirebaseApp.app()?.options.clientID
+        
+   
+        
+        let defaults = UserDefaults.standard
+        defaults.set("none", forKey: "status")
         return true
-    }
-    
-   @available(iOS 9.0, *)
-    func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any])
-      -> Bool {
-      return GIDSignIn.sharedInstance().handle(url)
     }
     
     // MARK: UISceneSession Lifecycle

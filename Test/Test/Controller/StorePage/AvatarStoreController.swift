@@ -34,6 +34,7 @@ class AvatarStoreController: UIViewController {
     var backpackArray = [String]()
     var shoeArray = [String]()
     var glassesArray = [String]()
+    var suitArray = [String]()
     var sections = [Section]()
     
     //MARK: - init
@@ -43,7 +44,7 @@ class AvatarStoreController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(AvatarStoreController.reloadView(notificaton:)), name: NSNotification.Name(rawValue: updateCollection), object: nil)
         //load store data
         getArrays()
-        sections = [Section(sectionName: "Glasses", rowData: glassesArray),Section(sectionName: "Shirts/Sweaters", rowData: shirtArray), Section(sectionName: "Pants", rowData: pantsArray), Section(sectionName: "Shoes", rowData: shoeArray), Section(sectionName: "Backpacks/Luggage", rowData: backpackArray), Section(sectionName: "Hats", rowData: pantsArray),Section(sectionName: "Pants", rowData: pantsArray), Section(sectionName: "Suits Level 70+", rowData: pantsArray)]
+        sections = [Section(sectionName: "Glasses", rowData: glassesArray),Section(sectionName: "Shirts/Sweaters", rowData: shirtArray), Section(sectionName: "Pants", rowData: pantsArray), Section(sectionName: "Shoes", rowData: shoeArray), Section(sectionName: "Backpacks/Luggage", rowData: backpackArray), Section(sectionName: "Suits Level 70+", rowData: suitArray)]
         configureUI()
  
     }
@@ -55,8 +56,9 @@ class AvatarStoreController: UIViewController {
         shoeArray = [String]()
         backpackArray = [String]()
         glassesArray = [String]()
+        suitArray = [String]()
         getArrays()
-        sections = [Section(sectionName: "Glasses", rowData: glassesArray),Section(sectionName: "Shirts/Sweaters", rowData: shirtArray), Section(sectionName: "Pants", rowData: pantsArray), Section(sectionName: "Shoes", rowData: shoeArray), Section(sectionName: "Backpacks/Luggage", rowData: backpackArray), Section(sectionName: "Hats", rowData: pantsArray),Section(sectionName: "Pants", rowData: pantsArray), Section(sectionName: "Suits Level 70+", rowData: pantsArray)]
+        sections = [Section(sectionName: "Glasses", rowData: glassesArray),Section(sectionName: "Shirts/Sweaters", rowData: shirtArray), Section(sectionName: "Pants", rowData: pantsArray), Section(sectionName: "Shoes", rowData: shoeArray), Section(sectionName: "Backpacks/Luggage", rowData: backpackArray), Section(sectionName: "Suits Level 70+", rowData: suitArray)]
         collectionView.reloadData()
     }
     
@@ -73,6 +75,8 @@ class AvatarStoreController: UIViewController {
                     backpackArray.append(item.key)
                 } else if frameBook.contains(where: {$0.key == item.key}) {
                     glassesArray.append(item.key)
+                } else if suitBook.contains(where: {$0.key == item.key}) {
+                    suitArray.append(item.key)
                 }
             }
         }
@@ -129,6 +133,22 @@ extension AvatarStoreController: UICollectionViewDataSource, UICollectionViewDel
         cell.setImage(image: UIImage(named: sections[indexPath.section].rowData[indexPath.row])!)
         cell.setImageName(name: sections[indexPath.section].rowData[indexPath.row])
             return cell
+    }
+    private func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+
+            var width : CGFloat
+            var height : CGFloat
+
+        if indexPath.section == 5 {
+            width = collectionView.frame.width * 0.50
+            height = width * 2
+        } else {
+            width = collectionView.frame.width * 0.50
+            height = width
+
+        }
+        return CGSize(width: width, height: height)
+
     }
     
 }

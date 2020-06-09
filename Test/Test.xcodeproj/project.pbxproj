@@ -21,6 +21,8 @@
 		FE2FBC39248AC737006A3304 /* UpgradeChestController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE2FBC38248AC737006A3304 /* UpgradeChestController.swift */; };
 		FE2FBC3B248B27C5006A3304 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE2FBC3A248B27C5006A3304 /* StoreKit.framework */; };
 		FE2FBC3D248C4AA5006A3304 /* SettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE2FBC3C248C4AA5006A3304 /* SettingsCell.swift */; };
+		FE2FBC3F248D80DB006A3304 /* GoProViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE2FBC3E248D80DB006A3304 /* GoProViewController.swift */; };
+		FE2FBC41248F0760006A3304 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FE2FBC40248F0760006A3304 /* Launch Screen.storyboard */; };
 		FE32495B24689A670090759B /* GifController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE32495A24689A670090759B /* GifController.swift */; };
 		FE32495F2468F63C0090759B /* diamondBox.gif in Resources */ = {isa = PBXBuildFile; fileRef = FE32495E2468F63C0090759B /* diamondBox.gif */; };
 		FE3249612468F7BE0090759B /* NewitemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE3249602468F7BE0090759B /* NewitemViewController.swift */; };
@@ -132,6 +134,8 @@
 		FE2FBC38248AC737006A3304 /* UpgradeChestController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradeChestController.swift; sourceTree = "<group>"; };
 		FE2FBC3A248B27C5006A3304 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		FE2FBC3C248C4AA5006A3304 /* SettingsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCell.swift; sourceTree = "<group>"; };
+		FE2FBC3E248D80DB006A3304 /* GoProViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoProViewController.swift; sourceTree = "<group>"; };
+		FE2FBC40248F0760006A3304 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		FE32495A24689A670090759B /* GifController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifController.swift; sourceTree = "<group>"; };
 		FE32495E2468F63C0090759B /* diamondBox.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = diamondBox.gif; sourceTree = "<group>"; };
 		FE3249602468F7BE0090759B /* NewitemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewitemViewController.swift; sourceTree = "<group>"; };
@@ -288,6 +292,7 @@
 				E159360B242ACE710050E914 /* Assets.xcassets */,
 				E1593610242ACE710050E914 /* Info.plist */,
 				FECA7A8824390ECE00763504 /* GoogleService-Info.plist */,
+				FE2FBC40248F0760006A3304 /* Launch Screen.storyboard */,
 			);
 			path = Test;
 			sourceTree = "<group>";
@@ -444,6 +449,7 @@
 				FEF00174243FB635002D6C78 /* SettingsController.swift */,
 				FE324974246CB0220090759B /* InventoryController.swift */,
 				FE577C9B24748CFE00042819 /* Statistics */,
+				FE2FBC3E248D80DB006A3304 /* GoProViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -586,6 +592,7 @@
 				FED6F63A243E866400553996 /* Main.storyboard in Resources */,
 				E159360C242ACE710050E914 /* Assets.xcassets in Resources */,
 				FE32495F2468F63C0090759B /* diamondBox.gif in Resources */,
+				FE2FBC41248F0760006A3304 /* Launch Screen.storyboard in Resources */,
 				FEF55DD224310F2800B4C0E1 /* PressStart2P.ttf in Resources */,
 				FE3249672469CC9A0090759B /* commonBox.gif in Resources */,
 				FE3249652469CC820090759B /* goldBox.gif in Resources */,
@@ -790,6 +797,7 @@
 				E1593605242ACE6F0050E914 /* SceneDelegate.swift in Sources */,
 				FE830E722481D30900D80076 /* ColorCell.swift in Sources */,
 				FE830E652480358F00D80076 /* DisplayItem.swift in Sources */,
+				FE2FBC3F248D80DB006A3304 /* GoProViewController.swift in Sources */,
 				FE830E6C24818D6C00D80076 /* HairCell.swift in Sources */,
 				FED6F640243EB3A200553996 /* MenuOption.swift in Sources */,
 				FE5395C124311AD100DA83C1 /* Constants.swift in Sources */,
@@ -909,7 +917,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -963,7 +971,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -981,6 +989,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Test/Test.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_TEAM = M5757NXZKD;
 				INFOPLIST_FILE = Test/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1091,6 +1100,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Test/Test.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_TEAM = M5757NXZKD;
 				INFOPLIST_FILE = Test/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

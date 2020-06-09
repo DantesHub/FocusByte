@@ -13,7 +13,7 @@ enum MenuOption: Int {
     case statistics
     case inventory
     case settings
-    
+    case goPro
     var description: String {
         switch self {
         case .timer: return "Timer"
@@ -22,6 +22,7 @@ enum MenuOption: Int {
         case .statistics: return "Statistics"
         case .inventory: return "Inventory"
         case .settings: return "Settings"
+        case .goPro: return "Go Pro!"
         }
     }
     
@@ -33,6 +34,7 @@ enum MenuOption: Int {
          case .statistics: return UIImage(named: "statsicon") ?? UIImage()
          case .inventory: return UIImage(named: "chesticon") ?? UIImage()
          case .settings: return UIImage(named: "gearicon") ?? UIImage()
+         case .goPro: return UIImage(named: "goldIcon") ?? UIImage()
          }
      }
 }

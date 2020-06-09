@@ -18,10 +18,15 @@ class NameViewController: UIViewController {
     var finishButton = UILabel()
     let db = Firestore.firestore()
     let container: UIView = UIView()
-    var spinner = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.large)
+    var spinner = UIActivityIndicatorView()
     var tagDict = ["unset":"gray", "Study":"red", "Work":"green", "Read":"blue"]
     //MARK: - init
     override func viewDidLoad() {
+        if #available(iOS 13, *) {
+            spinner = UIActivityIndicatorView(style:  UIActivityIndicatorView.Style.large)
+        } else {
+            spinner = UIActivityIndicatorView(style:  UIActivityIndicatorView.Style.gray)
+        }
         super.viewDidLoad()
         view.backgroundColor = backgroundColor
         configureUI()
@@ -40,7 +45,7 @@ class NameViewController: UIViewController {
                     "name": nameInput.text!,
                     "inventoryArray": ["green sweater", "blue jeans", "default shoes"],
                     "exp": 1,
-                    "coins": 0,
+                    "coins": 100,
                     "hair": chosenGender == "male" ? "brown+defaultManHair":"blonde+womanHair1",
                     "eyes": "black",
                     "skin": "tan",
@@ -138,7 +143,7 @@ class NameViewController: UIViewController {
         UserToAdd.name = nameInput.text!
         UserToAdd.email = Auth.auth().currentUser?.email
         UserToAdd.tagDictionary = tagList
-        UserToAdd.coins = 0
+        UserToAdd.coins = 100
         UserToAdd.deepFocusMode = true
         UserToAdd.isLoggedIn = true
         loggedOut = false

@@ -3,9 +3,11 @@ import UIKit
 import RealmSwift
 import Firebase
 import StoreKit
-class SettingsCell:UITableViewCell {
+class SettingsCell:UITableViewCell,SKPaymentTransactionObserver, SKProductsRequestDelegate {
     static var settingsCell = "settingsCell"
     let db = Firestore.firestore()
+    var myProduct: SKProduct?
+    let proId = "co.byteteam.focusbyte.ProUpgrade"
     var titleLabel = UILabel()
     var results: Results<User>!
     let defaults: UserDefaults = UserDefaults.standard
@@ -31,11 +33,22 @@ class SettingsCell:UITableViewCell {
         qswitch.addTarget(self, action: #selector(quoteToggled(_:)), for: .valueChanged)
         return qswitch
     }()
+    
 
+    @available(iOS 13.0, *)
     lazy var syncView: UIImageView = {
        let iv = UIImageView()
         iv.translatesAutoresizingMaskIntoConstraints = false
         iv.image = UIImage(systemName: "arrow.2.circlepath")
+        iv.tintColor = .white
+        iv.width(35)
+        iv.height(35)
+        return iv
+    }()
+    lazy var emailView: UIImageView = {
+       let iv = UIImageView()
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        iv.image = UIImage(systemName: "envelope.fill")
         iv.tintColor = .white
         iv.width(35)
         iv.height(35)
@@ -53,7 +66,7 @@ class SettingsCell:UITableViewCell {
     lazy var lockView: UIImageView = {
           let iv = UIImageView()
            iv.translatesAutoresizingMaskIntoConstraints = false
-           iv.image = defaults.bool(forKey: "isPro") ? UIImage(named: "smiley.fill") : UIImage(systemName: "lock.fill")
+           iv.image = defaults.bool(forKey: "isPro") ? UIImage(systemName: "smiley.fill") : UIImage(systemName: "lock.fill")
            iv.tintColor = .white
            iv.width(35)
            iv.height(35)
@@ -84,13 +97,16 @@ class SettingsCell:UITableViewCell {
     
     //MARK: helper funcs
     func configureUI() {
+        fetchProducts()
         self.selectionStyle = .none
         self.backgroundColor = backgroundColor
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(titleLabel)
+        titleLabel.numberOfLines = 0
         titleLabel.font = UIFont(name: "Menlo", size: 17)
         titleLabel.centerY(to: self)
         titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15).isActive = true
+        titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -45).isActive = true
     }
     
     func setTitle(title: String, type: String) {
@@ -120,7 +136,11 @@ class SettingsCell:UITableViewCell {
             let proTapped = UITapGestureRecognizer(target: self, action: #selector(tappedPro))
             if defaults.bool(forKey: "isPro") != true {
                 self.addGestureRecognizer(proTapped)
+            } else {
+                titleLabel.text = "Your Pro!"
+                return
             }
+            
         } else if type == "restore" {
             contentView.addSubview(restoreView)
             restoreView.centerY(to: self)
@@ -128,15 +148,87 @@ class SettingsCell:UITableViewCell {
             contentView.trailingAnchor, constant: -15).isActive = true
             let restoreTapped = UITapGestureRecognizer(target: self, action: #selector(tappedRestore))
             self.addGestureRecognizer(restoreTapped)
+        } else if type == "email" {
+            titleLabel.font = UIFont(name: "Menlo", size: 13)
+            contentView.addSubview(emailView)
+            emailView.centerY(to: self)
+            emailView.trailingAnchor.constraint(equalTo:
+            contentView.trailingAnchor, constant: -15).isActive = true
         }
         titleLabel.text = title
         
     }
+    private final func fetchProducts() {
+       let request = SKProductsRequest(productIdentifiers: [proId])
+         request.delegate = self
+         request.start()
+     }
+    func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
+        if let product = response.products.first {
+            myProduct = product
+        }
+    }
+    func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
+        for transaction in transactions {
+            switch transaction.transactionState {
+            case .purchasing :
+                break
+            case .purchased, .restored:
+                //unlock their item
+                print("success")
+                save()
+                SKPaymentQueue.default().finishTransaction(transaction)
+                SKPaymentQueue.default().remove(self)
+                break
+            case .failed, .deferred:
+                SKPaymentQueue.default().finishTransaction(transaction)
+                SKPaymentQueue.default().remove(self)
+                print("failed")
+                break
+            default:
+                SKPaymentQueue.default().finishTransaction(transaction)
+                SKPaymentQueue.default().remove(self)
+                break
+            }
+        }
+    }
+    private final func save() {
+        UserDefaults.standard.set(true, forKey: "isPro")
+        //update data in firebase
+          if let _ = Auth.auth().currentUser?.email {
+              let email = Auth.auth().currentUser?.email
+              self.db.collection(K.userPreferenes).document(email!).updateData([
+                  "isPro": true,
+                  "coins": coins,
+                  "inventoryArray": inventoryArray,
+                  "exp": exp
+              ]) { (error) in
+                  if let e = error {
+                      print("There was a issue saving data to firestore \(e) ")
+                  } else {
+                      print("Succesfully made user pro")
+                    let controller = ContainerController(center: TimerController())
+                    controller.modalPresentationStyle = .fullScreen
+                    self.parentViewController!.presentInFullScreen(UINavigationController(rootViewController: controller), animated: false,  completion: nil)
+                    upgradedToPro = true
+                  }
+              }
+          }
+    }
     @objc func tappedRestore() {
         print("tappedRestore")
+        guard let myProduct = myProduct else {
+                return
+        }
+        if (SKPaymentQueue.canMakePayments()) {
+            SKPaymentQueue.default().add(self)
+            SKPaymentQueue.default().restoreCompletedTransactions()
+        }
     }
     @objc func tappedPro() {
-        print("go pro")
+        let controller = GoProViewController()
+                  controller.modalPresentationStyle = .fullScreen
+        self.parentViewController?.presentInFullScreen(UINavigationController(rootViewController: controller), animated: true, completion: nil)
     }
     @objc func quoteToggled(_ sender:UISwitch!) {
         if (sender.isOn == true) {
@@ -159,6 +251,7 @@ class SettingsCell:UITableViewCell {
     @objc func tappedStar() {
         SKStoreReviewController.requestReview()
     }
+
 
     //MARK: - realm
        func saveToRealm() {

@@ -17,8 +17,13 @@ class SettingsController: UIViewController {
     }
     //MARK: - Properties
     let db = Firestore.firestore()
-
-    var data = [Setting(title: "Deep Focus Mode", type: "dfm"),Setting(title: "Quotes on home screen", type: "quotes"), Setting(title: "Save to other devices", type: "sync"), Setting(title: "Rate Us!", type: "rate"), Setting(title: "Go Pro!", type: "gopro"), Setting(title: "Restore Purchase", type: "restore")]
+    var warning:UILabel = {
+       let label = UILabel()
+        label.font = UIFont(name: "Menlo", size: 20)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    var data = [Setting(title: "Deep Focus Mode", type: "dfm"),Setting(title: "Quotes on home screen", type: "quotes"), Setting(title: "Save to other devices", type: "sync"), Setting(title: "Rate Us!", type: "rate"), Setting(title: "Go Pro!", type: "gopro"), Setting(title: "Restore Purchase", type: "restore"), Setting(title: "Email: focusbyteteam@gmail.com\nContact us about any bugs,\nquestions or suggestions :)", type: "email")]
     var results: Results<User>!
     let logOutButton = UIButton()
     var delegate: ContainerControllerDelegate!
@@ -45,14 +50,14 @@ class SettingsController: UIViewController {
         view.backgroundColor = backgroundColor
         navigationController?.navigationBar.backgroundColor = backgroundColor
         navigationItem.title = "Settings"
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "xmark")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleDismiss))
+         navigationItem.leftBarButtonItem =  UIBarButtonItem(image: resizedMenuImage?.withTintColor(.white), style: .plain, target: self, action: #selector(handleMenuToggle))
         
         view.addSubview(tableView)
         tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
         tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
         tableView.backgroundColor = backgroundColor
         tableView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        tableView.height(view.frame.height * 0.60)
+        tableView.height(view.frame.height * 0.70)
         tableView.rowHeight = view.frame.height * 0.10
         logOutButton.setTitle("Log out", for: .normal)
         logOutButton.titleLabel?.font = UIFont(name: "Menlo-Bold", size: 20)
@@ -64,15 +69,12 @@ class SettingsController: UIViewController {
         logOutButton.translatesAutoresizingMaskIntoConstraints = false
         logOutButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         logOutButton.width(view.frame.width * 0.60)
-        logOutButton.topToBottom(of: tableView, offset: 15)
+        logOutButton.topToBottom(of: tableView, offset: 20)
         logOutButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
         logOutButton.addTarget(self, action: #selector(logOutPressed), for: .touchUpInside)
     }
 
     //MARK: - Handlers
-    @objc func handleDismiss() {
-        dismiss(animated: true, completion: nil)
-    }
       @objc func handleMenuToggle() {
           if !isPlaying {
               delegate?.handleMenuToggle(forMenuOption: nil)
@@ -112,6 +114,12 @@ class SettingsController: UIViewController {
                   }
              do { try Auth.auth().signOut() }
              catch { print("already logged out") };
+             expDate = ""
+            enteredForeground = false
+            let defaults = UserDefaults.standard
+            let dictionary = defaults.dictionaryRepresentation()
+            dictionary.keys.forEach { key in
+                defaults.removeObject(forKey: key)}
              let controller = UINavigationController(rootViewController: WelcomeViewController())
              controller.modalPresentationStyle = .fullScreen
              self.presentInFullScreen(controller, animated: false, completion: nil)
@@ -128,6 +136,9 @@ extension SettingsController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: SettingsCell.settingsCell, for: indexPath) as! SettingsCell
         cell.setTitle(title: self.data[indexPath.row].title, type: self.data[indexPath.row].type)
+        if self.data[indexPath.row].type == "email" {
+            tableView.rowHeight = view.frame.height * 0.15
+        }
         return cell
     }
     

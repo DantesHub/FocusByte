@@ -439,20 +439,22 @@ class AvatarSideBar: UIView {
     }
     
     private final func saveToFirebase() {
-        if let _ = Auth.auth().currentUser?.email {
-                   let email = Auth.auth().currentUser?.email
-                   self.db.collection(K.userPreferenes).document(email!).updateData([
+        if UserDefaults.standard.bool(forKey: "isPro") == true {
+            if let _ = Auth.auth().currentUser?.email {
+                let email = Auth.auth().currentUser?.email
+                self.db.collection(K.userPreferenes).document(email!).updateData([
                     "hair": "\(selectedHairColor)+\(selectedHair)",
                     "eyes": "\(selectedEyeColor)",
                     "skin": "\(skinColor)"
-                   ]) { (error) in
-                       if let e = error {
-                           print("There was a issue saving data to firestore \(e) ")
-                       } else {
-                           print("Succesfully saved new items")
-                       }
-                   }
-               }
+                ]) { (error) in
+                    if let e = error {
+                        print("There was a issue saving data to firestore \(e) ")
+                    } else {
+                        print("Succesfully saved new items")
+                    }
+                }
+            }
+        }
     }
 }
 

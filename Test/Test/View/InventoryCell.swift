@@ -150,6 +150,14 @@ class InventoryCell: UICollectionViewCell {
                         } else if frameBook.contains(where: {$0.key == self.imgName}) {
                             glassesImageView.image = UIImage(named: self.imgName)
                             self.type = "glasses"
+                        } else if suitBook.contains(where: {$0.key == self.imgName}) {
+                            hideAvatar(hide: true)
+                            avatarImageView.image = UIImage(named: self.imgName)
+                            self.type = "suit"
+                        } else if self.imgName == "nosuit" {
+                            hideAvatar(hide: false)
+                            avatarImageView.image = UIImage()
+                            self.type = "suit"
                         }
                         self.saveToRealm()
                         return

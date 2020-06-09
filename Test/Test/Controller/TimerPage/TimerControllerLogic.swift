@@ -18,8 +18,56 @@ import TinyConstraints
 extension TimerController {
     //MARK: - Helper Functions
     func createObservers() {
+        print("create observers")
         NotificationCenter.default.addObserver(self, selector: #selector(pauseWhenBackground(noti:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground(noti:)), name: UIApplication.willEnterForegroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground(noti:)), name:
+            UIApplication.willEnterForegroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(checkIfLocked(noti:)), name: UIApplication.protectedDataWillBecomeUnavailableNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(checkIfNotLocked(noti:)), name: UIApplication.protectedDataDidBecomeAvailableNotification, object: nil)
+    }
+    
+    @objc func checkIfLocked(noti: Notification) {
+        print("locked")
+        locked = true
+         killDate = Date().addingTimeInterval(10000000)
+        let center = UNUserNotificationCenter.current()
+        center.removeAllDeliveredNotifications()
+        center.removeAllPendingNotificationRequests()
+        //cancel all notifcations and create finish notif
+        if isPlaying {
+            let center = UNUserNotificationCenter.current()
+            let content = UNMutableNotificationContent()
+            content.title = "Focus Session Complete!"
+            content.body = "We found something you'll like!"
+            // Step 3: Create the notification trigger
+            let date = Date().addingTimeInterval(Double(counter - 1))
+            let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+            // Step 4: Create the request
+            let uuidString = UUID().uuidString
+            let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
+            // Step 5: Register the request
+            center.add(request) { (error) in }
+        }
+    }
+    @objc func checkIfNotLocked(noti: Notification) {
+        print("unlocked")
+//        if onHome == false && isPlaying == true && counter > 6 && deepFocusMode == true{
+//            let center = UNUserNotificationCenter.current()
+//            let content = UNMutableNotificationContent()
+//            content.title = "Come back!"
+//            content.body = "If you don't come back the treasure will be lost!"
+//            // Step 3: Create the notification trigger
+//            killDate = Date().addingTimeInterval(11)
+//            let date = Date().addingTimeInterval(7)
+//            let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+//            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+//            // Step 4: Create the request
+//            let uuidString = UUID().uuidString
+//            let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
+//            // Step 5: Register the request
+//            center.add(request) { (error) in }
+//        }
     }
     
     //MARK: - timer functions
@@ -31,8 +79,9 @@ extension TimerController {
         isPlaying = false
         self.timer.invalidate()
         self.twoButtonSetup()
-        self.imageView?.image = #imageLiteral(resourceName: "boyToddler")
+        self.imageView?.image = UIImage(named: "sinkingShip")
         self.timeL.text = "We Lost The Chest :("
+        isPlaying = false
         timer.invalidate()
         return
     }
@@ -87,6 +136,7 @@ extension TimerController {
     
     @objc func incrementCount() {
         counter -= 1
+        print("in function incrementCount \(counter)")
         if counter == 0 {
             focusTimerComplete()
             return
@@ -99,6 +149,9 @@ extension TimerController {
             seconds = "0" + seconds
         }
         timeL.text = "\(minutes):\(seconds)"
+        if counter < 0 {
+            self.timer.invalidate()
+        }
     }
     
     //MARK: - Read & Write to firebase
@@ -115,6 +168,7 @@ extension TimerController {
         var fbDate = ""
         var totalSessionsForDay = ""
         //read data from firebase
+        if UserDefaults.standard.bool(forKey: "isPro") == true {
         if let _ = Auth.auth().currentUser?.email {
             let email = Auth.auth().currentUser?.email
             let docRef = self.db.collection(K.FStore.collectionName).document(email!)
@@ -135,11 +189,11 @@ extension TimerController {
                         inventoryArray = itemArray as! [String]
                     }
    
-                    coins = self.updateCoinLabel(numCoins: numCoins)!
-                    self.coinsL.text = String(coins)
                     //Check if last entry is equal to today
                     //if last entry is, then we just need to add time to it
                     //if not we have to create a new date
+                    coins = self.updateCoinLabel(numCoins: coins)!
+                    self.coinsL.text = String(coins)
                     let dateFormatterGet = DateFormatter()
                     dateFormatterGet.dateFormat = "MMM d,yyyy E"
                     if lastDate != "" {
@@ -204,28 +258,34 @@ extension TimerController {
                             if let e = error {
                                 print("There was a issue saving data to firestore \(e) ")
                             } else {
-                                self.saveToRealm()
                                 print("Succesfully saved")
                             }
                         }
                     }
-                    self.timeL.removeFromSuperview()
-                    self.twoButtonSetup()
-                    self.imageView?.image = UIImage(named: "\(self.chest)-open")
-                    self.timeL.text = "Look at all \nthis Loot!"
-                    self.view.addSubview(self.timeL)
-                    isPlaying = false
-                    self.enteredForeground = false
+            
+             
                 } else {
                     print("Document does not exist")
                 }
             }
         }
+        }
+        coins = self.updateCoinLabel(numCoins: coins)!
+        self.coinsL.text = String(coins)
+        self.timeL.removeFromSuperview()
+        self.twoButtonSetup()
+        self.imageView?.image = UIImage(named: "\(self.chest)-open")
+        self.timeL.text = "Look at all \nthis Loot!"
+        self.view.addSubview(self.timeL)
+        isPlaying = false
+        enteredForeground = false
+        self.saveToRealm()
         return
     }
     
-    //MARK: - Alert Func
+//    //MARK: - Alert Func
     func createAlert(leveled: Bool = false, evolved:Int = 0) {
+        print(counter)
         let appearance = SCLAlertView.SCLAppearance(
             kWindowWidth: 300,
             kWindowHeight:evolved == 15 || evolved == 34 ? 400 : 300,
@@ -252,7 +312,7 @@ extension TimerController {
                   coinDesc.font = UIFont(name: "Menlo", size: 25)
                   coinDesc.text = "\(coinsReceived!) coins"
                   coinDesc.sizeToFit()
-           
+
                   subview.addSubview(expImageView)
                   if leveled {
                             subview.addSubview(plusOne)
@@ -300,8 +360,8 @@ extension TimerController {
                 return
             }
         }
-      
-      
+
+
         alertView.customSubview = subview
         alertView.addButton("OK", backgroundColor: brightPurple, textColor: .white, showTimeout: .none) {
             return
@@ -312,6 +372,7 @@ extension TimerController {
     
     //MARK: - pause & enter funcs
     @objc func pauseWhenBackground(noti: Notification) {
+        print("pause")
         enteredForeground = false
         if isPlaying {
             self.timer.invalidate()
@@ -355,9 +416,10 @@ extension TimerController {
     }
     
     func refresh (mins: Int, secs: Int) {
+        print("refresh difference \(mins) \(secs)")
         self.mins -= mins
         self.secs -= secs
-        counter = self.mins * 60 + self.secs
+        counter = (self.mins * 60) + self.secs
         self.mins = counter/60
         self.secs = counter%60
         var secsString = ""
@@ -371,10 +433,18 @@ extension TimerController {
                 focusTimerComplete()
                 return
             }
+            resumeLayer(layer: trackLayer)
             self.timeL.text = "\(String(self.mins)):\(secsString)"
             self.timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.incrementCount), userInfo: nil, repeats: true)
+        //break time
         } else if breakPlaying {
             if counter <= 0 {
+                breakL.text = "Break time is up!"
+                breakPlaying = false
+                self.breakTimer.invalidate()
+                return
+            }
+            if mins <= 0 && secs <= 0{
                 breakL.text = "Break time is up!"
                 breakPlaying = false
                 self.breakTimer.invalidate()

@@ -227,6 +227,7 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
             var eyes = ""
             var skin = ""
             var xp = 0
+            var isPro = false
             print("seez")
             docRef.getDocument { (snapshot, error) in
                 if let document = snapshot, document.exists {
@@ -251,6 +252,9 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
                     }
                     if let skinn = document["skin"] {
                         skin = skinn as! String
+                    }
+                    if let isP = document["isPro"] {
+                        isPro = isP as! Bool
                     }
                     if let timeData = document["TimeData"] {
                         let entries = timeData as! [String]
@@ -329,12 +333,12 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
                         }
                     }
                 }
+                UserDefaults.standard.set(isPro, forKey: "isPro")
                 UserDefaults.standard.set(true, forKey: "quotes")
                 let timerVC = ContainerController(center: TimerController())
                 timerVC.modalPresentationStyle = .fullScreen
                 self.navigationController?.pushViewController(timerVC, animated: true)
             }
-            
         } else {
             print("firebase error")
         }

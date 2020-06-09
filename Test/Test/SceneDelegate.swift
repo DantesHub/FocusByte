@@ -14,6 +14,7 @@ var dateResignActive : Date?
 var dateAppDidBack : Date?
 var sceneTimer = Timer()
 var killDate = Date()
+@available(iOS 13, *)
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -48,18 +49,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func sceneDidEnterBackground(_ scene: UIScene) {
         //allow brightnesss of screen to equal 0 if phone locks
-        do {
-            sleep(1)
-        }
         killDate = Date().addingTimeInterval(10000000)
-         if isPlaying && UIScreen.main.brightness != 0 && counter > 6 && deepFocusMode == true{
+         if isPlaying && counter > 6 && deepFocusMode == true{
             let center = UNUserNotificationCenter.current()
             let content = UNMutableNotificationContent()
             content.title = "Come back!"
             content.body = "If you don't come back the treasure will be lost!"
             // Step 3: Create the notification trigger
-            killDate = Date().addingTimeInterval(9)
-            let date = Date().addingTimeInterval(6)
+            killDate = Date().addingTimeInterval(12)
+            let date = Date().addingTimeInterval(7)
             let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
             let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
             // Step 4: Create the request
@@ -83,23 +81,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // Step 5: Register the request
             center.add(request) { (error) in }
         }
-        //if screen == 0, should always display
-        if (isPlaying) && (UIScreen.main.brightness == 0){
-            let center = UNUserNotificationCenter.current()
-            let content = UNMutableNotificationContent()
-            content.title = "Focus Session Complete!"
-            content.body = "We found something you'll like!"
-            // Step 3: Create the notification trigger
-            let date = Date().addingTimeInterval(Double(counter - 1))
-            let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
-            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
-            // Step 4: Create the request
-            let uuidString = UUID().uuidString
-            let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
-            // Step 5: Register the request
-            center.add(request) { (error) in }
-            
-        }
+ 
     }
     
 }
