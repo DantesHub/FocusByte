@@ -36,6 +36,10 @@ var randomNum = 0
 var upgradedToPro = false
 class TimerController: UIViewController {
     //MARK: - Properties
+    var lastDate = ""
+    var totalTimeForDay = ""
+    var fbDate = ""
+    var totalSessionsForDay = ""
     var results: Results<User>!
     let shapeLayer = CAShapeLayer()
     let trackLayer = CAShapeLayer()
@@ -84,7 +88,15 @@ class TimerController: UIViewController {
     var breakButtonLbl = UILabel()
     let timerButtonLbl = UILabel()
     var timer = Timer()
-    var deepFocusLabel = UILabel()
+    var deepFocusLabel: UIImageView = {
+        let iv = UIImageView()
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        iv.contentMode = .scaleAspectFit
+        iv.image = UIImage(named: "focusIcon")
+        iv.height(50)
+        iv.width(50)
+        return iv
+    }()
     var deepFocusView = UIView()
     var breakTimer = Timer()
     let db = Firestore.firestore()
@@ -135,6 +147,7 @@ class TimerController: UIViewController {
                       inventoryArray = result.inventoryArray.map{ $0 }
                       coinsL.text = String(coins)
                       deepFocusMode = result.deepFocusMode
+                    timeData = result.timeArray.map{$0}
                   }
               }
               let today = Date()
@@ -287,9 +300,14 @@ class TimerController: UIViewController {
     }
     
     @objc func tappedTag() {
-        tagTableView = TagTableView(frame: view.bounds)
-        view.addSubview(tagTableView)
-        
+        if UserDefaults.standard.bool(forKey: "isPro") == true {
+            tagTableView = TagTableView(frame: view.bounds)
+                view.addSubview(tagTableView)
+        }   else {
+            let controller = GoProViewController()
+            controller.modalPresentationStyle = .fullScreen
+            presentInFullScreen(UINavigationController(rootViewController: controller), animated: true, completion: nil)
+        }
     }
     //MARK: - Helper UI Funcs
     private final func createTimerButtonLbl() {
@@ -405,6 +423,8 @@ class TimerController: UIViewController {
             print("insiede here")
             isPlaying = true
             counter = ((Int(durationString) ?? 10) * 60)
+            self.mins = counter/60
+            self.secs = counter%60
             timerButtonLbl.text = "Give Up"
             createTimerButtonLbl()
             timerButton.backgroundColor = darkRed
@@ -542,8 +562,7 @@ class TimerController: UIViewController {
         deepFocusView.layer.cornerRadius = 25
         deepFocusView.applyDesign(color: superLightLavender)
         
-        self.deepFocusLabel.text = "🧠"
-        self.deepFocusLabel.font = UIFont(name: "Menlo", size: 35)
+      
         self.deepFocusLabel.sizeToFit()
         deepFocusView.addSubview(deepFocusLabel)
         deepFocusLabel.center(in: deepFocusView)
@@ -584,7 +603,7 @@ class TimerController: UIViewController {
         let title = UILabel()
         title.translatesAutoresizingMaskIntoConstraints = false
         title.numberOfLines = 0
-        title.text = "🧠 Deep Focus Mode"
+        title.text = "Deep Focus Mode"
         title.font = UIFont(name: "Menlo-Bold", size: 18)
         let description = UILabel()
         description.translatesAutoresizingMaskIntoConstraints = false
@@ -669,6 +688,7 @@ class TimerController: UIViewController {
             } else if level == 34 {
                 createAlert(evolved: 34)
             } else {
+                Analytics.logEvent(AnalyticsEventLevelUp, parameters: ["level_to":level])
                 createAlert(leveled: true)
             }
         } else {

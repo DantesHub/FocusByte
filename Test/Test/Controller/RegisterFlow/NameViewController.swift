@@ -43,7 +43,7 @@ class NameViewController: UIViewController {
           db.collection(K.userPreferenes).document(email!).setData([
                     "gender": chosenGender,
                     "name": nameInput.text!,
-                    "inventoryArray": ["green sweater", "blue jeans", "default shoes"],
+                    "inventoryArray": ["gray sweater", "blue jeans", "default shoes"],
                     "exp": 1,
                     "coins": 100,
                     "hair": chosenGender == "male" ? "brown+defaultManHair":"blonde+womanHair1",
@@ -87,11 +87,13 @@ class NameViewController: UIViewController {
         
         
         view.addSubview(nameInput)
+        nameInput.autocorrectionType = .no
+        nameInput.autocapitalizationType = .words
         nameInput.addDoneButtonOnKeyboard()
         nameInput.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 25).isActive = true
         nameInput.applyDesign(view, x: xPadding, y: -30)
         finishButton = UILabel(frame: CGRect(x: view.center.x - 100, y: view.center.y + 240, width: 200, height: 60))
-        nameInput.placeholder = "Steve"
+        nameInput.placeholder = "Alex"
 
         finishButton.text = "Next"
         finishButton.textAlignment = .center
@@ -101,13 +103,9 @@ class NameViewController: UIViewController {
         finishButton.font = UIFont(name: "Menlo", size: 25)
         finishButton.clipsToBounds = true
         finishButton.layer.cornerRadius = 25
-        let shadowView = UIView(frame: CGRect(x: 105 , y: finishButton.center.y-20 , width: 200, height: 60))
-        shadowView.backgroundColor = .clear
-        shadowView.layer.cornerRadius = 25
-        shadowView.dropShadow(superview: finishButton)
-        view.addSubview(shadowView)
-        view.insertSubview(finishButton, aboveSubview: shadowView)
+        view.addSubview(finishButton)
         finishButton.isUserInteractionEnabled = true
+        finishButton.applyDesign(color: brightPurple)
         let tap = UITapGestureRecognizer(target: self, action: #selector(finishTapped))
         finishButton.addGestureRecognizer(tap)
     }
@@ -125,7 +123,7 @@ class NameViewController: UIViewController {
     func saveToRealm() {
         UserDefaults.standard.set(true, forKey: "quotes")
         let itemArray = List<String>()
-        itemArray.append("green sweater")
+        itemArray.append("gray sweater")
         itemArray.append("blue jeans")
         itemArray.append("default shoes")
         let UserToAdd = User()

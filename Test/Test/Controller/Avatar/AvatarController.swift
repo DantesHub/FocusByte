@@ -16,6 +16,7 @@ var avatarBottomPadding:CGFloat = -30
 var colorCollectionPadding: CGFloat = -100
 var petSize: CGFloat = 100
 var frameWidth: CGFloat = 70
+var frameHeight: CGFloat = 30
 var hasSuit = false
 //135 x 112
 //135 x 87
@@ -96,7 +97,7 @@ var sweaterImageView: UIImageView = {
     iv.translatesAutoresizingMaskIntoConstraints = false
     iv.width(max:265)
     iv.height(max: 235)
-    iv.image = UIImage(named: "green sweater")
+    iv.image = UIImage(named: "gray sweater")
     iv.contentMode = .scaleAspectFit
     iv.clipsToBounds = false
     iv.backgroundColor = .clear
@@ -118,9 +119,8 @@ var pantsImageView: UIImageView = {
 var glassesImageView: UIImageView = {
     let iv = UIImageView()
     iv.translatesAutoresizingMaskIntoConstraints = false
-
     iv.width(frameWidth)
-    iv.height(30)
+    iv.height(frameHeight)
     iv.clipsToBounds = false
     iv.backgroundColor = .clear
     return iv
@@ -135,14 +135,44 @@ var avatarImageView: UIImageView = {
     return iv
 }()
 
+var experienceLabel: UILabel = {
+    let label = UILabel()
+    label.translatesAutoresizingMaskIntoConstraints = false
+    label.font = UIFont(name: "Menlo-Bold", size: 25)
+    label.textColor = .white
+    label.text = "Experience:"
+    return label
+}()
+ var levelLabel: UILabel = {
+    let label = UILabel()
+    label.translatesAutoresizingMaskIntoConstraints = false
+    label.font = UIFont(name: "Menlo-Bold", size: 33)
+    label.textColor = .white
+    
+    return label
+}()
+
+var petLabel: UILabel = {
+    let label = UILabel()
+    label.translatesAutoresizingMaskIntoConstraints = false
+    label.textColor = .black
+    return label
+}()
+var characterBackground: UIView!
+var avatarMultipler: CGFloat = 0.20
+var hairMultiplier:CGFloat = 1
+var skinMultiplier:CGFloat = 0.45
+var avatarHairPadding: CGFloat = -20
+var subtractPadding:CGFloat = 0
 class AvatarController: UIViewController {
-    var avatarMultipler: CGFloat = 0.20
+    var eyePadding: CGFloat = 25
+    var glassesTopPadding: CGFloat = 20
     var avatarArmMultiplier: CGFloat = 0.20
-    var avatarHairPadding: CGFloat = -20
     var petLabelSize:CGFloat = 25
     var avatarPantsPadding:CGFloat = 105
     var avatarTopPadding: CGFloat = 0
     var avatarSuitPadding: CGFloat = 50
+    var characterTrailing: CGFloat = -100
     var characterBackgroundBottom: CGFloat {
         get {
             var characterBackgroundBottom: CGFloat = 0
@@ -159,7 +189,7 @@ class AvatarController: UIViewController {
                     avatarSuitPadding = 30
                     saveButtonWidth = 55
                     saveFontSize = 15
-                    avatarArmMultiplier = 0.25
+                    avatarArmMultiplier = 0.27
                     avatarBottomPadding = 0
                     petSize = 75
                     characterBackgroundBottom = -80
@@ -208,8 +238,103 @@ class AvatarController: UIViewController {
                     characterBackgroundBottom = -110
                 //print("IPHONE XR, IPHONE 11")
                 default:
-                    print("ipad")
+                    avatarHairPadding = 10
+                    avatarTopPadding = 55
+                    petLabelSize = 15
+                    avatarPantsPadding = 90
+                    avatarArmWidth = 2
+                    saveButtonPadding = -75
+                    avatarSuitPadding = 30
+                    saveButtonWidth = 55
+                    saveFontSize = 15
+                    avatarArmMultiplier = 0.25
+                    avatarBottomPadding = 0
+                    skinMultiplier = 0.60
+                    petSize = 75
+                    characterBackgroundBottom = -80
+                    colorCollectionPadding = -70
                 }
+            }
+            if UIDevice().userInterfaceIdiom == .pad {
+                //ipad air
+                if gender == "male" {
+                    avatarHairPadding = 0
+                    avatarTopPadding = 95
+                    avatarArmMultiplier = 0.30
+                    backpackView.width(150)
+                    backpackView.height(150)
+                    frameWidth = 140
+                                frameHeight = 60
+                } else {
+                    avatarHairPadding = 90
+                    avatarTopPadding = 155
+                    avatarArmMultiplier = 1.40
+                    avatarArmWidth = 2.5
+                    avatarMultipler = 0.15
+                    backpackView.width(125)
+                    backpackView.height(125)
+                    hairMultiplier = 1.2
+                    frameWidth = 120
+                    frameHeight = 40
+                }
+                petLabelSize = 15
+                avatarPantsPadding = 155
+                saveButtonPadding = -75
+                avatarSuitPadding = 30
+                saveButtonWidth = 145
+                saveFontSize = 45
+                avatarBottomPadding = 50
+                petSize = 150
+                eyePadding = 50
+                characterTrailing = -185
+                glassesTopPadding = 40
+            
+                characterBackgroundBottom = -170
+                colorCollectionPadding = -70
+           
+                switch UIScreen.main.nativeBounds.height {
+                case 2388:
+                    //ipad pro 11
+                    if gender == "male" {
+                        hairMultiplier = 1
+                        avatarHairPadding = 0
+                        avatarTopPadding = 110
+                    } else {
+                        avatarHairPadding = 110
+                         avatarTopPadding = 185
+                    }
+                case 2048:
+                    //ipad pro 9.7
+                    if gender == "male" {
+                        avatarMultipler = 0.18
+                        avatarHairPadding = 10
+                        avatarArmMultiplier = 0.28
+                    } else {
+                        avatarHairPadding = 60
+                        avatarTopPadding = 125
+                        avatarPantsPadding = 140
+                        avatarArmWidth = 2.7
+                    }
+                 
+                case 2732:
+                    //ipad pro 12.9
+                    if gender == "male" {
+                        avatarMultipler = 0.18
+                        avatarHairPadding = 60
+                        avatarTopPadding = 175
+                        avatarPantsPadding = 210
+                        avatarArmMultiplier = 0.28
+                    } else {
+                        avatarHairPadding = 60
+                        avatarHairPadding = 140
+                        avatarTopPadding = 225
+                        avatarPantsPadding = 160
+                        avatarArmWidth = 2.7
+                    }
+                default:
+                    print("fd")
+                }
+         
             }
             return characterBackgroundBottom
         }
@@ -222,33 +347,11 @@ class AvatarController: UIViewController {
     var lvlData: Int = 1
 
 
-    lazy var petLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .black
-        return label
-    }()
     var delegate: ContainerControllerDelegate!
-    lazy var levelLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "Menlo-Bold", size: 33)
-        label.textColor = .white
-        
-        return label
-    }()
+
 
     //eye level
- 
-    
-    lazy var experienceLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "Menlo-Bold", size: 25)
-        label.textColor = .white
-        label.text = "Experience:"
-        return label
-    }()
+
     lazy var experienceBar: UIProgressView = {
         let progressView = UIProgressView(progressViewStyle: .bar)
         let levelNow = floor(sqrt(Double(exp)))
@@ -272,7 +375,6 @@ class AvatarController: UIViewController {
         return label
     }()
     lazy var sideBar = AvatarSideBar()
-    var characterBackground: UIView!
     
     //MARK: - init
     override func viewDidLoad() {
@@ -305,10 +407,9 @@ class AvatarController: UIViewController {
         levelLabel.attributedText = myMutableString
         levelLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 20).isActive = true
         levelLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
-        
         experienceLabel.topAnchor.constraint(equalTo: levelLabel.bottomAnchor, constant: 10).isActive = true
-        experienceLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
-        
+             experienceLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
+
         experienceBar.topAnchor.constraint(equalTo: levelLabel.bottomAnchor, constant: 23).isActive = true
         experienceBar.leadingAnchor.constraint(equalTo: experienceLabel.trailingAnchor, constant: 10).isActive = true
         experienceBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
@@ -332,7 +433,7 @@ class AvatarController: UIViewController {
         characterBackground.backgroundColor = superLightLavender
         characterBackground.topAnchor.constraint(equalTo: experienceLabel.bottomAnchor, constant: 40).isActive = true
         characterBackground.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
-        characterBackground.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -100).isActive = true
+        characterBackground.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: characterTrailing).isActive = true
         characterBackground.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant:characterBackgroundBottom).isActive = true
         characterBackground.addSubview(petLabel)
         characterBackground.addSubview(petImageView)
@@ -361,7 +462,7 @@ class AvatarController: UIViewController {
             //eyes
             faceImageView.addSubview(eyesImageView)
             eyesImageView.centerX(to: faceImageView)
-            eyesImageView.topAnchor.constraint(equalTo: faceImageView.topAnchor, constant: 25).isActive = true
+            eyesImageView.topAnchor.constraint(equalTo: faceImageView.topAnchor, constant: eyePadding).isActive = true
             eyesImageView.widthAnchor.constraint(equalTo: faceImageView.widthAnchor, multiplier: 0.55).isActive = true
             eyesImageView.heightAnchor.constraint(equalTo: faceImageView.heightAnchor, multiplier: 0.20).isActive = true
             
@@ -393,9 +494,9 @@ class AvatarController: UIViewController {
                 armsImageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: avatarArmMultiplier * 1.6).isActive = true
                 armsImageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: avatarArmMultiplier * 1.6 * 0.40).isActive = true
             } else {
-                armsImageView.centerYAnchor.constraint(equalTo: characterBackground.centerYAnchor, constant: 30).isActive = true
-                armsImageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: avatarMultipler * avatarArmWidth).isActive = true
-                armsImageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: avatarMultipler * avatarArmWidth * 0.40).isActive = true
+                armsImageView.centerYAnchor.constraint(equalTo: characterBackground.centerYAnchor, constant: 25).isActive = true
+                armsImageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: avatarMultipler * avatarArmWidth * 0.90).isActive = true
+                armsImageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: avatarMultipler * avatarArmWidth * 0.40 *  0.90).isActive = true
             }
             
             
@@ -411,8 +512,8 @@ class AvatarController: UIViewController {
                 characterBackground.insertSubview(sweaterImageView, aboveSubview: characterBackground)
                 sweaterImageView.centerX(to: characterBackground)
                 sweaterImageView.centerYAnchor.constraint(equalTo: characterBackground.centerYAnchor, constant: 25).isActive = true
-                sweaterImageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: avatarMultipler * 1.5).isActive = true
-                sweaterImageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: avatarMultipler * 1.5 * 0.95).isActive = true
+                sweaterImageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: avatarMultipler * 1.4).isActive = true
+                sweaterImageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: avatarMultipler * 1.4 * 0.95).isActive = true
             }
             
             
@@ -421,27 +522,28 @@ class AvatarController: UIViewController {
             characterBackground.insertSubview(hairImageView, aboveSubview: faceImageView)
             hairImageView.centerX(to: characterBackground)
             if gender == "male" {
-                hairImageView.topAnchor.constraint(equalTo: petLabel.bottomAnchor, constant: avatarHairPadding).isActive = true
-                hairImageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: avatarMultipler).isActive = true
+                hairImageView.topAnchor.constraint(equalTo: petLabel.bottomAnchor, constant: avatarHairPadding - subtractPadding).isActive = true
+                hairImageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: avatarMultipler * hairMultiplier).isActive = true
+                     hairImageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: avatarMultipler * hairMultiplier - 0.0225 ).isActive = true
             } else {
                 hairImageView.topAnchor.constraint(equalTo: petLabel.bottomAnchor, constant: avatarHairPadding + 30).isActive = true
-                hairImageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: avatarMultipler + 0.080).isActive = true
+                hairImageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: avatarMultipler * hairMultiplier + 0.080 ).isActive = true
+                hairImageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: avatarMultipler * hairMultiplier - 0.0225 ).isActive = true
+
             }
-              hairImageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: avatarMultipler - 0.0225).isActive = true
-    
+           
           
-            
             //shoes
             characterBackground.insertSubview(shoesImageView, aboveSubview: characterBackground)
             shoesImageView.centerX(to: characterBackground)
-            shoesImageView.topToBottom(of: pantsImageView, offset: -12)
+            shoesImageView.topToBottom(of: pantsImageView, offset: -8)
             shoesImageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: avatarMultipler).isActive = true
             shoesImageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: avatarMultipler * 0.25).isActive = true
             
             //glasses
              characterBackground.insertSubview(glassesImageView, aboveSubview: hairImageView)
              glassesImageView.centerX(to: faceImageView)
-             glassesImageView.topAnchor.constraint(equalTo: faceImageView.topAnchor, constant: 20).isActive = true
+             glassesImageView.topAnchor.constraint(equalTo: faceImageView.topAnchor, constant: glassesTopPadding).isActive = true
         }
     
         
@@ -461,7 +563,7 @@ class AvatarController: UIViewController {
         petLabel.leadingAnchor.constraint(equalTo: characterBackground.leadingAnchor, constant: 20).isActive = true
         
         petImageView.topAnchor.constraint(equalTo: characterBackground.topAnchor, constant: 10).isActive = true
-        petImageView.trailingAnchor.constraint(equalTo: characterBackground.trailingAnchor, constant: -20).isActive = true
+        petImageView.trailingAnchor.constraint(equalTo: characterBackground.trailingAnchor, constant: -10).isActive = true
         
         setUpSideBar()
     }
@@ -515,10 +617,9 @@ class AvatarController: UIViewController {
         if shirt != "none" {
             sweaterImageView.image = UIImage(named: shirt)
         }
-//        if pants != "none" {
-//            pantsImageView.image = UIImage(named: pants)
-//        }
-        pantsImageView.image = UIImage(named: "long dress")
+        if pants != "none" {
+            pantsImageView.image = UIImage(named: pants)
+        }
         if shoe != "none" {
             shoesImageView.image = UIImage(named: shoe)
         }
@@ -562,6 +663,17 @@ class AvatarController: UIViewController {
         if selectedHair != "none" {
             hairImageView.image = UIImage(named: "\(selectedHair)")
             if gender == "male"{
+                if selectedHair != "defaultManHair" && selectedHair != "manHair2" && UIDevice().userInterfaceIdiom == .pad   {
+                    switch UIScreen.main.nativeBounds.height {
+                    case 2388:
+                        hairMultiplier = 1.3
+                        subtractPadding = 15
+                    default:
+                        hairMultiplier = 1.4
+                        subtractPadding = 30
+                    }
+
+                }
                 hairImageView.image = hairImageView.image?.withRenderingMode(.alwaysTemplate)
                 hairImageView.tintColor = K.getAvatarColor(selectedHairColor)
             } else {
@@ -647,4 +759,6 @@ func hideAvatar(hide: Bool) {
     sweaterImageView.isHidden = hide
     hairImageView.isHidden = hide
     eyesImageView.isHidden = hide
+    experienceLabel.isHidden = false
+    levelLabel.isHidden = false
 }

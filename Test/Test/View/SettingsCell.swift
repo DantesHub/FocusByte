@@ -149,11 +149,16 @@ class SettingsCell:UITableViewCell,SKPaymentTransactionObserver, SKProductsReque
             let restoreTapped = UITapGestureRecognizer(target: self, action: #selector(tappedRestore))
             self.addGestureRecognizer(restoreTapped)
         } else if type == "email" {
-            titleLabel.font = UIFont(name: "Menlo", size: 13)
             contentView.addSubview(emailView)
             emailView.centerY(to: self)
+            titleLabel.font = UIFont(name: "Menlo", size: 13)
             emailView.trailingAnchor.constraint(equalTo:
             contentView.trailingAnchor, constant: -15).isActive = true
+        } else if type == "warning" {
+            if UserDefaults.standard.bool(forKey: "isPro") {
+                return
+            }
+            titleLabel.textAlignment = .center
         }
         titleLabel.text = title
         

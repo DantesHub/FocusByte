@@ -44,6 +44,7 @@ class InventoryController: UIViewController {
         var sectionName: String
         var rowData: [DisplayItem]
     }
+    
     var sections = [Section]()
     
     //MARK: - init

@@ -223,7 +223,8 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
         email.addDoneButtonOnKeyboard()
         email.applyDesign(view, x: xPadding, y: -170)
         email.placeholder = "Email"
-        
+        email.autocorrectionType = .no
+        email.autocapitalizationType = .none
         
         password.isSecureTextEntry = true
         view.addSubview(password)
@@ -231,6 +232,8 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
         password.addDoneButtonOnKeyboard()
         password.applyDesign(view, x: xPadding, y: -65)
         password.placeholder = "Password"
+        password.autocorrectionType = .no
+        password.autocapitalizationType = .none
         
         
         passwordConfirmation.isSecureTextEntry = true
@@ -239,6 +242,8 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
         passwordConfirmation.topAnchor.constraint(equalTo: password.bottomAnchor, constant: 32).isActive = true
         passwordConfirmation.applyDesign(view, x: xPadding, y: 40)
         passwordConfirmation.placeholder = "Password Confirmation"
+        passwordConfirmation.autocorrectionType = .no
+         passwordConfirmation.autocapitalizationType = .none
         
     }
     

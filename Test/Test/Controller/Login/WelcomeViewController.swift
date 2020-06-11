@@ -172,7 +172,7 @@ class WelcomeViewController: UIViewController {
         
         
         view.addSubview(registerLabel)
-        registerLabel.applyDesign(text: "Register")
+        registerLabel.applyDesign(text: "Sign Up")
         registerLabel.sizeToFit()
         registerLabel.center(in: registerView)
         
@@ -180,10 +180,6 @@ class WelcomeViewController: UIViewController {
         loginLabel.applyDesign(text: "Login")
         loginLabel.sizeToFit()
         loginLabel.center(in: loginView)
-        
-       
-
-      
     }
 
     

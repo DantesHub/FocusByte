@@ -220,8 +220,8 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
             var coins = -1
             var name = ""
             var tagDict:[String:String] = [:]
-            let timeD = List<String>()
-            let inventoryArray = List<String>()
+            var timeD = [String]()
+            var inventoryArray = [String]()
             let docRef = db.collection(K.FStore.collectionName).document(email)
             var hair = ""
             var eyes = ""
@@ -257,19 +257,14 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
                         isPro = isP as! Bool
                     }
                     if let timeData = document["TimeData"] {
-                        let entries = timeData as! [String]
-                        for entry in entries {
-                            timeD.append(entry)
-                        }
+                         timeD = timeData as! [String]
+                       
                     }
                     if let tags = document["tags"] {
                         tagDict = tags as! [String : String]
                     }
                     if let itemArray = document["inventoryArray"] {
-                        let items = itemArray as! [String]
-                        for item in items {
-                            inventoryArray.append(item)
-                        }
+                        inventoryArray = itemArray as! [String]
                     }
                 } else {
                     let genderVC = GenderViewController()
@@ -292,16 +287,22 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
                 let doesExist = self.checkIfUserExists()
                 
                 if !doesExist {
-                    realmUser.timeArray = timeD
                     realmUser.name = name
-                    realmUser.inventoryArray = inventoryArray
-                    realmUser.tagDictionary = tagList
                     realmUser.email = Auth.auth().currentUser?.email
                     realmUser.isLoggedIn = true
                     realmUser.deepFocusMode = true
                     realmUser.skin = skin
                     realmUser.exp = xp
                     realmUser.hair = hair
+                    for entry in timeD {
+                        realmUser.timeArray.append(entry)
+                    }
+                    for item in inventoryArray {
+                        realmUser.inventoryArray.append(item)
+                    }
+                    for tag in tagList {
+                        realmUser.tagDictionary.append(tag)
+                    }
                     realmUser.eyes = eyes
                     realmUser.gender = gender
                     realmUser.coins = coins
@@ -312,10 +313,16 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
                         if result.email == Auth.auth().currentUser?.email {
                             do {
                            try uiRealm.write {
-                                result.timeArray = timeD
+                            for entry in timeD {
+                                result.timeArray.append(entry)
+                            }
                                 result.name = name
-                                result.inventoryArray = inventoryArray
-                                result.tagDictionary = tagList
+                            for item in inventoryArray {
+                                result.inventoryArray.append(item)
+                            }
+                            for tag in tagList {
+                                result.tagDictionary.append(tag)
+                            }
                                 result.isLoggedIn = true
                                 result.deepFocusMode = true
                                 result.skin = skin

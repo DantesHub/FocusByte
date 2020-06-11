@@ -80,6 +80,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
             // Step 5: Register the request
             center.add(request) { (error) in }
+         } else if deepFocusMode == false && isPlaying && counter > 6 {
+            let center = UNUserNotificationCenter.current()
+            let content = UNMutableNotificationContent()
+            content.title = "Focus Session Complete!"
+            content.body = "We found something you'll like!"
+            // Step 3: Create the notification trigger
+            let date = Date().addingTimeInterval(Double(counter - 1))
+            let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+            // Step 4: Create the request
+            let uuidString = UUID().uuidString
+            let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
+            // Step 5: Register the request
+            center.add(request) { (error) in }
         }
  
     }

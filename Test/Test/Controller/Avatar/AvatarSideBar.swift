@@ -254,7 +254,7 @@ class AvatarSideBar: UIView {
         eyeColorCollectionView.backgroundColor = backgroundColor
         eyeColorCollectionView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10).isActive = true
         eyeColorCollectionView.width(self.frame.width * 0.20)
-        eyeColorCollectionView.height(self.frame.height * 0.45)
+        eyeColorCollectionView.height(self.frame.height * skinMultiplier)
         createSaveButton()
     }
     
@@ -266,7 +266,7 @@ class AvatarSideBar: UIView {
         skinColorCollectionView.backgroundColor = backgroundColor
         skinColorCollectionView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10).isActive = true
         skinColorCollectionView.width(self.frame.width * 0.20)
-        skinColorCollectionView.height(self.frame.height * 0.45
+        skinColorCollectionView.height(self.frame.height * skinMultiplier
         )
         createSaveButton()
     }
@@ -520,6 +520,39 @@ extension AvatarSideBar: UICollectionViewDelegateFlowLayout, UICollectionViewDat
                         selectedHairColor = ""
                         createColorCollectionView()
                     }
+                    //IPAD START
+                    if selectedHair == "defaultManHair" || selectedHair == "manHair2" && UIDevice().userInterfaceIdiom == .pad  {
+                        hairMultiplier = 1
+                        hairImageView.removeFromSuperview()
+                        if gender == "male" {
+                            characterBackground.insertSubview(hairImageView, aboveSubview: faceImageView)
+                            hairImageView.centerX(to: characterBackground)
+                            hairImageView.topAnchor.constraint(equalTo: petLabel.bottomAnchor, constant: avatarHairPadding).isActive = true
+                            hairImageView.widthAnchor.constraint(equalTo: self.superview!.widthAnchor, multiplier: avatarMultipler * hairMultiplier).isActive = true
+                            hairImageView.heightAnchor.constraint(equalTo: self.superview!.heightAnchor, multiplier: avatarMultipler * hairMultiplier - 0.0225 ).isActive = true
+                        }
+                    } else if UIDevice().userInterfaceIdiom == .pad {
+                        var subtractPadding:CGFloat = 0
+                        switch UIScreen.main.nativeBounds.height {
+                        case 2388:
+                            hairMultiplier = 1.3
+                            subtractPadding = 15
+                            
+                        default:
+                            hairMultiplier = 1.4
+                            subtractPadding = 30
+                            
+                        }
+                        hairImageView.removeFromSuperview()
+                        if gender == "male" {
+                            characterBackground.insertSubview(hairImageView, aboveSubview: faceImageView)
+                            hairImageView.centerX(to: characterBackground)
+                            hairImageView.topAnchor.constraint(equalTo: petLabel.bottomAnchor, constant: avatarHairPadding - subtractPadding).isActive = true
+                            hairImageView.widthAnchor.constraint(equalTo: self.superview!.widthAnchor, multiplier: avatarMultipler * hairMultiplier).isActive = true
+                            hairImageView.heightAnchor.constraint(equalTo: self.superview!.heightAnchor, multiplier: avatarMultipler * hairMultiplier - 0.0225 ).isActive = true
+                        }
+                    }
+                    //IPAD END
                     hairImageView.image = UIImage(named: selectedHair)
                     if selectedHairColor == "" {
                         hairImageView.image = hairImageView.image?.withRenderingMode(.alwaysTemplate)

@@ -136,7 +136,6 @@ extension TimerController {
     
     @objc func incrementCount() {
         counter -= 1
-        print("in function incrementCount \(counter)")
         if counter == 0 {
             focusTimerComplete()
             return
@@ -156,6 +155,7 @@ extension TimerController {
     
     //MARK: - Read & Write to firebase
     func focusTimerComplete() {
+        isPlaying = false
         AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
         self.timer.invalidate()
         if enteredForeground {
@@ -163,10 +163,7 @@ extension TimerController {
             self.timeL.font = UIFont(name: "Menlo-Bold", size: 20)
         }
         var numCoins = 0
-        var lastDate = ""
-        var totalTimeForDay = ""
-        var fbDate = ""
-        var totalSessionsForDay = ""
+
         //read data from firebase
         if UserDefaults.standard.bool(forKey: "isPro") == true {
         if let _ = Auth.auth().currentUser?.email {
@@ -183,7 +180,9 @@ extension TimerController {
                     }
                     if let time = document["TimeData"] {
                         timeData = time as! [String]
-                        lastDate = (timeData[timeData.count - 1])
+                        if timeData.count != 0 {
+                            self.lastDate = (timeData[timeData.count - 1])
+                        }
                     }
                     if let itemArray = document["inventoryArray"] {
                         inventoryArray = itemArray as! [String]
@@ -192,61 +191,10 @@ extension TimerController {
                     //Check if last entry is equal to today
                     //if last entry is, then we just need to add time to it
                     //if not we have to create a new date
-                    coins = self.updateCoinLabel(numCoins: coins)!
+                    
+                    coins = self.updateCoinLabel(numCoins: numCoins)!
                     self.coinsL.text = String(coins)
-                    let dateFormatterGet = DateFormatter()
-                    dateFormatterGet.dateFormat = "MMM d,yyyy E"
-                    if lastDate != "" {
-                        let equalIndex = lastDate.firstIndex(of: "=")
-                        let equalIndexOffset = lastDate.index(equalIndex!, offsetBy: 1)
-                        let plusIndex = lastDate.firstIndex(of: "+")
-                        let dashIndex = lastDate.firstIndex(of: "-")
-                        let dashIndexOffset = lastDate.index(dashIndex!, offsetBy: 1)
-                        var idx = 0
-                        var finalProduct = ""
-                        fbDate = String(lastDate[..<equalIndex!])
-                        
-                        //date already exists
-                        if dateFormatterGet.string(from: Date()) == fbDate {
-                            totalTimeForDay = String(lastDate[equalIndexOffset..<dashIndex!])
-                            let totalTimeInt = Int(totalTimeForDay)! + (self.howMuchTime/60)
-                            totalSessionsForDay = String(Int(lastDate[dashIndexOffset..<plusIndex!])! + 1)
-                            //Removing tag, adding time and putting it back into place
-                            var tags = String(lastDate[plusIndex!...])
-                            if let range: Range<String.Index> = tags.range(of: tagSelected) {
-                                idx = tags.distance(from: tags.startIndex, to: range.upperBound) + 1
-                                let indx = tags.index(tags.startIndex, offsetBy: idx)
-                                let nonChoppedTags = String(tags[..<indx])
-                                var choppedTags = String(tags[indx...])
-                                let endIndex = String.Index(encodedOffset: choppedTags.count)
-                                let pIndex = choppedTags.firstIndex(of: "+") ?? endIndex
-                                let timeForTag  = String(choppedTags[..<pIndex])
-                                var timeForTagInt = Int(timeForTag)!
-                                let timeForTagLenIndex = String.Index(encodedOffset: timeForTag.count)
-                                choppedTags.removeSubrange((choppedTags.startIndex..<timeForTagLenIndex))
-                                timeForTagInt += self.howMuchTime/60
-                                choppedTags.insert(contentsOf: "\(timeForTagInt)", at: choppedTags.startIndex)
-                                finalProduct = nonChoppedTags + choppedTags
-                            } else {
-                                //first time using tag
-                                tags.append(contentsOf: "+\(tagSelected)/\(self.howMuchTime/60)")
-                                finalProduct = tags
-                            }
-                            
-                            totalTimeForDay = String(totalTimeInt)
-                            timeData[timeData.count - 1] = fbDate + "=" + totalTimeForDay + "-" + totalSessionsForDay + finalProduct
-                        } else {
-                            //first session for that day
-                            fbDate = dateFormatterGet.string(from: Date())
-                            totalTimeForDay = String(self.howMuchTime/60)
-                            timeData.append(fbDate + "=" + totalTimeForDay + "-1" + "+\(tagSelected)/\(self.howMuchTime/60)")
-                        }
-                    } else {
-                        //very first session of account
-                        fbDate = dateFormatterGet.string(from: Date())
-                        totalTimeForDay = String(self.howMuchTime/60)
-                        timeData.append(fbDate + "=" + totalTimeForDay + "-1" + "+\(tagSelected)/\(self.howMuchTime/60)")
-                    }
+                    self.addDateToDb()
                     //update data in firebase
                     if let _ = Auth.auth().currentUser?.email {
                         let email = Auth.auth().currentUser?.email
@@ -259,33 +207,102 @@ extension TimerController {
                                 print("There was a issue saving data to firestore \(e) ")
                             } else {
                                 print("Succesfully saved")
+                                self.timeL.removeFromSuperview()
+                                self.twoButtonSetup()
+                                self.imageView?.image = UIImage(named: "\(self.chest)-open")
+                                self.timeL.text = "Look at all \nthis Loot!"
+                                self.view.addSubview(self.timeL)
+                                enteredForeground = false
+                                self.saveToRealm()
                             }
                         }
                     }
-            
-             
                 } else {
                     print("Document does not exist")
+        
                 }
             }
         }
         }
-        coins = self.updateCoinLabel(numCoins: coins)!
-        self.coinsL.text = String(coins)
-        self.timeL.removeFromSuperview()
-        self.twoButtonSetup()
-        self.imageView?.image = UIImage(named: "\(self.chest)-open")
-        self.timeL.text = "Look at all \nthis Loot!"
-        self.view.addSubview(self.timeL)
-        isPlaying = false
-        enteredForeground = false
-        self.saveToRealm()
+        if UserDefaults.standard.bool(forKey: "isPro") == false {
+            coins = self.updateCoinLabel(numCoins: coins)!
+            self.coinsL.text = String(coins)
+            self.timeL.removeFromSuperview()
+            self.twoButtonSetup()
+            self.imageView?.image = UIImage(named: "\(self.chest)-open")
+            self.timeL.text = "Look at all \nthis Loot!"
+            self.view.addSubview(self.timeL)
+            enteredForeground = false
+            if timeData.count != 0 {
+                lastDate = (timeData[timeData.count - 1])
+            } else {
+                lastDate = ""
+            }
+            addDateToDb()
+            self.saveToRealm()
+        }
+      
         return
+    }
+    
+    private final func addDateToDb() {
+        let dateFormatterGet = DateFormatter()
+        dateFormatterGet.dateFormat = "MMM d,yyyy E"
+        if lastDate != "" {
+            let equalIndex = lastDate.firstIndex(of: "=")
+            let equalIndexOffset = lastDate.index(equalIndex!, offsetBy: 1)
+            let plusIndex = lastDate.firstIndex(of: "+")
+            let dashIndex = lastDate.firstIndex(of: "-")
+            let dashIndexOffset = lastDate.index(dashIndex!, offsetBy: 1)
+            var idx = 0
+            var finalProduct = ""
+            fbDate = String(lastDate[..<equalIndex!])
+            
+            //date already exists
+            if dateFormatterGet.string(from: Date()) == fbDate {
+                totalTimeForDay = String(lastDate[equalIndexOffset..<dashIndex!])
+                let totalTimeInt = Int(totalTimeForDay)! + (self.howMuchTime/60)
+                totalSessionsForDay = String(Int(lastDate[dashIndexOffset..<plusIndex!])! + 1)
+                //Removing tag, adding time and putting it back into place
+                var tags = String(lastDate[plusIndex!...])
+                if let range: Range<String.Index> = tags.range(of: tagSelected) {
+                    idx = tags.distance(from: tags.startIndex, to: range.upperBound) + 1
+                    let indx = tags.index(tags.startIndex, offsetBy: idx)
+                    let nonChoppedTags = String(tags[..<indx])
+                    var choppedTags = String(tags[indx...])
+                    let endIndex = String.Index(encodedOffset: choppedTags.count)
+                    let pIndex = choppedTags.firstIndex(of: "+") ?? endIndex
+                    let timeForTag  = String(choppedTags[..<pIndex])
+                    var timeForTagInt = Int(timeForTag)!
+                    let timeForTagLenIndex = String.Index(encodedOffset: timeForTag.count)
+                    choppedTags.removeSubrange((choppedTags.startIndex..<timeForTagLenIndex))
+                    timeForTagInt += self.howMuchTime/60
+                    choppedTags.insert(contentsOf: "\(timeForTagInt)", at: choppedTags.startIndex)
+                    finalProduct = nonChoppedTags + choppedTags
+                } else {
+                    //first time using tag
+                    tags.append(contentsOf: "+\(tagSelected)/\(self.howMuchTime/60)")
+                    finalProduct = tags
+                }
+                
+                totalTimeForDay = String(totalTimeInt)
+                timeData[timeData.count - 1] = fbDate + "=" + totalTimeForDay + "-" + totalSessionsForDay + finalProduct
+            } else {
+                //first session for that day
+                fbDate = dateFormatterGet.string(from: Date())
+                totalTimeForDay = String(self.howMuchTime/60)
+                timeData.append(fbDate + "=" + totalTimeForDay + "-1" + "+\(tagSelected)/\(self.howMuchTime/60)")
+            }
+        } else {
+            //very first session of account
+            fbDate = dateFormatterGet.string(from: Date())
+            totalTimeForDay = String(self.howMuchTime/60)
+            timeData.append(fbDate + "=" + totalTimeForDay + "-1" + "+\(tagSelected)/\(self.howMuchTime/60)")
+        }
     }
     
 //    //MARK: - Alert Func
     func createAlert(leveled: Bool = false, evolved:Int = 0) {
-        print(counter)
         let appearance = SCLAlertView.SCLAppearance(
             kWindowWidth: 300,
             kWindowHeight:evolved == 15 || evolved == 34 ? 400 : 300,
@@ -348,7 +365,7 @@ extension TimerController {
             }
             subview.addSubview(evolvedImageView)
             evolvedImageView.centerY(to: subview)
-            evolvedImageView.leadingAnchor.constraint(equalTo: subview.leadingAnchor, constant: 80).isActive = true
+            evolvedImageView.centerX(to: subview)
             alertView.addButton("Share", backgroundColor: darkPurple, textColor: .white, showTimeout: .none) {
                 let imgToShare = evolvedImageView.image
                 let myURL = URL(string: "https:/focusbyte.io")
@@ -389,6 +406,7 @@ extension TimerController {
     
     
     @objc func willEnterForeground(noti: Notification) {
+        print("entered foreground")
         enteredForeground = true
         let center = UNUserNotificationCenter.current()
         center.removeAllDeliveredNotifications()
@@ -433,6 +451,7 @@ extension TimerController {
                 focusTimerComplete()
                 return
             }
+            print("over here")
             resumeLayer(layer: trackLayer)
             self.timeL.text = "\(String(self.mins)):\(secsString)"
             self.timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.incrementCount), userInfo: nil, repeats: true)
@@ -469,7 +488,7 @@ extension TimerController {
             if result.isLoggedIn == true {
                 do {
                     try uiRealm.write {
-                        result.setValue(Int(coinsL.text!)!, forKey: "coins")
+                        result.setValue(coins, forKey: "coins")
                         result.setValue(exp, forKey: "exp")
                         result.setValue(deepFocusMode, forKey: "deepFocusMode")
                         result.setValue(timeData, forKey: "timeArray")

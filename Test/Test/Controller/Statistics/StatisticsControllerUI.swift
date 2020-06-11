@@ -138,6 +138,7 @@ class StatisticsController: UIViewController, ChartViewDelegate{
                 tagDictionary = result.tagDictionary.map{ $0 }
               }
           }
+        print(timeData)
         colors = Array(repeating: NSUIColor(), count: tagDictionary.count)
         createWeekBarChart()
         barChartView.animate(xAxisDuration: 1.5, easingOption: .easeInOutBack)
@@ -425,7 +426,7 @@ class StatisticsController: UIViewController, ChartViewDelegate{
         pieChartView.height(300)
         
         descriptionLabel.numberOfLines = 0
-        descriptionLabel.text = "💡 The percentage of time you spent\non different tags during the week,\nmonth or year"
+        descriptionLabel.text = "The percentage of time you spent\non different tags during the week,\nmonth or year"
         descriptionLabel.textColor = .white
         descriptionLabel.font = UIFont(name: "Menlo", size: 15)
         containerView.addSubview(descriptionLabel)

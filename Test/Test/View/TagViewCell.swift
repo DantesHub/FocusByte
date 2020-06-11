@@ -96,7 +96,6 @@ class TagViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionView
         text.overrideUserInterfaceStyle = .light
         text.becomeFirstResponder()
         alertView.addButton("Done\n", backgroundColor: brightPurple, textColor: .white, showTimeout: showTimeout) {
-            if UserDefaults.standard.bool(forKey: "isPro") == true {
                 if text.text!.count == 0 {
                     return
                 } else {
@@ -111,17 +110,7 @@ class TagViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionView
                         self.delegate?.updateTableView()
                     }
                 }
-            } else {
-                let controller = GoProViewController()
-                controller.modalPresentationStyle = .fullScreen
-                self.parentViewController!.presentInFullScreen(UINavigationController(rootViewController: controller), animated: true, completion: nil)
-                self.superview?.superview?.backgroundColor = origBackgroundColor
-                self.superview?.removeFromSuperview()
-                self.removeFromSuperview()
-                
-            }
-
-         
+    
         }
         alertView.addButton("Cancel", backgroundColor: lightLavender, textColor: .white, showTimeout: showTimeout) {
             return

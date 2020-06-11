@@ -4,8 +4,8 @@ import Firebase
 var chosenGender: String = ""
 class GenderViewController: UIViewController {
     //MARK: - Properties
-    let boyImage = UIImage(named: "babyBoy")
-    let girlImage = UIImage(named: "babyGirl")
+    let boyImage = UIImage(named: "boyToddlerIcon")
+    let girlImage = UIImage(named: "girlToddlerIcon")
     var boyImageView = UIImageView()
     var girlImageView = UIImageView()
     let selectLabel = UILabel()
@@ -15,6 +15,7 @@ class GenderViewController: UIViewController {
     //MARK: - init
     override func viewDidLoad() {
         super.viewDidLoad()
+        Analytics.logEvent(AnalyticsEventSignUp, parameters: nil)
         view.backgroundColor = backgroundColor
         configureUI()
     }
@@ -44,6 +45,7 @@ class GenderViewController: UIViewController {
         boyImageView.image = boyImage
         boyImageView.layer.cornerRadius = 25
         boyImageView.sizeToFit()
+        boyImageView.contentMode = .scaleAspectFit
         boyImageView.frame.size.width = 135
         boyImageView.frame.size.height = 135
         boyImageView.backgroundColor = superLightLavender
@@ -60,17 +62,19 @@ class GenderViewController: UIViewController {
         girlImageView.center.x = view.center.x + 10
         girlImageView.center.y = view.center.y - 100
         girlImageView.image = girlImage
+
         girlImageView.layer.cornerRadius = 25
         girlImageView.sizeToFit()
+        girlImageView.contentMode = .scaleAspectFit
+        girlImageView.frame.size.width = 135
+        girlImageView.frame.size.height = 135
+        girlImageView.backgroundColor = superLightLavender
         girlImageView.layer.masksToBounds = false
         girlImageView.layer.shadowColor = UIColor.black.cgColor
         girlImageView.layer.shadowOffset = CGSize(width: 5, height: 5)
         girlImageView.layer.shadowOpacity = 0.4
         girlImageView.layer.shadowRadius = 10
-        girlImageView.frame.size.width = 135
-        girlImageView.frame.size.height = 135
         girlImageView.isUserInteractionEnabled = true
-        girlImageView.backgroundColor = superLightLavender
         let tappedGirl = UITapGestureRecognizer(target: self, action: #selector(girlTapped))
         girlImageView.addGestureRecognizer(tappedGirl)
         view.addSubview(girlImageView)

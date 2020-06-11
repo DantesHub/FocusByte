@@ -220,6 +220,7 @@ extension UpgradeChestController: UICollectionViewDelegateFlowLayout, UICollecti
     }
     func fetchProducts() {
         let request = SKProductsRequest(productIdentifiers: [diamondId, epicId, goldId])
+        print(request)
         request.delegate = self
         request.start()
     }
@@ -254,10 +255,13 @@ extension UpgradeChestController: UICollectionViewDelegateFlowLayout, UICollecti
         switch name {
         case "Gold Chest":
             days = 7
+            Analytics.logEvent("Gold Chest", parameters: ["level":level])
         case "Epic Chest":
             days = 7
+            Analytics.logEvent("Epic Chest", parameters: ["level":level])
         case "Diamond Chest":
             days = 14
+            Analytics.logEvent("Diamond Chest", parameters: ["level":level])
         default:
             print("im still")
         }

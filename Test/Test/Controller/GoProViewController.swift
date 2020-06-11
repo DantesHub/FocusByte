@@ -203,6 +203,7 @@ class GoProViewController: UIViewController, SKPaymentTransactionObserver, SKPro
                 save()
                 SKPaymentQueue.default().finishTransaction(transaction)
                 SKPaymentQueue.default().remove(self)
+                Analytics.logEvent(AnalyticsEventPurchase, parameters: nil)
                 print("success")
                 break
             case .failed, .deferred:
@@ -226,7 +227,8 @@ class GoProViewController: UIViewController, SKPaymentTransactionObserver, SKPro
                 "isPro": true,
                 "coins": coins,
                 "inventoryArray": inventoryArray,
-                "exp": exp
+                "exp": exp,
+                "TimeData": timeData
               ]) { (error) in
                   if let e = error {
                       print("There was a issue saving data to firestore \(e) ")
@@ -252,11 +254,14 @@ class GoProViewController: UIViewController, SKPaymentTransactionObserver, SKPro
         request.start()
     }
     @objc func tappedPro() {
+        print("here")
+        print(myProduct)
         guard let myProduct = myProduct else {
             return
         }
         if SKPaymentQueue.canMakePayments() {
             //Can make payments
+            print("over here")
             let payment = SKPayment(product: myProduct)
             SKPaymentQueue.default().add(self)
             SKPaymentQueue.default().add(payment)

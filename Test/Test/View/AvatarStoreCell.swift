@@ -28,6 +28,9 @@ class AvatarStoreCell: UICollectionViewCell {
                     leadingPrice = 95
                     coinPadding = -13
                 //print("IPHONE XR, IPHONE 11")
+                case 1920, 2208:
+                    //iphone 8 plus
+                     coinPadding = -15
                 default:
                     coinPadding = -5
                 }
@@ -42,13 +45,13 @@ class AvatarStoreCell: UICollectionViewCell {
     var price = 0
     var results: Results<User>!
     let db = Firestore.firestore()
+    var bigIpad = false
     lazy var itemImageView: UIImageView = {
         let iv = UIImageView()
         iv.translatesAutoresizingMaskIntoConstraints = false
         iv.isUserInteractionEnabled = true
         iv.contentMode = .scaleAspectFit
-        let tap = UITapGestureRecognizer(target: self, action: #selector(tappedItem))
-        iv.addGestureRecognizer(tap)
+
         return iv
     }()
     lazy var coinImageView: UIImageView = {
@@ -64,7 +67,17 @@ class AvatarStoreCell: UICollectionViewCell {
     //MARK: - init
     override init(frame:CGRect) {
         super.init(frame: frame)
-        configureUI()
+        if UIDevice().userInterfaceIdiom != .pad {
+            configureUI()
+        } else {
+            switch UIScreen.main.nativeBounds.height {
+            case 2732:
+                bigIpad = true
+            default:
+                print("Im sorry")
+            }
+            configurePadUI()
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -72,6 +85,36 @@ class AvatarStoreCell: UICollectionViewCell {
     }
     
     //MARK: - Handlers
+    func configurePadUI() {
+        self.backgroundColor = superLightLavender
+        self.layer.cornerRadius = 25
+        self.layer.masksToBounds = true
+        self.dropShadow(superview: self)
+        self.addSubview(titleLabel)
+        
+        self.addSubview(priceLabel)
+        priceLabel.font = UIFont(name: "Menlo", size:bigIpad ? 45 : 30)
+        priceLabel.width()
+        priceLabel.translatesAutoresizingMaskIntoConstraints = false
+        priceLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: bigIpad ? 210:160).isActive = true
+        priceLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 0).isActive = true
+        
+        self.addSubview(coinImageView)
+        coinImageView.height(40)
+        coinImageView.width(30)
+        coinImageView.leftToRight(of: priceLabel,offset: 5)
+        coinImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant:  -60).isActive = true
+        
+        self.addSubview(itemImageView)
+        itemImageView.height(bigIpad ? 300 : 200)
+        itemImageView.width(bigIpad ? 300 : 200)
+        itemImageView.centerX(to: contentView)
+        itemImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20).isActive = true
+        itemImageView.bottomAnchor.constraint(equalTo: priceLabel.topAnchor, constant: -10).isActive = true
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(tappedItem))
+        self.addGestureRecognizer(tap)
+    }
     func configureUI() {
         self.backgroundColor = superLightLavender
         self.layer.cornerRadius = 25
@@ -98,6 +141,10 @@ class AvatarStoreCell: UICollectionViewCell {
         itemImageView.centerX(to: contentView)
         itemImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20).isActive = true
         itemImageView.bottomAnchor.constraint(equalTo: priceLabel.topAnchor, constant: -10).isActive = true
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(tappedItem))
+        self.addGestureRecognizer(tap)
+        
     }
     
     @objc func tappedItem() {

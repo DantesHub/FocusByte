@@ -23,7 +23,7 @@ class SettingsController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    var data = [Setting(title: "Deep Focus Mode", type: "dfm"),Setting(title: "Quotes on home screen", type: "quotes"), Setting(title: "Save to other devices", type: "sync"), Setting(title: "Rate Us!", type: "rate"), Setting(title: "Go Pro!", type: "gopro"), Setting(title: "Restore Purchase", type: "restore"), Setting(title: "Email: focusbyteteam@gmail.com\nContact us about any bugs,\nquestions or suggestions :)", type: "email")]
+    var data = [Setting(title: "Deep Focus Mode", type: "dfm"),Setting(title: "Quotes on home screen", type: "quotes"), Setting(title: "Save to other devices", type: "sync"), Setting(title: "Rate Us!", type: "rate"), Setting(title: "Go Pro!", type: "gopro"), Setting(title: "Restore Purchase", type: "restore"), Setting(title: "Email: focusbyteteam@gmail.com", type: "email"),Setting(title: "⚠️❗️Non Pro users will lose all data if logged out", type: "warning")]
     var results: Results<User>!
     let logOutButton = UIButton()
     var delegate: ContainerControllerDelegate!
@@ -57,8 +57,8 @@ class SettingsController: UIViewController {
         tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
         tableView.backgroundColor = backgroundColor
         tableView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        tableView.height(view.frame.height * 0.70)
-        tableView.rowHeight = view.frame.height * 0.10
+        tableView.height(view.frame.height * 0.72)
+        tableView.rowHeight = view.frame.height * 0.09
         logOutButton.setTitle("Log out", for: .normal)
         logOutButton.titleLabel?.font = UIFont(name: "Menlo-Bold", size: 20)
         logOutButton.titleLabel?.textAlignment = .center
@@ -69,7 +69,7 @@ class SettingsController: UIViewController {
         logOutButton.translatesAutoresizingMaskIntoConstraints = false
         logOutButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         logOutButton.width(view.frame.width * 0.60)
-        logOutButton.topToBottom(of: tableView, offset: 20)
+        logOutButton.topToBottom(of: tableView, offset: 10)
         logOutButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
         logOutButton.addTarget(self, action: #selector(logOutPressed), for: .touchUpInside)
     }
@@ -87,9 +87,9 @@ class SettingsController: UIViewController {
                       if result.isLoggedIn == true {
                           do {
                              try uiRealm.write {
-                                 result.isLoggedIn = false
                                  result.name = nil
                                  result.coins = 0
+                                  result.gender = nil
                                  result.exp = 0
                                  result.deepFocusMode = true
                                  result.hair = nil
@@ -101,9 +101,10 @@ class SettingsController: UIViewController {
                                  result.shoes = nil
                                  result.backpack = nil
                                  result.glasses = nil
-                                 result.inventoryArray = List<String>()
-                                 result.timeArray = List<String>()
-                                 result.tagDictionary = List<Tag>()
+                                result.inventoryArray.removeAll()
+                                 result.timeArray.removeAll()
+                                 result.tagDictionary.removeAll()
+                                result.isLoggedIn = false
                              }
                           } catch {
                              print(error)
@@ -114,8 +115,11 @@ class SettingsController: UIViewController {
                   }
              do { try Auth.auth().signOut() }
              catch { print("already logged out") };
+        UserDefaults.standard.set(false, forKey: "isPro")
              expDate = ""
             enteredForeground = false
+            petImageView.image = UIImage()
+            backpackView.image = UIImage()
             let defaults = UserDefaults.standard
             let dictionary = defaults.dictionaryRepresentation()
             dictionary.keys.forEach { key in
@@ -123,6 +127,7 @@ class SettingsController: UIViewController {
              let controller = UINavigationController(rootViewController: WelcomeViewController())
              controller.modalPresentationStyle = .fullScreen
              self.presentInFullScreen(controller, animated: false, completion: nil)
+            
     }
     
 }
@@ -136,9 +141,6 @@ extension SettingsController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: SettingsCell.settingsCell, for: indexPath) as! SettingsCell
         cell.setTitle(title: self.data[indexPath.row].title, type: self.data[indexPath.row].type)
-        if self.data[indexPath.row].type == "email" {
-            tableView.rowHeight = view.frame.height * 0.15
-        }
         return cell
     }
     
