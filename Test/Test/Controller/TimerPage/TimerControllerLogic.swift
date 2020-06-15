@@ -28,6 +28,7 @@ extension TimerController {
     
     @objc func checkIfLocked(noti: Notification) {
         print("locked")
+        if !breakPlaying {
         locked = true
          killDate = Date().addingTimeInterval(10000000)
         let center = UNUserNotificationCenter.current()
@@ -48,6 +49,7 @@ extension TimerController {
             let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
             // Step 5: Register the request
             center.add(request) { (error) in }
+            }
         }
     }
     @objc func checkIfNotLocked(noti: Notification) {

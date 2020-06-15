@@ -67,6 +67,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             center.add(request) { (error) in }
 
          } else if breakPlaying {
+            print("breakPlaying")
             let center = UNUserNotificationCenter.current()
             let content = UNMutableNotificationContent()
             content.title = "Break Times Up!"

@@ -18,7 +18,6 @@ extension StatisticsController {
         data.setValueFormatter(DefaultValueFormatter(formatter: formatter))
         pieChartView.data = data
         pieChartView.drawEntryLabelsEnabled = false
-        pieChartView.legend.calculateDimensions(labelFont: UIFont(name: "Menlo", size: 15)!, viewPortHandler: .init(width: 1000, height: 1000))
 
     }
     
@@ -34,7 +33,6 @@ extension StatisticsController {
         data.setValueFormatter(DefaultValueFormatter(formatter: formatter))
         pieChartView.data = data
         pieChartView.drawEntryLabelsEnabled = false
-        pieChartView.legend.calculateDimensions(labelFont: UIFont(name: "Menlo", size: 15)!, viewPortHandler: .init(width: 1000, height: 1000))
     }
     
     final func createYearPieChart() {
@@ -49,7 +47,7 @@ extension StatisticsController {
         data.setValueFormatter(DefaultValueFormatter(formatter: formatter))
         pieChartView.data = data
         pieChartView.drawEntryLabelsEnabled = false
-        pieChartView.legend.calculateDimensions(labelFont: UIFont(name: "Menlo", size: 15)!, viewPortHandler: .init(width: 100, height: 100))
+
     }
     
     

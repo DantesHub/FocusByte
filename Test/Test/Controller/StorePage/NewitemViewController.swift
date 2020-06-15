@@ -203,13 +203,13 @@ class NewitemViewController: UIViewController {
         case "Common Box":
             coins = coins - 15
             print("loged")
-            Analytics.logEvent("Common Box", parameters: nil)
+            Analytics.logEvent("Common_Box", parameters: nil)
         case "Gold Box":
              coins = coins - 45
-            Analytics.logEvent("Gold Box", parameters: nil)
+            Analytics.logEvent("Gold_Box", parameters: nil)
         case "Diamond Box":
              coins = coins - 100
-             Analytics.logEvent("Diamond Box", parameters: nil)
+             Analytics.logEvent("Diamond_Box", parameters: nil)
         default:
             return
         }

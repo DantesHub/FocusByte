@@ -115,7 +115,8 @@ class SettingsController: UIViewController {
                   }
              do { try Auth.auth().signOut() }
              catch { print("already logged out") };
-        UserDefaults.standard.set(false, forKey: "isPro")
+          UserDefaults.standard.set(false, forKey: "isPro")
+            UserDefaults.standard.set(nil, forKey: "appleAuthorizedUserIdKey")
              expDate = ""
             enteredForeground = false
             petImageView.image = UIImage()

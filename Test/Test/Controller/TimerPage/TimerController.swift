@@ -69,12 +69,12 @@ class TimerController: UIViewController {
         return iv
     }()
     lazy var coinImageView: UIImageView = {
-         let iv = UIImageView()
-         iv.image = #imageLiteral(resourceName: "coins")
-         iv.sizeToFit()
-         iv.translatesAutoresizingMaskIntoConstraints = false
-         return iv
-     }()
+        let iv = UIImageView()
+        iv.image = #imageLiteral(resourceName: "coins")
+        iv.sizeToFit()
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        return iv
+    }()
     var howMuchTime: Int = 0
     var mins = 0
     var secs = 0
@@ -125,64 +125,67 @@ class TimerController: UIViewController {
         }
         if upgradedToPro {
             let alertView = SCLAlertView()
-                      alertView.iconTintColor = brightPurple
-             alertView.showCustom("Succesfully Upgraded To Pro!", subTitle: "", color: brightPurple, icon: .checkmark)
+            alertView.iconTintColor = brightPurple
+            alertView.showCustom("Succesfully Upgraded To Pro!", subTitle: "", color: brightPurple, icon: .checkmark)
             upgradedToPro = false
         }
- 
-         
         
-              results = uiRealm.objects(User.self)
-              for result  in results {
-                  if result.isLoggedIn == true {
-                      coins = result.coins
-                      exp = result.exp
-                      for tag in result.tagDictionary {
-                          if tag.selected == true {
-                              tagSelected = tag.name
-                          }
-                      }
-                      self.overrideUserInterfaceStyle = .light
-                      gender = result.gender!
-                      inventoryArray = result.inventoryArray.map{ $0 }
-                      coinsL.text = String(coins)
-                      deepFocusMode = result.deepFocusMode
-                    timeData = result.timeArray.map{$0}
-                  }
-              }
-              let today = Date()
-              let formatter = DateFormatter()
-              formatter.dateFormat = "MM-dd-yyyy HH:mm"
-              for item in inventoryArray {
-                  if item.contains("Gold Chest") {
-                      let plusIndex = item.firstIndex(of: "+")
-                      let date = String(item[..<plusIndex!]).toDate()
-                      if today < date! {
-                          self.chest = "goldChest"
-                      }
-                      expDate = (date?.toString())!
-                      chestBought = true
-                  } else if item.contains("Epic Chest") {
-                      let plusIndex = item.firstIndex(of: "+")
-                      let date = String(item[..<plusIndex!]).toDate()
-                      if today < date! {
-                          self.chest = "epicChest"
-                      }
-                      expDate = (date?.toString())!
-                      chestBought = true
-                  } else if item.contains("Diamond Chest") {
-                      let plusIndex = item.firstIndex(of: "+")
-                      let date = String(item[..<plusIndex!]).toDate()
-                      if today < date! {
-                          self.chest = "diamondChest"
-                      }
-                      expDate = (date?.toString())!
-                      chestBought = true
-                  }
-              }
-       
+        
+        
+        results = uiRealm.objects(User.self)
+        for result  in results {
+            if result.isLoggedIn == true {
+                coins = result.coins
+                exp = result.exp
+                for tag in result.tagDictionary {
+                    if tag.selected == true {
+                        tagSelected = tag.name
+                    }
+                }
+                self.overrideUserInterfaceStyle = .light
+                gender = result.gender!
+                inventoryArray = result.inventoryArray.map{ $0 }
+                coinsL.text = String(coins)
+                deepFocusMode = result.deepFocusMode
+                timeData = result.timeArray.map{$0}
+            }
+        }
+        let today = Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM-dd-yyyy HH:mm"
+        for item in inventoryArray {
+            if item.contains("Gold Chest") {
+                let plusIndex = item.firstIndex(of: "+")
+                let date = String(item[..<plusIndex!]).toDate()
+                if today < date! {
+                    self.chest = "goldChest"
+                    expDate = (date?.toString())!
+                    chestBought = true
+                }
+                
+            } else if item.contains("Epic Chest") {
+                let plusIndex = item.firstIndex(of: "+")
+                let date = String(item[..<plusIndex!]).toDate()
+                if today < date! {
+                    self.chest = "epicChest"
+                    expDate = (date?.toString())!
+                    chestBought = true
+                }
+                
+            } else if item.contains("Diamond Chest") {
+                let plusIndex = item.firstIndex(of: "+")
+                let date = String(item[..<plusIndex!]).toDate()
+                if today < date! {
+                    self.chest = "diamondChest"
+                    expDate = (date?.toString())!
+                    chestBought = true
+                }
+                
+            }
+        }
+        
     }
-
+    
     
     override func viewWillAppear(_ animated: Bool) {
         createObservers()
@@ -194,22 +197,22 @@ class TimerController: UIViewController {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-             onHome = false
-             counter = 0
-             self.timer.invalidate()
-             self.timer = Timer()
-             self.breakTimer.invalidate()
-             self.breakTimer = Timer()
-             NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
-             NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
-             NotificationCenter.default.removeObserver(self, name: UIApplication.protectedDataWillBecomeUnavailableNotification, object: nil)
-            NotificationCenter.default.removeObserver(self, name: UIApplication.protectedDataDidBecomeAvailableNotification, object: nil)
+        onHome = false
+        counter = 0
+        self.timer.invalidate()
+        self.timer = Timer()
+        self.breakTimer.invalidate()
+        self.breakTimer = Timer()
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.protectedDataWillBecomeUnavailableNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.protectedDataDidBecomeAvailableNotification, object: nil)
     }
     
     
     //MARK: - helper functions
     func configureUI() {
-//        UIApplication.shared.isIdleTimerDisabled = true
+        //        UIApplication.shared.isIdleTimerDisabled = true
         coinsImg = UIImageView(image: UIImage(named: "coins")!)
         coinsImg!.frame.size.width = 25
         coinsImg!.frame.size.height = 30
@@ -302,7 +305,7 @@ class TimerController: UIViewController {
     @objc func tappedTag() {
         if UserDefaults.standard.bool(forKey: "isPro") == true {
             tagTableView = TagTableView(frame: view.bounds)
-                view.addSubview(tagTableView)
+            view.addSubview(tagTableView)
         }   else {
             let controller = GoProViewController()
             controller.modalPresentationStyle = .fullScreen
@@ -336,43 +339,43 @@ class TimerController: UIViewController {
         timerButton.layer.cornerRadius = 25
         timerButton.applyDesign(color: darkPurple)
     }
-       
-       private final func createXImageView() {
-           xImageView.translatesAutoresizingMaskIntoConstraints = false
-           view.addSubview(xImageView)
-           xImageView.height(70)
-           xImageView.width(70)
-           xImageView.leadingAnchor.constraint(equalTo: timerButton.trailingAnchor, constant: 20).isActive = true
-           xImageView.centerYAnchor.constraint(equalTo: timerButton.centerYAnchor).isActive = true
-           xImageView.isUserInteractionEnabled = true
-           xImageView.layer.cornerRadius = 10
-           let largeConfiguration = UIImage.SymbolConfiguration(weight: .bold)
-           let img = UIImage(systemName: "xmark", withConfiguration: largeConfiguration)?.withTintColor(.white, renderingMode:.alwaysOriginal)
-           xImageView.image = img
-           let tappedX = UITapGestureRecognizer(target: self, action: #selector(xTapped))
-           xImageView.addGestureRecognizer(tappedX)
-           xImageView.contentMode = .center
-           xImageView.backgroundColor = darkRed
-           xImageView.applyDesign(color: darkRed)
-       }
-       
-       private final func createTagImageView() {
-           tagImageView.translatesAutoresizingMaskIntoConstraints = false
-           tagImageView.height(70)
-           tagImageView.width(70)
-           view.addSubview(tagImageView)
-           tagImageView.trailingAnchor.constraint(equalTo: timerButton.leadingAnchor, constant: -20).isActive = true
-           tagImageView.centerYAnchor.constraint(equalTo: timerButton.centerYAnchor).isActive = true
-           tagImageView.isUserInteractionEnabled = true
-           tagImageView.layer.cornerRadius = 10
-           tagImageView.image = #imageLiteral(resourceName: "tagIcon")
-           tagImageView.backgroundColor = superLightLavender
-           tagImageView.layer.cornerRadius = 25
-           tagImageView.contentMode = .scaleAspectFit
-           tagImageView.applyDesign(color: superLightLavender)
-           let tagTapped = UITapGestureRecognizer(target: self, action: #selector(tappedTag))
-           tagImageView.addGestureRecognizer(tagTapped)
-       }
+    
+    private final func createXImageView() {
+        xImageView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(xImageView)
+        xImageView.height(70)
+        xImageView.width(70)
+        xImageView.leadingAnchor.constraint(equalTo: timerButton.trailingAnchor, constant: 20).isActive = true
+        xImageView.centerYAnchor.constraint(equalTo: timerButton.centerYAnchor).isActive = true
+        xImageView.isUserInteractionEnabled = true
+        xImageView.layer.cornerRadius = 10
+        let largeConfiguration = UIImage.SymbolConfiguration(weight: .bold)
+        let img = UIImage(systemName: "xmark", withConfiguration: largeConfiguration)?.withTintColor(.white, renderingMode:.alwaysOriginal)
+        xImageView.image = img
+        let tappedX = UITapGestureRecognizer(target: self, action: #selector(xTapped))
+        xImageView.addGestureRecognizer(tappedX)
+        xImageView.contentMode = .center
+        xImageView.backgroundColor = darkRed
+        xImageView.applyDesign(color: darkRed)
+    }
+    
+    private final func createTagImageView() {
+        tagImageView.translatesAutoresizingMaskIntoConstraints = false
+        tagImageView.height(70)
+        tagImageView.width(70)
+        view.addSubview(tagImageView)
+        tagImageView.trailingAnchor.constraint(equalTo: timerButton.leadingAnchor, constant: -20).isActive = true
+        tagImageView.centerYAnchor.constraint(equalTo: timerButton.centerYAnchor).isActive = true
+        tagImageView.isUserInteractionEnabled = true
+        tagImageView.layer.cornerRadius = 10
+        tagImageView.image = #imageLiteral(resourceName: "tagIcon")
+        tagImageView.backgroundColor = superLightLavender
+        tagImageView.layer.cornerRadius = 25
+        tagImageView.contentMode = .scaleAspectFit
+        tagImageView.applyDesign(color: superLightLavender)
+        let tagTapped = UITapGestureRecognizer(target: self, action: #selector(tappedTag))
+        tagImageView.addGestureRecognizer(tagTapped)
+    }
     
     final func createStartUI() {
         timerButton.removeFromSuperview()
@@ -398,7 +401,7 @@ class TimerController: UIViewController {
         }
     }
     
-
+    
     
     @objc func handleTap(_ sender: UITapGestureRecognizer? = nil) {
         let center = UNUserNotificationCenter.current()
@@ -413,8 +416,8 @@ class TimerController: UIViewController {
             return
         }
         if !self.view.subviews.contains(quoteLabel) && self.view.subviews.contains(breakL) {
-                createQuoteLabel()
-            }
+            createQuoteLabel()
+        }
         
         if isPlaying && timerButtonLbl.text == "Give Up" {
             print("give up alert")
@@ -473,7 +476,7 @@ class TimerController: UIViewController {
         }
         alert.show()
     }
-
+    
     
     @objc func xTapped() {
         circularSlider.removeFromSuperview()
@@ -507,7 +510,7 @@ class TimerController: UIViewController {
         shapeLayer.add(basicAnimation, forKey: "basic")
         let defaults = UserDefaults.standard
         defaults.set("playing", forKey: "status")
-
+        
         howMuchTime = ((Int(durationString) ?? 10) * 60)
         basicAnimation.duration = CFTimeInterval(counter + (counter/4))
         self.shapeLayer.add(basicAnimation, forKey: "basic")
@@ -518,7 +521,7 @@ class TimerController: UIViewController {
         layer.speed = 0.0
         layer.timeOffset = pausedTime
     }
-
+    
     func resumeLayer(layer: CALayer) {
         let pausedTime: CFTimeInterval = layer.timeOffset
         layer.speed = 1.0
@@ -535,7 +538,7 @@ class TimerController: UIViewController {
         self.timerButton.removeFromSuperview()
         self.xImageView.removeFromSuperview()
         self.breakButton.applyDesign(color: darkRed)
-   
+        
         self.timeL.numberOfLines = 2
         self.timeL.text = "Let's Go \nAgain!"
         self.timeL.font = UIFont(name: "Menlo-Bold", size: 30)
@@ -562,7 +565,7 @@ class TimerController: UIViewController {
         deepFocusView.layer.cornerRadius = 25
         deepFocusView.applyDesign(color: superLightLavender)
         
-      
+        
         self.deepFocusLabel.sizeToFit()
         deepFocusView.addSubview(deepFocusLabel)
         deepFocusLabel.center(in: deepFocusView)
@@ -590,16 +593,16 @@ class TimerController: UIViewController {
     }
     
     @objc func dfTapped() {
-         let appearance = SCLAlertView.SCLAppearance(
-                  kWindowWidth: 300,
-                  kWindowHeight: 100,
-                  kButtonHeight: 35,
-                  kTitleFont: UIFont(name: "Menlo", size: 18)!,
-                  kTextFont: UIFont(name: "Menlo", size: 15)!,
-                  showCloseButton: false,
-                  showCircularIcon: false,
-                  hideWhenBackgroundViewIsTapped: true
-              )
+        let appearance = SCLAlertView.SCLAppearance(
+            kWindowWidth: 300,
+            kWindowHeight: 100,
+            kButtonHeight: 35,
+            kTitleFont: UIFont(name: "Menlo", size: 18)!,
+            kTextFont: UIFont(name: "Menlo", size: 15)!,
+            showCloseButton: false,
+            showCircularIcon: false,
+            hideWhenBackgroundViewIsTapped: true
+        )
         let title = UILabel()
         title.translatesAutoresizingMaskIntoConstraints = false
         title.numberOfLines = 0
@@ -623,7 +626,7 @@ class TimerController: UIViewController {
         subview.addSubview(description)
         description.leadingAnchor.constraint(equalTo: dfmSwitch.trailingAnchor, constant: 15).isActive = true
         description.topToBottom(of: title, offset: 5)
-
+        
         
         alertView.customSubview = subview
         alertView.showCustom("Select Mode", subTitle: "", color: .white, icon: UIImage())
@@ -631,14 +634,14 @@ class TimerController: UIViewController {
     
     @objc func switchToggled(sender:UISwitch!) {
         if (sender.isOn == true){
-              deepFocusMode = true
-          }
-          else{
-              deepFocusMode = false
+            deepFocusMode = true
+        }
+        else{
+            deepFocusMode = false
         }
         saveToRealm()
     }
-  
+    
     func updateCoinLabel(numCoins: Int) -> Int? {
         let prevNumOfCoins = numCoins
         var numOfCoins = numCoins
@@ -677,7 +680,7 @@ class TimerController: UIViewController {
             numOfCoins += 2 * coinMultiplier
             exp += 1 * expMultiplier
         }
-      
+        
         expReceived = exp - prevExp
         coinsReceived = numOfCoins - prevNumOfCoins
         //experience algo

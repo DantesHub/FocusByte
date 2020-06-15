@@ -2,6 +2,7 @@ import UIKit
 import Firebase
 import GoogleSignIn
 import RealmSwift
+import AuthenticationServices
 class LoginViewController: UIViewController,GIDSignInDelegate {
     var goToTimerView = UIView()
     var goToTimerLabel = UILabel()
@@ -19,6 +20,7 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
     let container: UIView = UIView()
     var spinner = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.large)
     var forgotPassword: UILabel!
+    fileprivate var currentNonce: String?
     var googleImage: UIImageView = {
        let iv = UIImageView()
         iv.image = UIImage(named: "googleButton")
@@ -27,10 +29,10 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
         iv.layer.cornerRadius = 25
         return iv
     }()
-    
+    let siwa = ASAuthorizationAppleIDButton()
+    let siwaShadow = UIView()
     override func viewDidLoad() {
         super.viewDidLoad()
-   
         configureUI()
     }
     
@@ -49,8 +51,8 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
     }
     
     //MARK: - Helper Functions
-    func configureUI() {
     
+    func configureUI() {
         view.backgroundColor = .white
         loginTitle.frame.size.width = 300
         loginTitle.frame.size.height = 100
@@ -170,6 +172,48 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
          googleImage.widthAnchor.constraint(lessThanOrEqualToConstant: lessThanConstant).isActive = true
          googleImage.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: onPad ? 0.4 : 0.8).isActive = true
         googleImage.applyDesign(color: .white)
+        
+         view.addSubview(siwaShadow)
+         siwaShadow.heightAnchor.constraint(equalToConstant: 50).isActive = true
+         siwaShadow.widthAnchor.constraint(lessThanOrEqualToConstant: lessThanConstant).isActive = true
+         siwaShadow.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: onPad ? 0.4 : 0.8).isActive = true
+         siwaShadow.topToBottom(of: googleImage, offset: 20)
+         siwaShadow.centerX(to: view)
+         siwaShadow.applyDesign(color: .black)
+    
+         view.addSubview(siwa)
+        siwa.translatesAutoresizingMaskIntoConstraints = false
+         siwa.heightAnchor.constraint(equalToConstant: 50).isActive = true
+         siwa.widthAnchor.constraint(lessThanOrEqualToConstant: lessThanConstant).isActive = true
+         siwa.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: onPad ? 0.4 : 0.8).isActive = true
+         siwa.topToBottom(of: googleImage, offset: 20)
+         siwa.centerX(to: view)
+         siwa.clipsToBounds = true
+         siwa.layer.cornerRadius = 25
+         siwa.addTarget(self, action: #selector(appleSignInTapped), for: .touchUpInside)
+    }
+    @objc func appleSignInTapped() {
+             let provider = ASAuthorizationAppleIDProvider()
+            let request = provider.createRequest()
+            // request full name and email from the user's Apple ID
+            request.requestedScopes = [.fullName, .email]
+           // Generate nonce for validation after authentication successful
+           self.currentNonce = randomNonceString()
+           // Set the SHA256 hashed nonce to ASAuthorizationAppleIDRequest
+           request.nonce = sha256(currentNonce!)
+            // pass the request to the initializer of the controller
+            let authController = ASAuthorizationController(authorizationRequests: [request])
+          
+            // similar to delegate, this will ask the view controller
+            // which window to present the ASAuthorizationController
+            authController.presentationContextProvider = self
+          
+            // delegate functions will be called when user data is
+            // successfully retrieved or error occured
+            authController.delegate = self
+            
+            // show the Sign-in with Apple dialog
+            authController.performRequests()
     }
     
     @objc func googleTapped() {
@@ -180,14 +224,14 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
     func loadTextViews() {
         view.addSubview(email)
         email.addDoneButtonOnKeyboard()
-        email.topAnchor.constraint(equalTo: loginTitle.bottomAnchor, constant: 25).isActive = true
-        email.applyDesign(view, x: xPadding, y: -160)
+        email.topAnchor.constraint(equalTo: loginTitle.bottomAnchor, constant: 5).isActive = true
+        email.applyDesign(view, x: xPadding, y: -180)
         email.placeholder = "Email"
         password.addDoneButtonOnKeyboard()
         password.isSecureTextEntry = true
         view.addSubview(password)
         password.topAnchor.constraint(equalTo: email.bottomAnchor, constant: 30).isActive = true
-        password.applyDesign(view, x: xPadding, y: -55)
+        password.applyDesign(view, x: xPadding, y: -75)
         password.placeholder = "Password"   
         
     }
@@ -362,4 +406,100 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
         return false
     }
     
+}
+extension LoginViewController : ASAuthorizationControllerPresentationContextProviding {
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        // return the current view window
+        return self.view.window!
+    }
+}
+extension LoginViewController : ASAuthorizationControllerDelegate {
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+        print("authorization error")
+        guard let error = error as? ASAuthorizationError else {
+            return
+        }
+
+        switch error.code {
+        case .canceled:
+            // user press "cancel" during the login prompt
+            print("Canceled")
+        case .unknown:
+            // user didn't login their Apple ID on the device
+            print("Unknown")
+        case .invalidResponse:
+            // invalid response received from the login
+            print("Invalid Respone")
+        case .notHandled:
+            // authorization request not handled, maybe internet failure during login
+            print("Not handled")
+        case .failed:
+            // authorization failed
+            print("Failed")
+        @unknown default:
+            print("Default")
+        }
+    }
+    
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        
+        if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
+            UserDefaults.standard.set(appleIDCredential.user, forKey: "appleAuthorizedUserIdKey")
+            // Retrieve the secure nonce generated during Apple sign in
+            guard let nonce = currentNonce else {
+                fatalError("Invalid state: A login callback was received, but no login request was sent.")
+            }
+
+            // Retrieve Apple identity token
+            guard let appleIDToken = appleIDCredential.identityToken else {
+                print("Failed to fetch identity token")
+                return
+            }
+
+            // Convert Apple identity token to string
+            guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
+                print("Failed to decode identity token")
+                return
+            }
+
+            // Initialize a Firebase credential using secure nonce and Apple identity token
+            let firebaseCredential = OAuthProvider.credential(withProviderID: "apple.com",
+                                                              idToken: idTokenString,
+                                                              rawNonce: nonce)
+            print(appleIDCredential.email)
+            guard let _ = appleIDCredential.email else {
+                // User already signed in with this appleId once
+                Auth.auth().signIn(with: firebaseCredential) { [weak self] (authResult, error) in
+                    // Do something after Firebase sign in completed
+                    if let error = error {
+                        print(error.localizedDescription)
+                        self?.errorLabel.text = "Something went wrong"
+                        self?.errorLabel.textColor = .red
+                        self?.errorLabel.center.y = self!.view.center.y + 220
+                        self?.view.addSubview(self!.errorLabel)
+                    } else {
+                        self!.spinner.stopAnimating()
+                        self!.createRealmData()
+                    }
+                }
+                return
+            }
+            //User never signed in with this email before
+            Auth.auth().signIn(with: firebaseCredential) { [weak self] (authResult, error) in
+                // Do something after Firebase sign in completed
+                if let error = error {
+                    print(error.localizedDescription)
+                    self?.errorLabel.text = "Something went wrong"
+                    self?.errorLabel.textColor = .red
+                    self?.errorLabel.center.y = self!.view.center.y + 220
+                    self?.view.addSubview(self!.errorLabel)
+                } else {
+                    self!.spinner.stopAnimating()
+                    let genderVC = GenderViewController()
+                    self?.navigationController?.pushViewController(genderVC, animated: true)
+                }
+            }
+        
+        }
+    }
 }

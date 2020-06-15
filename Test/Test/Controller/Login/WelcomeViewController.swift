@@ -7,7 +7,7 @@ var buttonWidth: CGFloat = 0
 var middleTextSize = 0
 var titlePadding = 0
 var iphone8Padding = 0
-var registerPadding:CGFloat = 300
+var registerPadding:CGFloat = 275
 var backgroundType = "proBackground"
 var lessThanConstant:CGFloat = 840
 var onPad = false
@@ -22,7 +22,7 @@ var titleSize: Int {
                 middleTextSize = 40
                 buttonWidth = 350
                 xPadding = -175
-                registerPadding = 250
+                registerPadding = 265
                 backgroundType = "8background"
                  lessThanConstant = 350
             //("iphone 8plus")
@@ -34,7 +34,7 @@ var titleSize: Int {
                 middleTextSize = 35
                 buttonWidth = 300
                 xPadding = -145
-                registerPadding = 250
+                registerPadding = 265
                 backgroundType = "8background"
                 lessThanConstant = 350
             case 2436:

@@ -423,6 +423,7 @@ class StatisticsController: UIViewController, ChartViewDelegate{
         tagChartTitle.centerX(to: view)
         containerView.addSubview(pieChartView)
         pieChartView.edgesToSuperview(excluding: .top, insets:  TinyEdgeInsets(top: 0, left: 25, bottom: 95, right: 25))
+//        pieChartView.legend.calculatedLineSizes = CGSize(width: pieChartView.frame.width, height: 80)
         pieChartView.height(300)
         
         descriptionLabel.numberOfLines = 0
