@@ -21,7 +21,7 @@ var boxPadding: CGFloat {
         if UIDevice().userInterfaceIdiom == .phone || UIDevice().userInterfaceIdiom == .pad {
             switch UIScreen.main.nativeBounds.height {
             case 1920, 2208:
-                size = -5
+                size = 5
                 boxDescFontSize = 21
                 itemImageSize = 100
                 boxSize = 150
@@ -33,7 +33,7 @@ var boxPadding: CGFloat {
             //("iphone 8plus ")
             case 1334:
                 //Iphone 8
-                size = -5
+                size = 5
                 boxSize = 150
                 itemImageSize = 100
                 youGotFontSize = 30

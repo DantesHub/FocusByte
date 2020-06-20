@@ -14,7 +14,8 @@ import FLAnimatedImage
 import AudioToolbox
 import SCLAlertView
 import TinyConstraints
-
+import StoreKit
+var requestedReview = false
 extension TimerController {
     //MARK: - Helper Functions
     func createObservers() {
@@ -196,6 +197,12 @@ extension TimerController {
                     
                     coins = self.updateCoinLabel(numCoins: numCoins)!
                     self.coinsL.text = String(coins)
+                    if timeData.count == 13 || timeData.count == 23 || timeData.count == 53 {
+                        if requestedReview == false {
+                            SKStoreReviewController.requestReview()
+                            requestedReview = true
+                        }
+                    }
                     self.addDateToDb()
                     //update data in firebase
                     if let _ = Auth.auth().currentUser?.email {
@@ -236,6 +243,12 @@ extension TimerController {
             self.view.addSubview(self.timeL)
             enteredForeground = false
             if timeData.count != 0 {
+                if timeData.count == 2 || timeData.count == 10 || timeData.count == 25 {
+                    if requestedReview == false {
+                        SKStoreReviewController.requestReview()
+                        requestedReview = true
+                    }
+                }
                 lastDate = (timeData[timeData.count - 1])
             } else {
                 lastDate = ""
@@ -403,7 +416,7 @@ extension TimerController {
             let shared = UserDefaults.standard
             shared.set(Date(), forKey: "savedBreakTime")
         }
-        
+
     }
     
     

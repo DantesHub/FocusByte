@@ -24,8 +24,8 @@ extension TimerController {
         circularSlider.thumbLineWidth = 5.0
         circularSlider.minimumValue = 0
         circularSlider.maximumValue = 120.0
-        circularSlider.thumbRadius = 20.0
-        circularSlider.endPointValue = 10
+        circularSlider.thumbRadius = 25.0
+        circularSlider.endPointValue = 25
         circularSlider.addTarget(self, action: #selector(updateTexts), for: .valueChanged)
         view.insertSubview(circularSlider, belowSubview: imageView!)
         updateTexts()

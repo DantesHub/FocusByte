@@ -9,6 +9,23 @@
 import UIKit
 import SCLAlertView
 var name: String = ""
+class SpecialButton: UIButton {
+       convenience init(squareOf value: Int) {
+           self.init(value: value * value)
+       }
+
+       required init(value: Int = 0) {
+           // set myValue before super.init is called
+           super.init(frame: .zero)
+
+           // set other operations after super.init, if required
+           backgroundColor = .clear
+       }
+
+       required init?(coder aDecoder: NSCoder) {
+           fatalError("init(coder:) has not been implemented")
+       }
+}
 
 class MysteryViewController: UIViewController {
     //MARK: - Properties
@@ -28,8 +45,16 @@ class MysteryViewController: UIViewController {
             return 30
         }
     }
-    lazy var nextButton: UIButton? = {
-        let button = UIButton()
+    let coinImageView: UIImageView = {
+         let iv = UIImageView()
+         iv.translatesAutoresizingMaskIntoConstraints = false
+         iv.contentMode = .scaleAspectFit
+         iv.image = UIImage(named: "coins")
+         return iv
+     }()
+    var youHaveLabel = UILabel()
+    lazy var nextButton: SpecialButton? = {
+        let button = SpecialButton()
         let largeConfiguration = UIImage.SymbolConfiguration(weight: .bold)
         let carrotGreat = UIImage(systemName: "greaterthan", withConfiguration: largeConfiguration)
         let carrotGreat2 = carrotGreat?.resized(to: CGSize(width: 50, height: 50)).withTintColor(.white, renderingMode:.alwaysOriginal)
@@ -38,8 +63,8 @@ class MysteryViewController: UIViewController {
         button.addTarget(self, action: #selector(nextTapped), for: .touchUpInside)
         return button
     }()
-    lazy var backButton: UIButton = {
-        let button = UIButton()
+    lazy var backButton: SpecialButton = {
+        let button = SpecialButton()
         let largeConfiguration = UIImage.SymbolConfiguration(weight: .bold)
         let carrotGreat = UIImage(systemName: "lessthan", withConfiguration: largeConfiguration)
         let carrotGreat2 = carrotGreat?.resized(to: CGSize(width: 50, height: 50)).withTintColor(.white, renderingMode:.alwaysOriginal)
@@ -95,6 +120,23 @@ class MysteryViewController: UIViewController {
         view.addSubview(nextButton!)
         nextButton?.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
         nextButton?.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+//        nextButton!.blink(enabled: true)
+        
+        view.addSubview(youHaveLabel)
+        youHaveLabel.translatesAutoresizingMaskIntoConstraints = false
+        youHaveLabel.text = "You have: \(coins)"
+        youHaveLabel.font = UIFont(name: "Menlo", size: 25)
+        youHaveLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: -15).isActive = true
+        youHaveLabel.textColor = .white
+        youHaveLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 10).isActive = true
+        
+        view.addSubview(coinImageView)
+        coinImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 10).isActive = true
+        coinImageView.leftToRight(of: youHaveLabel, offset: 5)
+        coinImageView.width(25)
+        coinImageView.height(30)
+        
+        
     }
     
     @objc func nextTapped() {
@@ -142,17 +184,20 @@ extension MysteryViewController: UICollectionViewDelegateFlowLayout, UICollectio
             view.addSubview(backButton)
             backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10).isActive = true
             backButton.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+            backButton.blink()
             if !self.view.subviews.contains(nextButton!) {
                 view.addSubview(nextButton!)
                 nextButton?.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
                 nextButton?.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+                nextButton!.blink()
             }
         } else if indexPath.row == 2 {
             nextButton?.removeFromSuperview()
         } else {
             view.addSubview(nextButton!)
-            nextButton?.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
+
             nextButton?.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+            nextButton!.blink()
             backButton.removeFromSuperview()
         }
         name = self.data[indexPath.row].title
@@ -186,7 +231,6 @@ extension MysteryViewController: UICollectionViewDelegateFlowLayout, UICollectio
                   contentViewColor: .white
               )
         let alertView = SCLAlertView(appearance: appearance)
-        print(coins)
         switch name {
         case "Common Box":
             if coins < 15 {
@@ -222,3 +266,21 @@ extension MysteryViewController: UICollectionViewDelegateFlowLayout, UICollectio
 }
 
 
+extension SpecialButton {
+    open override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        return self.bounds.contains(point) ? self : nil
+    }
+    func blink(enabled: Bool = true, duration: CFTimeInterval = 0.5, stopAfter: CFTimeInterval = 0.0 ) {
+        print("working")
+        enabled ? (UIView.animate(withDuration: duration, //Time duration you want,
+            delay: 0.0,
+            options: [.curveEaseInOut, .autoreverse, .repeat],
+            animations: { [weak self] in self?.alpha = 0.0 },
+            completion: { [weak self] _ in self?.alpha = 1.0 })) : self.layer.removeAllAnimations()
+        if !stopAfter.isEqual(to: 0.0) && enabled {
+            DispatchQueue.main.asyncAfter(deadline: .now() + stopAfter) { [weak self] in
+                self?.layer.removeAllAnimations()
+            }
+        }
+    }
+}

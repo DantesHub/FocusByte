@@ -113,7 +113,12 @@ class TimerController: UIViewController {
     var searchBar = UISearchBar()
     var chest = "chest"
     var onHome = false
-    
+    var  plusIcon: UIImageView = {
+       let iv = UIImageView()
+        iv.image = UIImage(named: "plusIcon")
+
+        return iv
+    }()
     //MARK: -Init
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -193,7 +198,6 @@ class TimerController: UIViewController {
         level = Int(floor(sqrt(Double(exp))))
         configureUI()
         configureNavigationBar(color: backgroundColor, isTrans: true)
-        print("view finished appearing")
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -216,16 +220,26 @@ class TimerController: UIViewController {
         coinsImg = UIImageView(image: UIImage(named: "coins")!)
         coinsImg!.frame.size.width = 25
         coinsImg!.frame.size.height = 30
-        coinsImg?.center.x =  view.center.x + 120
-        coinsImg?.center.y = 30
+        coinsImg?.center.x =  view.center.x + 80
+        coinsImg?.center.y = 20
         
-        coinsL.frame.size.width = 75
-        coinsL.frame.size.height = 75
+        coinsL.frame.size.width = 100
+        coinsL.frame.size.height = 25
+        coinsL.layer.cornerRadius = 25
         coinsL.textColor = .white
-        coinsL.center.x =  view.center.x + 180
-        coinsL.center.y = 30
+        coinsL.backgroundColor = darkPurple
+        coinsL.center.x =  view.center.x + 120
+        coinsL.center.y = 20
+        coinsL.textAlignment = .center
         coinsL.font = UIFont(name: "Menlo-Bold", size: 20)
         
+        plusIcon.frame.size.width = 30
+        plusIcon.frame.size.height = 30
+        plusIcon.center.x =  view.center.x + 165
+        plusIcon.center.y = 20
+        let plusTapped = UITapGestureRecognizer(target: self, action: #selector(tappedPlus))
+        plusIcon.addGestureRecognizer(plusTapped)
+        plusIcon.isUserInteractionEnabled = true
         
         timeL.font = .boldSystemFont(ofSize: 20)
         timeL.font = UIFont(name: "Menlo-Bold", size: 65)
@@ -263,9 +277,9 @@ class TimerController: UIViewController {
         createBarItem()
         navigationController?.navigationBar.addSubview(coinsL)
         navigationController?.navigationBar.addSubview(coinsImg!)
+         navigationController?.navigationBar.addSubview(plusIcon)
         
         createCircularSlider()
-        
     }
     
     private func createQuoteLabel() {
@@ -590,6 +604,15 @@ class TimerController: UIViewController {
         self.breakButtonLbl.sizeToFit()
         self.breakButton.addSubview(self.breakButtonLbl)
         breakButtonLbl.center(in: breakButton)
+    }
+    @objc func tappedPlus() {
+        coinsL.removeFromSuperview()
+        coinsImg?.removeFromSuperview()
+        plusIcon.removeFromSuperview()
+        quoteLabel.removeFromSuperview()
+        imageView?.removeFromSuperview()
+        circularSlider.removeFromSuperview()
+        self.navigationController?.pushViewController(UpgradeChestController(), animated: true)
     }
     
     @objc func dfTapped() {

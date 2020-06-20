@@ -28,7 +28,6 @@ class InventoryController: UIViewController {
             minimumLineSpacing: 20,
             sectionInset: UIEdgeInsets(top: 25, left: 25, bottom: 25, right: 25)
         )
-      
         columnLayout.scrollDirection = .vertical
         let cv = UICollectionView(frame: .zero, collectionViewLayout: columnLayout)
         cv.backgroundColor = backgroundColor
@@ -44,7 +43,17 @@ class InventoryController: UIViewController {
         var sectionName: String
         var rowData: [DisplayItem]
     }
-    
+    lazy var nextButton: UIButton? = {
+        let button = UIButton()
+        let largeConfiguration = UIImage.SymbolConfiguration(weight: .bold)
+        let carrotGreat = UIImage(systemName: "greaterthan", withConfiguration: largeConfiguration)
+        let carrotGreat2 = carrotGreat?.resized(to: CGSize(width: 25, height: 25)).withTintColor(.white, renderingMode:.alwaysOriginal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(carrotGreat2, for: .normal)
+        button.isUserInteractionEnabled = false
+        return button
+    }()
+    var scrollableLabel = UILabel()
     var sections = [Section]()
     
     //MARK: - init
@@ -286,6 +295,10 @@ class InventoryController: UIViewController {
         menuBar.collectionView.layoutIfNeeded()
         menuBar.collectionView.selectItem(at: selectedIndexPath as IndexPath, animated: true, scrollPosition: UICollectionView.ScrollPosition.centeredHorizontally)
         menuBar.collectionView.scrollToItem(at: selectedIndexPath as IndexPath, at: UICollectionView.ScrollPosition.centeredHorizontally, animated: true)
+        view.addSubview(nextButton!)
+        nextButton!.trailingAnchor.constraint(equalTo: menuBar.collectionView.trailingAnchor, constant: 25).isActive = true
+        nextButton!.centerYAnchor.constraint(equalTo: menuBar.collectionView.centerYAnchor).isActive = true
+        
       }
     
     //MARK: - Handlers

@@ -128,7 +128,6 @@ class SettingsController: UIViewController {
              let controller = UINavigationController(rootViewController: WelcomeViewController())
              controller.modalPresentationStyle = .fullScreen
              self.presentInFullScreen(controller, animated: false, completion: nil)
-            
     }
     
 }

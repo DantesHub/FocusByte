@@ -137,7 +137,7 @@ class SettingsCell:UITableViewCell,SKPaymentTransactionObserver, SKProductsReque
             if defaults.bool(forKey: "isPro") != true {
                 self.addGestureRecognizer(proTapped)
             } else {
-                titleLabel.text = "Your Pro!"
+                titleLabel.text = "You're Pro!"
                 return
             }
             

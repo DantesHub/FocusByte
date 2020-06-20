@@ -85,10 +85,9 @@ class UpgradeChestController: UIViewController, SKPaymentTransactionObserver, SK
           view.addSubview(collectionView)
           collectionView.showsHorizontalScrollIndicator = false
           self.title = "Chests"
-          configureNavigationBar(color: brightPurple, isTrans: false)
+//          configureNavigationBar(color: brightPurple, isTrans: false)
           navigationController?.navigationBar.barTintColor = brightPurple
           navigationController?.navigationBar.tintColor = .white
-          
           collectionView.backgroundColor = brightPurple
           collectionView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
           
@@ -96,12 +95,16 @@ class UpgradeChestController: UIViewController, SKPaymentTransactionObserver, SK
           collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30).isActive = true
           collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: boxPadding - 40).isActive = true
           collectionView.isPagingEnabled = true;
+        
           
           view.addSubview(nextButton!)
           nextButton?.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
           nextButton?.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
 
       }
+    @objc func tappedExit() {
+        print("tappedExit")
+    }
     
     @objc func nextTapped() {
         let visibleItems: NSArray = self.collectionView.indexPathsForVisibleItems as NSArray
