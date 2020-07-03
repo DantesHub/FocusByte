@@ -40,7 +40,7 @@ extension StatisticsController {
         barChartView.animate(yAxisDuration: 1.5, easingOption: .easeOutExpo)
     }
     final func setDateToToday() {
-        let formatter = DateFormatter()
+       let formatter = DateFormatter()
         formatter.dateFormat = "MMM"
         todayMonth = formatter.string(from: Date())
         formatter.dateFormat = "E"
@@ -68,17 +68,24 @@ extension StatisticsController {
             print("rise")
         }
         endWeekNum = begWeekNum + 6
+        let thisMonth = dateHelper.getMonthNum(month: todayMonth)
+        let lastMonth = dateHelper.intToMonth(num: thisMonth - 1)
         if begWeekNum == 0 {
             nextMonth = todayMonth
-            let thisMonth = dateHelper.getMonthNum(month: todayMonth)
-            let lastMonth = dateHelper.intToMonth(num: thisMonth - 1)
             todayMonth = lastMonth
             begWeekNum = dateHelper.getNumberOfDays(month: lastMonth)
             if menuLabel == "Month" {
-                    todayMonth = nextMonth
-                }
+                todayMonth = nextMonth
+            }
+        } else if begWeekNum < 0 {
+            nextMonth = todayMonth
+            todayMonth = lastMonth
+            begWeekNum = begWeekNum + dateHelper.getNumberOfDays(month: lastMonth)
+        }  else if endWeekNum > dateHelper.getNumberOfDays(month: todayMonth) {
+            nextMonth = dateHelper.intToMonth(num: thisMonth + 1)
+            endWeekNum = endWeekNum -  dateHelper.getNumberOfDays(month: todayMonth)
         }
-      
+             
     
         
     }

@@ -732,7 +732,7 @@ class AvatarController: UIViewController {
             avatarImageView.image = gender == "male" ? UIImage(named: "boyToddler") : UIImage(named: "girlToddler")
         case 15..<34:
             type = "Kid"
-            avatarImageView.image = gender == "male" ? UIImage(named: "boy") : UIImage(named: "boy")
+            avatarImageView.image = gender == "male" ? UIImage(named: "boy") : UIImage(named: "girl")
         case 34...:
             type = "Adult"
             if !hasSuit {

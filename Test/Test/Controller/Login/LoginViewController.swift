@@ -384,8 +384,8 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
                         }
                     }
                 }
+                 UserDefaults.standard.set(true, forKey: "quotes")
                 UserDefaults.standard.set(isPro, forKey: "isPro")
-                UserDefaults.standard.set(true, forKey: "quotes")
                 let timerVC = ContainerController(center: TimerController())
                 timerVC.modalPresentationStyle = .fullScreen
                 self.navigationController?.pushViewController(timerVC, animated: true)
@@ -466,7 +466,6 @@ extension LoginViewController : ASAuthorizationControllerDelegate {
             let firebaseCredential = OAuthProvider.credential(withProviderID: "apple.com",
                                                               idToken: idTokenString,
                                                               rawNonce: nonce)
-            print(appleIDCredential.email)
             guard let _ = appleIDCredential.email else {
                 // User already signed in with this appleId once
                 Auth.auth().signIn(with: firebaseCredential) { [weak self] (authResult, error) in

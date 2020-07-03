@@ -88,6 +88,13 @@ class TimerController: UIViewController {
     var breakButtonLbl = UILabel()
     let timerButtonLbl = UILabel()
     var timer = Timer()
+    var levelLabel: UILabel = {
+       let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont(name: "Menlo-Bold", size: 15)
+        label.textColor = darkPurple
+        return label
+    }()
     var deepFocusLabel: UIImageView = {
         let iv = UIImageView()
         iv.translatesAutoresizingMaskIntoConstraints = false
@@ -119,6 +126,7 @@ class TimerController: UIViewController {
 
         return iv
     }()
+    var isOpen = false
     //MARK: -Init
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -194,10 +202,33 @@ class TimerController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         createObservers()
+        createGestureRecognizers()
         coinsL.countFromZero(to: Float(coins), duration: .brisk)
         level = Int(floor(sqrt(Double(exp))))
         configureUI()
         configureNavigationBar(color: backgroundColor, isTrans: true)
+    }
+    private final func createGestureRecognizers() {
+        let rightSwipe = UISwipeGestureRecognizer(target: self, action: #selector(swipedRight))
+           view.addGestureRecognizer(rightSwipe)
+           
+           let leftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(swipedLeft))
+           leftSwipe.direction = .left
+           
+           view.addGestureRecognizer(leftSwipe)
+    }
+    @objc func swipedRight() {
+        if isOpen == false {
+            handleMenuToggle()
+        }
+    }
+    
+
+    
+    @objc func swipedLeft() {
+       if isOpen == true {
+            handleMenuToggle()
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -281,8 +312,14 @@ class TimerController: UIViewController {
         
         createCircularSlider()
     }
-    
+    private func createLevelLabel() {
+        view.addSubview(levelLabel)
+        levelLabel.centerX(to: view)
+        levelLabel.bottomAnchor.constraint(equalTo: imageView!.topAnchor, constant: -40).isActive = true
+        levelLabel.text = "LVL:\(level)"
+    }
     private func createQuoteLabel() {
+        createLevelLabel()
         if UserDefaults.standard.bool(forKey: "quotes") == true {
             view.addSubview(quoteLabel)
             quoteLabel.numberOfLines = 0
@@ -392,6 +429,7 @@ class TimerController: UIViewController {
     }
     
     final func createStartUI() {
+        createLevelLabel()
         timerButton.removeFromSuperview()
         createTimerButton()
         createXImageView()
@@ -411,6 +449,7 @@ class TimerController: UIViewController {
     //MARK: - Handlers
     @objc func handleMenuToggle() {
         if !isPlaying {
+            isOpen = !isOpen
             delegate?.handleMenuToggle(forMenuOption: nil)
         }
     }
@@ -437,18 +476,19 @@ class TimerController: UIViewController {
             print("give up alert")
             giveUpAlert()
         } else if durationString != "0"{
-            print("insiede here")
             isPlaying = true
             counter = ((Int(durationString) ?? 10) * 60)
+            howMuchTime = ((Int(durationString) ?? 10) * 60)
             self.mins = counter/60
             self.secs = counter%60
             timerButtonLbl.text = "Give Up"
             createTimerButtonLbl()
+            levelLabel.removeFromSuperview()
             timerButton.backgroundColor = darkRed
             imageView?.loadGif(name: "mapGif")
             // create my track layer
             createShapeLayer()
-            createBasicAnimation()
+//            createBasicAnimation()
             countDownTimer()
             breakTimer.invalidate()
             breakL.removeFromSuperview()
@@ -464,7 +504,7 @@ class TimerController: UIViewController {
         center.y = view.center.y - 50
         let circularPath = UIBezierPath(arcCenter: center, radius: 130, startAngle: -CGFloat.pi / 2, endAngle: 2 * CGFloat.pi, clockwise: true)
         trackLayer.path = circularPath.cgPath
-        trackLayer.strokeColor = darkPurple.cgColor
+        trackLayer.strokeColor = lightLavender.cgColor
         trackLayer.lineWidth = 15
         
         trackLayer.fillColor = superLightLavender.cgColor
@@ -515,21 +555,20 @@ class TimerController: UIViewController {
         }))
         navigationController?.present(alert, animated: true)
     }
-    func createBasicAnimation() {
-        let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")
-        basicAnimation.toValue = 1
-        basicAnimation.fillMode = CAMediaTimingFillMode.backwards
-        basicAnimation.isRemovedOnCompletion = false
-        
-        shapeLayer.add(basicAnimation, forKey: "basic")
-        let defaults = UserDefaults.standard
-        defaults.set("playing", forKey: "status")
-        
-        howMuchTime = ((Int(durationString) ?? 10) * 60)
-        basicAnimation.duration = CFTimeInterval(counter + (counter/4))
-        self.shapeLayer.add(basicAnimation, forKey: "basic")
-    }
-    
+//    func createBasicAnimation() {
+//        let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")
+//        basicAnimation.toValue = 1
+//        basicAnimation.fillMode = CAMediaTimingFillMode.backwards
+//        basicAnimation.isRemovedOnCompletion = false
+//
+//        shapeLayer.add(basicAnimation, forKey: "basic")
+//        let defaults = UserDefaults.standard
+//        defaults.set("playing", forKey: "status")
+//
+//        basicAnimation.duration = CFTimeInterval(counter + (counter/4))
+//        self.shapeLayer.add(basicAnimation, forKey: "basic")
+//    }
+//
     func pauseLayer(layer: CALayer) {
         let pausedTime: CFTimeInterval = layer.convertTime(CACurrentMediaTime(), from: nil)
         layer.speed = 0.0
@@ -537,6 +576,7 @@ class TimerController: UIViewController {
     }
     
     func resumeLayer(layer: CALayer) {
+        print("resumed layer")
         let pausedTime: CFTimeInterval = layer.timeOffset
         layer.speed = 1.0
         layer.timeOffset = 0.0
@@ -546,6 +586,7 @@ class TimerController: UIViewController {
     }
     
     func twoButtonSetup() {
+        self.levelLabel.removeFromSuperview()
         self.timerButtonLbl.removeFromSuperview()
         self.shapeLayer.removeFromSuperlayer()
         self.tagImageView.removeFromSuperview()
@@ -610,6 +651,7 @@ class TimerController: UIViewController {
         coinsImg?.removeFromSuperview()
         plusIcon.removeFromSuperview()
         quoteLabel.removeFromSuperview()
+        levelLabel.removeFromSuperview()
         imageView?.removeFromSuperview()
         circularSlider.removeFromSuperview()
         self.navigationController?.pushViewController(UpgradeChestController(), animated: true)

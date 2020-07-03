@@ -29,7 +29,7 @@ extension TimerController {
     
     @objc func checkIfLocked(noti: Notification) {
         print("locked")
-        if !breakPlaying {
+         if !breakPlaying {
         locked = true
          killDate = Date().addingTimeInterval(10000000)
         let center = UNUserNotificationCenter.current()
@@ -101,7 +101,7 @@ extension TimerController {
         breakL.frame.size.height = 100
         breakL.numberOfLines = 2
         breakL.center.x = view.center.x
-        breakL.center.y = view.center.y - 260
+        breakL.center.y = view.center.y - 250
         breakL.lineBreakMode = .byClipping
         breakL.text = "Starting..."
         quoteLabel.removeFromSuperview()
@@ -410,7 +410,7 @@ extension TimerController {
             self.timer.invalidate()
             let shared = UserDefaults.standard
             shared.set(Date(), forKey: "savedTime")
-            pauseLayer(layer: trackLayer)
+//            pauseLayer(layer: trackLayer)
         } else if breakPlaying {
             self.breakTimer.invalidate()
             let shared = UserDefaults.standard
@@ -466,8 +466,7 @@ extension TimerController {
                 focusTimerComplete()
                 return
             }
-            print("over here")
-            resumeLayer(layer: trackLayer)
+//            resumeLayer(layer: trackLayer)
             self.timeL.text = "\(String(self.mins)):\(secsString)"
             self.timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.incrementCount), userInfo: nil, repeats: true)
         //break time

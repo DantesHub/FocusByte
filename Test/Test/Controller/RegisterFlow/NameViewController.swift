@@ -49,7 +49,8 @@ class NameViewController: UIViewController {
                     "hair": chosenGender == "male" ? "brown+defaultManHair":"blonde+womanHair1",
                     "eyes": "black",
                     "skin": "tan",
-                    "tags": tagDict
+                    "tags": tagDict,
+                
                 ]) { (error) in
                     if let e = error {
                         print("There was a issue saving data to firestore \(e) ")
@@ -60,6 +61,7 @@ class NameViewController: UIViewController {
                     }
                 }
             }
+            UserDefaults.standard.set(false, forKey: "isPro")
             saveToRealm()
         } else {
             let alert = UIAlertController(title: "Must input a name!", message:nil, preferredStyle: .alert)       

@@ -138,7 +138,6 @@ class StatisticsController: UIViewController, ChartViewDelegate{
                 tagDictionary = result.tagDictionary.map{ $0 }
               }
           }
-        print(timeData)
         colors = Array(repeating: NSUIColor(), count: tagDictionary.count)
         createWeekBarChart()
         barChartView.animate(xAxisDuration: 1.5, easingOption: .easeInOutBack)

@@ -53,6 +53,16 @@ class InventoryController: UIViewController {
         button.isUserInteractionEnabled = false
         return button
     }()
+    lazy var backButton: UIButton? = {
+        let button = UIButton()
+        let largeConfiguration = UIImage.SymbolConfiguration(weight: .bold)
+        let carrotGreat = UIImage(systemName: "lessthan", withConfiguration: largeConfiguration)
+        let carrotGreat2 = carrotGreat?.resized(to: CGSize(width: 25, height: 25)).withTintColor(.white, renderingMode:.alwaysOriginal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(carrotGreat2, for: .normal)
+        button.isUserInteractionEnabled = false
+        return button
+    }()
     var scrollableLabel = UILabel()
     var sections = [Section]()
     
@@ -296,9 +306,12 @@ class InventoryController: UIViewController {
         menuBar.collectionView.selectItem(at: selectedIndexPath as IndexPath, animated: true, scrollPosition: UICollectionView.ScrollPosition.centeredHorizontally)
         menuBar.collectionView.scrollToItem(at: selectedIndexPath as IndexPath, at: UICollectionView.ScrollPosition.centeredHorizontally, animated: true)
         view.addSubview(nextButton!)
-        nextButton!.trailingAnchor.constraint(equalTo: menuBar.collectionView.trailingAnchor, constant: 25).isActive = true
+        nextButton!.trailingAnchor.constraint(equalTo: menuBar.collectionView.trailingAnchor, constant: 30).isActive = true
         nextButton!.centerYAnchor.constraint(equalTo: menuBar.collectionView.centerYAnchor).isActive = true
         
+        view.addSubview(backButton!)
+        backButton!.leadingAnchor.constraint(equalTo: menuBar.collectionView.leadingAnchor, constant: -30).isActive = true
+        backButton!.centerYAnchor.constraint(equalTo: menuBar.collectionView.centerYAnchor).isActive = true
       }
     
     //MARK: - Handlers
