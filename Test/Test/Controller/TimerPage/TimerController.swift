@@ -47,7 +47,7 @@ class TimerController: UIViewController {
     var motivationalQuote = ""
     var circularSlider = CircularSlider()
     let coinsL = AnimatedLabel()
-    var imageView: UIImageView? = {
+    var chestImageView: UIImageView? = {
         let iv = UIImageView()
         iv.sizeToFit()
         iv.contentMode = .scaleAspectFit
@@ -289,11 +289,11 @@ class TimerController: UIViewController {
         let breakTapped = UITapGestureRecognizer(target: self, action: #selector(self.breakPressed))
         self.breakButton.addGestureRecognizer(breakTapped)
         
-        imageView?.image =  UIImage(named: chest)!
-        imageView?.sizeToFit()
-        imageView?.center.x = view.center.x
-        imageView?.center.y = view.center.y - 50
-        view.insertSubview(imageView!, at: 10)
+        chestImageView?.image =  UIImage(named: chest)!
+        chestImageView?.sizeToFit()
+        chestImageView?.center.x = view.center.x
+        chestImageView?.center.y = view.center.y - 50
+        view.insertSubview(chestImageView!, at: 10)
         
         createQuoteLabel()
         
@@ -315,7 +315,7 @@ class TimerController: UIViewController {
     private func createLevelLabel() {
         view.addSubview(levelLabel)
         levelLabel.centerX(to: view)
-        levelLabel.bottomAnchor.constraint(equalTo: imageView!.topAnchor, constant: -40).isActive = true
+        levelLabel.bottomAnchor.constraint(equalTo: chestImageView!.topAnchor, constant: -40).isActive = true
         levelLabel.text = "LVL:\(level)"
     }
     private func createQuoteLabel() {
@@ -335,7 +335,7 @@ class TimerController: UIViewController {
             quoteLabel.font = UIFont(name: "Menlo-Bold", size: 15)
             //        quoteLabel.sizeToFit()
             quoteLabel.centerX(to: view)
-            quoteLabel.bottomAnchor.constraint(equalTo: imageView!.topAnchor, constant: -80).isActive = true
+            quoteLabel.bottomAnchor.constraint(equalTo: chestImageView!.topAnchor, constant: -80).isActive = true
         }
     }
     
@@ -436,7 +436,7 @@ class TimerController: UIViewController {
         createTagImageView()
         createTimerButtonLbl()
         timerButtonLbl.text = "Start"
-        imageView?.image = UIImage(named: chest)
+        chestImageView?.image = UIImage(named: chest)
         timeL.font = UIFont(name: "Menlo-Bold", size: 65)
         breakButton.removeFromSuperview()
         breakButtonLbl.removeFromSuperview()
@@ -473,7 +473,6 @@ class TimerController: UIViewController {
         }
         
         if isPlaying && timerButtonLbl.text == "Give Up" {
-            print("give up alert")
             giveUpAlert()
         } else if durationString != "0"{
             isPlaying = true
@@ -485,7 +484,7 @@ class TimerController: UIViewController {
             createTimerButtonLbl()
             levelLabel.removeFromSuperview()
             timerButton.backgroundColor = darkRed
-            imageView?.loadGif(name: "mapGif")
+            chestImageView?.loadGif(name: "mapGif")
             // create my track layer
             createShapeLayer()
 //            createBasicAnimation()
@@ -598,7 +597,7 @@ class TimerController: UIViewController {
         self.timeL.text = "Let's Go \nAgain!"
         self.timeL.font = UIFont(name: "Menlo-Bold", size: 30)
         
-        self.imageView?.image = UIImage(named: chest)
+        self.chestImageView?.image = UIImage(named: chest)
         
         self.timerButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(timerButton)
@@ -652,7 +651,7 @@ class TimerController: UIViewController {
         plusIcon.removeFromSuperview()
         quoteLabel.removeFromSuperview()
         levelLabel.removeFromSuperview()
-        imageView?.removeFromSuperview()
+        chestImageView?.removeFromSuperview()
         circularSlider.removeFromSuperview()
         self.navigationController?.pushViewController(UpgradeChestController(), animated: true)
     }

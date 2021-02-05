@@ -82,7 +82,7 @@ extension TimerController {
         isPlaying = false
         self.timer.invalidate()
         self.twoButtonSetup()
-        self.imageView?.image = UIImage(named: "sinkingShip")
+        self.chestImageView?.image = UIImage(named: "sinkingShip")
         self.timeL.text = "We Lost The Chest :("
         isPlaying = false
         timer.invalidate()
@@ -218,7 +218,7 @@ extension TimerController {
                                 print("Succesfully saved")
                                 self.timeL.removeFromSuperview()
                                 self.twoButtonSetup()
-                                self.imageView?.image = UIImage(named: "\(self.chest)-open")
+                                self.chestImageView?.image = UIImage(named: "\(self.chest)-open")
                                 self.timeL.text = "Look at all \nthis Loot!"
                                 self.view.addSubview(self.timeL)
                                 enteredForeground = false
@@ -238,7 +238,7 @@ extension TimerController {
             self.coinsL.text = String(coins)
             self.timeL.removeFromSuperview()
             self.twoButtonSetup()
-            self.imageView?.image = UIImage(named: "\(self.chest)-open")
+            self.chestImageView?.image = UIImage(named: "\(self.chest)-open")
             self.timeL.text = "Look at all \nthis Loot!"
             self.view.addSubview(self.timeL)
             enteredForeground = false

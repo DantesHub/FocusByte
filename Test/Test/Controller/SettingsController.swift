@@ -141,6 +141,7 @@ extension SettingsController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: SettingsCell.settingsCell, for: indexPath) as! SettingsCell
         cell.setTitle(title: self.data[indexPath.row].title, type: self.data[indexPath.row].type)
+        cell.backgroundColor = backgroundColor
         return cell
     }
     

@@ -99,7 +99,6 @@ class SettingsCell:UITableViewCell,SKPaymentTransactionObserver, SKProductsReque
     func configureUI() {
         fetchProducts()
         self.selectionStyle = .none
-        self.backgroundColor = backgroundColor
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(titleLabel)
         titleLabel.numberOfLines = 0

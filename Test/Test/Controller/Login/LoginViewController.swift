@@ -58,10 +58,11 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
         loginTitle.frame.size.height = 100
         loginTitle.center.x = view.center.x + 70
         loginTitle.center.y = view.center.y - 230
-        loginTitle.text = "Login"
+        loginTitle.text = !isIpod ? "Login" : ""
         loginTitle.font = UIFont(name: "Menlo-Bold", size: CGFloat(titleSize))
         loginTitle.textColor = brightPurple
         view.addSubview(loginTitle)
+        
         
         loginButtonView =  UIView(frame: CGRect(x: 100, y: 400, width: buttonWidth, height: 60))
         loginButtonView.applyDesign(color: lightLavender)

@@ -210,7 +210,7 @@ class AvatarController: UIViewController {
                     colorCollectionPadding = -70
                     characterBackgroundBottom = -80
                 //("iphone 8plus")
-                case 2436:
+                case 2436, 2532:
                     avatarHairPadding = 40
                     avatarTopPadding = 105
                     petLabelSize = 16.5
@@ -237,6 +237,15 @@ class AvatarController: UIViewController {
                     colorCollectionPadding = -100
                     characterBackgroundBottom = -110
                 //print("IPHONE XR, IPHONE 11")
+                case 2778:
+                    avatarHairPadding = 50
+                    avatarTopPadding = 125
+                    petLabelSize = 20
+                    avatarPantsPadding = 100
+                    avatarArmWidth = 1.65
+                    colorCollectionPadding = -100
+                    characterBackgroundBottom = -110
+                    //iphone 12 pro max
                 default:
                     avatarHairPadding = 10
                     avatarTopPadding = 55

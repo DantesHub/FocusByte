@@ -11,7 +11,7 @@ var registerPadding:CGFloat = 275
 var backgroundType = "proBackground"
 var lessThanConstant:CGFloat = 840
 var onPad = false
-
+var isIpod = false
 var titleSize: Int {
     get {
         var size = 0
@@ -26,6 +26,18 @@ var titleSize: Int {
                 backgroundType = "8background"
                  lessThanConstant = 350
             //("iphone 8plus")
+            case 1136:
+                size = 40
+                isIpod = true
+                iphone8Padding = 50
+                titlePadding = 5
+                middleTextSize = 30
+                buttonWidth = 300
+                xPadding = -145
+                registerPadding = 265
+                backgroundType = "8background"
+                lessThanConstant = 350
+                //iphone 5
             case 1334:
                 //Iphone 8
                 size = 50
@@ -44,14 +56,13 @@ var titleSize: Int {
                 buttonWidth = 300
                 xPadding = -145
                 lessThanConstant = 350
-            //print("IPHONE X, IPHONE XS, IPHONE 11 PRO")
+            //print("IPHONE X, IPHONE XS, IPHONE 11 PRO, iphone 12 mini ")
             case 2688:
                 size = 55
                 middleTextSize = 40
                 buttonWidth = 350
                 xPadding = -175
                 lessThanConstant = 350
-
             //print("IPHONE XS MAX, IPHONE 11 PRO MAX")
             case 1792:
                 size = 55
@@ -59,6 +70,20 @@ var titleSize: Int {
                 buttonWidth = 350
                 xPadding = -175
             //print("IPHONE XR, IPHONE 11")
+            case 2532:
+                size = 55
+                middleTextSize = 40
+                buttonWidth = 325
+                xPadding = -175
+                lessThanConstant = 350
+            //iphone 12, iphone 12 pro
+            case 2778:
+            //iphone 12 pro max
+                size = 55
+                middleTextSize = 40
+                buttonWidth = 350
+                xPadding = -175
+                lessThanConstant = 350
             default:
                 onPad = true
                 size = 50
@@ -124,7 +149,7 @@ class WelcomeViewController: UIViewController {
         titleLabel1.center.y = view.center.y - 200
         titleLabel1.text = "FOCUS"
         titleLabel1.font = UIFont(name: "Menlo", size: CGFloat(titleSize))
-        titleLabel1.center.x = view.center.x + CGFloat(titlePadding)
+        titleLabel1.center.x = view.center.x + (isIpod ?  CGFloat(titlePadding * 7)  : CGFloat(titlePadding))
         titleLabel1.textColor = brightPurple
         
         titleLabel2.frame.size.width = 300
@@ -135,9 +160,8 @@ class WelcomeViewController: UIViewController {
         titleLabel2.center.x = view.center.x + 165 - CGFloat(titlePadding)
         titleLabel2.textColor = .black
         
- 
-        middleText.frame.size.width = 300
-        middleText.frame.size.height = 400
+        middleText.frame.size.width = view.frame.width * 0.725
+        middleText.frame.size.height = view.frame.height * 0.45
         middleText.center.x = view.center.x + CGFloat(titlePadding * 2)
         middleText.center.y = view.center.y - 50
         middleText.text = "Level up and have fun while you study and do work. "
@@ -150,7 +174,7 @@ class WelcomeViewController: UIViewController {
         loginView.translatesAutoresizingMaskIntoConstraints = false
         loginView.applyDesign(color: brightPurple)
         loginView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        loginView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 140).isActive = true
+        loginView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 120).isActive = true
         loginView.heightAnchor.constraint(equalToConstant: 80).isActive = true
         loginView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8).isActive = true
         loginView.widthAnchor.constraint(lessThanOrEqualToConstant: lessThanConstant).isActive = true
