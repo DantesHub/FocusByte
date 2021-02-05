@@ -20,7 +20,7 @@ target 'Test' do
 	pod 'Charts'
 	pod 'SCLAlertView'
 	pod 'IQKeyboardManagerSwift'
-
+	pod 'Purchases', '3.10.1'
 
 	
   target 'TestTests' do

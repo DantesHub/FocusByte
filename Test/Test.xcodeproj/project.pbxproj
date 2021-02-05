@@ -61,6 +61,7 @@
 		FE8E61F624859611001E1D07 /* AvatarStoreController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE8E61F524859611001E1D07 /* AvatarStoreController.swift */; };
 		FE8E61F82485A7AB001E1D07 /* AvatarStoreCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE8E61F72485A7AB001E1D07 /* AvatarStoreCell.swift */; };
 		FE8E61FA2485B458001E1D07 /* AvatarAccessory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE8E61F92485B458001E1D07 /* AvatarAccessory.swift */; };
+		FE923F2E25CDD7E20048E4EC /* TimerIpod.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE923F2D25CDD7E20048E4EC /* TimerIpod.swift */; };
 		FEBC64142431183F00FB082A /* PressStart2P-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FEBC64132431183F00FB082A /* PressStart2P-Regular.ttf */; };
 		FEC28331244B86C200098413 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEC28330244B86C200098413 /* Extensions.swift */; };
 		FEC28333244B87E100098413 /* MysteryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEC28332244B87E100098413 /* MysteryViewController.swift */; };
@@ -174,6 +175,7 @@
 		FE8E61F524859611001E1D07 /* AvatarStoreController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarStoreController.swift; sourceTree = "<group>"; };
 		FE8E61F72485A7AB001E1D07 /* AvatarStoreCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarStoreCell.swift; sourceTree = "<group>"; };
 		FE8E61F92485B458001E1D07 /* AvatarAccessory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarAccessory.swift; sourceTree = "<group>"; };
+		FE923F2D25CDD7E20048E4EC /* TimerIpod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerIpod.swift; sourceTree = "<group>"; };
 		FEBC64132431183F00FB082A /* PressStart2P-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PressStart2P-Regular.ttf"; sourceTree = "<group>"; };
 		FEC28330244B86C200098413 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		FEC28332244B87E100098413 /* MysteryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MysteryViewController.swift; sourceTree = "<group>"; };
@@ -287,6 +289,7 @@
 				FE577C9E247491B900042819 /* BarChartDataUtil.swift */,
 				FEF55DC624301CB300B4C0E1 /* View */,
 				FEF55DC724301CB800B4C0E1 /* Controller */,
+				FE923F3525CDF4060048E4EC /* Subscription */,
 				FEF55DC924301EA500B4C0E1 /* Misc */,
 				E1593632242AD4EC0050E914 /* Test.entitlements */,
 				E159360B242ACE710050E914 /* Assets.xcassets */,
@@ -319,8 +322,8 @@
 			isa = PBXGroup;
 			children = (
 				FE324976246DFB1C0090759B /* StatisticsControllerUI.swift */,
-				FE577C9C24748D4200042819 /* StatisticsBarChartLogic.swift */,
 				FE61EA912475F8F200A6AE25 /* StatisticsPieChartLogic.swift */,
+				FE577C9C24748D4200042819 /* StatisticsBarChartLogic.swift */,
 			);
 			path = Statistics;
 			sourceTree = "<group>";
@@ -332,6 +335,14 @@
 				FE830E672481746F00D80076 /* AvatarSideBar.swift */,
 			);
 			path = Avatar;
+			sourceTree = "<group>";
+		};
+		FE923F3525CDF4060048E4EC /* Subscription */ = {
+			isa = PBXGroup;
+			children = (
+				FE2FBC3E248D80DB006A3304 /* GoProViewController.swift */,
+			);
+			path = Subscription;
 			sourceTree = "<group>";
 		};
 		FECA7A7B243909C200763504 /* Model */ = {
@@ -393,6 +404,7 @@
 				E1593606242ACE6F0050E914 /* TimerController.swift */,
 				FE61EA9324770BCE00A6AE25 /* TimerControllerLogic.swift */,
 				FE61EA9524771D9600A6AE25 /* TagTableViewController.swift */,
+				FE923F2D25CDD7E20048E4EC /* TimerIpod.swift */,
 			);
 			path = TimerPage;
 			sourceTree = "<group>";
@@ -449,7 +461,6 @@
 				FEF00174243FB635002D6C78 /* SettingsController.swift */,
 				FE324974246CB0220090759B /* InventoryController.swift */,
 				FE577C9B24748CFE00042819 /* Statistics */,
-				FE2FBC3E248D80DB006A3304 /* GoProViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -813,6 +824,7 @@
 				FEF00175243FB635002D6C78 /* SettingsController.swift in Sources */,
 				FE33D509247D8AF000A93C2F /* InventoryCell.swift in Sources */,
 				FEC28339244CFCAB00098413 /* AvatarController.swift in Sources */,
+				FE923F2E25CDD7E20048E4EC /* TimerIpod.swift in Sources */,
 				FE2FBC39248AC737006A3304 /* UpgradeChestController.swift in Sources */,
 				FECA7A7D243909CF00763504 /* ValidationError.swift in Sources */,
 				FE33D50F247F082800A93C2F /* RarityEnum.swift in Sources */,
@@ -989,14 +1001,14 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Test/Test.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 30;
+				CURRENT_PROJECT_VERSION = 31;
 				DEVELOPMENT_TEAM = M5757NXZKD;
 				INFOPLIST_FILE = Test/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.5;
+				MARKETING_VERSION = 1.3.6;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1101,14 +1113,14 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Test/Test.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 30;
+				CURRENT_PROJECT_VERSION = 31;
 				DEVELOPMENT_TEAM = M5757NXZKD;
 				INFOPLIST_FILE = Test/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.5;
+				MARKETING_VERSION = 1.3.6;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-l\"c++\"",

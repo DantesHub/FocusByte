@@ -83,7 +83,7 @@ class ContainerController: UIViewController {
         if shouldExpand {
             //show menu
             UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
-                self.centerController.view.frame.origin.x = self.centerController.view.frame.width - 190
+                self.centerController.view.frame.origin.x = self.centerController.view.frame.width - (isIpod ? 150 : 190)
             }, completion: nil)
         } else {
             UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {

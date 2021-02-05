@@ -34,6 +34,7 @@ var chestBought = false
 var expDate = ""
 var randomNum = 0
 var upgradedToPro = false
+
 class TimerController: UIViewController {
     //MARK: - Properties
     var lastDate = ""
@@ -184,7 +185,6 @@ class TimerController: UIViewController {
                     expDate = (date?.toString())!
                     chestBought = true
                 }
-                
             } else if item.contains("Diamond Chest") {
                 let plusIndex = item.firstIndex(of: "+")
                 let date = String(item[..<plusIndex!]).toDate()
@@ -193,43 +193,44 @@ class TimerController: UIViewController {
                     expDate = (date?.toString())!
                     chestBought = true
                 }
-                
             }
         }
-        
     }
-    
     
     override func viewWillAppear(_ animated: Bool) {
         createObservers()
-        createGestureRecognizers()
+//        createGestureRecognizers()
         coinsL.countFromZero(to: Float(coins), duration: .brisk)
         level = Int(floor(sqrt(Double(exp))))
-        configureUI()
+        if isIpod {
+            configureIpodUI()
+        } else {
+           configureUI()
+        }
         configureNavigationBar(color: backgroundColor, isTrans: true)
     }
-    private final func createGestureRecognizers() {
-        let rightSwipe = UISwipeGestureRecognizer(target: self, action: #selector(swipedRight))
-           view.addGestureRecognizer(rightSwipe)
-           
-           let leftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(swipedLeft))
-           leftSwipe.direction = .left
-           
-           view.addGestureRecognizer(leftSwipe)
-    }
-    @objc func swipedRight() {
-        if isOpen == false {
-            handleMenuToggle()
-        }
-    }
-    
-
-    
-    @objc func swipedLeft() {
-       if isOpen == true {
-            handleMenuToggle()
-        }
-    }
+//    private final func createGestureRecognizers() {
+//        let rightSwipe = UISwipeGestureRecognizer(target: self, action: #selector(swipedRight))
+//           view.addGestureRecognizer(rightSwipe)
+//
+//           let leftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(swipedLeft))
+//           leftSwipe.direction = .left
+//
+//           view.addGestureRecognizer(leftSwipe)
+//    }
+//    @objc func swipedRight() {
+//        if isOpen == false {
+//            handleMenuToggle()
+//        }
+//    }
+//
+//
+//
+//    @objc func swipedLeft() {
+//       if isOpen == true {
+//            handleMenuToggle()
+//        }
+//    }
     
     override func viewWillDisappear(_ animated: Bool) {
         onHome = false
@@ -247,7 +248,6 @@ class TimerController: UIViewController {
     
     //MARK: - helper functions
     func configureUI() {
-        //        UIApplication.shared.isIdleTimerDisabled = true
         coinsImg = UIImageView(image: UIImage(named: "coins")!)
         coinsImg!.frame.size.width = 25
         coinsImg!.frame.size.height = 30
@@ -282,8 +282,8 @@ class TimerController: UIViewController {
         timeL.center.y = view.center.y + 160
         timeL.lineBreakMode = .byClipping
         view.addSubview(timeL)
-        
         view.addSubview(timerButton)
+        
         createTimerButton()
         createTimerButtonLbl()
         let breakTapped = UITapGestureRecognizer(target: self, action: #selector(self.breakPressed))
@@ -318,7 +318,7 @@ class TimerController: UIViewController {
         levelLabel.bottomAnchor.constraint(equalTo: chestImageView!.topAnchor, constant: -40).isActive = true
         levelLabel.text = "LVL:\(level)"
     }
-    private func createQuoteLabel() {
+     func createQuoteLabel() {
         createLevelLabel()
         if UserDefaults.standard.bool(forKey: "quotes") == true {
             view.addSubview(quoteLabel)
@@ -333,13 +333,12 @@ class TimerController: UIViewController {
             quoteLabel.textAlignment = .center
             quoteLabel.textColor = .white
             quoteLabel.font = UIFont(name: "Menlo-Bold", size: 15)
-            //        quoteLabel.sizeToFit()
             quoteLabel.centerX(to: view)
             quoteLabel.bottomAnchor.constraint(equalTo: chestImageView!.topAnchor, constant: -80).isActive = true
         }
     }
     
-    private func createBarItem() {
+     func createBarItem() {
         navigationItem.leftBarButtonItem =  UIBarButtonItem(image: resizedMenuImage?.withTintColor(.white), style: .plain, target: self, action: #selector(handleMenuToggle))
     }
     
@@ -364,7 +363,7 @@ class TimerController: UIViewController {
         }
     }
     //MARK: - Helper UI Funcs
-    private final func createTimerButtonLbl() {
+     final func createTimerButtonLbl() {
         timerButtonLbl.translatesAutoresizingMaskIntoConstraints = false
         if !isPlaying {
             timerButtonLbl.text = "Start"
@@ -379,7 +378,7 @@ class TimerController: UIViewController {
         timerButtonLbl.font = UIFont(name: "Menlo-Bold", size: 20)
     }
     
-    private final func createTimerButton() {
+     final func createTimerButton() {
         timerButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(timerButton)
         timerButton.widthAnchor.constraint(equalToConstant: 140).isActive = true
@@ -391,7 +390,7 @@ class TimerController: UIViewController {
         timerButton.applyDesign(color: darkPurple)
     }
     
-    private final func createXImageView() {
+     final func createXImageView() {
         xImageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(xImageView)
         xImageView.height(70)
@@ -410,7 +409,7 @@ class TimerController: UIViewController {
         xImageView.applyDesign(color: darkRed)
     }
     
-    private final func createTagImageView() {
+     final func createTagImageView() {
         tagImageView.translatesAutoresizingMaskIntoConstraints = false
         tagImageView.height(70)
         tagImageView.width(70)
@@ -445,6 +444,8 @@ class TimerController: UIViewController {
         createCircularSlider()
     }
     
+ 
+    
     
     //MARK: - Handlers
     @objc func handleMenuToggle() {
@@ -465,7 +466,7 @@ class TimerController: UIViewController {
             durationString = String((self.timeL.text?[..<colon])!)
         }
         if timerButtonLbl.text == "Timer" {
-            createStartUI()
+            !isIpod ? createStartUI() : createIpodStartUI()
             return
         }
         if !self.view.subviews.contains(quoteLabel) && self.view.subviews.contains(breakL) {
@@ -486,8 +487,11 @@ class TimerController: UIViewController {
             timerButton.backgroundColor = darkRed
             chestImageView?.loadGif(name: "mapGif")
             // create my track layer
-            createShapeLayer()
-//            createBasicAnimation()
+            if !isIpod {
+                createShapeLayer()
+            } else {
+                createIpodLayer()
+            }
             countDownTimer()
             breakTimer.invalidate()
             breakL.removeFromSuperview()
@@ -533,20 +537,26 @@ class TimerController: UIViewController {
     
     @objc func xTapped() {
         circularSlider.removeFromSuperview()
-        createShapeLayer()
-        twoButtonSetup()
+        if !isIpod {
+            createShapeLayer()
+        } else {
+            createIpodLayer()
+        }
+       twoButtonSetup()
     }
+    
     
     func giveUpAlert() {
         let alert = UIAlertController(title: "Are you sure you want to give up?", message:"The search for treasure will stop", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action) in
+        alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { [self] (action) in
             counter = 0
             DispatchQueue.main.async {
                 self.timer.invalidate()
             }
             self.timeL.text = "Let's Go \nAgain!"
             isPlaying = false
-            self.twoButtonSetup() //Add break button and timer button
+           twoButtonSetup()
+//Add break button and timer button
         }))
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { (action) in

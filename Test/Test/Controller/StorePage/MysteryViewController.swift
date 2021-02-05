@@ -92,7 +92,8 @@ class MysteryViewController: UIViewController {
     //MARK: - Init
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureUI()
+        
+        isIpod ? configureUI() : configureIpodUI()
         if #available(iOS 10.0, *) {collectionView.isPrefetchingEnabled = false}
         collectionView.isScrollEnabled = false
         collectionView.delegate = self
@@ -100,6 +101,9 @@ class MysteryViewController: UIViewController {
     }
     
     //MARK: - Helper Functions
+    func configureIpodUI() {
+        
+    }
     func configureUI() {
         view.backgroundColor = darkPurple
         view.addSubview(collectionView)
@@ -271,7 +275,6 @@ extension SpecialButton {
         return self.bounds.contains(point) ? self : nil
     }
     func blink(enabled: Bool = true, duration: CFTimeInterval = 0.5, stopAfter: CFTimeInterval = 0.0 ) {
-        print("working")
         enabled ? (UIView.animate(withDuration: duration, //Time duration you want,
             delay: 0.0,
             options: [.curveEaseInOut, .autoreverse, .repeat],

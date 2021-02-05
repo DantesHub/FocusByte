@@ -194,6 +194,22 @@ class AvatarController: UIViewController {
                     petSize = 75
                     characterBackgroundBottom = -80
                     colorCollectionPadding = -70
+                case 1136:
+                    avatarHairPadding = -7
+                    avatarTopPadding = 30
+                    petLabelSize = 10
+                    avatarPantsPadding = 80
+                    avatarArmWidth = 2
+                    saveButtonPadding = -75
+                    avatarSuitPadding = 30
+                    saveButtonWidth = 55
+                    saveFontSize = 15
+                    avatarArmMultiplier = 0.27
+                    avatarBottomPadding = 40
+                    petSize = 75
+                    characterBackgroundBottom = -80
+                    colorCollectionPadding = -70
+                    //iphone 5
                 case 1920, 2208:
                     avatarHairPadding = 20
                     avatarTopPadding = 80
@@ -448,6 +464,9 @@ class AvatarController: UIViewController {
         characterBackground.addSubview(petImageView)
         //Avatar
         characterBackground.addSubview(avatarImageView)
+        if isIpod {
+            avatarImageView.topToBottom(of: petLabel, offset: 5).isActive = true
+        }
         avatarImageView.bottomAnchor.constraint(equalTo: characterBackground.bottomAnchor, constant: avatarBottomPadding).isActive = true
         
         avatarImageView.leadingAnchor.constraint(equalTo: characterBackground.leadingAnchor, constant: 15).isActive = true
@@ -560,7 +579,7 @@ class AvatarController: UIViewController {
         
         //
         //type label
-        typeLabel.text = "Type: \(type)"
+        typeLabel.text = !isIpod ? "Type: \(type)" : ""
         characterBackground.addSubview(typeLabel)
         typeLabel.leadingAnchor.constraint(equalTo: characterBackground.leadingAnchor, constant: 30).isActive = true
         typeLabel.trailingAnchor.constraint(equalTo: characterBackground.trailingAnchor, constant: -30).isActive = true

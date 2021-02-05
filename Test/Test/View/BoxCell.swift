@@ -31,6 +31,17 @@ var boxPadding: CGFloat {
                 titleFont = 30
                 chestFont = 20
             //("iphone 8plus ")
+            case 1136:
+                size = 5
+                boxSize = 100
+                itemImageSize = 75
+                youGotFontSize = 30
+                boxDescFontSize = 16
+                titleFont = 30
+                commonItemPadding = 20
+                commonTitlePadding = 30
+                chestFont = 20
+                //iphone 5
             case 1334:
                 //Iphone 8
                 size = 5
@@ -79,9 +90,15 @@ class BoxCell: UICollectionViewCell {
         didSet {
             guard let data = data else { return }
             boxView.image = data.image
-            boxView.widthAnchor.constraint(greaterThanOrEqualToConstant: boxSize).isActive = true
-            boxView.heightAnchor
-                .constraint(greaterThanOrEqualToConstant: boxSize).isActive = true
+            if !isIpod {
+                boxView.widthAnchor.constraint(greaterThanOrEqualToConstant: boxSize).isActive = true
+                boxView.heightAnchor
+                    .constraint(greaterThanOrEqualToConstant: boxSize).isActive = true
+            }  else {
+                boxView.width(boxSize)
+                boxView.height(boxSize)
+            }
+           
 
         }
     }
@@ -195,7 +212,7 @@ class BoxCell: UICollectionViewCell {
         buyButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -30).isActive = true
         if onUpgrade {
             buyButton.addSubview(dollarIconView)
-            dollarIconView.leadingAnchor.constraint(equalTo: buyButton.leadingAnchor, constant: 30).isActive = true
+            dollarIconView.leadingAnchor.constraint(equalTo: buyButton.leadingAnchor, constant: isIpod ?  5 : 30).isActive = true
             dollarIconView.centerY(to: buyButton)
             dollarIconView.height(max: buyButton.frame.height * 1.50)
             dollarIconView.width(max: buyButton.frame.width * 0.80)

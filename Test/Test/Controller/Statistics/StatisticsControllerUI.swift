@@ -344,11 +344,11 @@ class StatisticsController: UIViewController, ChartViewDelegate{
         
         containerView.addSubview(backButton)
         backButton.topToBottom(of: menuBar, offset: 30)
-        backButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 25).isActive = true
+        backButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: isIpod ? 5 : 25).isActive = true
         
         containerView.addSubview(nextButton)
         nextButton.topToBottom(of: menuBar, offset: 30)
-        nextButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -25).isActive = true
+        nextButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: isIpod ? -5: -25).isActive = true
         
         containerView.addSubview(barChartView)
         barChartView.edgesToSuperview(excluding: .bottom, insets:  TinyEdgeInsets(top: 140, left: 25, bottom: 0, right: 25))
@@ -375,8 +375,8 @@ class StatisticsController: UIViewController, ChartViewDelegate{
         
         //vertical line
         let path = UIBezierPath()
-        path.move(to: CGPoint(x: containerView.center.x, y: containerView.center.y + 50))
-        path.addLine(to: CGPoint(x: containerView.center.x, y: containerView.center.y - 30))
+        path.move(to: CGPoint(x: containerView.center.x, y: containerView.center.y + (isIpod ? 100 : 50)))
+        path.addLine(to: CGPoint(x: containerView.center.x, y: containerView.center.y - (isIpod ? -30 : 30)))
         let shapeLayer = CAShapeLayer()
         shapeLayer.path = path.cgPath
         shapeLayer.strokeColor = UIColor.white.cgColor
@@ -398,7 +398,7 @@ class StatisticsController: UIViewController, ChartViewDelegate{
         barMinDescLabel.font = UIFont(name: "Menlo", size: 25)
         containerView.addSubview(barMinDescLabel)
         barMinDescLabel.topToBottom(of: barPressedTitle, offset: 85)
-        barMinDescLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 60).isActive = true
+        barMinDescLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: isIpod ? 50 : 60).isActive = true
         
         barSessNumLabel.text = "0"
         barSessNumLabel.textColor = .white
@@ -412,7 +412,7 @@ class StatisticsController: UIViewController, ChartViewDelegate{
         barSessDescLabel.font = UIFont(name: "Menlo", size: 25)
         containerView.addSubview(barSessDescLabel)
         barSessDescLabel.topToBottom(of: barPressedTitle, offset: 85)
-        barSessDescLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -40).isActive = true
+        barSessDescLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: isIpod ? -30 : -40).isActive = true
         
         tagChartTitle.text = "Tag Distribution"
         tagChartTitle.font = UIFont(name: "Menlo-Bold", size: 25)
@@ -423,7 +423,7 @@ class StatisticsController: UIViewController, ChartViewDelegate{
         containerView.addSubview(pieChartView)
         pieChartView.edgesToSuperview(excluding: .top, insets:  TinyEdgeInsets(top: 0, left: 25, bottom: 95, right: 25))
 //        pieChartView.legend.calculatedLineSizes = CGSize(width: pieChartView.frame.width, height: 80)
-        pieChartView.height(300)
+        pieChartView.height(isIpod ? 280 : 300)
         
         descriptionLabel.numberOfLines = 0
         descriptionLabel.text = "The percentage of time you spent\non different tags during the week,\nmonth or year"

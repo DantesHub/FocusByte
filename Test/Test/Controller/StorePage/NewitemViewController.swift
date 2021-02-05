@@ -145,32 +145,37 @@ class NewitemViewController: UIViewController {
     func configureBottomButtons() {
         view.addSubview(timerImageView)
         timerImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        //        timerImageView.topAnchor.constraint(equalTo: itemImageView.centerYAnchor, constant: 250).isActive = true
         timerImageView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -60).isActive = true
         let tapTimer = UITapGestureRecognizer(target: self, action: #selector(tappedTimer))
         timerImageView.addGestureRecognizer(tapTimer)
+        
+        view.addSubview(goStoreView)
         goStoreView.translatesAutoresizingMaskIntoConstraints = false
         goStoreView.backgroundColor = .white
         goStoreView.layer.cornerRadius = 25
         let tapStore = UITapGestureRecognizer(target: self, action: #selector(tappedStore))
         goStoreView.addGestureRecognizer(tapStore)
-        view.addSubview(goStoreView)
         goStoreView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
-        goStoreView.trailingAnchor.constraint(equalTo: timerImageView.leadingAnchor, constant: -20).isActive = true
         goStoreView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -65).isActive = true
-        goStoreView.widthAnchor.constraint(equalToConstant: 110).isActive = true
         goStoreView.heightAnchor.constraint(equalToConstant: 75).isActive = true
         goStoreView.applyDesign(color: .white)
+        goStoreView.trailingToLeading(of: timerImageView, offset: -10)
         
+        view.insertSubview(goStoreLabel, aboveSubview: goStoreLabel)
         goStoreLabel.font = UIFont(name: "Menlo-Bold", size: 20)
         goStoreLabel.text = "Store"
         goStoreLabel.sizeToFit()
         goStoreLabel.textColor = .black
         goStoreLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(goStoreLabel)
-        view.insertSubview(goStoreLabel, aboveSubview: goStoreView)
+        
         goStoreLabel.centerXAnchor.constraint(equalTo: goStoreView.centerXAnchor).isActive = true
         goStoreLabel.centerYAnchor.constraint(equalTo: goStoreView.centerYAnchor).isActive = true
+        
+        
+        
+       
+        
+
         
         inventoryView.translatesAutoresizingMaskIntoConstraints = false
         inventoryView.backgroundColor = .white

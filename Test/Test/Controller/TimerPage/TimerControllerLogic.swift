@@ -404,7 +404,6 @@ extension TimerController {
     
     //MARK: - pause & enter funcs
     @objc func pauseWhenBackground(noti: Notification) {
-        print("pause")
         enteredForeground = false
         if isPlaying {
             self.timer.invalidate()

@@ -10,7 +10,9 @@
 #endif
 #endif
 
+#import "FLAnimatedImage 2.h"
 #import "FLAnimatedImage.h"
+#import "FLAnimatedImageView 2.h"
 #import "FLAnimatedImageView.h"
 
 FOUNDATION_EXPORT double FLAnimatedImageVersionNumber;

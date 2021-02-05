@@ -9,8 +9,9 @@
 import UIKit
 import RealmSwift
 import Firebase
+import MessageUI
 var loggedOut = false
-class SettingsController: UIViewController {
+class SettingsController: UIViewController, MFMailComposeViewControllerDelegate {
     struct Setting {
         var title: String
         var type: String
@@ -23,7 +24,7 @@ class SettingsController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    var data = [Setting(title: "Deep Focus Mode", type: "dfm"),Setting(title: "Quotes on home screen", type: "quotes"), Setting(title: "Save to other devices", type: "sync"), Setting(title: "Rate Us!", type: "rate"), Setting(title: "Go Pro!", type: "gopro"), Setting(title: "Restore Purchase", type: "restore"), Setting(title: "Email: focusbyteteam@gmail.com", type: "email"),Setting(title: "⚠️❗️Non Pro users will lose all data if logged out", type: "warning")]
+    var data = [Setting(title: "Deep Focus Mode", type: "dfm"),Setting(title: "Quotes on home screen", type: "quotes"), Setting(title: "Save to other devices", type: "sync"), Setting(title: "Rate Us!", type: "rate"), Setting(title: "Go Pro!", type: "gopro"), Setting(title: "Restore Purchase", type: "restore"), Setting(title: "Email us! Feedback or Bugs :)", type: "email"),Setting(title: "⚠️❗️Non Pro users will lose all data if logged out", type: "warning")]
     var results: Results<User>!
     let logOutButton = UIButton()
     var delegate: ContainerControllerDelegate!
@@ -164,6 +165,16 @@ extension SettingsController: UITableViewDelegate, UITableViewDataSource {
                         }
                     }
                 }
+        } else if indexPath.row == 6 { //email
+            if MFMailComposeViewController.canSendMail() {
+                let mail = MFMailComposeViewController()
+                mail.mailComposeDelegate = self
+                mail.setToRecipients(["focusbyteteam@gmail.com"])
+                mail.setMessageBody("<p>Hello,</p>", isHTML: true)
+                present(mail, animated: true)
+            } else {
+                // show failure alert
+            }
         }
     }
 }
