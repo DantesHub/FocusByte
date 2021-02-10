@@ -8,6 +8,7 @@
 import UIKit
 import Firebase
 import GoogleSignIn
+import Purchases
 import RealmSwift
 var uiRealm = try! Realm()
 @UIApplicationMain
@@ -15,7 +16,6 @@ var uiRealm = try! Realm()
     var count = 0
     var window: UIWindow?
     func applicationDidEnterBackground(_ application: UIApplication) {
-        print("going")
         if isPlaying {
                 _ = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
                 self.count += 1
@@ -55,10 +55,12 @@ var uiRealm = try! Realm()
         FirebaseApp.configure()
         Firestore.firestore()
         GIDSignIn.sharedInstance().clientID = FirebaseApp.app()?.options.clientID
-        
-   
-        
+        Purchases.debugLogsEnabled = true
+        Purchases.configure(withAPIKey: "heQAfCVrwAdYyeLJEUMOnWAGXaBfhiJP")
         let defaults = UserDefaults.standard
+        defaults.register(defaults: [
+              "didAsk": false,
+        ])
         defaults.set("none", forKey: "status")
         return true
     }

@@ -50,7 +50,7 @@ class InventoryController: UIViewController {
         let carrotGreat2 = carrotGreat?.resized(to: CGSize(width: 25, height: 25)).withTintColor(.white, renderingMode:.alwaysOriginal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(carrotGreat2, for: .normal)
-        button.isUserInteractionEnabled = false
+        button.isUserInteractionEnabled = true
         return button
     }()
     lazy var backButton: UIButton? = {
@@ -60,12 +60,12 @@ class InventoryController: UIViewController {
         let carrotGreat2 = carrotGreat?.resized(to: CGSize(width: 25, height: 25)).withTintColor(.white, renderingMode:.alwaysOriginal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(carrotGreat2, for: .normal)
-        button.isUserInteractionEnabled = false
+        button.isUserInteractionEnabled = true
         return button
     }()
     var scrollableLabel = UILabel()
     var sections = [Section]()
-    
+    var idx = 0
     //MARK: - init
     init(whichTab: String = "") {
         super.init(nibName: nil, bundle: nil)
@@ -75,11 +75,10 @@ class InventoryController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
- 
     }
     override func viewWillAppear(_ animated: Bool) {
         getRealmData()
@@ -94,11 +93,18 @@ class InventoryController: UIViewController {
             getItems()
             addObservers()
         }
- 
+        backButton?.addTarget(self, action: #selector(tappedBack), for: .touchUpInside)
+        nextButton?.addTarget(self, action: #selector(tappedForward), for: .touchUpInside)
     }
     
     
     //MARK: - Helper Functions
+    @objc func tappedBack() {
+        self.menuBar.tappedLeft()
+    }
+    @objc func tappedForward() {
+        self.menuBar.tappedRight()
+    }
     private final func getRealmData() {
         results = uiRealm.objects(User.self)
             for result  in results {
@@ -166,9 +172,6 @@ class InventoryController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(InventoryController.updateToEpic(notificaton:)), name: NSNotification.Name(rawValue: epicKey), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(InventoryController.updateToPets(notificaton:)), name: NSNotification.Name(rawValue: petsKey), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(InventoryController.updateToCloset(notificaton:)), name: NSNotification.Name(rawValue: closetKey), object: nil)
-     
-
-
     }
 
     @objc final func updateToCommon(notificaton: NSNotification) {
@@ -227,10 +230,12 @@ class InventoryController: UIViewController {
         if menuLabel == "Pets" {
             for item in inventoryArray {
                 if petBook.contains(item) {
+                    print("item", item, inventoryArray)
                     if let i = displayArray.firstIndex(where: {$0.name == item}) {
                         displayArray[i].count += 1
                     } else {
-                        displayArray.append(DisplayItem(count: 1, name: item, rarity: itemBook[item]!))
+                        displayArray.append(DisplayItem(count: 1, name: item, rarity: itemBook[item] ?? "Epic"
+                        ))
                     }
                     
                 }

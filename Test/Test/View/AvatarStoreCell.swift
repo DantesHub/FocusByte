@@ -99,6 +99,8 @@ class AvatarStoreCell: UICollectionViewCell {
         priceLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: bigIpad ? 210:160).isActive = true
         priceLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 0).isActive = true
         
+
+        
         self.addSubview(coinImageView)
         coinImageView.height(40)
         coinImageView.width(30)
@@ -120,15 +122,18 @@ class AvatarStoreCell: UICollectionViewCell {
         self.layer.cornerRadius = 25
         self.layer.masksToBounds = true
         self.dropShadow(superview: self)
-        self.addSubview(titleLabel)
+        contentView.addSubview(titleLabel)
         
-        self.addSubview(priceLabel)
+        contentView.insertSubview(priceLabel, at: 1000)
         priceLabel.font = UIFont(name: "Menlo", size: 21)
-        priceLabel.width()
+//        priceLabel.width()
         priceLabel.translatesAutoresizingMaskIntoConstraints = false
+        if isIpod {
+            priceLabel.bottom(to: self,offset: -30)
+        } else {
+            priceLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 0).isActive = true
+        }
         priceLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 60).isActive = true
-        priceLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 0).isActive = true
-        
         self.addSubview(coinImageView)
           coinImageView.height(20)
           coinImageView.width(15)

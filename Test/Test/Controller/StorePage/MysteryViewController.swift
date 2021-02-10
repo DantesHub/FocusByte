@@ -93,7 +93,7 @@ class MysteryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        isIpod ? configureUI() : configureIpodUI()
+        configureUI()
         if #available(iOS 10.0, *) {collectionView.isPrefetchingEnabled = false}
         collectionView.isScrollEnabled = false
         collectionView.delegate = self

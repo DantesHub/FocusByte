@@ -18,6 +18,7 @@ class StoreController: UIViewController {
     var clothesBoxLabel = UILabel()
     var chestBox: UIView!
     var clothes: UIView!
+    var fromHome = false
     var delegate: ContainerController!
     var purseImageView: UIImageView = {
        let iv = UIImageView()
@@ -52,6 +53,12 @@ class StoreController: UIViewController {
             var height: CGFloat = 0.0
             if UIDevice().userInterfaceIdiom == .phone {
                 switch UIScreen.main.nativeBounds.height {
+                case 1136:
+                    height = 180
+                    //iphone 5
+                case 1334:
+                    height = 50
+                    //iphone 8
                 case 1920, 2208:
                     height = 50
                     //("iphone 8plus")
@@ -116,12 +123,19 @@ class StoreController: UIViewController {
         inputView.layer.shadowOpacity = 0.7
         return inputView
     }
-    
+    @objc func returnHome() {
+        self.dismiss(animated: true, completion: nil)
+    }
+    func createRightNav() {
+        navigationItem.rightBarButtonItem =  UIBarButtonItem(image: UIImage(named: "axe")?.resized(to: CGSize(width: 25, height: 25)).withTintColor(.white), style: .plain, target: self, action: #selector(returnHome))
+    }
     func configureUI() {
         configureNavigationBar(color: backgroundColor, isTrans: false)
         view.backgroundColor = backgroundColor
         navigationItem.title = "Shop"
         navigationItem.leftBarButtonItem =  UIBarButtonItem(image: resizedMenuImage?.withTintColor(.white), style: .plain, target: self, action: #selector(handleMenuToggle))
+
+        
         mysteryBox = createBox(color: darkPurple, handler: #selector(mysteryTapped))
         mysteryBox.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 20).isActive = true
         let mysteryTap = UITapGestureRecognizer(target: self, action: #selector(mysteryTapped))

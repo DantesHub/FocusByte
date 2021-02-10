@@ -3,6 +3,7 @@ import UIKit
 import RealmSwift
 import Firebase
 import StoreKit
+import Purchases
 class SettingsCell:UITableViewCell,SKPaymentTransactionObserver, SKProductsRequestDelegate {
     static var settingsCell = "settingsCell"
     let db = Firestore.firestore()
@@ -220,13 +221,19 @@ class SettingsCell:UITableViewCell,SKPaymentTransactionObserver, SKProductsReque
           }
     }
     @objc func tappedRestore() {
-        print("tappedRestore")
-        guard let myProduct = myProduct else {
-                return
-        }
-        if (SKPaymentQueue.canMakePayments()) {
-            SKPaymentQueue.default().add(self)
-            SKPaymentQueue.default().restoreCompletedTransactions()
+        let alertController = UIAlertController(title: "", message: "", preferredStyle: UIAlertController.Style.alert)
+        let okayAction = UIAlertAction(title: "Okay", style: UIAlertAction.Style.default, handler: {
+                                        (action : UIAlertAction!) -> Void in })
+        alertController.addAction(okayAction)
+        Purchases.shared.restoreTransactions { (purchaserInfo, error) in
+            if purchaserInfo?.entitlements.all["premium"]?.isActive == true {
+                alertController.title = "Purchase Restored!"
+                UserDefaults.standard.setValue(true, forKey: "isPro")
+            } else {
+                alertController.title = "Unable to restore purchase on this account"
+                UserDefaults.standard.setValue(false, forKey: "isPro")
+            }
+            self.parentViewController?.present(alertController, animated: true, completion: nil)
         }
     }
     @objc func tappedPro() {

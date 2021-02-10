@@ -8,6 +8,7 @@
 import UIKit
 import StoreKit
 import Firebase
+import Purchases
 class GoProViewController: UIViewController, SKPaymentTransactionObserver, SKProductsRequestDelegate {
     let db = Firestore.firestore()
     var myProduct: SKProduct?
@@ -31,7 +32,6 @@ class GoProViewController: UIViewController, SKPaymentTransactionObserver, SKPro
                       iphone8 = true
                     goProPadding = 10
                     onePadding = 10
-
                    //("iphone 8plus")
                    case 2436:
                       descSize = 16
@@ -136,7 +136,7 @@ class GoProViewController: UIViewController, SKPaymentTransactionObserver, SKPro
         subText3.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15).isActive = true
         subText3.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15).isActive = true
         subText3.numberOfLines = 0
-        subText3.text = "Tag your timer sessions with custom tags and colors, data is then visible on the stats page"
+        subText3.text = "Tag your timer sessions with custom tags and colors, data is then visible on your stats page"
         
         //Quotes
         view.addSubview(subTitle4)
@@ -254,8 +254,6 @@ class GoProViewController: UIViewController, SKPaymentTransactionObserver, SKPro
         request.start()
     }
     @objc func tappedPro() {
-        print("here")
-        print(myProduct)
         guard let myProduct = myProduct else {
             return
         }

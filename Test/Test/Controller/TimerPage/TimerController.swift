@@ -15,6 +15,7 @@ import AudioToolbox
 import TinyConstraints
 import Foundation
 import TinyConstraints
+import Purchases
 import SCLAlertView
 var enteredForeground = false
 var deepFocusMode = true
@@ -131,6 +132,7 @@ class TimerController: UIViewController {
     //MARK: -Init
     override func viewDidLoad() {
         super.viewDidLoad()
+        checkIfPro()
         onHome = true
         if boughtChest == true {
             let alertView = SCLAlertView()
@@ -140,7 +142,7 @@ class TimerController: UIViewController {
         if upgradedToPro {
             let alertView = SCLAlertView()
             alertView.iconTintColor = brightPurple
-            alertView.showCustom("Succesfully Upgraded To Pro!", subTitle: "", color: brightPurple, icon: .checkmark)
+            alertView.showCustom("Succesfully Upgraded To Pro! Thank You!", subTitle: "", color: brightPurple, icon: .checkmark)
             upgradedToPro = false
         }
         
@@ -247,6 +249,29 @@ class TimerController: UIViewController {
     
     
     //MARK: - helper functions
+    func checkIfPro() {
+        Purchases.shared.purchaserInfo { (purchaserInfo, error) in
+                print(purchaserInfo?.activeSubscriptions, "Whats up with at")
+                if purchaserInfo?.entitlements.all["isPro"]?.isActive == true {
+                    print("really?")
+                    UserDefaults.standard.setValue(true, forKey: "isPro")
+                } else {
+                    if let _ = Auth.auth().currentUser?.email {
+                           let email = Auth.auth().currentUser?.email
+                         Firestore.firestore().collection(K.userPreferenes).document(email!).updateData([
+                                "isPro": false,
+                           ]) { (error) in
+                               if let e = error {
+                                   print("There was a issue saving data to firestore \(e) ")
+                               } else {
+                                   print("Succesfully saved new items")
+                               }
+                           }
+                    }
+                    UserDefaults.standard.setValue(false, forKey: "isPro")
+                }
+            }
+        }
     func configureUI() {
         coinsImg = UIImageView(image: UIImage(named: "coins")!)
         coinsImg!.frame.size.width = 25
@@ -337,9 +362,20 @@ class TimerController: UIViewController {
             quoteLabel.bottomAnchor.constraint(equalTo: chestImageView!.topAnchor, constant: -80).isActive = true
         }
     }
-    
+    @objc func tappedStore() {
+        let controller = StoreController()
+        controller.createRightNav()
+        let nav = self.navigationController //grab an instance of the current navigationController
+        DispatchQueue.main.async { //make sure all UI updates are on the main thread.
+            nav?.view.layer.add(CATransition().segueFromLeft(), forKey: nil)
+            nav?.pushViewController(ContainerController(center: controller), animated: false)
+        }
+    }
      func createBarItem() {
-        navigationItem.leftBarButtonItem =  UIBarButtonItem(image: resizedMenuImage?.withTintColor(.white), style: .plain, target: self, action: #selector(handleMenuToggle))
+        let storeBar = UIBarButtonItem(image: UIImage(named: "shop")?.resized(to: CGSize(width: 40, height: 40)).withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(tappedStore))
+        storeBar.tintColor = .none
+        storeBar.imageInsets = UIEdgeInsets(top: 0, left: -45, bottom: 0, right: 0)
+        navigationItem.leftBarButtonItems = [UIBarButtonItem(image: resizedMenuImage?.withTintColor(.white), style: .plain, target: self, action: #selector(handleMenuToggle)), storeBar]
     }
     
     func displayalert(title:String, message:String) {
@@ -357,9 +393,7 @@ class TimerController: UIViewController {
             tagTableView = TagTableView(frame: view.bounds)
             view.addSubview(tagTableView)
         }   else {
-            let controller = GoProViewController()
-            controller.modalPresentationStyle = .fullScreen
-            presentInFullScreen(UINavigationController(rootViewController: controller), animated: true, completion: nil)
+            present(SubscriptionController(), animated: true, completion: nil)
         }
     }
     //MARK: - Helper UI Funcs

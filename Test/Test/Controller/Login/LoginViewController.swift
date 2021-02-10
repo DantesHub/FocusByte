@@ -3,6 +3,7 @@ import Firebase
 import GoogleSignIn
 import RealmSwift
 import AuthenticationServices
+import Purchases
 class LoginViewController: UIViewController,GIDSignInDelegate {
     var goToTimerView = UIView()
     var goToTimerLabel = UILabel()
@@ -385,8 +386,15 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
                         }
                     }
                 }
-                 UserDefaults.standard.set(true, forKey: "quotes")
+                UserDefaults.standard.set(true, forKey: "quotes")
                 UserDefaults.standard.set(isPro, forKey: "isPro")
+                Purchases.shared.restoreTransactions { (purchaserInfo, error) in
+                    if purchaserInfo?.entitlements.all["isPro"]?.isActive == true {
+                        UserDefaults.standard.setValue(true, forKey: "isPro")
+                    } else {
+                        UserDefaults.standard.setValue(false, forKey: "isPro")
+                    }
+                }
                 let timerVC = ContainerController(center: TimerController())
                 timerVC.modalPresentationStyle = .fullScreen
                 self.navigationController?.pushViewController(timerVC, animated: true)

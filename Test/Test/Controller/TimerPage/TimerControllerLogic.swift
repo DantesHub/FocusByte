@@ -420,7 +420,6 @@ extension TimerController {
     
     
     @objc func willEnterForeground(noti: Notification) {
-        print("entered foreground")
         enteredForeground = true
         let center = UNUserNotificationCenter.current()
         center.removeAllDeliveredNotifications()
@@ -448,7 +447,6 @@ extension TimerController {
     }
     
     func refresh (mins: Int, secs: Int) {
-        print("refresh difference \(mins) \(secs)")
         self.mins -= mins
         self.secs -= secs
         counter = (self.mins * 60) + self.secs

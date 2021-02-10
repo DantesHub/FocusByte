@@ -1,6 +1,6 @@
 import UIKit
 var menuLabel = "Week"
-
+var selectedIdx = 0
 class MenuBar: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout{
    lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -39,6 +39,21 @@ class MenuBar: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UIC
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    func tappedRight() {
+        if selectedIdx != 5 {
+            self.collectionView.selectItem(at: IndexPath(item: selectedIdx + 1, section: 0), animated: true, scrollPosition: .right)
+            selectedIdx = selectedIdx + 1
+            tappedLabel(categoryName: categoryNames[selectedIdx])
+        }
+    }
+    func tappedLeft() {
+        if selectedIdx != 0 {
+            self.collectionView.selectItem(at: IndexPath(item: selectedIdx - 1, section: 0), animated: true, scrollPosition: .right)
+            selectedIdx = selectedIdx - 1
+            tappedLabel(categoryName: categoryNames[selectedIdx])
+        }
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return categoryNames.count
     }
@@ -53,6 +68,7 @@ class MenuBar: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UIC
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         tappedLabel(categoryName: categoryNames[indexPath.row])
+        selectedIdx = indexPath.row
     }
     func tappedLabel(categoryName: String) {
         switch categoryName {
