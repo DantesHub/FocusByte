@@ -112,13 +112,14 @@ class ContainerController: UIViewController {
             presentInFullScreen(UINavigationController(rootViewController: controller), animated: false, completion: nil)
         case .statistics:
             var controller = UIViewController()
-            var animated = false
+            let controller2 = SubscriptionController()
+            let animated = false
             if UserDefaults.standard.bool(forKey: "isPro") == true {
                 controller = ContainerController(center: StatisticsController())
             } else {
-                controller = SubscriptionController()
-                animated = true
-                present(controller, animated: true, completion: nil)
+                controller2.idx = 1
+                controller2.modalPresentationStyle = .fullScreen
+                presentInFullScreen(UINavigationController(rootViewController: controller2), animated: true, completion: nil)
                 return
             }
             controller.modalPresentationStyle = .fullScreen
@@ -134,7 +135,8 @@ class ContainerController: UIViewController {
             presentInFullScreen(UINavigationController(rootViewController: controller), animated: false, completion: nil)
         case .goPro:
             let controller = SubscriptionController()
-            present(controller, animated: true, completion: nil)
+            controller.modalPresentationStyle = .fullScreen
+            presentInFullScreen(UINavigationController(rootViewController: controller), animated: true, completion: nil)
         }
             
     }

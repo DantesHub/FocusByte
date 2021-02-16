@@ -250,16 +250,27 @@ class TimerController: UIViewController {
     
     //MARK: - helper functions
     func checkIfPro() {
-        Purchases.shared.purchaserInfo { (purchaserInfo, error) in
-                print(purchaserInfo?.activeSubscriptions, "Whats up with at")
+        Purchases.shared.purchaserInfo { [self] (purchaserInfo, error) in
                 if purchaserInfo?.entitlements.all["isPro"]?.isActive == true {
-                    print("really?")
                     UserDefaults.standard.setValue(true, forKey: "isPro")
                 } else {
-                    if let _ = Auth.auth().currentUser?.email {
-                           let email = Auth.auth().currentUser?.email
-                         Firestore.firestore().collection(K.userPreferenes).document(email!).updateData([
-                                "isPro": false,
+                    UserDefaults.standard.setValue(false, forKey: "isPro")
+                    if let email = Auth.auth().currentUser?.email {
+                        var isPro = false
+                        let docRef = db.collection(K.FStore.collectionName).document(email)
+                        docRef.getDocument { (snapshot, error) in
+                            if let document = snapshot, document.exists {
+                                _ = document.data().map(String.init(describing:)) ?? "nil"
+                                if let isP = document["isPro"] {
+                                    isPro = isP as! Bool
+                                }
+                            }
+                            if isPro {
+                                UserDefaults.standard.setValue(true, forKey: "isPro")
+                            }
+                        }
+                         Firestore.firestore().collection(K.userPreferenes).document(email).updateData([
+                                "isPremium": false,
                            ]) { (error) in
                                if let e = error {
                                    print("There was a issue saving data to firestore \(e) ")
@@ -268,9 +279,9 @@ class TimerController: UIViewController {
                                }
                            }
                     }
-                    UserDefaults.standard.setValue(false, forKey: "isPro")
                 }
             }
+        
         }
     func configureUI() {
         coinsImg = UIImageView(image: UIImage(named: "coins")!)
@@ -374,7 +385,7 @@ class TimerController: UIViewController {
      func createBarItem() {
         let storeBar = UIBarButtonItem(image: UIImage(named: "shop")?.resized(to: CGSize(width: 40, height: 40)).withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(tappedStore))
         storeBar.tintColor = .none
-        storeBar.imageInsets = UIEdgeInsets(top: 0, left: -45, bottom: 0, right: 0)
+        storeBar.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 50)
         navigationItem.leftBarButtonItems = [UIBarButtonItem(image: resizedMenuImage?.withTintColor(.white), style: .plain, target: self, action: #selector(handleMenuToggle)), storeBar]
     }
     
@@ -393,7 +404,10 @@ class TimerController: UIViewController {
             tagTableView = TagTableView(frame: view.bounds)
             view.addSubview(tagTableView)
         }   else {
-            present(SubscriptionController(), animated: true, completion: nil)
+            let controller = SubscriptionController()
+            controller.modalPresentationStyle = .fullScreen
+            controller.idx = 2
+            presentInFullScreen(UINavigationController(rootViewController: controller), animated: true, completion: nil)
         }
     }
     //MARK: - Helper UI Funcs
@@ -496,6 +510,7 @@ class TimerController: UIViewController {
         center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             if let _ = error {}
         }
+        UIApplication.shared.registerForRemoteNotifications()
         if let colon = self.timeL.text?.firstIndex(of: ":") {
             durationString = String((self.timeL.text?[..<colon])!)
         }
@@ -619,7 +634,6 @@ class TimerController: UIViewController {
     }
     
     func resumeLayer(layer: CALayer) {
-        print("resumed layer")
         let pausedTime: CFTimeInterval = layer.timeOffset
         layer.speed = 1.0
         layer.timeOffset = 0.0

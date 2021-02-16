@@ -33,6 +33,7 @@ extension SubscriptionController: UICollectionViewDelegate, UICollectionViewData
             cell.imgName = topImages[indexPath.row]
             cell.title.text = topTitles[indexPath.row]
             cell.desc.text = topDescs[indexPath.row]
+            
             cell.configureUI()
             
             return cell
@@ -40,6 +41,7 @@ extension SubscriptionController: UICollectionViewDelegate, UICollectionViewData
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "bottomCell", for: indexPath) as! BottomCell
             cell.review.text = stories[indexPath.row]
+            cell.pic.image = UIImage(named: pics[indexPath.row])
             return cell
         }
     }
@@ -47,7 +49,7 @@ extension SubscriptionController: UICollectionViewDelegate, UICollectionViewData
         if collectionView == topCollectionView {
             return CGSize(width: topCollectionView.frame.width, height: topCollectionView.frame.height)
         } else {
-            return CGSize(width: bottomCollectionView.frame.width * 0.85, height: bottomCollectionView.frame.height * 0.85)
+            return CGSize(width: bottomCollectionView.frame.width * 0.85, height: bottomCollectionView.frame.height * 0.90)
         }
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {

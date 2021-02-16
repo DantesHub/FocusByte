@@ -33,7 +33,8 @@ class SubscriptionController: UIViewController {
     var topImages = ["cloud", "stats", "tagsfinal", "quotes", "heroCat", "dev"]
     var topTitles = ["Cloud Storage", "Statistics", "Custom Tagging", "New Quotes", "Limited Time!", "Support the Developer"]
     var topDescs = ["Data saved on the cloud so it's never lost, even if you log on to a different device", "Get access valuable insights and how your time is being spent.","Tag your timer sessions with custom tags to see how your time's being spent",  "Unlock 30+ new quotes to help you stay motivated", "Unlock the limited edition Hero Cat only available to pro users!",  "Help support me! Upcoming: sound tracks, chrome extension and new apps!"]
-    var stories = ["\"The perfect cure for pandemic laziness\" \n- telmut53", "\"Getting focusbyte pro was the best decision I made as a student in 2020 \"- roXxdan", "\"I was skeptical at first but so glad I went pro = accountability\"- brendonn2", "\"Love this app, patiently waiting for spinoff apps\" \n- haileyg"]
+    var stories = ["\"The perfect cure for pandemic laziness\" \n- Dan K.", "\"Getting focusbyte pro was the best decision I made as a student in 2020 \"- Rose", "\"I was skeptical at first but so glad I went pro\"- Brendon N.", "\"Love this app, patiently waiting for spinoff apps\" \n- Matthew G."]
+    var pics = ["pic1", "pic2", "pic3", "pic4"]
     var bottomCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -70,7 +71,8 @@ class SubscriptionController: UIViewController {
     var yearlyMonthlyPrice: Double = 0
     let locale = Locale.current
 
-    
+    //TODO
+    // make it fullscreen & add pictures
     //MARK: - init
     override func viewDidLoad() {
         Purchases.shared.offerings { [self] (offerings, error) in
@@ -127,25 +129,15 @@ class SubscriptionController: UIViewController {
         
     }
     func configureIpod() {
-        view.addSubview(header)
-        header.leadingToSuperview()
-        header.trailingToSuperview()
-        header.topToSuperview()
-        header.overrideUserInterfaceStyle = .light
-        header.backgroundColor = .white
-        header.height(view.frame.height * 0.08)
-        let headerTitle = UILabel()
-        headerTitle.font = UIFont(name: "Menlo", size: 28)
-        headerTitle.text = "Focusbyte Pro"
-        header.addSubview(headerTitle)
-        headerTitle.center(in: header)
-        
-        let backButton = UIButton()
-        backButton.setImage(UIImage(named: "arrow")?.resize(targetSize: CGSize(width: 30, height: 30)).rotate(radians: -.pi/2), for: .normal)
-        header.addSubview(backButton)
-        backButton.leading(to: header,offset: 15)
-        backButton.centerY(to: header)
-        backButton.addTarget(self, action: #selector(tappedBack), for: .touchUpInside)
+        view.isUserInteractionEnabled = true
+        navigationController?.navigationBar.backgroundColor = .white
+        navigationItem.title = "Focusbyte Pro"
+    
+        let btn = UIBarButtonItem(image: UIImage(named: "arrow")?.resize(targetSize: CGSize(width: 25, height: 25)).rotate(radians: -.pi/2)?.withTintColor(.lightGray).withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(tappedBack))
+        btn.tintColor = .none
+        navigationItem.hidesBackButton = true
+        navigationItem.leftBarButtonItem = btn
+        navigationItem.leftBarButtonItem?.tintColor = .none
         
         view.backgroundColor = .white
         view.addSubview(topCollectionView)
@@ -154,7 +146,7 @@ class SubscriptionController: UIViewController {
         bottomCollectionView.register(BottomCell.self, forCellWithReuseIdentifier: "bottomCell")
         topCollectionView.leadingToSuperview()
         topCollectionView.trailingToSuperview()
-        topCollectionView.topToBottom(of: header)
+        topCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         topCollectionView.height(view.frame.height * 0.30)
         topCollectionView.delegate = self
         topCollectionView.dataSource = self
@@ -228,7 +220,7 @@ class SubscriptionController: UIViewController {
         view.addSubview(continueButton)
         continueButton.leading(to: view, offset: 30)
         continueButton.trailing(to: view, offset: -30)
-        continueButton.topToBottom(of: yearlyBox, offset: view.frame.height * 0.05)
+        continueButton.topToBottom(of: yearlyBox, offset: view.frame.height * 0.025)
         continueButton.titleLabel?.font = UIFont(name: "OpenSans-Bold", size: 20)
         continueButton.height(self.view.frame.height * 0.08)
         continueButton.setTitle("CONTINUE", for: .normal)
@@ -237,26 +229,16 @@ class SubscriptionController: UIViewController {
         continueButton.addTarget(self, action: #selector(tappedContinue), for: .touchUpInside)
     }
      func configureUI() {
-        view.addSubview(header)
-        header.leadingToSuperview()
-        header.trailingToSuperview()
-        header.topToSuperview()
-        header.overrideUserInterfaceStyle = .light
-        header.backgroundColor = .white
-        header.height(view.frame.height * 0.08)
-        let headerTitle = UILabel()
-        headerTitle.textColor = brightPurple
-        headerTitle.font = UIFont(name: "Menlo-Bold", size: 18)
-        headerTitle.text = "Focusbyte Pro"
-        header.addSubview(headerTitle)
-        headerTitle.center(in: header)
-        
-        let backButton = UIButton()
-        backButton.setImage(UIImage(named: "arrow")?.resize(targetSize: CGSize(width: 30, height: 30)).rotate(radians: -.pi/2), for: .normal)
-        header.addSubview(backButton)
-        backButton.leading(to: header,offset: 15)
-        backButton.centerY(to: header)
-        backButton.addTarget(self, action: #selector(tappedBack), for: .touchUpInside)
+        view.isUserInteractionEnabled = true
+        navigationController?.navigationBar.backgroundColor = .white
+        navigationItem.title = "Focusbyte Pro"
+    
+        let btn = UIBarButtonItem(image: UIImage(named: "arrow")?.resize(targetSize: CGSize(width: 25, height: 25)).rotate(radians: -.pi/2)?.withTintColor(.lightGray).withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(tappedBack))
+        btn.tintColor = .none
+        navigationItem.hidesBackButton = true
+        navigationItem.leftBarButtonItem = btn
+        navigationItem.leftBarButtonItem?.tintColor = .none
+
         
         view.backgroundColor = .white
         view.addSubview(topCollectionView)
@@ -265,7 +247,7 @@ class SubscriptionController: UIViewController {
         bottomCollectionView.register(BottomCell.self, forCellWithReuseIdentifier: "bottomCell")
         topCollectionView.leadingToSuperview()
         topCollectionView.trailingToSuperview()
-        topCollectionView.topToBottom(of: header)
+        topCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         topCollectionView.height(view.frame.height * 0.30)
         topCollectionView.delegate = self
         topCollectionView.dataSource = self
@@ -287,16 +269,7 @@ class SubscriptionController: UIViewController {
         five.leadingToTrailing(of: four, offset: 12)
         six.leadingToTrailing(of: five, offset: 12)
         
-        view.addSubview(continueButton)
-        continueButton.leading(to: view, offset: 30)
-        continueButton.trailing(to: view, offset: -30)
-        continueButton.bottom(to: view, offset: -25)
-        continueButton.titleLabel?.font = UIFont(name: "Menlo-Bold", size: 20)
-        continueButton.height(self.view.frame.height * 0.08)
-        continueButton.setTitle("CONTINUE", for: .normal)
-        continueButton.backgroundColor = brightPurple
-        continueButton.layer.cornerRadius = 15
-        continueButton.addTarget(self, action: #selector(tappedContinue), for: .touchUpInside)
+
         successStories.text = "Success Stories"
         successStories.font = UIFont(name: "Menlo-Bold", size: 18)
         view.addSubview(successStories)
@@ -311,8 +284,8 @@ class SubscriptionController: UIViewController {
 //        upgradeLabel.textColor = .darkGray
 //        upgradeLabel.topToBottom(of: topCollectionView, offset: 40)
         view.addSubview(yearlyBox)
-        yearlyBox.bottomToTop(of: continueButton, offset: UIDevice.current.hasNotch ? -25 : -10)
-        yearlyBox.height(view.frame.height * 0.15)
+        yearlyBox.topToBottom(of: bottomCollectionView, offset: 15)
+        yearlyBox.height(view.frame.height * 0.17)
         yearlyBox.selected = true
         yearlyBox.priceLabel.text = "\(currencySymbol)\(yearlyPrice)"
         yearlyBox.yearly = true
@@ -326,15 +299,15 @@ class SubscriptionController: UIViewController {
             yearlyBox.leading(to: view, offset: view.frame.width * 0.10)
             yearlyBox.width(view.frame.width * 0.40)
         }
-        yearlyBox.height = view.frame.height * 0.20 * 0.08
+        yearlyBox.height = view.frame.height * 0.20 * 0.10
         yearlyBox.configure()
         let yearlyGest = UITapGestureRecognizer(target: self, action: #selector(tappedYearly))
         yearlyBox.addGestureRecognizer(yearlyGest)
         
         view.addSubview(monthlyBox)
-        monthlyBox.bottomToTop(of: continueButton, offset: UIDevice.current.hasNotch ? -25 : -10)
+        monthlyBox.topToBottom(of: bottomCollectionView, offset: 15)
         monthlyBox.leadingToTrailing(of: yearlyBox,offset: 5)
-        monthlyBox.height(view.frame.height * 0.15)
+        monthlyBox.height(view.frame.height * 0.17)
         monthlyBox.selected = false
         monthlyBox.priceLabel.text = "\(currencySymbol)\(monthlyPrice)"
         monthlyBox.yearly = false
@@ -346,7 +319,7 @@ class SubscriptionController: UIViewController {
         } else {
             monthlyBox.width(view.frame.width * 0.40)
         }
-        monthlyBox.height = view.frame.height * 0.20 * 0.08
+        monthlyBox.height = view.frame.height * 0.20 * 0.10
         monthlyBox.configure()
         let monthlyGest = UITapGestureRecognizer(target: self, action: #selector(tappedMonthly))
         monthlyBox.addGestureRecognizer(monthlyGest)
@@ -365,7 +338,16 @@ class SubscriptionController: UIViewController {
 //        continueDesc.text = "7 day free trial, then $3.99 a month"
 //        continueDesc.textColor = .systemBlue
         
- 
+        view.addSubview(continueButton)
+        continueButton.leading(to: view, offset: 30)
+        continueButton.trailing(to: view, offset: -30)
+        continueButton.topToBottom(of: monthlyBox, offset: 20)
+        continueButton.titleLabel?.font = UIFont(name: "Menlo-Bold", size: 20)
+        continueButton.height(self.view.frame.height * 0.08)
+        continueButton.setTitle("CONTINUE", for: .normal)
+        continueButton.backgroundColor = brightPurple
+        continueButton.layer.cornerRadius = 15
+        continueButton.addTarget(self, action: #selector(tappedContinue), for: .touchUpInside)
         
 //        let privacy = UILabel()
 //        let terms = UILabel()
@@ -390,7 +372,7 @@ class SubscriptionController: UIViewController {
 //        privacy.addGestureRecognizer(privacyGest)
 //        let termsGest = UITapGestureRecognizer(target: self, action: #selector(tappedTerms))
 //        terms.addGestureRecognizer(termsGest)
-//        print(idx, "jujutsu")
+        print(idx, "jujutsu")
         topCollectionView.scrollToItem(at: IndexPath(item: idx, section: 0), at: .right, animated: false)
     }
 
@@ -472,7 +454,8 @@ class SubscriptionController: UIViewController {
     }
     
     @objc func tappedBack() {
-        presentingViewController?.dismiss(animated: true, completion: nil)
+        print("h2 tags")
+        self.dismiss(animated: true, completion: nil)
     }
     
 }

@@ -46,6 +46,7 @@ class SettingsCell:UITableViewCell,SKPaymentTransactionObserver, SKProductsReque
         iv.height(35)
         return iv
     }()
+    
     lazy var emailView: UIImageView = {
        let iv = UIImageView()
         iv.translatesAutoresizingMaskIntoConstraints = false
@@ -55,6 +56,7 @@ class SettingsCell:UITableViewCell,SKPaymentTransactionObserver, SKProductsReque
         iv.height(35)
         return iv
     }()
+    
     lazy var restoreView: UIImageView = {
        let iv = UIImageView()
         iv.translatesAutoresizingMaskIntoConstraints = false
@@ -64,6 +66,7 @@ class SettingsCell:UITableViewCell,SKPaymentTransactionObserver, SKProductsReque
         iv.height(35)
         return iv
     }()
+    
     lazy var lockView: UIImageView = {
           let iv = UIImageView()
            iv.translatesAutoresizingMaskIntoConstraints = false
@@ -73,6 +76,7 @@ class SettingsCell:UITableViewCell,SKPaymentTransactionObserver, SKProductsReque
            iv.height(35)
            return iv
        }()
+    
     lazy var starView: UIImageView = {
         let iv = UIImageView()
         iv.translatesAutoresizingMaskIntoConstraints = false

@@ -36,7 +36,7 @@ class PriceBox: UIView {
         self.layer.shadowOffset = .zero
         self.layer.shadowRadius = 5
         priceLabel.font = UIFont(name: "Menlo-Bold", size: 35)
-        smallLabel.bottom(to:self, offset: UIDevice.current.hasNotch ? -30 : isIpod ? -10 :-20)
+        smallLabel.bottom(to:self, offset: UIDevice.current.hasNotch ? -35 : isIpod ? -15 :-20)
         smallLabel.font = UIFont(name: "Menlo", size: 12)
         smallLabel.centerX(to: self)
         priceLabel.centerX(to: self)

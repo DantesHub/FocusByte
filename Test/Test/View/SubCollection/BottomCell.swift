@@ -7,6 +7,7 @@ class BottomCell: BaseCell {
     let four = UIImageView()
     let five = UIImageView()
     let review = UILabel()
+    let pic = UIImageView()
     override func setUpViews() {
         let stars = [one, two, three, four,five]
         for star in stars {
@@ -26,10 +27,20 @@ class BottomCell: BaseCell {
         one.trailingToLeading(of: two, offset: -14)
         four.leadingToTrailing(of: three, offset: 14)
         five.leadingToTrailing(of: four, offset: 14)
+        self.addSubview(pic)
+        pic.leading(to: self, offset: 15)
+        pic.bottom(to: self, offset: -20)
+
+        pic.height(50)
+        pic.width(50)
+        pic.clipsToBounds = true
+        pic.layer.cornerRadius = 25
+        pic.image = UIImage(named: "pic1")
         self.addSubview(review)
-        review.leading(to: self, offset: 35)
-        review.trailing(to: self, offset:  -35)
-        review.topToBottom(of: three, offset: 15)
+      
+        review.leadingToTrailing(of: pic, offset: 10)
+        review.trailing(to: self, offset: -10)
+        review.topToBottom(of: three, offset: UIDevice.current.hasNotch ? 20:  15)
         review.textAlignment = .center
         review.numberOfLines = 3
         review.font = UIFont(name: "Menlo", size: 14)

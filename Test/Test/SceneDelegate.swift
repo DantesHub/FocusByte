@@ -8,6 +8,7 @@
 
 import UIKit
 import IQKeyboardManagerSwift
+import AppsFlyerLib
 
 var isActive = false
 var dateResignActive : Date?
@@ -26,7 +27,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.rootViewController = nc
         window?.makeKeyAndVisible()
     }
-    
+    func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
+            AppsFlyerLib.shared().continue(userActivity, restorationHandler: nil)
+        }
+        
+        func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+            if let url = URLContexts.first?.url {
+                AppsFlyerLib.shared().handleOpen(url, options: nil)
+            }
+        }
+
     func sceneDidDisconnect(_ scene: UIScene) {
         print("scene did disconnect")
     }

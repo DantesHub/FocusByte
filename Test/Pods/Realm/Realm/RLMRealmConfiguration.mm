@@ -23,11 +23,11 @@
 #import "RLMSchema_Private.hpp"
 #import "RLMUtil.hpp"
 
-#import "schema.hpp"
-#import "shared_realm.hpp"
+#import <realm/object-store/schema.hpp>
+#import <realm/object-store/shared_realm.hpp>
 
 #if REALM_ENABLE_SYNC
-#import "sync/sync_config.hpp"
+#import <realm/sync/config.hpp>
 #else
 @class RLMSyncConfiguration;
 #endif
@@ -130,21 +130,6 @@ NSString *RLMRealmPathForFile(NSString *fileName) {
     return [string stringByAppendingString:@"}"];
 }
 
-static void RLMNSStringToStdString(std::string &out, NSString *in) {
-    out.resize([in maximumLengthOfBytesUsingEncoding:NSUTF8StringEncoding]);
-    if (out.empty()) {
-        return;
-    }
-
-    NSUInteger size = out.size();
-    [in getBytes:&out[0]
-       maxLength:size
-      usedLength:&size
-        encoding:NSUTF8StringEncoding
-         options:0 range:{0, in.length} remainingRange:nullptr];
-    out.resize(size);
-}
-
 - (NSURL *)fileURL {
     if (_config.in_memory) {
         return nil;
@@ -205,7 +190,14 @@ static void RLMNSStringToStdString(std::string &out, NSString *in) {
 }
 
 - (BOOL)readOnly {
-    return _config.immutable();
+    return _config.immutable() || _config.read_only_alternative();
+}
+
+static bool isSync(realm::Realm::Config const& config) {
+#if REALM_ENABLE_SYNC
+    return !!config.sync_config;
+#endif
+    return false;
 }
 
 - (void)setReadOnly:(BOOL)readOnly {
@@ -215,10 +207,10 @@ static void RLMNSStringToStdString(std::string &out, NSString *in) {
         } else if (self.shouldCompactOnLaunch) {
             @throw RLMException(@"Cannot set `readOnly` when `shouldCompactOnLaunch` is set.");
         }
-        _config.schema_mode = realm::SchemaMode::Immutable;
+        _config.schema_mode = isSync(_config) ? realm::SchemaMode::ReadOnlyAlternative : realm::SchemaMode::Immutable;
     }
     else if (self.readOnly) {
-        _config.schema_mode = realm::SchemaMode::Automatic;
+        _config.schema_mode = isSync(_config) ? realm::SchemaMode::Additive : realm::SchemaMode::Automatic;
     }
 }
 
@@ -241,6 +233,9 @@ static void RLMNSStringToStdString(std::string &out, NSString *in) {
     if (deleteRealmIfMigrationNeeded) {
         if (self.readOnly) {
             @throw RLMException(@"Cannot set `deleteRealmIfMigrationNeeded` when `readOnly` is set.");
+        }
+        if (isSync(_config)) {
+            @throw RLMException(@"Cannot set 'deleteRealmIfMigrationNeeded' when sync is enabled ('syncConfig' is set).");
         }
         _config.schema_mode = realm::SchemaMode::ResetFile;
     }
@@ -300,7 +295,7 @@ static void RLMNSStringToStdString(std::string &out, NSString *in) {
 
 - (void)setShouldCompactOnLaunch:(RLMShouldCompactOnLaunchBlock)shouldCompactOnLaunch {
     if (shouldCompactOnLaunch) {
-        if (self.readOnly) {
+        if (_config.immutable()) {
             @throw RLMException(@"Cannot set `shouldCompactOnLaunch` when `readOnly` is set.");
         }
         _config.should_compact_on_launch_function = [=](size_t totalBytes, size_t usedBytes) {

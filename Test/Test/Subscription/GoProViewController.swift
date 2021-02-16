@@ -12,7 +12,7 @@ import Purchases
 class GoProViewController: UIViewController, SKPaymentTransactionObserver, SKProductsRequestDelegate {
     let db = Firestore.firestore()
     var myProduct: SKProduct?
-    let proId = "co.byteteam.focusbyte.ProUpgrade"
+    let proId = "co.byteteam.focusbyte.annual.sub"
     var iphone8 = false
     var goProPadding:CGFloat = 30
     var onePadding: CGFloat = 25
@@ -244,6 +244,9 @@ class GoProViewController: UIViewController, SKPaymentTransactionObserver, SKPro
     }
     
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
+        if let product =  response.products.first {
+            print(product.localizedTitle, product.price)
+        }
         if let product = response.products.first {
             myProduct = product
         }
@@ -252,6 +255,7 @@ class GoProViewController: UIViewController, SKPaymentTransactionObserver, SKPro
       let request = SKProductsRequest(productIdentifiers: [proId])
         request.delegate = self
         request.start()
+        
     }
     @objc func tappedPro() {
         guard let myProduct = myProduct else {

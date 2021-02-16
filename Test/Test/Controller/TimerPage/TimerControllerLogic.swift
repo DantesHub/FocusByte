@@ -28,7 +28,6 @@ extension TimerController {
     }
     
     @objc func checkIfLocked(noti: Notification) {
-        print("locked")
          if !breakPlaying {
         locked = true
          killDate = Date().addingTimeInterval(10000000)

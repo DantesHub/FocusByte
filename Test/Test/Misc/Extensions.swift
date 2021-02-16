@@ -13,6 +13,8 @@ import Charts
 import SCLAlertView
 import TinyConstraints
 import CryptoKit
+import StoreKit
+
 extension Results {
     func toArray<T>(ofType: T.Type) -> [T] {
         var array = [T]()
@@ -25,7 +27,25 @@ extension Results {
         return array
     }
 }
-
+extension UIViewController {
+    var topBarHeight: CGFloat {
+        var top = self.navigationController?.navigationBar.frame.height ?? 0.0
+        if #available(iOS 13.0, *) {
+            top += UIApplication.shared.windows.first?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+        } else {
+            top += UIApplication.shared.statusBarFrame.height
+        }
+        return top
+    }
+}
+extension SKProduct {
+    var localizedPrice: String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = priceLocale
+        return formatter.string(from: price)!
+    }
+}
 extension UIAlertController {
     func addImage(image: UIImage) {
         let imgAction = UIAlertAction(title: "", style: .default, handler: nil)

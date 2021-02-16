@@ -274,7 +274,6 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
             var skin = ""
             var xp = 0
             var isPro = false
-            print("seez")
             docRef.getDocument { (snapshot, error) in
                 if let document = snapshot, document.exists {
                     _ = document.data().map(String.init(describing:)) ?? "nil"
@@ -388,13 +387,6 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
                 }
                 UserDefaults.standard.set(true, forKey: "quotes")
                 UserDefaults.standard.set(isPro, forKey: "isPro")
-                Purchases.shared.restoreTransactions { (purchaserInfo, error) in
-                    if purchaserInfo?.entitlements.all["isPro"]?.isActive == true {
-                        UserDefaults.standard.setValue(true, forKey: "isPro")
-                    } else {
-                        UserDefaults.standard.setValue(false, forKey: "isPro")
-                    }
-                }
                 let timerVC = ContainerController(center: TimerController())
                 timerVC.modalPresentationStyle = .fullScreen
                 self.navigationController?.pushViewController(timerVC, animated: true)
