@@ -349,29 +349,29 @@ class SubscriptionController: UIViewController {
         continueButton.layer.cornerRadius = 15
         continueButton.addTarget(self, action: #selector(tappedContinue), for: .touchUpInside)
         
-//        let privacy = UILabel()
-//        let terms = UILabel()
-//
-//
-//        privacy.textColor = .lightGray
-//        terms.textColor = .lightGray
-//
-//        privacy.text = "Privacy Policy"
-//        terms.text = "Terms of Use"
-//        privacy.font = UIFont(name: "OpenSans", size: 4)
-//        terms.font = UIFont(name: "OpenSans", size: 4)
-//        view.addSubview(privacy)
-//        view.addSubview(terms)
-//        privacy.trailing(to: view, offset: -(view.frame.width * 0.075))
-//        terms.leading(to: view, offset: view.frame.width * 0.075)
-//        privacy.topToBottom(of: continueButton, offset: 30)
-//        terms.topToBottom(of: continueButton, offset: 30)
-//        privacy.isUserInteractionEnabled = true
-//        terms.isUserInteractionEnabled = true
-//        let privacyGest = UITapGestureRecognizer(target: self, action: #selector(tappedPrivacy))
-//        privacy.addGestureRecognizer(privacyGest)
-//        let termsGest = UITapGestureRecognizer(target: self, action: #selector(tappedTerms))
-//        terms.addGestureRecognizer(termsGest)
+        let privacy = UILabel()
+        let terms = UILabel()
+
+
+        privacy.textColor = .lightGray
+        terms.textColor = .lightGray
+
+        privacy.text = "Privacy Policy"
+        terms.text = "Terms of Use"
+        privacy.font = UIFont(name: "OpenSans", size: 2)
+        terms.font = UIFont(name: "OpenSans", size: 2)
+        view.addSubview(privacy)
+        view.addSubview(terms)
+        privacy.trailing(to: view, offset: -(view.frame.width * 0.075))
+        terms.leading(to: view, offset: view.frame.width * 0.075)
+        privacy.bottom(to: view, offset: -15)
+        terms.bottom(to: view,offset: -15)
+        privacy.isUserInteractionEnabled = true
+        terms.isUserInteractionEnabled = true
+        let privacyGest = UITapGestureRecognizer(target: self, action: #selector(tappedPrivacy))
+        privacy.addGestureRecognizer(privacyGest)
+        let termsGest = UITapGestureRecognizer(target: self, action: #selector(tappedTerms))
+        terms.addGestureRecognizer(termsGest)
         print(idx, "jujutsu")
         topCollectionView.scrollToItem(at: IndexPath(item: idx, section: 0), at: .right, animated: false)
     }
@@ -390,12 +390,12 @@ class SubscriptionController: UIViewController {
     }
     
     @objc func tappedPrivacy() {
-        if let url = URL(string: "http://alarmandcalm.fun/index.php/alarm-calm-privacy-policy/") {
+        if let url = URL(string: "https://focusbyte.flycricket.io/privacy.html") {
             UIApplication.shared.open(url)
         }
     }
     @objc func tappedTerms() {
-        if let url = URL(string: "http://alarmandcalm.fun/index.php/alarm-calm-terms-of-use") {
+        if let url = URL(string: "https://focusbyte.io/terms-of-use") {
             UIApplication.shared.open(url)
         }
     }

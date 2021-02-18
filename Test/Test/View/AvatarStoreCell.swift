@@ -124,7 +124,8 @@ class AvatarStoreCell: UICollectionViewCell {
         self.dropShadow(superview: self)
         contentView.addSubview(titleLabel)
         
-        contentView.insertSubview(priceLabel, at: 1000)
+        self.addSubview(priceLabel)
+        contentView.overrideUserInterfaceStyle = .light
         priceLabel.font = UIFont(name: "Menlo", size: 21)
 //        priceLabel.width()
         priceLabel.translatesAutoresizingMaskIntoConstraints = false

@@ -17,6 +17,8 @@ import Foundation
 import TinyConstraints
 import Purchases
 import SCLAlertView
+import WidgetKit
+
 var enteredForeground = false
 var deepFocusMode = true
 var locked = false
@@ -128,7 +130,17 @@ class TimerController: UIViewController {
 
         return iv
     }()
+    //widget variables
+    var monthArray = [String]()
+    var weekArray = [String]()
+    let dateHelper = DateHelper()
+    var begWeekNum = 0
+    var endWeekNum = 0
+    var todayNum = 0
+    var todayDayOfWeek = ""
+    var nextMonth = ""
     var isOpen = false
+    let userDefaults = UserDefaults(suiteName: "group.co.byteteam.focusbyte")
     //MARK: -Init
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -146,8 +158,6 @@ class TimerController: UIViewController {
             upgradedToPro = false
         }
         
-        
-        
         results = uiRealm.objects(User.self)
         for result  in results {
             if result.isLoggedIn == true {
@@ -164,6 +174,14 @@ class TimerController: UIViewController {
                 coinsL.text = String(coins)
                 deepFocusMode = result.deepFocusMode
                 timeData = result.timeArray.map{$0}
+                print(timeData, "4men")
+                if #available(iOS 14.0, *) {
+                    print(getWidgetData(timeData: timeData), "5men")
+                    
+                    userDefaults?.setValue(result.pet ?? "nopets", forKey: "pet")
+                    userDefaults?.setValue(getWidgetData(timeData: timeData), forKey: "timeData")
+                    WidgetCenter.shared.reloadAllTimelines()
+                }
             }
         }
         let today = Date()

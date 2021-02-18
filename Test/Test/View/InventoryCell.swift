@@ -42,7 +42,11 @@ class InventoryCell: UICollectionViewCell {
         self.layer.cornerRadius = 25
         self.layer.masksToBounds = true
         self.dropShadow(superview: self)
-        contentView.addSubview(itemImageView)
+        if #available(iOS 14.0, *) {
+            contentView.addSubview(itemImageView)
+        } else {
+            self.addSubview(itemImageView)
+        }
         itemImageView.edges(to: contentView, insets: TinyEdgeInsets(top: 10, left: 10, bottom: 10, right: 10))
     }
     func setImage(image: UIImage) {
