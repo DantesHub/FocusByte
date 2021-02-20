@@ -103,6 +103,7 @@ extension TimerController {
         }
         var entries: [String] = ["0","0","0","0","0","0","0"]
         print(weekArray, "weekArray")
+        var totalMins = 0
         var noData = true
         for day in weekArray {
             let equalIndex = day.firstIndex(of: "=")
@@ -113,25 +114,32 @@ extension TimerController {
                 entries[0] = ((totalTimeForDay))
             } else if day.contains("Mon") {
                 entries[1] = ((totalTimeForDay))
+                totalMins += Int(totalTimeForDay) ?? 0
                 noData = false
             } else if day.contains("Tue") {
                 entries[2] = ((totalTimeForDay))
+                totalMins += Int(totalTimeForDay) ?? 0
                 noData = false
             } else if day.contains("Wed") {
                 entries[3] = ((totalTimeForDay))
                 noData = false
+                totalMins += Int(totalTimeForDay) ?? 0
             } else if day.contains("Thu") {
                 entries[4] = ((totalTimeForDay))
                 noData = false
+                totalMins += Int(totalTimeForDay) ?? 0
             } else if day.contains("Fri") {
                 entries[5] = ((totalTimeForDay))
                 noData = false
+                totalMins += Int(totalTimeForDay) ?? 0
             } else if day.contains("Sat") {
                 entries[6] = ((totalTimeForDay))
                 noData = false
+                totalMins += Int(totalTimeForDay) ?? 0
             }
         }
         userDefaults?.setValue(noData, forKey:"noData")
+        userDefaults?.setValue(totalMins, forKey: "totalMins")
         return entries
     }
     

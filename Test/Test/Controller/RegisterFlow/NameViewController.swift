@@ -43,7 +43,7 @@ class NameViewController: UIViewController {
           db.collection(K.userPreferenes).document(email!).setData([
                     "gender": chosenGender,
                     "name": nameInput.text!,
-                    "inventoryArray": ["gray sweater", "blue jeans", "default shoes"],
+                    "inventoryArray": ["gray sweater", "blue jeans", "default shoes", "gray cat"],
                     "exp": 1,
                     "coins": 100,
                     "hair": chosenGender == "male" ? "brown+defaultManHair":"blonde+womanHair1",
@@ -128,6 +128,7 @@ class NameViewController: UIViewController {
         itemArray.append("gray sweater")
         itemArray.append("blue jeans")
         itemArray.append("default shoes")
+        itemArray.append("gray cat")
         let UserToAdd = User()
         let tagList = List<Tag>()
         tagList.append(unsetTag)
@@ -138,6 +139,7 @@ class NameViewController: UIViewController {
         UserToAdd.eyes = "black"
         UserToAdd.skin = "tan"
         UserToAdd.exp = 1
+        UserToAdd.pet = "gray cat"
         UserToAdd.gender = chosenGender
         UserToAdd.inventoryArray = itemArray
         UserToAdd.name = nameInput.text!

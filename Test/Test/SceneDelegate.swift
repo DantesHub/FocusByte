@@ -31,11 +31,27 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             AppsFlyerLib.shared().continue(userActivity, restorationHandler: nil)
         }
         
-        func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-            if let url = URLContexts.first?.url {
-                AppsFlyerLib.shared().handleOpen(url, options: nil)
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+//        maybeOpenedFromWidget(urlContexts: URLContexts)
+//        print("juju")
+//        UserDefaults.standard.setValue(URLContexts.first?.url.absoluteString, forKey: "widget")
+        
+        if let url = URLContexts.first?.url {
+            AppsFlyerLib.shared().handleOpen(url, options: nil)
+        }
+        for context in URLContexts {
+            if context.url.scheme == "widget" {
+                NotificationCenter.default.post(name: Notification.Name("openedFromWidget"), object: nil)
+            } else if context.url.scheme == "stats" {
+                NotificationCenter.default.post(name: Notification.Name("goToStats"), object: nil)
+            } else if context.url.scheme == "pets" {
+                NotificationCenter.default.post(name: Notification.Name("changePet"), object: nil)
             }
         }
+
+    }
+
+
 
     func sceneDidDisconnect(_ scene: UIScene) {
         print("scene did disconnect")

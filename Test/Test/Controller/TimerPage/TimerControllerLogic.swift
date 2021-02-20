@@ -15,6 +15,7 @@ import AudioToolbox
 import SCLAlertView
 import TinyConstraints
 import StoreKit
+import WidgetKit
 var requestedReview = false
 extension TimerController {
     //MARK: - Helper Functions
@@ -312,6 +313,10 @@ extension TimerController {
             fbDate = dateFormatterGet.string(from: Date())
             totalTimeForDay = String(self.howMuchTime/60)
             timeData.append(fbDate + "=" + totalTimeForDay + "-1" + "+\(tagSelected)/\(self.howMuchTime/60)")
+        }
+        if #available(iOS 14.0, *) {
+            userDefaults?.setValue(getWidgetData(timeData: timeData), forKey: "timeData")
+            WidgetCenter.shared.reloadAllTimelines()
         }
     }
     

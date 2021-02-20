@@ -10,7 +10,7 @@ import UIKit
 import TinyConstraints
 import SCLAlertView
 import RealmSwift
-
+import WidgetKit
 
 class InventoryCell: UICollectionViewCell {
     //MARK: - Properties
@@ -151,9 +151,15 @@ class InventoryCell: UICollectionViewCell {
                         } else if petBook.contains(where: {$0 == self.imgName}) {
                             petImageView.image = UIImage(named: self.imgName)
                             self.type = "pet"
+                            if #available(iOS 14.0, *) {
+                                let userDefaults = UserDefaults(suiteName: "group.co.byteteam.focusbyte")
+                                userDefaults?.setValue(self.imgName, forKey: "pet")
+                                WidgetCenter.shared.reloadAllTimelines()
+                            }
                         } else if frameBook.contains(where: {$0.key == self.imgName}) {
                             glassesImageView.image = UIImage(named: self.imgName)
                             self.type = "glasses"
+                         
                         } else if suitBook.contains(where: {$0.key == self.imgName}) {
                             hideAvatar(hide: true)
                             avatarImageView.image = UIImage(named: self.imgName)

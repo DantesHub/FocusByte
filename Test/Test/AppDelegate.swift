@@ -59,12 +59,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     // Open URI-scheme for iOS 9 and above
     func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
+        let message = url.host?.removingPercentEncoding
+        print(message, "message")
+        UserDefaults.standard.setValue(message, forKey: "widget")
+        
         AppsFlyerLib.shared().handleOpen(url, sourceApplication: sourceApplication, withAnnotation: annotation)
         return true
     }
 
     // Reports app open from deep link for iOS 10 or later
     func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        print("godu")
+        UserDefaults.standard.setValue(userActivity, forKey: "widget")
         AppsFlyerLib.shared().continue(userActivity, restorationHandler: nil)
         return true
     }
@@ -102,12 +108,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         defaults.register(defaults: [
             "didAsk": false,
         ])
-        var launched = defaults.integer(forKey: "launchNumber")
-        launched = launched + 1
-        defaults.setValue(launched, forKey: "launchNumber")
-        if launched == 3 {
-            SKStoreReviewController.requestReview()
-        }
+     
         defaults.set("none", forKey: "status")
         return true
     }

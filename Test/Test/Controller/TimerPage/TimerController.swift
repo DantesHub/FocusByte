@@ -141,9 +141,22 @@ class TimerController: UIViewController {
     var nextMonth = ""
     var isOpen = false
     let userDefaults = UserDefaults(suiteName: "group.co.byteteam.focusbyte")
+    let defaults = UserDefaults.standard
+    
+   
     //MARK: -Init
     override func viewDidLoad() {
         super.viewDidLoad()
+        //ask for review
+        var launched = defaults.integer(forKey: "launchNumber")
+        launched = launched + 1
+        defaults.setValue(launched, forKey: "launchNumber")
+        if launched == 3 {
+            SKStoreReviewController.requestReview()
+        }
+        NotificationCenter.default.addObserver(self, selector: #selector(openedFromWidget), name: Notification.Name("openedFromWidget"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(goToStats), name: Notification.Name("goToStats"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(changePet), name: Notification.Name("changePet"), object: nil)
         checkIfPro()
         onHome = true
         if boughtChest == true {
@@ -174,11 +187,9 @@ class TimerController: UIViewController {
                 coinsL.text = String(coins)
                 deepFocusMode = result.deepFocusMode
                 timeData = result.timeArray.map{$0}
-                print(timeData, "4men")
                 if #available(iOS 14.0, *) {
-                    print(getWidgetData(timeData: timeData), "5men")
-                    
-                    userDefaults?.setValue(result.pet ?? "nopets", forKey: "pet")
+                    userDefaults?.setValue(coins, forKey: "coins")
+                    userDefaults?.setValue(result.pet ?? "gray cat", forKey: "pet")
                     userDefaults?.setValue(getWidgetData(timeData: timeData), forKey: "timeData")
                     WidgetCenter.shared.reloadAllTimelines()
                 }
@@ -215,6 +226,35 @@ class TimerController: UIViewController {
                 }
             }
         }
+    }
+    @objc func openedFromWidget() {
+        navigationItem.title = "Bingo"
+    }
+    @objc func goToStats() {
+        if UserDefaults.standard.bool(forKey: "isPro") == true {
+            let controller = ContainerController(center: StatisticsController())
+            controller.modalPresentationStyle = .fullScreen
+            presentInFullScreen(UINavigationController(rootViewController: controller), animated: true)
+        }   else {
+            let controller = SubscriptionController()
+            controller.modalPresentationStyle = .fullScreen
+            controller.idx = 1
+            presentInFullScreen(UINavigationController(rootViewController: controller), animated: true, completion: nil)
+        }
+    }
+    @objc func changePet() {
+        pets = true
+        menuLabel = "Pets"
+        let controller = ContainerController(center: InventoryController(whichTab: "pets"))
+         controller.modalPresentationStyle = .fullScreen
+
+         var topVC = UIApplication.shared.windows.filter {$0.isKeyWindow}.first!.rootViewController
+         while((topVC!.presentedViewController) != nil){
+              topVC = topVC!.presentedViewController
+         }
+         topVC!.present(controller,animated: true,completion: nil)
+           NotificationCenter.default.post(name: Notification.Name(rawValue: petsKey), object: nil)
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -263,6 +303,9 @@ class TimerController: UIViewController {
         NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIApplication.protectedDataWillBecomeUnavailableNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIApplication.protectedDataDidBecomeAvailableNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name:  Notification.Name("goToStats"), object: nil)
+        NotificationCenter.default.removeObserver(self, name:  Notification.Name("openedFromWidget"), object: nil)
+        NotificationCenter.default.removeObserver(self, name:  Notification.Name("changePet"), object: nil)
     }
     
     
@@ -358,7 +401,9 @@ class TimerController: UIViewController {
         createTagImageView()
         
         view.backgroundColor = backgroundColor
-        navigationItem.title = "Home"
+        navigationItem.title =   defaults.string(forKey: "widget")
+
+        defaults.setValue("none", forKey: "widget")
         createBarItem()
         navigationController?.navigationBar.addSubview(coinsL)
         navigationController?.navigationBar.addSubview(coinsImg!)
@@ -392,12 +437,17 @@ class TimerController: UIViewController {
         }
     }
     @objc func tappedStore() {
-        let controller = StoreController()
-        controller.createRightNav()
-        let nav = self.navigationController //grab an instance of the current navigationController
-        DispatchQueue.main.async { //make sure all UI updates are on the main thread.
-            nav?.view.layer.add(CATransition().segueFromLeft(), forKey: nil)
-            nav?.pushViewController(ContainerController(center: controller), animated: false)
+        if !isPlaying {
+            if isOpen {
+                handleMenuToggle()
+            }
+            let controller = StoreController()
+            controller.createRightNav()
+            let nav = self.navigationController //grab an instance of the current navigationController
+            DispatchQueue.main.async { //make sure all UI updates are on the main thread.
+                nav?.view.layer.add(CATransition().segueFromLeft(), forKey: nil)
+                nav?.pushViewController(ContainerController(center: controller), animated: false)
+            }
         }
     }
      func createBarItem() {
@@ -798,7 +848,7 @@ class TimerController: UIViewController {
             coinMultiplier = 2
             expMultiplier = 2
         default:
-            print("default")
+            break
         }
         switch howMuchTime {
         case 599...1499:
@@ -836,6 +886,10 @@ class TimerController: UIViewController {
             }
         } else {
             createAlert()
+        }
+        if #available(iOS 14.0, *) {
+            userDefaults?.setValue(numOfCoins, forKey: "coins")
+            WidgetCenter.shared.reloadAllTimelines()
         }
         return numOfCoins
     }

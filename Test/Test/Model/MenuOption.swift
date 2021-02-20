@@ -34,7 +34,7 @@ enum MenuOption: Int {
          case .statistics: return UIImage(named: "statsicon") ?? UIImage()
          case .inventory: return UIImage(named: "chesticon") ?? UIImage()
          case .settings: return UIImage(named: "gearicon") ?? UIImage()
-         case .goPro: return UIImage(named: "goldIcon") ?? UIImage()
+         case .goPro: return UIImage(named: "goldIcon")?.resized(to: CGSize(width: 35, height: 35)) ?? UIImage()
          }
      }
 }
