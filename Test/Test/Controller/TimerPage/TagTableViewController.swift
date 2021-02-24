@@ -9,8 +9,11 @@
 import UIKit
 import TinyConstraints
 import RealmSwift
-
 var tagDictionary = [Tag]()
+protocol TagUpdater: class {
+    func updateTagView()
+}
+
 class TagTableView: UIView, CustomCellUpdater {
     //MARK: - Views + Properties
     var results: Results<User>!
@@ -22,7 +25,7 @@ class TagTableView: UIView, CustomCellUpdater {
      let tableView = UITableView()
     var searchBar: UISearchBar! = UISearchBar()
     var isFiltering: Bool = false
-
+    var tagDelegate: TagUpdater?
      //MARK: - Inita=
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -85,6 +88,7 @@ class TagTableView: UIView, CustomCellUpdater {
     
     func updateTableView() {
         tableView.reloadData()
+        tagDelegate?.updateTagView()
     }
     
     func updateRealm(tag: Tag) {
@@ -140,6 +144,7 @@ extension TagTableView: UITableViewDataSource, UITableViewDelegate{
        if let cell = tableView.cellForRow(at: indexPath) {
            cell.accessoryType = .checkmark
             updateRealm(tag: tagDictionary[indexPath.row])
+            updateTableView()
        }
     UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: .curveEaseOut, animations: {
         self.tableView.transform = CGAffineTransform(translationX: 0, y: 1200)

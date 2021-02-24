@@ -30,15 +30,15 @@ var totalTime = 0
 var isPro = true
 var timeData = [String]()
 var isPlaying = false
-var tagSelected = "unset"
 var tagColor = "gray"
 var level = 1
 var chestBought = false
 var expDate = ""
 var randomNum = 0
 var upgradedToPro = false
+var tagSelected = ("unset")
 
-class TimerController: UIViewController {
+class TimerController: UIViewController, TagUpdater {
     //MARK: - Properties
     var lastDate = ""
     var totalTimeForDay = ""
@@ -49,6 +49,7 @@ class TimerController: UIViewController {
     let trackLayer = CAShapeLayer()
     let timeL = UILabel()
     var motivationalQuote = ""
+    var tagAndColor = (name: "unset", color: "gray")
     var circularSlider = CircularSlider()
     let coinsL = AnimatedLabel()
     var chestImageView: UIImageView? = {
@@ -57,6 +58,7 @@ class TimerController: UIViewController {
         iv.contentMode = .scaleAspectFit
         return iv
     }()
+    let tagTitle = UILabel()
     lazy var dfmSwitch: UISwitch = {
         let dswitch = UISwitch()
         dswitch.onTintColor = brightPurple
@@ -148,12 +150,7 @@ class TimerController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         //ask for review
-        var launched = defaults.integer(forKey: "launchNumber")
-        launched = launched + 1
-        defaults.setValue(launched, forKey: "launchNumber")
-        if launched == 3 {
-            SKStoreReviewController.requestReview()
-        }
+     
         NotificationCenter.default.addObserver(self, selector: #selector(openedFromWidget), name: Notification.Name("openedFromWidget"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(goToStats), name: Notification.Name("goToStats"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(changePet), name: Notification.Name("changePet"), object: nil)
@@ -171,30 +168,7 @@ class TimerController: UIViewController {
             upgradedToPro = false
         }
         
-        results = uiRealm.objects(User.self)
-        for result  in results {
-            if result.isLoggedIn == true {
-                coins = result.coins
-                exp = result.exp
-                for tag in result.tagDictionary {
-                    if tag.selected == true {
-                        tagSelected = tag.name
-                    }
-                }
-                self.overrideUserInterfaceStyle = .light
-                gender = result.gender!
-                inventoryArray = result.inventoryArray.map{ $0 }
-                coinsL.text = String(coins)
-                deepFocusMode = result.deepFocusMode
-                timeData = result.timeArray.map{$0}
-                if #available(iOS 14.0, *) {
-                    userDefaults?.setValue(coins, forKey: "coins")
-                    userDefaults?.setValue(result.pet ?? "gray cat", forKey: "pet")
-                    userDefaults?.setValue(getWidgetData(timeData: timeData), forKey: "timeData")
-                    WidgetCenter.shared.reloadAllTimelines()
-                }
-            }
-        }
+        getRealmData()
         let today = Date()
         let formatter = DateFormatter()
         formatter.dateFormat = "MM-dd-yyyy HH:mm"
@@ -207,7 +181,6 @@ class TimerController: UIViewController {
                     expDate = (date?.toString())!
                     chestBought = true
                 }
-                
             } else if item.contains("Epic Chest") {
                 let plusIndex = item.firstIndex(of: "+")
                 let date = String(item[..<plusIndex!]).toDate()
@@ -228,7 +201,7 @@ class TimerController: UIViewController {
         }
     }
     @objc func openedFromWidget() {
-        navigationItem.title = "Bingo"
+        handleTap()
     }
     @objc func goToStats() {
         if UserDefaults.standard.bool(forKey: "isPro") == true {
@@ -291,7 +264,36 @@ class TimerController: UIViewController {
 //            handleMenuToggle()
 //        }
 //    }
-    
+    private func getRealmData() {
+        results = uiRealm.objects(User.self)
+        for result  in results {
+            if result.isLoggedIn == true {
+                coins = result.coins
+                exp = result.exp
+                for tag in result.tagDictionary {
+                    if tag.selected == true {
+                        tagAndColor = (tag.name, tag.color)
+                        tagSelected = tag.name
+                    }
+                }
+                self.overrideUserInterfaceStyle = .light
+                gender = result.gender!
+                inventoryArray = result.inventoryArray.map{ $0 }
+                coinsL.text = String(coins)
+                deepFocusMode = result.deepFocusMode
+                timeData = result.timeArray.map{$0}
+                if #available(iOS 14.0, *) {
+                    userDefaults?.setValue(coins, forKey: "coins")
+                    userDefaults?.setValue(Int((pow(Double(exp), 1.0/2.0))), forKey: "level")
+                    userDefaults?.setValue(result.pet ?? "gray cat", forKey: "pet")
+                    userDefaults?.setValue(getWidgetData(timeData: timeData), forKey: "timeData")
+                    userDefaults?.setValue(tagAndColor.name, forKey: "tagName")
+                    userDefaults?.setValue(tagAndColor.color, forKey: "tagColor")
+                    WidgetCenter.shared.reloadAllTimelines()
+                }
+            }
+        }
+    }
     override func viewWillDisappear(_ animated: Bool) {
         onHome = false
         counter = 0
@@ -310,6 +312,17 @@ class TimerController: UIViewController {
     
     
     //MARK: - helper functions
+    func updateTagView() {
+        getRealmData()
+        tagTitle.removeFromSuperview()
+        tagImageView.removeFromSuperview()
+        createTagImageView()
+        if #available(iOS 14.0, *) {
+            userDefaults?.setValue(tagAndColor.name, forKey: "tagName")
+            userDefaults?.setValue(tagAndColor.color, forKey: "tagColor")
+            WidgetCenter.shared.reloadAllTimelines()
+        }
+    }
     func checkIfPro() {
         Purchases.shared.purchaserInfo { [self] (purchaserInfo, error) in
                 if purchaserInfo?.entitlements.all["isPro"]?.isActive == true {
@@ -401,15 +414,20 @@ class TimerController: UIViewController {
         createTagImageView()
         
         view.backgroundColor = backgroundColor
-        navigationItem.title =   defaults.string(forKey: "widget")
+        navigationItem.title =  "Home"
 
-        defaults.setValue("none", forKey: "widget")
         createBarItem()
         navigationController?.navigationBar.addSubview(coinsL)
         navigationController?.navigationBar.addSubview(coinsImg!)
          navigationController?.navigationBar.addSubview(plusIcon)
         
         createCircularSlider()
+        var launched = defaults.integer(forKey: "launchNumber")
+        if launched == 3 {
+            SKStoreReviewController.requestReview()
+            launched += 1
+            defaults.setValue(launched, forKey: "launchNumber")
+        }
     }
     private func createLevelLabel() {
         view.addSubview(levelLabel)
@@ -469,13 +487,17 @@ class TimerController: UIViewController {
     
     @objc func tappedTag() {
         if UserDefaults.standard.bool(forKey: "isPro") == true {
+      
             tagTableView = TagTableView(frame: view.bounds)
+            tagTableView.tagDelegate = self
             view.addSubview(tagTableView)
         }   else {
             let controller = SubscriptionController()
             controller.modalPresentationStyle = .fullScreen
             controller.idx = 2
-            presentInFullScreen(UINavigationController(rootViewController: controller), animated: true, completion: nil)
+            presentInFullScreen(UINavigationController(rootViewController: controller), animated: true, completion: {
+                self.circularSlider.removeFromSuperview()
+            })
         }
     }
     //MARK: - Helper UI Funcs
@@ -534,13 +556,23 @@ class TimerController: UIViewController {
         tagImageView.centerYAnchor.constraint(equalTo: timerButton.centerYAnchor).isActive = true
         tagImageView.isUserInteractionEnabled = true
         tagImageView.layer.cornerRadius = 10
-        tagImageView.image = #imageLiteral(resourceName: "tagIcon")
+        tagImageView.contentMode = .scaleAspectFit
+        tagImageView.image = #imageLiteral(resourceName: "tagIcon").withTintColor(K.getColor(color: tagAndColor.color))
         tagImageView.backgroundColor = superLightLavender
         tagImageView.layer.cornerRadius = 25
-        tagImageView.contentMode = .scaleAspectFit
         tagImageView.applyDesign(color: superLightLavender)
         let tagTapped = UITapGestureRecognizer(target: self, action: #selector(tappedTag))
         tagImageView.addGestureRecognizer(tagTapped)
+        
+        tagTitle.font = UIFont(name: "Menlo", size: 13)
+        tagImageView.addSubview(tagTitle)
+        tagTitle.text = tagAndColor.name
+        tagTitle.lineBreakMode = .byTruncatingTail
+        tagTitle.textAlignment = .center
+        tagTitle.width(70)
+        tagTitle.height(8)
+        tagTitle.bottom(to: tagImageView, offset: -5)
+        tagTitle.centerX(to: tagImageView)
     }
     
     final func createStartUI() {
@@ -772,14 +804,16 @@ class TimerController: UIViewController {
         breakButtonLbl.center(in: breakButton)
     }
     @objc func tappedPlus() {
-        coinsL.removeFromSuperview()
-        coinsImg?.removeFromSuperview()
-        plusIcon.removeFromSuperview()
-        quoteLabel.removeFromSuperview()
-        levelLabel.removeFromSuperview()
-        chestImageView?.removeFromSuperview()
-        circularSlider.removeFromSuperview()
-        self.navigationController?.pushViewController(UpgradeChestController(), animated: true)
+        if !isPlaying {
+            coinsL.removeFromSuperview()
+            coinsImg?.removeFromSuperview()
+            plusIcon.removeFromSuperview()
+            quoteLabel.removeFromSuperview()
+            levelLabel.removeFromSuperview()
+            chestImageView?.removeFromSuperview()
+            circularSlider.removeFromSuperview()
+            self.navigationController?.pushViewController(UpgradeChestController(), animated: true)
+        }
     }
     
     @objc func dfTapped() {
@@ -888,6 +922,7 @@ class TimerController: UIViewController {
             createAlert()
         }
         if #available(iOS 14.0, *) {
+            userDefaults?.setValue(level, forKey: "level")
             userDefaults?.setValue(numOfCoins, forKey: "coins")
             WidgetCenter.shared.reloadAllTimelines()
         }

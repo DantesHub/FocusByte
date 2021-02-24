@@ -357,7 +357,6 @@
 				E1593602242ACE6F0050E914 /* AppDelegate.swift */,
 				E1593604242ACE6F0050E914 /* SceneDelegate.swift */,
 				FECA7A7B243909C200763504 /* Model */,
-				FE577C9E247491B900042819 /* BarChartDataUtil.swift */,
 				FEF55DC624301CB300B4C0E1 /* View */,
 				FEF55DC724301CB800B4C0E1 /* Controller */,
 				FE923F3525CDF4060048E4EC /* Subscription */,
@@ -432,6 +431,7 @@
 		FECA7A7B243909C200763504 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				FE577C9E247491B900042819 /* BarChartDataUtil.swift */,
 				FECA7A7C243909CF00763504 /* ValidationError.swift */,
 				FECA7A8224390D6B00763504 /* ValidateInputs.swift */,
 				FED6F63F243EB3A200553996 /* MenuOption.swift */,
@@ -1161,14 +1161,14 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Test/FocusByteDebug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 38;
+				CURRENT_PROJECT_VERSION = 39;
 				DEVELOPMENT_TEAM = M5757NXZKD;
 				INFOPLIST_FILE = Test/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4.4;
+				MARKETING_VERSION = 1.4.5;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = co.byteteam.focusbyte;
 				PRODUCT_NAME = FocusByte;
@@ -1187,14 +1187,14 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Test/Test.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 38;
+				CURRENT_PROJECT_VERSION = 39;
 				DEVELOPMENT_TEAM = M5757NXZKD;
 				INFOPLIST_FILE = Test/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4.4;
+				MARKETING_VERSION = 1.4.5;
 				PRODUCT_BUNDLE_IDENTIFIER = co.byteteam.focusbyte;
 				PRODUCT_NAME = FocusByte;
 				SWIFT_VERSION = 5.0;
@@ -1300,7 +1300,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = M5757NXZKD;
 				INFOPLIST_FILE = focuswidget/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1323,7 +1323,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = M5757NXZKD;
 				INFOPLIST_FILE = focuswidget/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

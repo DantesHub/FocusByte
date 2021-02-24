@@ -34,7 +34,14 @@ class SettingsCell:UITableViewCell,SKPaymentTransactionObserver, SKProductsReque
         qswitch.addTarget(self, action: #selector(quoteToggled(_:)), for: .valueChanged)
         return qswitch
     }()
-    
+    lazy var discordView: UIImageView = {
+        let iv = UIImageView()
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        iv.image = UIImage(named: "discordlogo")
+        iv.width(40)
+        iv.height(40)
+        return iv
+    }()
 
     @available(iOS 13.0, *)
     lazy var syncView: UIImageView = {
@@ -144,7 +151,11 @@ class SettingsCell:UITableViewCell,SKPaymentTransactionObserver, SKProductsReque
                 titleLabel.text = "You're Pro!"
                 return
             }
-            
+        } else if type == "discord" {
+            contentView.addSubview(discordView)
+            discordView.trailingAnchor.constraint(equalTo:
+                                                    contentView.trailingAnchor, constant: -15).isActive = true
+            discordView.centerY(to: contentView)
         } else if type == "restore" {
             contentView.addSubview(restoreView)
             restoreView.centerY(to: self)
@@ -241,7 +252,7 @@ class SettingsCell:UITableViewCell,SKPaymentTransactionObserver, SKProductsReque
         }
     }
     @objc func tappedPro() {
-        let controller = GoProViewController()
+        let controller = SubscriptionController()
                   controller.modalPresentationStyle = .fullScreen
         self.parentViewController?.presentInFullScreen(UINavigationController(rootViewController: controller), animated: true, completion: nil)
     }

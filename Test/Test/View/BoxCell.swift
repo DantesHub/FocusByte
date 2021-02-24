@@ -60,6 +60,29 @@ var boxPadding: CGFloat {
                 boxDescFontSize = 21
                 chestFont = 25
             //print("IPHONE X, IPHONE XS, IPHONE 11 PRO")
+            case 2532:
+                size = -5
+                titleFont = 30
+                youGotFontSize = 28
+                boxDescFontSize = 21
+                chestFont = 25
+                //iphone 12, 12 pro
+            case 2340:
+                size = 5
+                boxDescFontSize = 21
+                itemImageSize = 100
+                boxSize = 150
+                youGotFontSize = 30
+                commonItemPadding = 20
+                commonTitlePadding = 30
+                titleFont = 30
+                chestFont = 20
+                //iphone 12 mini
+            case 2778:
+                size = -30
+                boxDescFontSize = 23
+                commonItemPadding = 120
+                //iphone 12 pro max
             case 2688:
                 size = -30
                 boxDescFontSize = 23

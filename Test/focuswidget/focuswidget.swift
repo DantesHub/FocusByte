@@ -13,11 +13,11 @@ import SwiftUICharts
 
 struct Provider: IntentTimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), timeData: ["0"], pet: "gray cat", totalMins: 0, noData: true, coins: 0, configuration: ConfigurationIntent())
+        SimpleEntry(date: Date(), timeData: ["0"], pet: "gray cat",  totalMins: 0, noData: true, coins: 0, tagName: "unset", tagColor: "gray",level: 1, configuration: ConfigurationIntent())
     }
 
     func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let entry = SimpleEntry(date: Date(), timeData: ["0"], pet: "gray cat",totalMins: 0, noData: true, coins: 0, configuration: configuration)
+        let entry = SimpleEntry(date: Date(), timeData: ["0"], pet: "gray cat",totalMins: 0, noData: true, coins: 0,  tagName: "unset", tagColor: "gray",  level: 1,configuration: configuration)
         completion(entry)
     }
 
@@ -28,11 +28,15 @@ struct Provider: IntentTimelineProvider {
         let pet2: String = userDefaults?.string(forKey: "pet") ?? "gray cat"
         let totalMins: Int = userDefaults?.integer(forKey: "totalMins") ?? 0
         let noData: Bool = userDefaults?.bool(forKey: "noData") ?? true
+        let tagName: String = userDefaults?.string(forKey: "tagName") ?? "unset"
+        let tagColor: String = userDefaults?.string(forKey: "tagColor") ?? "gray"
+        let coins: Int = userDefaults?.integer(forKey: "coins") ?? 0
+        let level: Int = userDefaults?.integer(forKey: "level") ?? 1
         // Generate a timeline consisting of five entries an hour apart, starting from the current date.
         let currentDate = Date()
         for hourOffset in 0 ..< 5 {
             let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date:entryDate, timeData: time2, pet: pet2,totalMins: totalMins,  noData: noData, coins: 0,  configuration: configuration)
+            let entry = SimpleEntry(date:entryDate, timeData: time2, pet: pet2,totalMins: totalMins,  noData: noData, coins: coins,tagName: tagName, tagColor: tagColor, level: level, configuration: configuration)
             entries.append(entry)
         }
 
@@ -49,6 +53,9 @@ struct SimpleEntry: TimelineEntry {
     let totalMins: Int
     let noData: Bool
     let coins: Int
+    let tagName: String
+    let tagColor: String
+    let level: Int
     let configuration: ConfigurationIntent
 }
 extension Color {
@@ -75,6 +82,40 @@ extension Color {
             blue:  Double(b) / 255,
             opacity: Double(a) / 255
         )
+    }
+    static func getColor(color: String) -> Color {
+        switch color {
+        case "blue":
+            return .blue
+        case "black":
+            return .black
+        case "brown":
+            return Color.init(hex: "964B00")
+        case "pink":
+            return Color.pink.opacity(0.5)
+        case "orange":
+            return Color.orange.opacity(0.5)
+        case "yellow":
+            return Color.init(hex: "#F5EB53")
+        case "tan":
+            return Color.init(hex: "#F9AA71")
+        case "turq":
+            return Color.init(hex: "#3CAEA2")
+        case "skyblue":
+            return Color.blue.opacity(0.5)
+        case "lightgreen":
+            return Color.green.opacity(0.5)
+        case "red":
+            return Color.red
+        case "green":
+            return Color.init(hex: "#165C12")
+        case "gray":
+            return Color.gray
+        case "purple":
+            return Color.init(hex: "#5351C0")
+        default:
+            return Color.white
+        }
     }
 }
 //TODO
@@ -116,7 +157,7 @@ struct focuswidgetEntryView : View {
                                             .lineLimit(1)
                                             .multilineTextAlignment(.leading)
                                             .padding(EdgeInsets(top: 0, leading: 0, bottom: -5, trailing: 0))
-                                        Circle().foregroundColor(.blue)
+                                        Circle().foregroundColor(Color.getColor(color: entry.tagColor))
                                             .frame(width: 10, height: 10, alignment: .leading)
                                     }.padding(EdgeInsets(top:0, leading: 0, bottom: 10, trailing: -7))
                                     VStack {
@@ -126,7 +167,7 @@ struct focuswidgetEntryView : View {
                                             .minimumScaleFactor(0.5)
                                             .lineLimit(1)
                                             .padding(EdgeInsets(top: 0, leading: -10, bottom: 0, trailing: 10))
-                                        Text("unset")
+                                        Text(entry.tagName)
                                             .font(Font.custom("Menlo", size: 13))
                                             .scaledToFit()
                                             .minimumScaleFactor(0.5)
@@ -156,13 +197,13 @@ struct focuswidgetEntryView : View {
                                         .frame(width: 25, height: 25, alignment: .leading)
                                         .padding(EdgeInsets(top: 0, leading: -17, bottom: 0, trailing: -5))
                                
-                                    Text("15").font(Font.custom("Menlo-Bold", size: 17)).scaledToFill()
+                                    Text(String(entry.level)).font(Font.custom("Menlo-Bold", size: 17)).scaledToFill()
                                         .minimumScaleFactor(0.5)
                                         .lineLimit(1)
                                 }.padding(EdgeInsets(top: 0, leading: 0, bottom: -5, trailing: 0))
                                 HStack {
                                     Image("coins").resizable().scaledToFit().frame(width: 18, height: 18, alignment: .leading).padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                                    Text("897").font(Font.custom("Menlo-Bold", size: 17)).scaledToFill()
+                                    Text(String(entry.coins)).font(Font.custom("Menlo-Bold", size: 17)).scaledToFill()
                                         .minimumScaleFactor(0.5)
                                         .lineLimit(1)
                                 }
@@ -182,7 +223,7 @@ struct focuswidgetEntryView : View {
                         ZStack {
                             BarChartView(data:ChartData(points: data), title: "Sun - Sat", style: chartStyle, form: ChartForm.small).scaledToFit()
                             if entry.noData {
-                                VStack {
+                                VStack { 
                                     Text("No Data Yet!").font(Font.custom("Menlo-Bold", size: 15)).foregroundColor(Color.black.opacity(0.5)).padding(EdgeInsets(top: 15, leading: 0, bottom: 0, trailing: 0))
                                     Text("😢 📊").padding(4)
                                     }
@@ -190,7 +231,7 @@ struct focuswidgetEntryView : View {
                                 Text("Total: \(Int(entry.totalMins)) mins").font(Font.custom("Menlo", size: 13)).scaledToFill()
                                     .minimumScaleFactor(0.5)
                                     .lineLimit(1)
-                                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 40))
+                                    .padding(EdgeInsets(top: 0, leading: 20, bottom: 20, trailing: 40))
                             }
                         }.frame(width: geo.size.width * 0.80, height: geo.size.height * 0.80, alignment: .center).padding(EdgeInsets(top: 0, leading: 0, bottom: -5, trailing: 0))
                     }
@@ -219,7 +260,7 @@ struct focuswidget: Widget {
 
 struct focuswidget_Previews: PreviewProvider {
     static var previews: some View {
-        focuswidgetEntryView(entry: SimpleEntry(date: Date(),timeData: ["0"], pet: "gray cat", totalMins: 0, noData: true, coins: 0, configuration: ConfigurationIntent()))
+        focuswidgetEntryView(entry: SimpleEntry(date: Date(),timeData: ["0"], pet: "gray cat", totalMins: 0, noData: true, coins: 0, tagName: "unset", tagColor: "gray", level: 1, configuration: ConfigurationIntent()))
             .previewContext(WidgetPreviewContext(family: .systemLarge))
     }
 }

@@ -85,6 +85,7 @@ class StoreController: UIViewController {
         view.backgroundColor = backgroundColor
         view.frame = self.view.bounds
         view.contentSize = contentViewSize
+        view.isUserInteractionEnabled = true
         return view
     }()
     lazy var containerView: UIView = {

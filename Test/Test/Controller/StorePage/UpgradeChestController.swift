@@ -89,7 +89,7 @@ class UpgradeChestController: UIViewController, SKPaymentTransactionObserver, SK
           navigationController?.navigationBar.barTintColor = brightPurple
           navigationController?.navigationBar.tintColor = .white
           collectionView.backgroundColor = brightPurple
-          collectionView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+          collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
           
           collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30).isActive = true
           collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30).isActive = true

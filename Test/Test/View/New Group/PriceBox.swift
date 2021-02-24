@@ -13,7 +13,7 @@ class PriceBox: UIView {
     var width: CGFloat = 0
     let view = UIView()
     let label = UILabel()
-
+    var life = false
     override init(frame: CGRect) {
        super.init(frame: frame)
        setupView()
@@ -22,6 +22,7 @@ class PriceBox: UIView {
      //initWithCode to init view from xib or storyboard
      required init?(coder aDecoder: NSCoder) {
        super.init(coder: aDecoder)
+        self.layoutMargins = UIEdgeInsets(top: 0, left: 25, bottom: 0, right: 25)
        setupView()
      }
      
@@ -35,17 +36,27 @@ class PriceBox: UIView {
         self.layer.shadowOpacity = 0.5
         self.layer.shadowOffset = .zero
         self.layer.shadowRadius = 5
-        priceLabel.font = UIFont(name: "Menlo-Bold", size: 35)
-        smallLabel.bottom(to:self, offset: UIDevice.current.hasNotch ? -35 : isIpod ? -15 :-20)
-        smallLabel.font = UIFont(name: "Menlo", size: 12)
-        smallLabel.centerX(to: self)
-        priceLabel.centerX(to: self)
-        priceLabel.bottomToTop(of: smallLabel, offset: 5)
-        
-        title.bottomToTop(of: priceLabel, offset: 0)
-        title.font = UIFont(name: "Menlo", size: 15)
-        title.centerX(to:self)
+        if !isIpod {
+            priceLabel.font = UIFont(name: "Menlo-Bold", size: 25)
+            smallLabel.font = UIFont(name: "Menlo", size: 12)
+            title.font = UIFont(name: "Menlo", size: 16)
+        } else {
+            priceLabel.font = UIFont(name: "Menlo-Bold", size: 20)
+            smallLabel.font = UIFont(name: "Menlo", size: 12)
+            title.font = UIFont(name: "Menlo", size: 14)
+        }
+ 
 
+        priceLabel.top(to: self, offset: 5)
+        priceLabel.trailing(to: self, offset: -10)
+        smallLabel.topToBottom(of: priceLabel)
+        smallLabel.trailing(to: self, offset: -10)
+        
+        title.numberOfLines = 1;
+        title.minimumScaleFactor = 0.5
+        title.adjustsFontSizeToFitWidth = true
+        title.leading(to: self, offset: 20)
+        title.centerY(to: self)
      }
     
     func configure() {
@@ -64,18 +75,32 @@ class PriceBox: UIView {
             smallLabel.textColor = .black
             view.backgroundColor = brightPurple
             label.textColor = .white
-        }
-        if yearly {
+        } 
+  
+    }
+    func configureLife() {
+        if life {
+            smallLabel.removeFromSuperview()
+            priceLabel.removeFromSuperview()
+            self.addSubview(priceLabel)
+            priceLabel.font = UIFont(name: "Menlo-Bold", size: 25)
+            priceLabel.centerY(to: self)
+            priceLabel.trailing(to: self, offset: -10)
+            
             self.addSubview(view)
-            view.height(height)
-            view.width(width)
-            view.top(to: self, offset: 7)
-            view.trailing(to: self, offset: -7)
-            view.layer.cornerRadius = 5
-            label.font = UIFont(name: "Menlo-Bold", size: 12)
-            label.text = "45% Off"
+            view.translatesAutoresizingMaskIntoConstraints = false
+            view.trailingToLeading(of: priceLabel, offset: -8)
+            view.leadingToTrailing(of: title, offset: 8)
+            view.centerY(to: self)
+            view.height(self.height * 0.50)
+            view.layer.cornerRadius = 10
+            label.text = "LIMITED TIME!"
+            label.font = UIFont(name: "Menlo-Bold", size: 14)
+            label.adjustsFontSizeToFitWidth = true
             view.addSubview(label)
-            label.center(in: view)
+            label.centerY(to: view)
+            label.leading(to: view, offset: 5)
+            label.trailing(to: view, offset: -5)
         }
     }
 }

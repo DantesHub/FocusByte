@@ -9,6 +9,7 @@
 import UIKit
 import IQKeyboardManagerSwift
 import AppsFlyerLib
+import StoreKit
 
 var isActive = false
 var dateResignActive : Date?
@@ -22,6 +23,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let winScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: winScene)
         let nc =  UINavigationController(rootViewController: WelcomeViewController())
+        let defaults = UserDefaults.standard
+        var launched = defaults.integer(forKey: "launchNumber")
+        launched = launched + 1
+        defaults.setValue(launched, forKey: "launchNumber")
+        print(launched, "launched")
+    
+
         IQKeyboardManager.shared.enable = true
         self.window?.overrideUserInterfaceStyle = .light
         window?.rootViewController = nc

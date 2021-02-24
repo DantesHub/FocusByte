@@ -24,7 +24,7 @@ class SettingsController: UIViewController, MFMailComposeViewControllerDelegate 
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    var data = [Setting(title: "Deep Focus Mode", type: "dfm"),Setting(title: "Quotes on home screen", type: "quotes"), Setting(title: "Save to other devices", type: "sync"), Setting(title: "Rate Us!", type: "rate"), Setting(title: "Go Pro!", type: "gopro"), Setting(title: "Restore Purchase", type: "restore"), Setting(title: "Email me! Feedback or Bugs :)", type: "email"),Setting(title: "⚠️❗️Non Pro users will lose all data if logged out", type: "warning")]
+    var data = [Setting(title: "Deep Focus Mode (Notifs)", type: "dfm"),Setting(title: "Quotes on home screen", type: "quotes"), Setting(title: "Save to other devices", type: "sync"), Setting(title: "Rate Us!", type: "rate"), Setting(title: "Go Pro!", type: "gopro"), Setting(title: "Restore Purchase", type: "restore"),Setting(title: "Join the Discord!", type: "discord"), Setting(title: "Email me! Feedback or Bugs :)", type: "email"),Setting(title: "⚠️❗️Non Pro users will lose all data if logged out", type: "warning")]
     var results: Results<User>!
     let logOutButton = UIButton()
     var delegate: ContainerControllerDelegate!
@@ -167,7 +167,11 @@ extension SettingsController: UITableViewDelegate, UITableViewDataSource {
                         }
                     }
                 }
-        } else if indexPath.row == 6 { //email
+        } else if indexPath.row == 6 { // join discord
+            if let url = URL(string: "https://discord.gg/ZhfC6az") {
+                UIApplication.shared.open(url)
+            }
+        } else if indexPath.row == 7 { //email
             if MFMailComposeViewController.canSendMail() {
                 let mail = MFMailComposeViewController()
                 mail.mailComposeDelegate = self
