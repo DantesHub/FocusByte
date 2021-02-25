@@ -125,9 +125,6 @@ extension Color {
 struct focuswidgetEntryView : View {
     var entry: Provider.Entry
     private static let deeplinkURL: URL = URL(string: "widget-deeplink://")!
-
-    let chartStyle = ChartStyle(backgroundColor: Color(hex: "#B3B1FA"), accentColor: Color(hex: "#5351C0"), secondGradientColor: Color(hex: "#5351C0"), textColor: Color.black, legendTextColor: Color.white, dropShadowColor: Color.gray)
-    
   
     var body: some View {
         
@@ -137,7 +134,7 @@ struct focuswidgetEntryView : View {
               return num
           }
         ZStack {
-            Color(hex: "#DBCFF8").edgesIgnoringSafeArea(.all)
+            Color(hex: "#D4C2FF").edgesIgnoringSafeArea(.all)
             HStack {
                 GeometryReader { geo in
                     VStack {
@@ -179,7 +176,7 @@ struct focuswidgetEntryView : View {
                         }
                         .widgetURL(focuswidgetEntryView.deeplinkURL)
                         .frame(width: geo.size.width, height: geo.size.height/2.5, alignment: .center)
-                        .background(Color(hex: "#D0C5EB"))
+                        .background(Color(hex: "#DBCCFF"))
                         .cornerRadius(15)
                        
                         
@@ -221,7 +218,7 @@ struct focuswidgetEntryView : View {
                 VStack {
                     Link(destination: URL(string: "stats://link3")!)  {
                         ZStack {
-                            BarChartView(data:ChartData(points: data), title: "Sun - Sat", style: chartStyle, form: ChartForm.small).scaledToFit()
+                            BarChartView(data:ChartData(points: data), title: "Sun - Sat", style: ChartStyle(backgroundColor: Color(hex: "#B3B1FA"), accentColor: Color(hex: "#5351C0"), secondGradientColor: Color(hex: "#5351C0"), textColor: Color.black, legendTextColor: Color.white, dropShadowColor: Color.gray.opacity(0.5)), form: ChartForm.small).scaledToFit()
                             if entry.noData {
                                 VStack { 
                                     Text("No Data Yet!").font(Font.custom("Menlo-Bold", size: 15)).foregroundColor(Color.black.opacity(0.5)).padding(EdgeInsets(top: 15, leading: 0, bottom: 0, trailing: 0))
@@ -239,20 +236,20 @@ struct focuswidgetEntryView : View {
                 }
                 Spacer(minLength: 20)
             }
-        }
+        }.environment(\.colorScheme, .light)
     }
 }
 
 @main
 struct focuswidget: Widget {
     let kind: String = "focuswidget"
-
+    let description: String = "Monitor how you spend your time and stay motivated"
     var body: some WidgetConfiguration {
         IntentConfiguration(kind: kind, intent: ConfigurationIntent.self, provider: Provider()) { entry in
             focuswidgetEntryView(entry: entry)
         }
         .configurationDisplayName("Time Distribution")
-        .description("Monitor how you spend your time and stay motivated")
+        .description(description)
         .supportedFamilies([.systemMedium])
     }
 }

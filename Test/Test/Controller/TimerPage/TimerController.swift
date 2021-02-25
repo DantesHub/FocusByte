@@ -569,8 +569,8 @@ class TimerController: UIViewController, TagUpdater {
         tagTitle.text = tagAndColor.name
         tagTitle.lineBreakMode = .byTruncatingTail
         tagTitle.textAlignment = .center
-        tagTitle.width(70)
-        tagTitle.height(8)
+        tagTitle.width(50)
+        tagTitle.height(10)
         tagTitle.bottom(to: tagImageView, offset: -5)
         tagTitle.centerX(to: tagImageView)
     }
