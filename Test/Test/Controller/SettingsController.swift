@@ -17,6 +17,7 @@ class SettingsController: UIViewController, MFMailComposeViewControllerDelegate 
         var type: String
     }
     //MARK: - Properties
+    var minutes: CGFloat = 0
     let db = Firestore.firestore()
     var warning:UILabel = {
        let label = UILabel()
@@ -24,9 +25,14 @@ class SettingsController: UIViewController, MFMailComposeViewControllerDelegate 
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    var data = [Setting(title: "Deep Focus Mode (Notifs)", type: "dfm"),Setting(title: "Quotes on home screen", type: "quotes"), Setting(title: "Save to other devices", type: "sync"), Setting(title: "Rate Us!", type: "rate"), Setting(title: "Go Pro!", type: "gopro"), Setting(title: "Restore Purchase", type: "restore"),Setting(title: "Join the Discord!", type: "discord"), Setting(title: "Email me! Feedback or Bugs :)", type: "email"),Setting(title: "⚠️❗️Non Pro users will lose all data if logged out", type: "warning")]
+    var data = [Setting(title: "Deep Focus Mode (Notifs)", type: "dfm"),Setting(title: "Quotes on home screen", type: "quotes"), Setting(title: "Set Default Time", type: "defaultTimer"),  Setting(title: "Save to other devices", type: "sync"), Setting(title: "Rate Us!", type: "rate"), Setting(title: "Go Pro!", type: "gopro"), Setting(title: "Restore Purchase", type: "restore"),Setting(title: "Join the Discord!", type: "discord"), Setting(title: "Email me! Feedback or Bugs :)", type: "email"),Setting(title: "⚠️❗️Non Pro users will lose all data if logged out", type: "warning")]
+    let containerView = UIView()
+    let window = UIApplication.shared.keyWindow
     var results: Results<User>!
     let logOutButton = UIButton()
+    let parentView = UIView()
+    let pickerView = UIPickerView()
+    var set = UIButton(frame: CGRect(x: UIScreen.main.bounds.width - 80, y: 10, width: 75, height: 25))
     var delegate: ContainerControllerDelegate!
     var tableView: UITableView = {
         let tv = UITableView()
@@ -149,7 +155,7 @@ extension SettingsController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.row == 2 {
+        if indexPath.row == 3 {
             data[indexPath.row].title = "Syncing..."
             tableView.reloadData()
                 if let _ = Auth.auth().currentUser?.email {
@@ -167,11 +173,50 @@ extension SettingsController: UITableViewDelegate, UITableViewDataSource {
                         }
                     }
                 }
-        } else if indexPath.row == 6 { // join discord
+        } else if indexPath.row == 2 {
+            let screenSize = UIScreen.main.bounds.size
+            containerView.backgroundColor = UIColor.black.withAlphaComponent(0.9)
+            navigationController?.navigationBar.backgroundColor = UIColor.black.withAlphaComponent(0.9)
+            navigationController?.navigationBar.isUserInteractionEnabled = false
+            containerView.frame = self.view.frame
+            window?.addSubview(containerView)
+            pickerView.backgroundColor = backgroundColor
+            pickerView.isUserInteractionEnabled = true
+            set.setTitle("Done", for: .normal)
+            set.titleLabel?.font = UIFont(name: "Menlo-Bold", size: 18)
+            set.setTitleColor(.white, for: .normal)
+            set.addTarget(self, action: #selector(setDefaultTime), for: .touchUpInside)
+            set.isUserInteractionEnabled = true
+            pickerView.dataSource = self
+            pickerView.delegate = self
+            parentView.frame = CGRect(x: 0, y: ((window?.frame.height)! + 80), width: screenSize.width, height: 270)
+            pickerView.frame = CGRect(x: 0, y: 50, width: screenSize.width, height: 200)
+            parentView.layer.cornerRadius = 15
+            window?.isUserInteractionEnabled = true
+            window?.addSubview(parentView)
+            parentView.addSubview(pickerView)
+            parentView.addSubview(set)
+            parentView.backgroundColor = backgroundColor
+            self.pickerView.selectRow(UserDefaults.standard.integer(forKey: "defaultTime") - 1, inComponent: 0, animated: true)
+            UIView.animate(withDuration: 0.5,
+                                 delay: 0, usingSpringWithDamping: 1.0,
+                                 initialSpringVelocity: 1.0,
+                                 options: .curveEaseOut, animations: { [self] in
+                                  containerView.alpha = 0.8
+                                    parentView.frame = CGRect(x: 0, y: UIScreen.main.bounds.size.height - 270, width: parentView.frame.width, height: 270)
+                                 }, completion: {_ in
+                              
+                                 })
+                                   
+            let tapGesture = UITapGestureRecognizer(target: self,
+                                                         action: #selector(tappedOutside))
+                 tapGesture.cancelsTouchesInView = false
+                 containerView.addGestureRecognizer(tapGesture)
+        } else if indexPath.row == 7 { // join discord
             if let url = URL(string: "https://discord.gg/ZhfC6az") {
                 UIApplication.shared.open(url)
             }
-        } else if indexPath.row == 7 { //email
+        } else if indexPath.row == 8 { //email
             if MFMailComposeViewController.canSendMail() {
                 let mail = MFMailComposeViewController()
                 mail.mailComposeDelegate = self
@@ -183,7 +228,67 @@ extension SettingsController: UITableViewDelegate, UITableViewDataSource {
             }
         }
     }
+    @objc func setDefaultTime() {
+        UserDefaults.standard.setValue(minutes, forKey: "defaultTime")
+        if #available(iOS 14.0, *) {
+            UserDefaults(suiteName: "group.co.byteteam.focusbyte")?.setValue(minutes, forKey: "defaultTime")
+        }
+        tappedOutside()
+    }
+    @objc func tappedOutside() {
+        UIView.animate(withDuration: 0.4,
+                                   delay: 0, usingSpringWithDamping: 1.0,
+                                   initialSpringVelocity: 1.0,
+                                   options: .curveEaseInOut, animations: { [self] in
+                                    self.containerView.alpha = 0
+                                    parentView.frame = CGRect(x: 0, y: (window?.frame.height)!, width: parentView.frame.width, height: parentView.frame.height
+                                    )
+                                   }, completion: nil)
+        navigationController?.navigationBar.isUserInteractionEnabled = true
+        parentView.removeFromSuperview()
+        pickerView.removeFromSuperview()
+        set.removeFromSuperview()
+    }
 }
 
 
+extension SettingsController: UIPickerViewDelegate, UIPickerViewDataSource {
 
+        func numberOfComponents(in pickerView: UIPickerView) -> Int {
+            return 2
+        }
+
+        func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+            switch component {
+            case 0:
+                return 120
+            case 1, 2:
+                return 1
+            default:
+                return 0
+            }
+        }
+
+        func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
+            return pickerView.frame.size.width/3
+        }
+
+        func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+            switch component {
+            case 0:
+                return "\(row + 1)"
+            case 1:
+                return "Minutes"
+            default:
+                return ""
+            }
+        }
+        func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+            switch component {
+            case 0:
+                minutes = CGFloat(row + 1)
+            default:
+                break;
+            }
+        }
+    }

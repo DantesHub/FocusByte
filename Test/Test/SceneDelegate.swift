@@ -26,9 +26,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let defaults = UserDefaults.standard
         var launched = defaults.integer(forKey: "launchNumber")
         launched = launched + 1
-        defaults.setValue(launched, forKey: "launchNumber")
-        print(launched, "launched")
-    
+        defaults.setValue(launched, forKey: "launchNumber")    
 
         IQKeyboardManager.shared.enable = true
         self.window?.overrideUserInterfaceStyle = .light
@@ -40,9 +38,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-//        maybeOpenedFromWidget(urlContexts: URLContexts)
-//        print("juju")
-//        UserDefaults.standard.setValue(URLContexts.first?.url.absoluteString, forKey: "widget")
         
         if let url = URLContexts.first?.url {
             AppsFlyerLib.shared().handleOpen(url, options: nil)
@@ -56,7 +51,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 NotificationCenter.default.post(name: Notification.Name("changePet"), object: nil)
             }
         }
-
     }
 
 

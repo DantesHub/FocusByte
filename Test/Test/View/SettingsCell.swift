@@ -95,7 +95,12 @@ class SettingsCell:UITableViewCell,SKPaymentTransactionObserver, SKProductsReque
  
         return iv
       }()
-    
+    lazy var timerLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont(name: "Menlo-Bold", size: 20)
+        label.textColor = .white
+        return label
+    }()
     //MARK: - init
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -125,6 +130,11 @@ class SettingsCell:UITableViewCell,SKPaymentTransactionObserver, SKProductsReque
             contentView.addSubview(dfmSwitch)
             dfmSwitch.centerY(to: self)
             dfmSwitch.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15).isActive = true
+        } else if type == "defaultTimer" {
+            contentView.addSubview(timerLabel)
+            timerLabel.text = "⏰ \(UserDefaults.standard.integer(forKey: "defaultTime"))"
+            timerLabel.centerY(to: self)
+            timerLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15).isActive = true
         } else if type == "sync" {
             contentView.addSubview(syncView)
             syncView.centerY(to: self)

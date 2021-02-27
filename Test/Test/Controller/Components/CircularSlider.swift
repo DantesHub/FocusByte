@@ -39,7 +39,7 @@ extension TimerController {
         circularSlider.diskColor = .clear
         circularSlider.minimumValue = 0
         circularSlider.maximumValue = 120
-        circularSlider.endPointValue = 25
+        circularSlider.endPointValue = UserDefaults.standard.value(forKey: "defaultTime") as! CGFloat 
         circularSlider.addTarget(self, action: #selector(updateTexts), for: .valueChanged)
         view.insertSubview(circularSlider, belowSubview: chestImageView!)
         updateTexts()

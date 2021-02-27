@@ -1,10 +1,7 @@
 //
 //  ViewController.swift
-//  Test
 //
-//  Created by Laima Cernius-Ink on 3/24/20.
-//  Copyright © 2020 Steve Ink. All rights reserved.
-//
+//TODO add appsflyer event for lifetime
 import UIKit
 import HGCircularSlider
 import FirebaseDatabase
@@ -227,7 +224,6 @@ class TimerController: UIViewController, TagUpdater {
          }
          topVC!.present(controller,animated: true,completion: nil)
            NotificationCenter.default.post(name: Notification.Name(rawValue: petsKey), object: nil)
-
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -289,6 +285,7 @@ class TimerController: UIViewController, TagUpdater {
                     userDefaults?.setValue(getWidgetData(timeData: timeData), forKey: "timeData")
                     userDefaults?.setValue(tagAndColor.name, forKey: "tagName")
                     userDefaults?.setValue(tagAndColor.color, forKey: "tagColor")
+                    userDefaults?.setValue(UserDefaults.standard.integer(forKey: "defaultTime"), forKey: "defaultTime")
                     WidgetCenter.shared.reloadAllTimelines()
                 }
             }

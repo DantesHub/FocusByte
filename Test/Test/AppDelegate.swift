@@ -41,7 +41,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     center.add(request) { (error) in
                         // Check the error parameter and handle any errors
                     }
-                    
                 }
             }
         }
@@ -59,18 +58,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     // Open URI-scheme for iOS 9 and above
     func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
-        let message = url.host?.removingPercentEncoding
-        print(message, "message")
-        UserDefaults.standard.setValue(message, forKey: "widget")
-        
         AppsFlyerLib.shared().handleOpen(url, sourceApplication: sourceApplication, withAnnotation: annotation)
         return true
     }
 
     // Reports app open from deep link for iOS 10 or later
     func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-        print("godu")
-        UserDefaults.standard.setValue(userActivity, forKey: "widget")
         AppsFlyerLib.shared().continue(userActivity, restorationHandler: nil)
         return true
     }
@@ -78,19 +71,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         print(Realm.Configuration.defaultConfiguration.fileURL!)
-//        if #available(iOS 10.0, *) {
-//          // For iOS 10 display notification (sent via APNS)
-//          UNUserNotificationCenter.current().delegate = self
-//
-//          let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
-//          UNUserNotificationCenter.current().requestAuthorization(
-//            options: authOptions,
-//            completionHandler: {_, _ in })
-//        } else {
-//          let settings: UIUserNotificationSettings =
-//          UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
-//          application.registerUserNotificationSettings(settings)
-//        }
 
         application.registerForRemoteNotifications()
         AppsFlyerLib.shared().appsFlyerDevKey = "XbmHxcKdV5p9uDbufEGEAY"
@@ -107,6 +87,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let defaults = UserDefaults.standard
         defaults.register(defaults: [
             "didAsk": false,
+            "defaultTime": 25
         ])
      
         defaults.set("none", forKey: "status")

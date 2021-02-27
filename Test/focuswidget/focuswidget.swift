@@ -13,11 +13,11 @@ import SwiftUICharts
 
 struct Provider: IntentTimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), timeData: ["0"], pet: "gray cat",  totalMins: 0, noData: true, coins: 0, tagName: "unset", tagColor: "gray",level: 1, configuration: ConfigurationIntent())
+        SimpleEntry(date: Date(), timeData: ["0"], pet: "gray cat",  totalMins: 0, noData: true, coins: 0, tagName: "unset", tagColor: "gray",level: 1,defaultTime:25, configuration: ConfigurationIntent())
     }
 
     func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let entry = SimpleEntry(date: Date(), timeData: ["0"], pet: "gray cat",totalMins: 0, noData: true, coins: 0,  tagName: "unset", tagColor: "gray",  level: 1,configuration: configuration)
+        let entry = SimpleEntry(date: Date(), timeData: ["0"], pet: "gray cat",totalMins: 0, noData: true, coins: 0,  tagName: "unset", tagColor: "gray",  level: 1,defaultTime:25,configuration: configuration)
         completion(entry)
     }
 
@@ -32,11 +32,12 @@ struct Provider: IntentTimelineProvider {
         let tagColor: String = userDefaults?.string(forKey: "tagColor") ?? "gray"
         let coins: Int = userDefaults?.integer(forKey: "coins") ?? 0
         let level: Int = userDefaults?.integer(forKey: "level") ?? 1
+        let defaultTime: Int = userDefaults?.integer(forKey: "defaultTime") ?? 25
         // Generate a timeline consisting of five entries an hour apart, starting from the current date.
         let currentDate = Date()
         for hourOffset in 0 ..< 5 {
             let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date:entryDate, timeData: time2, pet: pet2,totalMins: totalMins,  noData: noData, coins: coins,tagName: tagName, tagColor: tagColor, level: level, configuration: configuration)
+            let entry = SimpleEntry(date:entryDate, timeData: time2, pet: pet2,totalMins: totalMins,  noData: noData, coins: coins,tagName: tagName, tagColor: tagColor, level: level, defaultTime:defaultTime, configuration: configuration)
             entries.append(entry)
         }
 
@@ -56,6 +57,7 @@ struct SimpleEntry: TimelineEntry {
     let tagName: String
     let tagColor: String
     let level: Int
+    let defaultTime: Int
     let configuration: ConfigurationIntent
 }
 extension Color {
@@ -127,8 +129,6 @@ struct focuswidgetEntryView : View {
     private static let deeplinkURL: URL = URL(string: "widget-deeplink://")!
   
     var body: some View {
-        
-        
           let data = entry.timeData.map { (str) -> Float in
               let num = Float(str) ?? 0
               return num
@@ -158,7 +158,7 @@ struct focuswidgetEntryView : View {
                                             .frame(width: 10, height: 10, alignment: .leading)
                                     }.padding(EdgeInsets(top:0, leading: 0, bottom: 10, trailing: -7))
                                     VStack {
-                                        Text(" 25")
+                                        Text(String(entry.defaultTime))
                                             .font(Font.custom("Menlo", size: 13))
                                             .scaledToFit()
                                             .minimumScaleFactor(0.5)
@@ -257,7 +257,7 @@ struct focuswidget: Widget {
 
 struct focuswidget_Previews: PreviewProvider {
     static var previews: some View {
-        focuswidgetEntryView(entry: SimpleEntry(date: Date(),timeData: ["0"], pet: "gray cat", totalMins: 0, noData: true, coins: 0, tagName: "unset", tagColor: "gray", level: 1, configuration: ConfigurationIntent()))
+        focuswidgetEntryView(entry: SimpleEntry(date: Date(),timeData: ["0"], pet: "gray cat", totalMins: 0, noData: true, coins: 0, tagName: "unset", tagColor: "gray", level: 1,defaultTime:25, configuration: ConfigurationIntent()))
             .previewContext(WidgetPreviewContext(family: .systemLarge))
     }
 }
