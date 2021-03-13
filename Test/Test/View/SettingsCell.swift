@@ -225,25 +225,28 @@ class SettingsCell:UITableViewCell,SKPaymentTransactionObserver, SKProductsReque
     private final func save() {
         UserDefaults.standard.set(true, forKey: "isPro")
         //update data in firebase
-          if let _ = Auth.auth().currentUser?.email {
-              let email = Auth.auth().currentUser?.email
-              self.db.collection(K.userPreferenes).document(email!).updateData([
-                  "isPro": true,
-                  "coins": coins,
-                  "inventoryArray": inventoryArray,
-                  "exp": exp
-              ]) { (error) in
-                  if let e = error {
-                      print("There was a issue saving data to firestore \(e) ")
-                  } else {
-                      print("Succesfully made user pro")
-                    let controller = ContainerController(center: TimerController())
-                    controller.modalPresentationStyle = .fullScreen
-                    self.parentViewController!.presentInFullScreen(UINavigationController(rootViewController: controller), animated: false,  completion: nil)
-                    upgradedToPro = true
-                  }
-              }
-          }
+        if !UserDefaults.standard.bool(forKey: "noLogin") {
+            if let _ = Auth.auth().currentUser?.email {
+                let email = Auth.auth().currentUser?.email
+                self.db.collection(K.userPreferenes).document(email!).updateData([
+                    "isPro": true,
+                    "coins": coins,
+                    "inventoryArray": inventoryArray,
+                    "exp": exp
+                ]) { (error) in
+                    if let e = error {
+                        print("There was a issue saving data to firestore \(e) ")
+                    } else {
+                        print("Succesfully made user pro")
+                      let controller = ContainerController(center: TimerController())
+                      controller.modalPresentationStyle = .fullScreen
+                      self.parentViewController!.presentInFullScreen(UINavigationController(rootViewController: controller), animated: false,  completion: nil)
+                      upgradedToPro = true
+                    }
+                }
+            }
+        }
+         
     }
     @objc func tappedRestore() {
         let alertController = UIAlertController(title: "", message: "", preferredStyle: UIAlertController.Style.alert)
@@ -263,6 +266,7 @@ class SettingsCell:UITableViewCell,SKPaymentTransactionObserver, SKProductsReque
     }
     @objc func tappedPro() {
         let controller = SubscriptionController()
+        controller.fromSettings = true
                   controller.modalPresentationStyle = .fullScreen
         self.parentViewController?.presentInFullScreen(UINavigationController(rootViewController: controller), animated: true, completion: nil)
     }

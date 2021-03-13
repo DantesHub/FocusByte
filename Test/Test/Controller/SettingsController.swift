@@ -1,4 +1,4 @@
-//
+
 //  SettingsController.swift
 //  Test
 //
@@ -10,8 +10,11 @@ import UIKit
 import RealmSwift
 import Firebase
 import MessageUI
+import WidgetKit
+import AppsFlyerLib
 var loggedOut = false
-class SettingsController: UIViewController, MFMailComposeViewControllerDelegate {
+var noLoginGlobal = false
+class SettingsController: UIViewController, MFMailComposeViewControllerDelegate, NoLoginDelegate {
     struct Setting {
         var title: String
         var type: String
@@ -25,7 +28,7 @@ class SettingsController: UIViewController, MFMailComposeViewControllerDelegate 
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    var data = [Setting(title: "Deep Focus Mode (Notifs)", type: "dfm"),Setting(title: "Quotes on home screen", type: "quotes"), Setting(title: "Set Default Time", type: "defaultTimer"),  Setting(title: "Save to other devices", type: "sync"), Setting(title: "Rate Us!", type: "rate"), Setting(title: "Go Pro!", type: "gopro"), Setting(title: "Restore Purchase", type: "restore"),Setting(title: "Join the Discord!", type: "discord"), Setting(title: "Email me! Feedback or Bugs :)", type: "email"),Setting(title: "⚠️❗️Non Pro users will lose all data if logged out", type: "warning")]
+    var data = [Setting(title: "Deep Focus Mode (Notifs)", type: "dfm"),Setting(title: "Quotes on home screen", type: "quotes"), Setting(title: "Set Default Time", type: "defaultTimer"),  Setting(title: "Save to other devices", type: "sync"), Setting(title: "Rate Us!", type: "rate"), Setting(title: "Go Pro!", type: "gopro"), Setting(title: "Restore Purchase", type: "restore"),Setting(title: "Join the Discord!", type: "discord"), Setting(title: "Email me! Feedback or Bugs :)", type: "email"),Setting(title: "⚠️❗️Non Pro user data is not saved to cloud", type: "warning")]
     let containerView = UIView()
     let window = UIApplication.shared.keyWindow
     var results: Results<User>!
@@ -42,7 +45,8 @@ class SettingsController: UIViewController, MFMailComposeViewControllerDelegate 
    
         return tv
     }()
-    
+    var noLogin = false
+
     //MARK: - Init
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,6 +54,7 @@ class SettingsController: UIViewController, MFMailComposeViewControllerDelegate 
         tableView.dataSource = self
         configureUI()
 }
+    
     
     //MARK: - Helper functions
     func configureUI() {
@@ -64,21 +69,14 @@ class SettingsController: UIViewController, MFMailComposeViewControllerDelegate 
         tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
         tableView.backgroundColor = backgroundColor
         tableView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        tableView.height(view.frame.height * 0.72)
+        tableView.isScrollEnabled = true
+        tableView.bottomToSuperview()
+        tableView.showsVerticalScrollIndicator = false
         tableView.rowHeight = view.frame.height * 0.09
-        logOutButton.setTitle("Log out", for: .normal)
-        logOutButton.titleLabel?.font = UIFont(name: "Menlo-Bold", size: 20)
-        logOutButton.titleLabel?.textAlignment = .center
-        logOutButton.layer.cornerRadius = 25
-        logOutButton.backgroundColor = darkRed
-        logOutButton.layoutSubviews()
-        view.addSubview(logOutButton)
-        logOutButton.translatesAutoresizingMaskIntoConstraints = false
-        logOutButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        logOutButton.width(view.frame.width * 0.60)
-        logOutButton.topToBottom(of: tableView, offset: 10)
-        logOutButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
-        logOutButton.addTarget(self, action: #selector(logOutPressed), for: .touchUpInside)
+        DispatchQueue.main.async { [self] in
+            self.tableView.scrollToRow(at: IndexPath(row: UserDefaults.standard.bool(forKey: "isPro") ? data.count - 2 : data.count - 1, section: 0), at: .bottom, animated: false)
+        }
+        updateLogoutButton()
     }
 
     //MARK: - Handlers
@@ -89,9 +87,18 @@ class SettingsController: UIViewController, MFMailComposeViewControllerDelegate 
       }
     
     @objc func logOutPressed() {
+        if noLogin {
+            AppsFlyerLib.shared().logEvent("tapped_login_settings", withValues: [AFEventParamContent: "true"])
+            noLoginGlobal = true
+            let controller = LoginViewController()
+            controller.modalPresentationStyle = .fullScreen
+            controller.delegate = self
+            self.presentInFullScreen(UINavigationController(rootViewController: controller), animated: true, completion: nil)
+        } else {
          results = uiRealm.objects(User.self)
                   for result  in results {
                       if result.isLoggedIn == true {
+                         UserDefaults.standard.setValue(true, forKey: "noLogin")
                           do {
                              try uiRealm.write {
                                  result.name = nil
@@ -126,6 +133,7 @@ class SettingsController: UIViewController, MFMailComposeViewControllerDelegate 
             UserDefaults.standard.set(nil, forKey: "appleAuthorizedUserIdKey")
              expDate = ""
             enteredForeground = false
+            noLoginGlobal = false
             petImageView.image = UIImage()
             backpackView.image = UIImage()
             let defaults = UserDefaults.standard
@@ -137,13 +145,37 @@ class SettingsController: UIViewController, MFMailComposeViewControllerDelegate 
              let controller = UINavigationController(rootViewController: WelcomeViewController())
              controller.modalPresentationStyle = .fullScreen
              self.presentInFullScreen(controller, animated: false, completion: nil)
+        }
+    }
+    func updateLogoutButton() {
+        let customView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 60))
+        noLogin = UserDefaults.standard.bool(forKey: "noLogin")
+        logOutButton.setTitle(!noLogin ? "Logout" : "Login", for: .normal)
+        logOutButton.titleLabel?.font = UIFont(name: "Menlo-Bold", size: 20)
+        logOutButton.titleLabel?.textAlignment = .center
+        logOutButton.layer.cornerRadius = 25
+        logOutButton.backgroundColor = !noLogin ? darkRed : brightPurple
+        logOutButton.layoutSubviews()
+        customView.addSubview(logOutButton)
+        logOutButton.centerX(to: customView)
+        logOutButton.centerY(to: customView)
+        logOutButton.width(view.frame.width * 0.60)
+        logOutButton.height(60)
+        logOutButton.addTarget(self, action: #selector(logOutPressed), for: .touchUpInside)
+        tableView.tableFooterView = customView
+        
+
     }
     
 }
 //MARK: - extension
 extension SettingsController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        data.count
+        if UserDefaults.standard.bool(forKey: "isPro") {
+            return data.count - 1
+        } else {
+            return data.count
+        }
     }
 
     
@@ -155,7 +187,7 @@ extension SettingsController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.row == 3 {
+        if indexPath.row == 3 && !UserDefaults.standard.bool(forKey: "noLogin")  && UserDefaults.standard.bool(forKey: "isPro"){
             data[indexPath.row].title = "Syncing..."
             tableView.reloadData()
                 if let _ = Auth.auth().currentUser?.email {
@@ -228,11 +260,15 @@ extension SettingsController: UITableViewDelegate, UITableViewDataSource {
             }
         }
     }
+
+    
     @objc func setDefaultTime() {
         UserDefaults.standard.setValue(minutes, forKey: "defaultTime")
         if #available(iOS 14.0, *) {
             UserDefaults(suiteName: "group.co.byteteam.focusbyte")?.setValue(minutes, forKey: "defaultTime")
+            WidgetCenter.shared.reloadAllTimelines()
         }
+        tableView.reloadData()
         tappedOutside()
     }
     @objc func tappedOutside() {

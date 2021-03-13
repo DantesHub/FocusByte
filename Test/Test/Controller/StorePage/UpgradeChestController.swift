@@ -11,6 +11,7 @@ import SCLAlertView
 import RealmSwift
 import Firebase
 import StoreKit
+import AppsFlyerLib
 var onUpgrade = false
 var boughtChest = false
 class UpgradeChestController: UIViewController, SKPaymentTransactionObserver, SKProductsRequestDelegate{
@@ -259,12 +260,15 @@ extension UpgradeChestController: UICollectionViewDelegateFlowLayout, UICollecti
         case "Gold Chest":
             days = 7
             Analytics.logEvent("Gold_Chest", parameters: ["level":level])
+            AppsFlyerLib.shared().logEvent("Gold_Chest", withValues: [AFEventParamContent: "true"])
         case "Epic Chest":
             days = 7
             Analytics.logEvent("Epic_Chest", parameters: ["level":level])
+            AppsFlyerLib.shared().logEvent("Epic_Chest", withValues: [AFEventParamContent: "true"])
         case "Diamond Chest":
             days = 14
             Analytics.logEvent("Diamond_Chest", parameters: ["level":level])
+            AppsFlyerLib.shared().logEvent("Diamond_Chest", withValues: [AFEventParamContent: "true"])
         default:
             print("im still")
         }
@@ -276,15 +280,17 @@ extension UpgradeChestController: UICollectionViewDelegateFlowLayout, UICollecti
         inventoryArray.append("\(result) + \(name)")
         
         //update data in firebase
-        if let _ = Auth.auth().currentUser?.email {
-            let email = Auth.auth().currentUser?.email
-            self.db.collection(K.userPreferenes).document(email!).updateData([
-                "inventoryArray": inventoryArray
-            ]) { (error) in
-                if let e = error {
-                    print("There was a issue saving data to firestore \(e) ")
-                } else {
-                    print("Succesfully saved new items")
+        if !UserDefaults.standard.bool(forKey: "noLogin") && UserDefaults.standard.bool(forKey: "isPro") {
+            if let _ = Auth.auth().currentUser?.email {
+                let email = Auth.auth().currentUser?.email
+                self.db.collection(K.userPreferenes).document(email!).updateData([
+                    "inventoryArray": inventoryArray
+                ]) { (error) in
+                    if let e = error {
+                        print("There was a issue saving data to firestore \(e) ")
+                    } else {
+                        print("Succesfully saved new items")
+                    }
                 }
             }
         }

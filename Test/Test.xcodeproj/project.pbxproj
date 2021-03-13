@@ -49,6 +49,7 @@
 		FE39D18225DDADFD00DBFFDE /* SwiftUICharts in Frameworks */ = {isa = PBXBuildFile; productRef = FE39D18125DDADFD00DBFFDE /* SwiftUICharts */; };
 		FE39D19125DDFD0200DBFFDE /* GetWidgetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE39D19025DDFD0200DBFFDE /* GetWidgetData.swift */; };
 		FE5395C124311AD100DA83C1 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE5395C024311AD100DA83C1 /* Constants.swift */; };
+		FE53DB1325FC0AF200E7ECF0 /* EnableNotificationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE53DB1225FC0AF200E7ECF0 /* EnableNotificationsController.swift */; };
 		FE577C9224704D6800042819 /* mapGif.gif in Resources */ = {isa = PBXBuildFile; fileRef = FE577C9124704D6800042819 /* mapGif.gif */; };
 		FE577C942470CD1200042819 /* DateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE577C932470CD1200042819 /* DateHelper.swift */; };
 		FE577C9D24748D4200042819 /* StatisticsBarChartLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE577C9C24748D4200042819 /* StatisticsBarChartLogic.swift */; };
@@ -199,6 +200,7 @@
 		FE39D14A25DDA10800DBFFDE /* focuswidgetExtensionDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = focuswidgetExtensionDebug.entitlements; sourceTree = "<group>"; };
 		FE39D19025DDFD0200DBFFDE /* GetWidgetData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetWidgetData.swift; sourceTree = "<group>"; };
 		FE5395C024311AD100DA83C1 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		FE53DB1225FC0AF200E7ECF0 /* EnableNotificationsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableNotificationsController.swift; sourceTree = "<group>"; };
 		FE577C9124704D6800042819 /* mapGif.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = mapGif.gif; sourceTree = "<group>"; };
 		FE577C932470CD1200042819 /* DateHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateHelper.swift; sourceTree = "<group>"; };
 		FE577C9C24748D4200042819 /* StatisticsBarChartLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsBarChartLogic.swift; sourceTree = "<group>"; };
@@ -224,6 +226,7 @@
 		FE8E61F72485A7AB001E1D07 /* AvatarStoreCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarStoreCell.swift; sourceTree = "<group>"; };
 		FE8E61F92485B458001E1D07 /* AvatarAccessory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarAccessory.swift; sourceTree = "<group>"; };
 		FE923F2D25CDD7E20048E4EC /* TimerIpod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerIpod.swift; sourceTree = "<group>"; };
+		FEA66C4725F9C8B500C5F725 /* focuswidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = focuswidgetExtension.entitlements; sourceTree = "<group>"; };
 		FEBC64132431183F00FB082A /* PressStart2P-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PressStart2P-Regular.ttf"; sourceTree = "<group>"; };
 		FEC28330244B86C200098413 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		FEC28332244B87E100098413 /* MysteryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MysteryViewController.swift; sourceTree = "<group>"; };
@@ -327,6 +330,7 @@
 		E15935F6242ACE6F0050E914 = {
 			isa = PBXGroup;
 			children = (
+				FEA66C4725F9C8B500C5F725 /* focuswidgetExtension.entitlements */,
 				FE39D14A25DDA10800DBFFDE /* focuswidgetExtensionDebug.entitlements */,
 				E1593601242ACE6F0050E914 /* Test */,
 				E1593618242ACE720050E914 /* TestTests */,
@@ -467,6 +471,7 @@
 				FECA7A8424390E0000763504 /* RegisterViewController.swift */,
 				FECA7A8C2439135300763504 /* NameViewController.swift */,
 				FECA7A8E2439136700763504 /* GenderViewController.swift */,
+				FE53DB1225FC0AF200E7ECF0 /* EnableNotificationsController.swift */,
 			);
 			path = RegisterFlow;
 			sourceTree = "<group>";
@@ -926,6 +931,7 @@
 				FEC28337244BA17A00098413 /* MysteryBox.swift in Sources */,
 				FEFD306325D322CE0011D64C /* BaseCell.swift in Sources */,
 				FE577C9D24748D4200042819 /* StatisticsBarChartLogic.swift in Sources */,
+				FE53DB1325FC0AF200E7ECF0 /* EnableNotificationsController.swift in Sources */,
 				FE324975246CB0220090759B /* InventoryController.swift in Sources */,
 				FE805AB6247F1C7400A82880 /* MysteryItemLogic.swift in Sources */,
 				FE3249632469CA300090759B /* BoxCell.swift in Sources */,
@@ -1163,7 +1169,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Test/FocusByteDebug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 45;
+				CURRENT_PROJECT_VERSION = 52;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = M5757NXZKD;
 				INFOPLIST_FILE = Test/Info.plist;
@@ -1171,7 +1177,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.5.1;
+				MARKETING_VERSION = 1.5.8;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = co.byteteam.focusbyte;
 				PRODUCT_NAME = FocusByte;
@@ -1190,7 +1196,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Test/Test.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 45;
+				CURRENT_PROJECT_VERSION = 52;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = M5757NXZKD;
 				INFOPLIST_FILE = Test/Info.plist;
@@ -1198,7 +1204,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.5.1;
+				MARKETING_VERSION = 1.5.8;
 				PRODUCT_BUNDLE_IDENTIFIER = co.byteteam.focusbyte;
 				PRODUCT_NAME = FocusByte;
 				SWIFT_VERSION = 5.0;
@@ -1302,7 +1308,7 @@
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CODE_SIGN_ENTITLEMENTS = focuswidgetExtensionDebug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 45;
+				CURRENT_PROJECT_VERSION = 52;
 				DEVELOPMENT_TEAM = M5757NXZKD;
 				INFOPLIST_FILE = focuswidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
@@ -1311,7 +1317,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.5.1;
+				MARKETING_VERSION = 1.5.8;
 				PRODUCT_BUNDLE_IDENTIFIER = co.byteteam.focusbyte.focuswidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1326,8 +1332,9 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = focuswidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 45;
+				CURRENT_PROJECT_VERSION = 52;
 				DEVELOPMENT_TEAM = M5757NXZKD;
 				INFOPLIST_FILE = focuswidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
@@ -1336,7 +1343,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.5.1;
+				MARKETING_VERSION = 1.5.8;
 				PRODUCT_BUNDLE_IDENTIFIER = co.byteteam.focusbyte.focuswidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

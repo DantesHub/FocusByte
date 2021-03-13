@@ -24,7 +24,7 @@ struct ValidateInputs {
         }
     }
     func isPasswordLengthValid() -> Bool {
-        let minLengthRule = ValidationRuleLength(min: 5, error: ExampleValidationError("Email Rule Error"))
+        let minLengthRule = ValidationRuleLength(min: 6, error: ExampleValidationError("Email Rule Error"))
         let result = password.validate(rule: minLengthRule)
         switch result {
         case .valid:

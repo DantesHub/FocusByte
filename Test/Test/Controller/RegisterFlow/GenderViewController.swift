@@ -1,6 +1,6 @@
 import UIKit
 import Firebase
-
+import AppsFlyerLib
 var chosenGender: String = ""
 class GenderViewController: UIViewController {
     //MARK: - Properties
@@ -23,12 +23,14 @@ class GenderViewController: UIViewController {
     //MARK: - Handlers
     @objc func boyTapped() {
         chosenGender = "male"
+        AppsFlyerLib.shared().logEvent("tapped_boy_onboarding", withValues: [AFEventParamContent: "true"])
         let nameVC = NameViewController()
         nameVC.modalPresentationStyle = .fullScreen
         self.navigationController?.pushViewController(nameVC, animated: true)
     }
     
     @objc func girlTapped() {
+        AppsFlyerLib.shared().logEvent("tapped_girl_onboarding", withValues: [AFEventParamContent: "true"])
         chosenGender = "female"
         let nameVC = NameViewController()
         nameVC.modalPresentationStyle = .fullScreen
@@ -38,8 +40,9 @@ class GenderViewController: UIViewController {
     //MARK: - Helper Functions
     func configureUI() {
         configureNavigationBar(color: backgroundColor, isTrans: true)
-        self.navigationItem.setHidesBackButton(true, animated: false)
-        UINavigationBar.appearance().barTintColor = lightLavender
+        if !startTapped {
+            self.navigationItem.setHidesBackButton(true, animated: false)
+        }
         boyImageView.center.x = view.center.x - 150
         boyImageView.center.y = view.center.y - 100
         boyImageView.image = boyImage

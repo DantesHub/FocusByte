@@ -189,6 +189,13 @@ extension CATransition {
         self.subtype = CATransitionSubtype.fromLeft
         return self
     }
+    func segueFromRight() -> CATransition {
+        self.duration = 0.3 //set the duration to whatever you'd like.
+        self.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+        self.type = CATransitionType.moveIn
+        self.subtype = CATransitionSubtype.fromRight
+        return self
+    }
 }
 
 extension UIViewController {
@@ -222,6 +229,7 @@ extension UIViewController {
                 var random: UInt8 = 0
                 let errorCode = SecRandomCopyBytes(kSecRandomDefault, 1, &random)
                 if errorCode != errSecSuccess {
+                    
                     fatalError("Unable to generate nonce. SecRandomCopyBytes failed with OSStatus \(errorCode)")
                 }
                 return random
@@ -271,7 +279,14 @@ extension UIColor {
     }
 }
 
+extension NSMutableAttributedString {
 
+    func setColor(color: UIColor, forText stringValue: String) {
+       let range: NSRange = self.mutableString.range(of: stringValue, options: .caseInsensitive)
+        self.addAttribute(NSAttributedString.Key.foregroundColor, value: color, range: range)
+    }
+
+}
 extension UILabel {
     func applyDesign() {
         self.setLineSpacing(lineSpacing: 4, lineHeightMultiple: 1)

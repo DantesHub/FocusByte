@@ -15,6 +15,7 @@ import TinyConstraints
 import Purchases
 import SCLAlertView
 import WidgetKit
+import AppsFlyerLib
 
 var enteredForeground = false
 var deepFocusMode = true
@@ -141,7 +142,7 @@ class TimerController: UIViewController, TagUpdater {
     var isOpen = false
     let userDefaults = UserDefaults(suiteName: "group.co.byteteam.focusbyte")
     let defaults = UserDefaults.standard
-    
+    var fromWidget = false
    
     //MARK: -Init
     override func viewDidLoad() {
@@ -198,6 +199,10 @@ class TimerController: UIViewController, TagUpdater {
         }
     }
     @objc func openedFromWidget() {
+        if timerButtonLbl.text == "Timer" {
+            !isIpod ? createStartUI() : createIpodStartUI()
+        }
+        fromWidget = true
         handleTap()
     }
     @objc func goToStats() {
@@ -248,16 +253,21 @@ class TimerController: UIViewController, TagUpdater {
 //           view.addGestureRecognizer(leftSwipe)
 //    }
 //    @objc func swipedRight() {
-//        if isOpen == false {
-//            handleMenuToggle()
+//        if !isPlaying {
+//            if isOpen == false {
+//                handleMenuToggle()
+//            }
 //        }
+//  
 //    }
 //
 //
 //
 //    @objc func swipedLeft() {
-//       if isOpen == true {
-//            handleMenuToggle()
+//        if !isPlaying {
+//            if isOpen == true {
+//                 handleMenuToggle()
+//             }
 //        }
 //    }
     private func getRealmData() {
@@ -282,11 +292,16 @@ class TimerController: UIViewController, TagUpdater {
                     userDefaults?.setValue(coins, forKey: "coins")
                     userDefaults?.setValue(Int((pow(Double(exp), 1.0/2.0))), forKey: "level")
                     userDefaults?.setValue(result.pet ?? "gray cat", forKey: "pet")
-                    userDefaults?.setValue(getWidgetData(timeData: timeData), forKey: "timeData")
+                    if UserDefaults.standard.bool(forKey: "isPro") {
+                        userDefaults?.setValue(getWidgetData(timeData: timeData), forKey: "timeData")
+                    } else {
+                        userDefaults?.setValue(true, forKey: "noData")
+
+                    }
                     userDefaults?.setValue(tagAndColor.name, forKey: "tagName")
                     userDefaults?.setValue(tagAndColor.color, forKey: "tagColor")
                     userDefaults?.setValue(UserDefaults.standard.integer(forKey: "defaultTime"), forKey: "defaultTime")
-                    WidgetCenter.shared.reloadAllTimelines()
+                    WidgetCenter.shared.reloadTimelines(ofKind: "co.byteteam.focusbyte.focuswidget")
                 }
             }
         }
@@ -323,38 +338,43 @@ class TimerController: UIViewController, TagUpdater {
     func checkIfPro() {
         Purchases.shared.purchaserInfo { [self] (purchaserInfo, error) in
                 if purchaserInfo?.entitlements.all["isPro"]?.isActive == true {
+                    print("siyanara")
                     UserDefaults.standard.setValue(true, forKey: "isPro")
                 } else {
                     UserDefaults.standard.setValue(false, forKey: "isPro")
-                    if let email = Auth.auth().currentUser?.email {
-                        var isPro = false
-                        let docRef = db.collection(K.FStore.collectionName).document(email)
-                        docRef.getDocument { (snapshot, error) in
-                            if let document = snapshot, document.exists {
-                                _ = document.data().map(String.init(describing:)) ?? "nil"
-                                if let isP = document["isPro"] {
-                                    isPro = isP as! Bool
+                    if !UserDefaults.standard.bool(forKey: "noLogin") {
+                        if let email = Auth.auth().currentUser?.email {
+                            var isPro = false
+                            let docRef = db.collection(K.FStore.collectionName).document(email)
+                            docRef.getDocument { (snapshot, error) in
+                                if let document = snapshot, document.exists {
+                                    _ = document.data().map(String.init(describing:)) ?? "nil"
+                                    if let isP = document["isPro"] {
+                                        isPro = isP as! Bool
+                                    }
+                                }
+                                if isPro {
+                                    UserDefaults.standard.setValue(true, forKey: "isPro")
                                 }
                             }
-                            if isPro {
-                                UserDefaults.standard.setValue(true, forKey: "isPro")
-                            }
-                        }
-                         Firestore.firestore().collection(K.userPreferenes).document(email).updateData([
-                                "isPremium": false,
-                           ]) { (error) in
-                               if let e = error {
-                                   print("There was a issue saving data to firestore \(e) ")
-                               } else {
-                                   print("Succesfully saved new items")
+                             Firestore.firestore().collection(K.userPreferenes).document(email).updateData([
+                                    "isPremium": false,
+                               ]) { (error) in
+                                   if let e = error {
+                                       print("There was a issue saving data to firestore \(e) ")
+                                   } else {
+                                       print("Succesfully saved new items")
+                                   }
                                }
-                           }
+                        }
+
                     }
                 }
             }
         
         }
     func configureUI() {
+        self.navigationController?.navigationItem.hidesBackButton = true
         coinsImg = UIImageView(image: UIImage(named: "coins")!)
         coinsImg!.frame.size.width = 25
         coinsImg!.frame.size.height = 30
@@ -622,8 +642,10 @@ class TimerController: UIViewController, TagUpdater {
         if isPlaying && timerButtonLbl.text == "Give Up" {
             giveUpAlert()
         } else if durationString != "0"{
+            print(durationString, "durationString")
             isPlaying = true
             counter = ((Int(durationString) ?? 10) * 60)
+            print("counter", counter)
             howMuchTime = ((Int(durationString) ?? 10) * 60)
             self.mins = counter/60
             self.secs = counter%60
@@ -909,9 +931,12 @@ class TimerController: UIViewController, TagUpdater {
         if (prevLevel != level) { // 0.000001 can be changed depending on the level of precision you need
             if level == 15 {
                 createAlert(evolved: 15)
+                AppsFlyerLib.shared().logEvent("Evolved_15", withValues: [AFEventParamContent: "true"])
             } else if level == 34 {
                 createAlert(evolved: 34)
+                AppsFlyerLib.shared().logEvent("Evolved_34", withValues: [AFEventParamContent: "true"])
             } else {
+                AppsFlyerLib.shared().logEvent("Level_Up", withValues: [AFEventParamContent: "true"])
                 Analytics.logEvent(AnalyticsEventLevelUp, parameters: ["level_to":level])
                 createAlert(leveled: true)
             }

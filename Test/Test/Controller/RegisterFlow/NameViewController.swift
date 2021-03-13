@@ -10,6 +10,7 @@ import UIKit
 import Firebase
 import RealmSwift
 import TinyConstraints
+import AppsFlyerLib
 
 class NameViewController: UIViewController {
     //MARK: - Properties
@@ -36,31 +37,32 @@ class NameViewController: UIViewController {
     //MARK: - handlers
     @objc func finishTapped() {
         showSpinner()
-          let email = Auth.auth().currentUser?.email
-   
+       
         if nameInput.text! != "" {
-            if let _ = Auth.auth().currentUser?.email {
-          db.collection(K.userPreferenes).document(email!).setData([
-                    "gender": chosenGender,
-                    "name": nameInput.text!,
-                    "inventoryArray": ["gray sweater", "blue jeans", "default shoes", "gray cat"],
-                    "exp": 1,
-                    "coins": 100,
-                    "hair": chosenGender == "male" ? "brown+defaultManHair":"blonde+womanHair1",
-                    "eyes": "black",
-                    "skin": "tan",
-                    "tags": tagDict,
-                
-                ]) { (error) in
-                    if let e = error {
-                        print("There was a issue saving data to firestore \(e) ")
-                    } else {
-                        print("Succesfully saved")
-                        let timerVC = ContainerController(center: TimerController())
-                        self.navigationController?.pushViewController(timerVC, animated: true)
+            if !startTapped {
+                let email = Auth.auth().currentUser?.email
+                if let _ = Auth.auth().currentUser?.email {
+              db.collection(K.userPreferenes).document(email!).setData([
+                        "gender": chosenGender,
+                        "name": nameInput.text!,
+                        "inventoryArray": ["gray sweater", "blue jeans", "default shoes", "gray cat"],
+                        "exp": 1,
+                        "coins": 100,
+                        "hair": chosenGender == "male" ? "brown+defaultManHair":"blonde+womanHair1",
+                        "eyes": "black",
+                        "skin": "tan",
+                        "tags": tagDict,
+                    
+                    ]) { (error) in
+                        if let e = error {
+                            print("There was a issue saving data to firestore \(e) ")
+                        } else {
+                            print("Succesfully saved")
+                        }
                     }
                 }
             }
+            AppsFlyerLib.shared().logEvent("tapped_boy_onboarding", withValues: [AFEventParamContent: "true"])
             UserDefaults.standard.set(false, forKey: "isPro")
             saveToRealm()
         } else {
@@ -92,6 +94,7 @@ class NameViewController: UIViewController {
         nameInput.autocorrectionType = .no
         nameInput.autocapitalizationType = .words
         nameInput.addDoneButtonOnKeyboard()
+        nameInput.backgroundColor = .white
         nameInput.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 25).isActive = true
         nameInput.applyDesign(view, x: xPadding, y: -30)
         finishButton = UILabel(frame: CGRect(x: view.center.x - 100, y: view.center.y + 240, width: 200, height: 60))
@@ -150,6 +153,7 @@ class NameViewController: UIViewController {
         UserToAdd.isLoggedIn = true
         loggedOut = false
         UserToAdd.writeToRealm()
+        self.navigationController?.pushViewController(EnableNotificationsController(), animated: true)
     }
     
 }

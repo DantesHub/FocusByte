@@ -439,7 +439,7 @@ class AvatarSideBar: UIView {
     }
     
     private final func saveToFirebase() {
-        if UserDefaults.standard.bool(forKey: "isPro") == true {
+        if !UserDefaults.standard.bool(forKey: "noLogin") && UserDefaults.standard.bool(forKey: "isPro") {
             if let _ = Auth.auth().currentUser?.email {
                 let email = Auth.auth().currentUser?.email
                 self.db.collection(K.userPreferenes).document(email!).updateData([

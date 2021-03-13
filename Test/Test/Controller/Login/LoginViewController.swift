@@ -13,6 +13,7 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
     var loginTitle = UILabel()
     var loginButtonView = UIView()
     var loginButtonLabel = UILabel()
+    var signUpButton = UIButton()
     var errorLabel: UILabel!
     var emailIsValid = false
     let db = Firestore.firestore()
@@ -21,6 +22,7 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
     let container: UIView = UIView()
     var spinner = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.large)
     var forgotPassword: UILabel!
+    var backButton = UIButton()
     fileprivate var currentNonce: String?
     var googleImage: UIImageView = {
        let iv = UIImageView()
@@ -30,6 +32,7 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
         iv.layer.cornerRadius = 25
         return iv
     }()
+    var delegate: NoLoginDelegate?
     let siwa = ASAuthorizationAppleIDButton()
     let siwaShadow = UIView()
     override func viewDidLoad() {
@@ -48,11 +51,22 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
         super.viewWillAppear(animated)
         GIDSignIn.sharedInstance()?.presentingViewController = self
         GIDSignIn.sharedInstance().delegate = self
-    
+        if UserDefaults.standard.bool(forKey: "noLogin") {
+            view.addSubview(backButton)
+            backButton.setTitle("Back", for: .normal)
+            backButton.leadingToSuperview(offset: 20)
+            backButton.setTitleColor(.systemBlue, for: .normal)
+            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -15).isActive = true
+
+            //            backButton.isUserInteractionEnabled = true
+            backButton.addTarget(self, action: #selector(tappedBackLogin), for: .touchUpInside)
+        }
+    }
+    @objc func tappedBackLogin() {
+        self.dismiss(animated: true, completion: nil)
     }
     
     //MARK: - Helper Functions
-    
     func configureUI() {
         view.backgroundColor = .white
         loginTitle.frame.size.width = 300
@@ -68,7 +82,7 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
         loginButtonView =  UIView(frame: CGRect(x: 100, y: 400, width: buttonWidth, height: 60))
         loginButtonView.applyDesign(color: lightLavender)
         loginButtonView.center.x = view.center.x
-        loginButtonView.center.y = view.center.y + 200
+        loginButtonView.center.y = view.center.y + (isIpod ? 165 : 200)
         let tap = UITapGestureRecognizer(target: self, action: #selector(tappedLogin))
         loginButtonView.addGestureRecognizer(tap)
         view.addSubview(loginButtonView)
@@ -76,12 +90,36 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
         loginButtonLabel.applyDesign(text: "Sign in")
         loginButtonLabel.sizeToFit()
         loginButtonLabel.center.x = view.center.x
-        loginButtonLabel.center.y = view.center.y + 200
+        loginButtonLabel.center.y = view.center.y + (isIpod ? 165 : 200)
         view.addSubview(loginButtonLabel)
         // Do any additional setup after loading the view.
+        
+        
+        view.addSubview(signUpButton)
+        signUpButton.centerXToSuperview()
+        signUpButton.width(buttonWidth)
+        signUpButton.height(60)
+        signUpButton.topToBottom(of: loginButtonView, offset: 15)
+        signUpButton.backgroundColor = brightPurple
+        signUpButton.setTitle("Sign Up", for: .normal)
+        signUpButton.setTitleColor(.white, for: .normal)
+        signUpButton.titleLabel?.font = UIFont(name: "Menlo", size: 22)
+        signUpButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        signUpButton.layer.cornerRadius = 25
+        signUpButton.layer.shadowColor = UIColor.black.cgColor
+        signUpButton.layer.shadowOpacity = 0.5
+        signUpButton.layer.shadowOffset = .zero
+        signUpButton.layer.shadowRadius = 10
+        signUpButton.addTarget(self, action: #selector(tappedSignUp), for: .touchUpInside)
+        
         loadTextViews()
         loadForgotPassword()
         loadButtons()
+    }
+    @objc func tappedSignUp() {
+        let controller = RegisterViewController()
+        controller.noLoginDelegate = delegate
+        navigationController?.pushViewController(controller, animated: true)
     }
     
     @objc func forgotPasswordTapped() {
@@ -123,6 +161,8 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
             showSpinner()
              if let error = error {
                  print(error)
+                 self.spinner.stopAnimating()
+                 self.container.removeFromSuperview()
                  return
              }
              
@@ -130,20 +170,59 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
             
              let credential = GoogleAuthProvider.credential(withIDToken: authentication.idToken,
                                                             accessToken: authentication.accessToken)
-             Auth.auth().signIn(with: credential) { (authResult, error) in
-                 if let error = error {
+            guard let email = user.profile.email else { return }
+            Auth.auth().fetchSignInMethods(forEmail: email) { (providers, error) in
+                if let error = error {
                     print(error)
-                    self.errorLabel.text = "Something went wrong"
-                    self.errorLabel.textColor = .red
-                    self.errorLabel.center.y = self.view.center.y + 220
-                    self.view.addSubview(self.errorLabel)
-                    self.spinner.stopAnimating()
-                 } else {
-                     self.saveToRealm()
-                 }
-             }
-         }
-    
+                    self.createError()
+                    return
+                }
+
+                     if let providers = providers {
+                      //This returns an array and will tell you if an user exists or not
+                      //If the user exists you will get providers.count > 0 else 0
+
+                       if providers.count > 0 {
+                        for provider in providers {
+                            if provider == "google.com" {
+                                Auth.auth().signIn(with: credential) { (authResult, error) in
+                                    if let _ = error {
+                                        self.createError()
+                                    }
+                                    self.saveToRealm()
+                                }
+                            }
+                        }
+                        
+                       }
+                     } else {
+                        //Show Alert user does not exist
+                            self.errorLabel = UILabel()
+                            self.view.addSubview(self.errorLabel)
+                            self.errorLabel.width(buttonWidth)
+                            self.errorLabel.height(25)
+                            self.errorLabel.centerX(to: self.view)
+                            self.errorLabel.topToBottom(of: self.password)
+                            self.errorLabel.textAlignment = .center
+                            self.errorLabel.text = "Use the Sign Up Page!"
+                            self.errorLabel.textColor = .red
+                            self.errorLabel.center.y = self.view.center.y + 220
+                            self.spinner.stopAnimating()
+                            self.container.removeFromSuperview()
+                        
+                     }
+            }
+
+            
+    }
+func createError() {
+    self.view.addSubview(self.errorLabel)
+    self.errorLabel.text = "Something went wrong"
+    self.errorLabel.textColor = .red
+    self.errorLabel.center.y = self.view.center.y + 220
+    self.spinner.stopAnimating()
+    self.container.removeFromSuperview()
+}
     
     
     @objc func tappedLogin() {
@@ -226,25 +305,27 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
     func loadTextViews() {
         view.addSubview(email)
         email.addDoneButtonOnKeyboard()
-        email.topAnchor.constraint(equalTo: loginTitle.bottomAnchor, constant: 5).isActive = true
-        email.applyDesign(view, x: xPadding, y: -180)
+        email.topAnchor.constraint(equalTo: loginTitle.bottomAnchor, constant: isIpod ? -35 : 5).isActive = true
+        email.applyDesign(view, x: xPadding, y: isIpod ? -215 : -180)
         email.placeholder = "Email"
         password.addDoneButtonOnKeyboard()
         password.isSecureTextEntry = true
         view.addSubview(password)
         password.topAnchor.constraint(equalTo: email.bottomAnchor, constant: 30).isActive = true
-        password.applyDesign(view, x: xPadding, y: -75)
+        password.applyDesign(view, x: xPadding, y: isIpod ?  -110 : -75)
         password.placeholder = "Password"   
         
     }
     
     
     func loadForgotPassword() {
-        forgotPassword = UILabel(frame: CGRect(x: view.center.x - 100, y: loginButtonView.center.y + 30 , width: buttonWidth, height: 50))
+        forgotPassword = UILabel()
+        view.addSubview(forgotPassword)
+        forgotPassword.topToBottom(of: signUpButton, offset: 15)
+        forgotPassword.centerXToSuperview()
         forgotPassword.attributedText = NSAttributedString(string: "Forgot my password", attributes: [.underlineStyle: NSUnderlineStyle.single.rawValue])
         forgotPassword.textColor = .blue
         forgotPassword.font = UIFont(name: "Menlo", size: 18)
-        view.addSubview(forgotPassword)
         
         let tapForgot = UITapGestureRecognizer(target: self, action: #selector(forgotPasswordTapped))
         forgotPassword.isUserInteractionEnabled = true
@@ -312,9 +393,16 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
                         inventoryArray = itemArray as! [String]
                     }
                 } else {
-                    let genderVC = GenderViewController()
-                    self.navigationController?.pushViewController(genderVC, animated: true)
-                    return
+                    if noLoginGlobal {
+                        noLoginGlobal = false
+                        UserDefaults.standard.setValue(false, forKey: "noLogin")
+                        self.delegate?.updateLogoutButton()
+                        self.dismiss(animated: true, completion: nil)
+                    } else {
+                        let genderVC = GenderViewController()
+                        self.navigationController?.pushViewController(genderVC, animated: true)
+                        return
+                    }
                 }
                 let tagList = List<Tag>()
                 for tag in tagDict {
@@ -389,6 +477,7 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
                 UserDefaults.standard.set(isPro, forKey: "isPro")
                 let timerVC = ContainerController(center: TimerController())
                 timerVC.modalPresentationStyle = .fullScreen
+                UserDefaults.standard.setValue(false, forKey: "noLogin")
                 self.navigationController?.pushViewController(timerVC, animated: true)
             }
         } else {
@@ -467,8 +556,19 @@ extension LoginViewController : ASAuthorizationControllerDelegate {
             let firebaseCredential = OAuthProvider.credential(withProviderID: "apple.com",
                                                               idToken: idTokenString,
                                                               rawNonce: nonce)
-            guard let _ = appleIDCredential.email else {
-                // User already signed in with this appleId once
+
+        guard let _ = appleIDCredential.email else {
+            // User already signed in with this appleId once
+            Auth.auth().signIn(with: firebaseCredential, completion: { (user, error) in
+                // .......
+                UserDefaults.standard.set(appleIDCredential.user, forKey: "appleAuthorizedUserIdKey")
+                self.saveToRealm()
+            })
+            return
+        }
+        //New User
+            if noLoginGlobal {
+                print("ioio1")
                 Auth.auth().signIn(with: firebaseCredential) { [weak self] (authResult, error) in
                     // Do something after Firebase sign in completed
                     if let error = error {
@@ -478,28 +578,48 @@ extension LoginViewController : ASAuthorizationControllerDelegate {
                         self?.errorLabel.center.y = self!.view.center.y + 220
                         self?.view.addSubview(self!.errorLabel)
                     } else {
-                        self!.spinner.stopAnimating()
-                        self!.createRealmData()
+                        let email = Auth.auth().currentUser?.email
+                        let results = uiRealm.objects(User.self)
+                        for result in results {
+                            if result.isLoggedIn == true {
+                                let inventory: [String] = result.inventoryArray.map { $0  }
+                                var tags: [String: String] = [String:String]()
+                                for tag in result.tagDictionary {
+                                    tags[tag.name] = tag.color
+                                }
+                                if let _ = Auth.auth().currentUser?.email {
+                                    self!.db.collection(K.userPreferenes).document(email!).setData([
+                                        "gender": result.gender ?? "male",
+                                        "name": result.name ?? "blank",
+                                        "inventoryArray": inventory,
+                                        "exp": result.exp,
+                                        "coins": result.coins,
+                                        "hair": result.hair ?? "blonde",
+                                        "eyes": result.eyes ?? "black",
+                                        "skin": result.skin ?? "tan",
+                                        "tags": tags,
+                                        "isPro": UserDefaults.standard.bool(forKey: "isPro")
+                                    ]) { (error) in
+                                        if let e = error {
+                                            print("There was a issue saving data to firestore \(e) ")
+                                        } else {
+                                            print("Succesfully saved")
+                                        }
+                                    }
+                                    noLoginGlobal = false
+                                    UserDefaults.standard.setValue(false, forKey: "noLogin")
+                                    self!.delegate?.updateLogoutButton()
+                                    self!.dismiss(animated: true, completion: nil)
+                                }
+                            }
+                        }
                     }
-                }
-                return
+                }//from settings
+             
+            } else { //from login page
+                let genderVC = GenderViewController()
+                self.navigationController?.pushViewController(genderVC, animated: true)
             }
-            //User never signed in with this email before
-            Auth.auth().signIn(with: firebaseCredential) { [weak self] (authResult, error) in
-                // Do something after Firebase sign in completed
-                if let error = error {
-                    print(error.localizedDescription)
-                    self?.errorLabel.text = "Something went wrong"
-                    self?.errorLabel.textColor = .red
-                    self?.errorLabel.center.y = self!.view.center.y + 220
-                    self?.view.addSubview(self!.errorLabel)
-                } else {
-                    self!.spinner.stopAnimating()
-                    let genderVC = GenderViewController()
-                    self?.navigationController?.pushViewController(genderVC, animated: true)
-                }
-            }
-        
         }
     }
 }

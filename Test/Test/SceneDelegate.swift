@@ -46,8 +46,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             if context.url.scheme == "widget" {
                 NotificationCenter.default.post(name: Notification.Name("openedFromWidget"), object: nil)
             } else if context.url.scheme == "stats" {
+                print("go t ostats")
                 NotificationCenter.default.post(name: Notification.Name("goToStats"), object: nil)
             } else if context.url.scheme == "pets" {
+                print("go to pets")
                 NotificationCenter.default.post(name: Notification.Name("changePet"), object: nil)
             }
         }
@@ -93,9 +95,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
             // Step 5: Register the request
             center.add(request) { (error) in }
-
          } else if breakPlaying {
-            print("breakPlaying")
             let center = UNUserNotificationCenter.current()
             let content = UNMutableNotificationContent()
             content.title = "Break Times Up!"

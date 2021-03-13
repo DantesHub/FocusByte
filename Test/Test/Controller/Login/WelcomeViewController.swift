@@ -1,6 +1,7 @@
 import UIKit
 import RealmSwift
 import TinyConstraints
+import AppsFlyerLib
 
 var xPadding: CGFloat = 0
 var buttonWidth: CGFloat = 0
@@ -12,6 +13,8 @@ var backgroundType = "proBackground"
 var lessThanConstant:CGFloat = 840
 var onPad = false
 var isIpod = false
+var startTapped = false
+var signUpTapped = false
 var titleSize: Int {
     get {
         var size = 0
@@ -107,10 +110,10 @@ var background: UIImageView = {
 class WelcomeViewController: UIViewController {
     //MARK: - properties
     var results: Results<User>!
+    var startView = UIView()
     var loginView = UIView()
-    var registerView = UIView()
+    var startLabel = UILabel()
     var loginLabel = UILabel()
-    var registerLabel = UILabel()
     let titleLabel1 = UILabel()
     let titleLabel2 = UILabel()
     let middleText = UILabel()
@@ -123,6 +126,9 @@ class WelcomeViewController: UIViewController {
     }
     override func viewWillAppear(_ animated: Bool) {
         results = uiRealm.objects(User.self)
+        configureNavigationBar(color: .white, isTrans: true)
+        startTapped = false
+        UINavigationBar.appearance().barTintColor = .white
         for result in results {
             if result.isLoggedIn == true {
                 navigationController?.pushViewController(ContainerController(center: TimerController()), animated: false)
@@ -170,51 +176,55 @@ class WelcomeViewController: UIViewController {
         middleText.font = UIFont(name: "Hiragino Sans", size: CGFloat(middleTextSize))
         
         
+        view.addSubview(startView)
+        startView.translatesAutoresizingMaskIntoConstraints = false
+        startView.applyDesign(color: brightPurple)
+        startView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        startView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 120).isActive = true
+        startView.heightAnchor.constraint(equalToConstant: 80).isActive = true
+        startView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8).isActive = true
+        startView.widthAnchor.constraint(lessThanOrEqualToConstant: lessThanConstant).isActive = true
+
+        let tap2 = UITapGestureRecognizer(target: self, action: #selector(tappedStart))
+        startView.addGestureRecognizer(tap2)
+        
         view.addSubview(loginView)
         loginView.translatesAutoresizingMaskIntoConstraints = false
-        loginView.applyDesign(color: brightPurple)
+        loginView.applyDesign(color: lightLavender)
         loginView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        loginView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 120).isActive = true
+        loginView.topAnchor.constraint(equalTo: startView.bottomAnchor, constant: 20).isActive = true
         loginView.heightAnchor.constraint(equalToConstant: 80).isActive = true
         loginView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8).isActive = true
         loginView.widthAnchor.constraint(lessThanOrEqualToConstant: lessThanConstant).isActive = true
-
-        let tap2 = UITapGestureRecognizer(target: self, action: #selector(tappedLogin))
-        loginView.addGestureRecognizer(tap2)
         
-        view.addSubview(registerView)
-           registerView.translatesAutoresizingMaskIntoConstraints = false
-           registerView.applyDesign(color: lightLavender)
-           registerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-           registerView.topAnchor.constraint(equalTo: loginView.bottomAnchor, constant: 20).isActive = true
-           registerView.heightAnchor.constraint(equalToConstant: 80).isActive = true
-                   registerView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8).isActive = true
-           registerView.widthAnchor.constraint(lessThanOrEqualToConstant: lessThanConstant).isActive = true
-
-           let tap = UITapGestureRecognizer(target: self, action: #selector(tappedRegister))
-           registerView.addGestureRecognizer(tap)
+        let tap = UITapGestureRecognizer(target: self, action: #selector(tappedLogin))
+        loginView.addGestureRecognizer(tap)
         
-        
-        view.addSubview(registerLabel)
-        registerLabel.applyDesign(text: "Sign Up")
-        registerLabel.sizeToFit()
-        registerLabel.center(in: registerView)
         
         view.addSubview(loginLabel)
         loginLabel.applyDesign(text: "Login")
         loginLabel.sizeToFit()
         loginLabel.center(in: loginView)
+        
+        view.addSubview(startLabel)
+        startLabel.applyDesign(text: "Start")
+        startLabel.sizeToFit()
+        startLabel.center(in: startView)
     }
 
     
     //MARK: - Handlers
     @objc func tappedLogin() {
+        AppsFlyerLib.shared().logEvent("tapped_login_onboarding", withValues: [AFEventParamContent: "true"])
         let loginVC = LoginViewController()
+        startTapped = false
         self.navigationController?.pushViewController(loginVC, animated: false)
     }
     
-    @objc func tappedRegister() {
-        let registerVC = RegisterViewController()
-        self.navigationController?.pushViewController(registerVC, animated: false)
+    @objc func tappedStart() {
+        AppsFlyerLib.shared().logEvent("tapped_start_onboarding", withValues: [AFEventParamContent: "true"])
+        startTapped = true
+        self.navigationController?.pushViewController(GenderViewController(), animated: true)
     }
+    
 }

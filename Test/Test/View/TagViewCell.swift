@@ -127,18 +127,21 @@ class TagViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionView
     }
     
     func saveToFirebase(fbTagDict: [String:String]) {
-        if let _ = Auth.auth().currentUser?.email {
-            let email = Auth.auth().currentUser?.email
-            db.collection(K.userPreferenes).document(email!).updateData([
-                "tags": fbTagDict
-            ]) { (error) in
-                if let e = error {
-                    print("There was a issue saving data to firestore \(e) ")
-                } else {
-                    print("Succesfully saved tags")
+        if !UserDefaults.standard.bool(forKey: "noLogin") {
+            if let _ = Auth.auth().currentUser?.email {
+                let email = Auth.auth().currentUser?.email
+                db.collection(K.userPreferenes).document(email!).updateData([
+                    "tags": fbTagDict
+                ]) { (error) in
+                    if let e = error {
+                        print("There was a issue saving data to firestore \(e) ")
+                    } else {
+                        print("Succesfully saved tags")
+                    }
                 }
             }
         }
+        
     }
     
     func saveToRealm(tag: Tag) {

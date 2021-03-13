@@ -138,8 +138,13 @@ extension TimerController {
                 totalMins += Int(totalTimeForDay) ?? 0
             }
         }
-        userDefaults?.setValue(noData, forKey:"noData")
-        userDefaults?.setValue(totalMins, forKey: "totalMins")
+        if UserDefaults.standard.bool(forKey: "isPro") {
+            userDefaults?.setValue(noData, forKey:"noData")
+            userDefaults?.setValue(totalMins, forKey: "totalMins")
+        } else {
+            userDefaults?.setValue(false, forKey:"noData")
+            userDefaults?.setValue(0, forKey: "totalMins")
+        }
         return entries
     }
     

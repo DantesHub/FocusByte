@@ -9,6 +9,9 @@ import AuthenticationServices
 import Foundation
 import CryptoKit
 var userEmail = ""
+protocol NoLoginDelegate {
+    func updateLogoutButton()
+}
 class RegisterViewController: UIViewController, GIDSignInDelegate {
     
     //MARK: - properties
@@ -31,6 +34,8 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
         iv.layer.cornerRadius = 25
         return iv
     }()
+    let db = Firestore.firestore()
+    var noLoginDelegate: NoLoginDelegate? 
     var ValInput = ValidateInputs()
     let container: UIView = UIView()
     var spinner = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.large)
@@ -68,10 +73,8 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
             (providers, error) in
             if let error = error {
                 print(error.localizedDescription)
-                print("gung")
             } else if let providers = providers {
                 if providers.count != 0 {
-                    print("pros")
                     self.registerErrorLabel.text = "Please use the login page"
                     self.registerErrorLabel.textColor = .red
                     self.registerErrorLabel.center.y = self.view.center.y + 220
@@ -94,11 +97,15 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
                     print(error)
                 } else {
                     self.registerErrorLabel.removeFromSuperview()
-                    print("user is signed in")
                     userEmail = String(signIn.currentUser.userID)
                     let genderVC = GenderViewController()
                     genderVC.modalPresentationStyle = .fullScreen
-                    self.navigationController?.pushViewController(genderVC, animated: true)
+                    signUpTapped = true
+                    if noLoginGlobal {
+                        self.saveToFirebase()
+                    } else {
+                        self.navigationController?.pushViewController(genderVC, animated: true)
+                    }
                 }
             }
             
@@ -135,12 +142,13 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
             } else if !passwordIsValid {
                 password.text = ""
                 let color = UIColor.red
-                let placeholder = "At least 5 characters" //There should be a placeholder set in storyboard or elsewhere string or pass empty
+                let placeholder = "At least 6 characters" //There should be a placeholder set in storyboard or elsewhere string or pass empty
                 password.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [NSAttributedString.Key.foregroundColor : color])
                 self.spinner.stopAnimating()
                 container.removeFromSuperview()
             } else if !passwordIsNumeric {
                 password.text = ""
+                passwordIsValid = false
                 let color = UIColor.red
                 let placeholder = "Must contain numbers"
                 password.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [NSAttributedString.Key.foregroundColor : color])
@@ -167,9 +175,9 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
             }
         }
         if emailIsValid && passwordIsValid && passwordConfirmationIsValid {
-            Auth.auth().createUser(withEmail: ValInput.email, password: ValInput.password) { result, error in
-                // [START_EXCLUDE]
+            Auth.auth().createUser(withEmail: ValInput.email, password: ValInput.password) { [self] result, error in
                 if error != nil {
+                    print(error.debugDescription)
                     self.registerErrorLabel.text = "Something went wrong"
                     self.registerErrorLabel.textColor = .red
                     self.registerErrorLabel.center.y = self.view.center.y + 220
@@ -181,12 +189,54 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
                 userEmail = self.ValInput.email
                 self.spinner.stopAnimating()
                 let genderVC = GenderViewController()
-                self.navigationController?.pushViewController(genderVC, animated: true)
+                signUpTapped = true
+                if noLoginGlobal {
+                    saveToFirebase()
+                } else {
+                    self.navigationController?.pushViewController(genderVC, animated: true)
+                }
             }
         }
     }
     
     //MARK: - Helper functions
+    func saveToFirebase() {
+        let email = Auth.auth().currentUser?.email
+        let results = uiRealm.objects(User.self)
+        for result in results {
+            if result.isLoggedIn == true {
+                let inventory: [String] = result.inventoryArray.map { $0  }
+                var tags: [String: String] = [String:String]()
+                for tag in result.tagDictionary {
+                    tags[tag.name] = tag.color
+                }
+                if let _ = Auth.auth().currentUser?.email {
+                db.collection(K.userPreferenes).document(email!).setData([
+                        "gender": result.gender ?? "male",
+                        "name": result.name ?? "blank",
+                       "inventoryArray": inventory,
+                        "exp": result.exp,
+                        "coins": result.coins,
+                        "hair": result.hair ?? "blonde",
+                        "eyes": result.eyes ?? "black",
+                        "skin": result.skin ?? "tan",
+                        "tags": tags,
+                        "isPro": UserDefaults.standard.bool(forKey: "isPro")
+                    ]) { (error) in
+                        if let e = error {
+                            print("There was a issue saving data to firestore \(e) ")
+                        } else {
+                            print("Succesfully saved")
+                        }
+                    }
+                    UserDefaults.standard.setValue(false, forKey: "noLogin")
+                    noLoginDelegate?.updateLogoutButton()
+                    self.dismiss(animated: true, completion: nil)
+                }
+            }
+        }
+     
+    }
     func configureUI() {
         registerTitle.text = "Sign Up"
         registerTitle.textAlignment = .center
@@ -396,7 +446,12 @@ extension RegisterViewController : ASAuthorizationControllerDelegate {
                 } else {
                     self!.spinner.stopAnimating()
                     let genderVC = GenderViewController()
-                    self?.navigationController?.pushViewController(genderVC, animated: true)
+                    signUpTapped = true
+                    if noLoginGlobal {
+                        self!.saveToFirebase()
+                    } else {
+                        self?.navigationController?.pushViewController(genderVC, animated: true)
+                    }
                 }
             }
        

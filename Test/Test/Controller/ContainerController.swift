@@ -135,6 +135,7 @@ class ContainerController: UIViewController {
             presentInFullScreen(UINavigationController(rootViewController: controller), animated: false, completion: nil)
         case .goPro:
             let controller = SubscriptionController()
+            controller.fromMenuOption = true
             controller.modalPresentationStyle = .fullScreen
             presentInFullScreen(UINavigationController(rootViewController: controller), animated: true, completion: nil)
         }

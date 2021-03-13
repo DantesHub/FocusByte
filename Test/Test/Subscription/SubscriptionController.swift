@@ -11,6 +11,8 @@ import TinyConstraints
 import Purchases
 import StoreKit
 import Firebase
+import AppsFlyerLib
+
 class SubscriptionController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -91,6 +93,10 @@ class SubscriptionController: UIViewController {
     var lifePrice: Double = 0
     var yearlyMonthlyPrice: Double = 0
     let locale = Locale.current
+    var onboarding = false
+    var fromSettings = false
+    var fromMenuOption = false
+    
     var contentViewSize: CGSize {
         get {
             var height: CGFloat = -145
@@ -191,11 +197,19 @@ class SubscriptionController: UIViewController {
         navigationController?.navigationBar.barTintColor = .white
         navigationItem.title = "Focusbyte Pro"
         view.backgroundColor = .white
-        let btn = UIBarButtonItem(image: UIImage(named: "arrow")?.resize(targetSize: CGSize(width: 25, height: 25)).rotate(radians: -.pi/2)?.withTintColor(.lightGray).withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(tappedBack))
-        btn.tintColor = .none
+        var btn = UIBarButtonItem()
+        if !onboarding {
+            btn = UIBarButtonItem(image: UIImage(named: "arrow")?.resize(targetSize: CGSize(width: 25, height: 25)).rotate(radians: -.pi/2)?.withTintColor(.lightGray).withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(tappedBack))
+            btn.tintColor = .none
+            navigationItem.leftBarButtonItem?.tintColor = .none
+        } else {
+            btn = UIBarButtonItem(title: "Next Time", style: .plain, target: self, action: #selector(tappedBack))
+            btn.tintColor = .gray
+            navigationItem.leftBarButtonItem?.tintColor = .gray
+        }
+      
         navigationItem.hidesBackButton = true
         navigationItem.leftBarButtonItem = btn
-        navigationItem.leftBarButtonItem?.tintColor = .none
 
 
 
@@ -299,7 +313,7 @@ class SubscriptionController: UIViewController {
         let monthlyGest = UITapGestureRecognizer(target: self, action: #selector(tappedMonthly))
         monthlyBox.addGestureRecognizer(monthlyGest)
         
-        let box = UIView(frame: CGRect(x: 0, y: view.frame.size.height - (self.view.frame.height * (isIpod ? 0.25 : iphone12 ? 0.225 : 0.20)), width: view.frame.width, height: self.view.frame.height * 0.10))
+        let box = UIView(frame: CGRect(x: 0, y: view.frame.size.height - (self.view.frame.height * (isIpod ? 0.25 : iphone12 ? 0.225 : 0.21)), width: view.frame.width, height: self.view.frame.height * 0.10))
         box.backgroundColor = .white
         view.addSubview(box)
         box.addSubview(continueButton)
@@ -399,9 +413,20 @@ class SubscriptionController: UIViewController {
                return package.product.productIdentifier == "co.byteteam.focusbyte.lifetime"
             }!
         }
-        Purchases.shared.purchasePackage(package) { (transaction, purchaserInfo, error, userCancelled) in
+        Purchases.shared.purchasePackage(package) { [self] (transaction, purchaserInfo, error, userCancelled) in
             if purchaserInfo?.entitlements.all["isPro"]?.isActive == true {
                 // Unlock that great "pro" content
+                let event = logEvent()
+                AppsFlyerLib.shared().logEvent(name: event, values:
+                                                [
+                                                    AFEventParamRevenue:  yearlyBox.selected ? lifeBox.selected ? lifePrice : yearlyPrice : monthlyPrice,
+                                                    AFEventParamCurrency:"\(locale.currencyCode!)"
+                                                ])
+                
+                AppsFlyerLib.shared().logEvent(name: yearlyBox.selected ? lifeBox.selected ? "Lifetime_Started_From_All" : "Yearly_Started_From_All" : "Monthly_Started_From_All", values:
+                                                [
+                                                    AFEventParamContent: "true"
+                                                ])
                 UserDefaults.standard.setValue(true, forKey: "isPro")
                 upgradedToPro = true
                 let controller = ContainerController(center: TimerController())
@@ -435,12 +460,64 @@ class SubscriptionController: UIViewController {
 
                 })
              
+            } else if userCancelled {
+                let event = logEvent(cancelled: true)
+                AppsFlyerLib.shared().logEvent(event, withValues: [AFEventParamEventStart: "cancelled", AFEventParamCurrency: "\(locale.currencyCode!)"])
+                AppsFlyerLib.shared().logEvent(yearlyBox.selected ? lifeBox.selected ? "cancelledPurchase_lifetime" : "cancelledPurchase_yearly" : "cancelledPurchase_monthly", withValues: [AFEventParamEventStart: "cancelled", AFEventParamCurrency: "\(locale.currencyCode!)"])
+                //send notification 24 hours later
+                if lifeBox.selected {
+                    let center = UNUserNotificationCenter.current()
+                    let content = UNMutableNotificationContent()
+                    content.title = "Don't Miss This Opportunity"
+                    content.body = "🎉 Focusbyte Pro For Life is Gone in the Next 24 Hours!!! 🎉"
+                    // Step 3: Create the notification trigger
+                    let date = Date().addingTimeInterval(86400)
+                    let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+                    let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+                    // Step 4: Create the request
+                    let uuidString = UUID().uuidString
+                    let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
+                    // Step 5: Register the request
+                    center.add(request) { (error) in }
+                }
+                
             }
         }
     }
     
+    func logEvent(cancelled: Bool = false) -> String {
+        let lst = ["Group", "Statistics", "Tags", "Repeat", "Notes"]
+        var event = ""
+        event = yearlyBox.selected ? lifeBox.selected ? "Lifetime_Started_From_" : "Yearly_Started_From_" : "Monthly_Started_From_"
+        if cancelled {
+            event = "Cancelled_" + event
+        }
+        if onboarding {
+            event = event + "Onboarding"
+        } else if fromSettings {
+            event = event + "Settings"
+        } else if fromMenuOption {
+            event = event + "fromMenuOption"
+        } else {
+            event = event + lst[idx]
+        }
+              return event
+    }
+    
     @objc func tappedBack() {
-        self.dismiss(animated: true, completion: nil)
+        let nav = navigationController
+        DispatchQueue.main.async { [self] in //make sure all UI updates are on the main thread.
+            if self.onboarding {
+                AppsFlyerLib.shared().logEvent("next_time_sub_onboarding", withValues: [AFEventParamEventStart: "true", AFEventParamCurrency: "\(locale.currencyCode!)"])
+                nav?.view.layer.add(CATransition().segueFromRight(), forKey: nil)
+            } else {
+                nav?.view.layer.add(CATransition().segueFromLeft(), forKey: nil)
+
+            }
+            nav?.pushViewController(ContainerController(center: TimerController()), animated: false)
+            
+        }
+        
     }
     
 }

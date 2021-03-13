@@ -8,5 +8,10 @@
 	<array>
 		<string>Default</string>
 	</array>
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.co.byteteam.focusbyte</string>
+		<string>group.CY-0FD8FB5E-4794-11EA-8D96-1B5C322366E1.com.cydia.Extender</string>
+	</array>
 </dict>
 </plist>

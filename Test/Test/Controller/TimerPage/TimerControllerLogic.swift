@@ -20,7 +20,6 @@ var requestedReview = false
 extension TimerController {
     //MARK: - Helper Functions
     func createObservers() {
-        print("create observers")
         NotificationCenter.default.addObserver(self, selector: #selector(pauseWhenBackground(noti:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground(noti:)), name:
             UIApplication.willEnterForegroundNotification, object: nil)
@@ -168,7 +167,7 @@ extension TimerController {
         var numCoins = 0
 
         //read data from firebase
-        if UserDefaults.standard.bool(forKey: "isPro") == true {
+        if !UserDefaults.standard.bool(forKey: "noLogin") && UserDefaults.standard.bool(forKey: "isPro") {
         if let _ = Auth.auth().currentUser?.email {
             let email = Auth.auth().currentUser?.email
             let docRef = self.db.collection(K.FStore.collectionName).document(email!)
@@ -233,7 +232,8 @@ extension TimerController {
             }
         }
         }
-        if UserDefaults.standard.bool(forKey: "isPro") == false {
+        if UserDefaults.standard.bool(forKey: "isPro") == false || UserDefaults.standard.bool(forKey: "noLogin") {
+            print("right here")
             coins = self.updateCoinLabel(numCoins: coins)!
             self.coinsL.text = String(coins)
             self.timeL.removeFromSuperview()
@@ -315,8 +315,10 @@ extension TimerController {
             timeData.append(fbDate + "=" + totalTimeForDay + "-1" + "+\(tagSelected)/\(self.howMuchTime/60)")
         }
         if #available(iOS 14.0, *) {
-            userDefaults?.setValue(getWidgetData(timeData: timeData), forKey: "timeData")
-            WidgetCenter.shared.reloadAllTimelines()
+            if UserDefaults.standard.bool(forKey: "isPro") {
+                userDefaults?.setValue(getWidgetData(timeData: timeData), forKey: "timeData")
+                WidgetCenter.shared.reloadAllTimelines()
+            }
         }
     }
     
@@ -424,30 +426,35 @@ extension TimerController {
     
     
     @objc func willEnterForeground(noti: Notification) {
-        enteredForeground = true
-        let center = UNUserNotificationCenter.current()
-        center.removeAllDeliveredNotifications()
-        center.removeAllPendingNotificationRequests()
-        if isPlaying {
-            if Date() >= killDate {
-                killChest()
-                return
-            }
-            
-            if let savedDate = UserDefaults.standard.object(forKey: "savedTime") as? Date{
-                (self.diffMins, self.diffSecs) = TimerController.getTimeDifference(startDate: savedDate)
-                self.refresh(mins: diffMins, secs: diffSecs)
-            }
-            
-        } else if breakPlaying {
+        if !fromWidget {
+            enteredForeground = true
             let center = UNUserNotificationCenter.current()
-            center.removeAllDeliveredNotifications() // To remove all delivered notifications
+            center.removeAllDeliveredNotifications()
             center.removeAllPendingNotificationRequests()
-            if let savedDate = UserDefaults.standard.object(forKey: "savedBreakTime") as? Date {
-                (self.diffMins, self.diffSecs) = TimerController.getTimeDifference(startDate: savedDate)
-                self.refresh(mins: diffMins, secs: diffSecs)
+            if isPlaying {
+                if Date() >= killDate {
+                    killChest()
+                    return
+                }
+                
+                if let savedDate = UserDefaults.standard.object(forKey: "savedTime") as? Date{
+                    (self.diffMins, self.diffSecs) = TimerController.getTimeDifference(startDate: savedDate)
+                    self.refresh(mins: diffMins, secs: diffSecs)
+                }
+                
+            } else if breakPlaying {
+                let center = UNUserNotificationCenter.current()
+                center.removeAllDeliveredNotifications() // To remove all delivered notifications
+                center.removeAllPendingNotificationRequests()
+                if let savedDate = UserDefaults.standard.object(forKey: "savedBreakTime") as? Date {
+                    (self.diffMins, self.diffSecs) = TimerController.getTimeDifference(startDate: savedDate)
+                    self.refresh(mins: diffMins, secs: diffSecs)
+                }
             }
+        } else {
+            fromWidget = false
         }
+       
     }
     
     func refresh (mins: Int, secs: Int) {
@@ -464,6 +471,7 @@ extension TimerController {
         }
         if isPlaying {
             if counter <= 0 {
+                print("yo yo", counter)
                 focusTimerComplete()
                 return
             }

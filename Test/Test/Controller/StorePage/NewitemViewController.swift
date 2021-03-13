@@ -10,6 +10,8 @@ import UIKit
 import Firebase
 import RealmSwift
 import Photos
+import AppsFlyerLib
+
 var inventoryArray = [String]()
 class NewitemViewController: UIViewController {
     //MARK: - Views & Properties
@@ -209,30 +211,35 @@ class NewitemViewController: UIViewController {
             coins = coins - 15
             print("loged")
             Analytics.logEvent("Common_Box", parameters: nil)
+            AppsFlyerLib.shared().logEvent("Common_Box", withValues: [AFEventParamContent: "true"])
         case "Gold Box":
              coins = coins - 45
             Analytics.logEvent("Gold_Box", parameters: nil)
+            AppsFlyerLib.shared().logEvent("Gold_Box", withValues: [AFEventParamContent: "true"])
         case "Diamond Box":
              coins = coins - 100
              Analytics.logEvent("Diamond_Box", parameters: nil)
+            AppsFlyerLib.shared().logEvent("Diamond_Box", withValues: [AFEventParamContent: "true"])
         default:
             return
         }
         //update data in firebase
-        if UserDefaults.standard.bool(forKey: "isPro") {
-            if let _ = Auth.auth().currentUser?.email {
-                   let email = Auth.auth().currentUser?.email
-                   self.db.collection(K.userPreferenes).document(email!).updateData([
-                       "coins": coins,
-                       "inventoryArray": inventoryArray
-                   ]) { (error) in
-                       if let e = error {
-                           print("There was a issue saving data to firestore \(e) ")
-                       } else {
-                           print("Succesfully saved new items")
+        if !UserDefaults.standard.bool(forKey: "noLogin") {
+            if UserDefaults.standard.bool(forKey: "isPro") {
+                if let _ = Auth.auth().currentUser?.email {
+                       let email = Auth.auth().currentUser?.email
+                       self.db.collection(K.userPreferenes).document(email!).updateData([
+                           "coins": coins,
+                           "inventoryArray": inventoryArray
+                       ]) { (error) in
+                           if let e = error {
+                               print("There was a issue saving data to firestore \(e) ")
+                           } else {
+                               print("Succesfully saved new items")
+                           }
                        }
                    }
-               }
+            }
         }
         
         //save To Realm
