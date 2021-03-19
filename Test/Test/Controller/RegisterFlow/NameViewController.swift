@@ -96,7 +96,7 @@ class NameViewController: UIViewController {
         nameInput.addDoneButtonOnKeyboard()
         nameInput.backgroundColor = .white
         nameInput.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 25).isActive = true
-        nameInput.applyDesign(view, x: xPadding, y: -30)
+        nameInput.applyDesign(view, x: xPadding, y: -25)
         finishButton = UILabel(frame: CGRect(x: view.center.x - 100, y: view.center.y + 240, width: 200, height: 60))
         nameInput.placeholder = "Alex"
 

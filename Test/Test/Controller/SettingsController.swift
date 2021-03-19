@@ -53,6 +53,7 @@ class SettingsController: UIViewController, MFMailComposeViewControllerDelegate,
         tableView.delegate = self
         tableView.dataSource = self
         configureUI()
+        noLogin = UserDefaults.standard.bool(forKey: "noLogin")
 }
     
     
@@ -90,9 +91,9 @@ class SettingsController: UIViewController, MFMailComposeViewControllerDelegate,
         if noLogin {
             AppsFlyerLib.shared().logEvent("tapped_login_settings", withValues: [AFEventParamContent: "true"])
             noLoginGlobal = true
-            let controller = LoginViewController()
+            let controller = RegisterViewController()
             controller.modalPresentationStyle = .fullScreen
-            controller.delegate = self
+            controller.noLoginDelegate = self
             self.presentInFullScreen(UINavigationController(rootViewController: controller), animated: true, completion: nil)
         } else {
          results = uiRealm.objects(User.self)

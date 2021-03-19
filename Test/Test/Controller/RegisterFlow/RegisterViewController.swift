@@ -8,6 +8,8 @@ import Validator
 import AuthenticationServices
 import Foundation
 import CryptoKit
+import AppsFlyerLib
+
 var userEmail = ""
 protocol NoLoginDelegate {
     func updateLogoutButton()
@@ -40,7 +42,10 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
     let container: UIView = UIView()
     var spinner = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.large)
     let siwa = ASAuthorizationAppleIDButton()
+    var signUpButton = UIButton()
     let siwaShadow = UIView()
+    var backButton = UIButton()
+
     //MARK: - init
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,11 +64,22 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
         super.viewWillAppear(animated)
         GIDSignIn.sharedInstance()?.presentingViewController = self
         GIDSignIn.sharedInstance().delegate = self
-        
+        if UserDefaults.standard.bool(forKey: "noLogin") {
+            view.addSubview(backButton)
+            backButton.setTitle("Back", for: .normal)
+            backButton.leadingToSuperview(offset: 20)
+            backButton.setTitleColor(.systemBlue, for: .normal)
+            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -15).isActive = true
+
+            //            backButton.isUserInteractionEnabled = true
+            backButton.addTarget(self, action: #selector(tappedBackLogin), for: .touchUpInside)
+        }
     }
     
     //MARK: - Handlers
-    
+    @objc func tappedBackLogin() {
+        self.dismiss(animated: true, completion: nil)
+    }
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error?) {
         if let error = error {
             print(error)
@@ -104,6 +120,7 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
                     if noLoginGlobal {
                         self.saveToFirebase()
                     } else {
+                        AppsFlyerLib.shared().logEvent("tapped_signup_google_onboarding", withValues: [AFEventParamContent: "true"])
                         self.navigationController?.pushViewController(genderVC, animated: true)
                     }
                 }
@@ -193,6 +210,7 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
                 if noLoginGlobal {
                     saveToFirebase()
                 } else {
+                    AppsFlyerLib.shared().logEvent("tapped_signup_regular_onboarding", withValues: [AFEventParamContent: "true"])
                     self.navigationController?.pushViewController(genderVC, animated: true)
                 }
             }
@@ -201,6 +219,7 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
     
     //MARK: - Helper functions
     func saveToFirebase() {
+    
         let email = Auth.auth().currentUser?.email
         let results = uiRealm.objects(User.self)
         for result in results {
@@ -229,7 +248,9 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
                             print("Succesfully saved")
                         }
                     }
+                    AppsFlyerLib.shared().logEvent("signup_from_settings", withValues: [AFEventParamContent: "true"])
                     UserDefaults.standard.setValue(false, forKey: "noLogin")
+                    noLoginGlobal = false
                     noLoginDelegate?.updateLogoutButton()
                     self.dismiss(animated: true, completion: nil)
                 }
@@ -245,7 +266,7 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
         registerTitle.frame.size.width = 300
         registerTitle.frame.size.height = 100
         registerTitle.center.x = view.center.x
-        registerTitle.center.y = view.center.y - 250
+        registerTitle.center.y = view.center.y - 275
         view.addSubview(registerTitle)
         
         signUpView =  UIView(frame: CGRect(x: 100, y: view.center.y + 270, width: buttonWidth, height: 60))
@@ -271,7 +292,7 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
         view.addSubview(email)
         email.topAnchor.constraint(equalTo: self.registerTitle.bottomAnchor, constant: 5).isActive = true
         email.addDoneButtonOnKeyboard()
-        email.applyDesign(view, x: xPadding, y: -200)
+        email.applyDesign(view, x: xPadding, y: -225)
         email.placeholder = "Email"
         email.autocorrectionType = .no
         email.autocapitalizationType = .none
@@ -280,7 +301,7 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
         view.addSubview(password)
         password.topAnchor.constraint(equalTo: email.bottomAnchor, constant: 18).isActive = true
         password.addDoneButtonOnKeyboard()
-        password.applyDesign(view, x: xPadding, y: -105)
+        password.applyDesign(view, x: xPadding, y: -130)
         password.placeholder = "Password"
         password.autocorrectionType = .no
         password.autocapitalizationType = .none
@@ -290,7 +311,7 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
         passwordConfirmation.addDoneButtonOnKeyboard()
         view.addSubview(passwordConfirmation)
         passwordConfirmation.topAnchor.constraint(equalTo: password.bottomAnchor, constant: 22).isActive = true
-        passwordConfirmation.applyDesign(view, x: xPadding, y: -10)
+        passwordConfirmation.applyDesign(view, x: xPadding, y: -35)
         passwordConfirmation.placeholder = "Password Confirmation"
         passwordConfirmation.autocorrectionType = .no
          passwordConfirmation.autocapitalizationType = .none
@@ -337,6 +358,28 @@ class RegisterViewController: UIViewController, GIDSignInDelegate {
         siwa.clipsToBounds = true
         siwa.layer.cornerRadius = 25
         siwa.addTarget(self, action: #selector(appleSignInTapped), for: .touchUpInside)
+        
+        view.addSubview(signUpButton)
+        signUpButton.centerXToSuperview()
+        signUpButton.width(buttonWidth)
+        signUpButton.height(60)
+        signUpButton.topToBottom(of: signUpView, offset: 15)
+        signUpButton.backgroundColor = brightPurple
+        signUpButton.setTitle("Have an Account? Login", for: .normal)
+        signUpButton.setTitleColor(.white, for: .normal)
+        signUpButton.titleLabel?.font = UIFont(name: "Menlo", size: 18)
+        signUpButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        signUpButton.layer.cornerRadius = 25
+        signUpButton.layer.shadowColor = UIColor.black.cgColor
+        signUpButton.layer.shadowOpacity = 0.5
+        signUpButton.layer.shadowOffset = .zero
+        signUpButton.layer.shadowRadius = 10
+        signUpButton.addTarget(self, action: #selector(tappedLogin), for: .touchUpInside)
+    }
+    @objc func tappedLogin() {
+        AppsFlyerLib.shared().logEvent("tapped_login_onboarding", withValues: [AFEventParamContent: "true"])
+        let loginVC = LoginViewController()
+        self.navigationController?.pushViewController(loginVC, animated: true)
     }
     
     @objc func appleSignInTapped() {
@@ -450,6 +493,7 @@ extension RegisterViewController : ASAuthorizationControllerDelegate {
                     if noLoginGlobal {
                         self!.saveToFirebase()
                     } else {
+                        AppsFlyerLib.shared().logEvent("tapped_signup_apple_onboarding", withValues: [AFEventParamContent: "true"])
                         self?.navigationController?.pushViewController(genderVC, animated: true)
                     }
                 }

@@ -13,7 +13,6 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
     var loginTitle = UILabel()
     var loginButtonView = UIView()
     var loginButtonLabel = UILabel()
-    var signUpButton = UIButton()
     var errorLabel: UILabel!
     var emailIsValid = false
     let db = Firestore.firestore()
@@ -22,7 +21,6 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
     let container: UIView = UIView()
     var spinner = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.large)
     var forgotPassword: UILabel!
-    var backButton = UIButton()
     fileprivate var currentNonce: String?
     var googleImage: UIImageView = {
        let iv = UIImageView()
@@ -51,20 +49,9 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
         super.viewWillAppear(animated)
         GIDSignIn.sharedInstance()?.presentingViewController = self
         GIDSignIn.sharedInstance().delegate = self
-        if UserDefaults.standard.bool(forKey: "noLogin") {
-            view.addSubview(backButton)
-            backButton.setTitle("Back", for: .normal)
-            backButton.leadingToSuperview(offset: 20)
-            backButton.setTitleColor(.systemBlue, for: .normal)
-            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -15).isActive = true
+      
+    }
 
-            //            backButton.isUserInteractionEnabled = true
-            backButton.addTarget(self, action: #selector(tappedBackLogin), for: .touchUpInside)
-        }
-    }
-    @objc func tappedBackLogin() {
-        self.dismiss(animated: true, completion: nil)
-    }
     
     //MARK: - Helper Functions
     func configureUI() {
@@ -95,22 +82,7 @@ class LoginViewController: UIViewController,GIDSignInDelegate {
         // Do any additional setup after loading the view.
         
         
-        view.addSubview(signUpButton)
-        signUpButton.centerXToSuperview()
-        signUpButton.width(buttonWidth)
-        signUpButton.height(60)
-        signUpButton.topToBottom(of: loginButtonView, offset: 15)
-        signUpButton.backgroundColor = brightPurple
-        signUpButton.setTitle("Sign Up", for: .normal)
-        signUpButton.setTitleColor(.white, for: .normal)
-        signUpButton.titleLabel?.font = UIFont(name: "Menlo", size: 22)
-        signUpButton.titleLabel?.adjustsFontSizeToFitWidth = true
-        signUpButton.layer.cornerRadius = 25
-        signUpButton.layer.shadowColor = UIColor.black.cgColor
-        signUpButton.layer.shadowOpacity = 0.5
-        signUpButton.layer.shadowOffset = .zero
-        signUpButton.layer.shadowRadius = 10
-        signUpButton.addTarget(self, action: #selector(tappedSignUp), for: .touchUpInside)
+
         
         loadTextViews()
         loadForgotPassword()
@@ -321,7 +293,7 @@ func createError() {
     func loadForgotPassword() {
         forgotPassword = UILabel()
         view.addSubview(forgotPassword)
-        forgotPassword.topToBottom(of: signUpButton, offset: 15)
+        forgotPassword.topToBottom(of: loginButtonView, offset: 15)
         forgotPassword.centerXToSuperview()
         forgotPassword.attributedText = NSAttributedString(string: "Forgot my password", attributes: [.underlineStyle: NSUnderlineStyle.single.rawValue])
         forgotPassword.textColor = .blue

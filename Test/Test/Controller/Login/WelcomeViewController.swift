@@ -8,7 +8,7 @@ var buttonWidth: CGFloat = 0
 var middleTextSize = 0
 var titlePadding = 0
 var iphone8Padding = 0
-var registerPadding:CGFloat = 275
+var registerPadding:CGFloat = 250
 var backgroundType = "proBackground"
 var lessThanConstant:CGFloat = 840
 var onPad = false
@@ -25,7 +25,7 @@ var titleSize: Int {
                 middleTextSize = 40
                 buttonWidth = 350
                 xPadding = -175
-                registerPadding = 265
+                registerPadding = 240
                 backgroundType = "8background"
                  lessThanConstant = 350
             //("iphone 8plus")
@@ -37,7 +37,7 @@ var titleSize: Int {
                 middleTextSize = 30
                 buttonWidth = 300
                 xPadding = -145
-                registerPadding = 265
+                registerPadding = 240
                 backgroundType = "8background"
                 lessThanConstant = 350
                 //iphone 5
@@ -49,7 +49,7 @@ var titleSize: Int {
                 middleTextSize = 35
                 buttonWidth = 300
                 xPadding = -145
-                registerPadding = 265
+                registerPadding = 240
                 backgroundType = "8background"
                 lessThanConstant = 350
             case 2436:
@@ -197,12 +197,12 @@ class WelcomeViewController: UIViewController {
         loginView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8).isActive = true
         loginView.widthAnchor.constraint(lessThanOrEqualToConstant: lessThanConstant).isActive = true
         
-        let tap = UITapGestureRecognizer(target: self, action: #selector(tappedLogin))
+        let tap = UITapGestureRecognizer(target: self, action: #selector(tappedSignUp))
         loginView.addGestureRecognizer(tap)
         
         
         view.addSubview(loginLabel)
-        loginLabel.applyDesign(text: "Login")
+        loginLabel.applyDesign(text: "Sign Up")
         loginLabel.sizeToFit()
         loginLabel.center(in: loginView)
         
@@ -214,11 +214,11 @@ class WelcomeViewController: UIViewController {
 
     
     //MARK: - Handlers
-    @objc func tappedLogin() {
-        AppsFlyerLib.shared().logEvent("tapped_login_onboarding", withValues: [AFEventParamContent: "true"])
-        let loginVC = LoginViewController()
+    @objc func tappedSignUp() {
+        AppsFlyerLib.shared().logEvent("tapped_signup_onboarding", withValues: [AFEventParamContent: "true"])
+        let signUpVC = RegisterViewController()
         startTapped = false
-        self.navigationController?.pushViewController(loginVC, animated: false)
+        self.navigationController?.pushViewController(signUpVC, animated: false)
     }
     
     @objc func tappedStart() {

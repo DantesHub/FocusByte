@@ -96,6 +96,7 @@ class SubscriptionController: UIViewController {
     var onboarding = false
     var fromSettings = false
     var fromMenuOption = false
+    var isPad = false
     
     var contentViewSize: CGSize {
         get {
@@ -137,6 +138,17 @@ class SubscriptionController: UIViewController {
     // make it fullscreen & add pictures
     //MARK: - init
     override func viewDidLoad() {
+        switch UIDevice.current.userInterfaceIdiom {
+        case .phone:
+            // It's an iPhone
+            isPad = false
+        case .pad:
+            isPad = true
+
+        default:
+            break
+            // Uh, oh! What could it be?
+        }
         Purchases.shared.offerings { [self] (offerings, error) in
             if let offerings = offerings {
                 let offer = offerings.current
@@ -327,11 +339,6 @@ class SubscriptionController: UIViewController {
         continueButton.layer.cornerRadius = 15
         continueButton.addTarget(self, action: #selector(tappedContinue), for: .touchUpInside)
 //
-        let box2 = UIView(frame: CGRect(x: 0, y: 20, width: view.frame.width, height: 100))
-        scrollView.addSubview(box2)
-        box2.topToBottom(of: monthlyBox, offset: 30)
-        box2.leading(to: view)
-        box2.trailing(to: view)
 
         let privacy = UILabel()
         let terms = UILabel()
@@ -344,13 +351,19 @@ class SubscriptionController: UIViewController {
         privacy.font = UIFont(name: "OpenSans", size: 2)
         terms.font = UIFont(name: "OpenSans", size: 2)
         
-        box2.addSubview(privacy)
-        box2.addSubview(terms)
+        scrollView.addSubview(privacy)
+        scrollView.addSubview(terms)
         privacy.translatesAutoresizingMaskIntoConstraints = false
-        privacy.leadingAnchor.constraint(equalTo: box.leadingAnchor, constant: 15).isActive = true
-        terms.trailingAnchor.constraint(equalTo: box.trailingAnchor, constant: -15).isActive = true
-        privacy.centerY(to: box2)
-        terms.centerY(to: box2)
+        privacy.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15).isActive = true
+        terms.trailingAnchor.constraint(equalTo: view  .trailingAnchor, constant: -15).isActive = true
+        if !isPad {
+            privacy.topToBottom(of: monthlyBox, offset: 15)
+            terms.topToBottom(of: monthlyBox, offset: 15)
+        } else {
+            privacy.topToBottom(of: continueButton, offset: 15)
+            terms.topToBottom(of: continueButton, offset: 15)
+        }
+
 
         privacy.isUserInteractionEnabled = true
         terms.isUserInteractionEnabled = true
@@ -419,11 +432,11 @@ class SubscriptionController: UIViewController {
                 let event = logEvent()
                 AppsFlyerLib.shared().logEvent(name: event, values:
                                                 [
-                                                    AFEventParamRevenue:  yearlyBox.selected ? lifeBox.selected ? lifePrice : yearlyPrice : monthlyPrice,
+                                                    AFEventParamRevenue:  yearlyBox.selected ? yearlyPrice : lifeBox.selected ? lifePrice : monthlyPrice,
                                                     AFEventParamCurrency:"\(locale.currencyCode!)"
                                                 ])
                 
-                AppsFlyerLib.shared().logEvent(name: yearlyBox.selected ? lifeBox.selected ? "Lifetime_Started_From_All" : "Yearly_Started_From_All" : "Monthly_Started_From_All", values:
+                AppsFlyerLib.shared().logEvent(name: yearlyBox.selected ? "Yearly_Started_From_All" : lifeBox.selected ? "Lifetime_Started_From_All" : "Monthly_Started_From_All", values:
                                                 [
                                                     AFEventParamContent: "true"
                                                 ])
@@ -463,7 +476,7 @@ class SubscriptionController: UIViewController {
             } else if userCancelled {
                 let event = logEvent(cancelled: true)
                 AppsFlyerLib.shared().logEvent(event, withValues: [AFEventParamEventStart: "cancelled", AFEventParamCurrency: "\(locale.currencyCode!)"])
-                AppsFlyerLib.shared().logEvent(yearlyBox.selected ? lifeBox.selected ? "cancelledPurchase_lifetime" : "cancelledPurchase_yearly" : "cancelledPurchase_monthly", withValues: [AFEventParamEventStart: "cancelled", AFEventParamCurrency: "\(locale.currencyCode!)"])
+                AppsFlyerLib.shared().logEvent(yearlyBox.selected ? "cancelledPurchase_yearly"  : lifeBox.selected ? "cancelledPurchase_lifetime" : "cancelledPurchase_monthly", withValues: [AFEventParamEventStart: "cancelled", AFEventParamCurrency: "\(locale.currencyCode!)"])
                 //send notification 24 hours later
                 if lifeBox.selected {
                     let center = UNUserNotificationCenter.current()
@@ -488,7 +501,8 @@ class SubscriptionController: UIViewController {
     func logEvent(cancelled: Bool = false) -> String {
         let lst = ["Group", "Statistics", "Tags", "Repeat", "Notes"]
         var event = ""
-        event = yearlyBox.selected ? lifeBox.selected ? "Lifetime_Started_From_" : "Yearly_Started_From_" : "Monthly_Started_From_"
+       
+        event = yearlyBox.selected ? "Yearly_Started_From_" : lifeBox.selected ? "Lifetime_Started_From_" : "Monthly_Started_From_"
         if cancelled {
             event = "Cancelled_" + event
         }
