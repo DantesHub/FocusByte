@@ -17,6 +17,7 @@ protocol TagUpdater: class {
 class TagTableView: UIView, CustomCellUpdater {
     //MARK: - Views + Properties
     var results: Results<User>!
+    var navigationBar = UINavigationBar()
     var isSearchBarEmpty: Bool {
       return searchBar.text?.isEmpty ?? true
     }
@@ -39,7 +40,13 @@ class TagTableView: UIView, CustomCellUpdater {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
        // Here write down you logic to dismiss controller
-        self.removeFromSuperview()
+        UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: .curveEaseOut, animations: { [self] in
+            tableView.transform = CGAffineTransform(translationX: 0, y: 1200)
+         
+        }) { [self] (_) in
+            navigationBar.alpha = 1
+            navigationBar.isUserInteractionEnabled = true
+            removeFromSuperview()}
     }
     
     func setUpViews() {

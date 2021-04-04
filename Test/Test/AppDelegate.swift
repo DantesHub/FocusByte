@@ -14,7 +14,7 @@ import AppsFlyerLib
 import FirebaseMessaging
 var uiRealm = try! Realm()
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+ class AppDelegate: UIResponder, UIApplicationDelegate {
     let gcmMessageIDKey = "gcm.Message.Id"
     var count = 0
     var window: UIWindow?

@@ -24,6 +24,13 @@ class AvatarStoreCell: UICollectionViewCell {
                     leadingPrice = 95
                     coinPadding = -13
                 //print("IPHONE XS MAX, IPHONE 11 PRO MAX")
+                case 2778: //iphone 12 pro max
+                    leadingPrice = 70
+                    coinPadding = -18
+                case 2532:
+                    leadingPrice = 95
+                    coinPadding = -9
+                    //iphone 12 , iphone 12 pro 
                 case 1792:
                     leadingPrice = 95
                     coinPadding = -13

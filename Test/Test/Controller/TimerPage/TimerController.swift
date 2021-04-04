@@ -431,7 +431,7 @@ class TimerController: UIViewController, TagUpdater {
         createTagImageView()
         
         view.backgroundColor = backgroundColor
-        navigationItem.title =  "Home"
+//        navigationItem.title =  "Home"
 
         createBarItem()
         navigationController?.navigationBar.addSubview(coinsL)
@@ -440,8 +440,9 @@ class TimerController: UIViewController, TagUpdater {
         
         createCircularSlider()
         var launched = defaults.integer(forKey: "launchNumber")
-        if launched == 3 {
+        if launched == 2 {
             SKStoreReviewController.requestReview()
+            AppsFlyerLib.shared().logEvent("launched_review", withValues: [AFEventParamContent: "true"])
             launched += 1
             defaults.setValue(launched, forKey: "launchNumber")
         }
@@ -471,25 +472,41 @@ class TimerController: UIViewController, TagUpdater {
             quoteLabel.bottomAnchor.constraint(equalTo: chestImageView!.topAnchor, constant: -80).isActive = true
         }
     }
-    @objc func tappedStore() {
+    @objc func tappedGift() {
         if !isPlaying {
-            if isOpen {
-                handleMenuToggle()
-            }
-            let controller = StoreController()
-            controller.createRightNav()
-            let nav = self.navigationController //grab an instance of the current navigationController
-            DispatchQueue.main.async { //make sure all UI updates are on the main thread.
-                nav?.view.layer.add(CATransition().segueFromLeft(), forKey: nil)
-                nav?.pushViewController(ContainerController(center: controller), animated: false)
-            }
+          
+            let dailyBonusView = DailyBonusView(frame: UIScreen.main.bounds)
+            view.addSubview(dailyBonusView)
+            dailyBonusView.setUpView()
+            dailyBonusView.navigationBar = navigationController!.navigationBar
+            navigationController?.navigationBar.alpha = 0.3
+            navigationController?.navigationBar.isUserInteractionEnabled = false
+
         }
     }
+    
+    @objc func tappedFlame() {
+        if !isPlaying {
+            print("bing")
+        }
+    }
+
      func createBarItem() {
-        let storeBar = UIBarButtonItem(image: UIImage(named: "shop")?.resized(to: CGSize(width: 40, height: 40)).withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(tappedStore))
-        storeBar.tintColor = .none
-        storeBar.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 50)
-        navigationItem.leftBarButtonItems = [UIBarButtonItem(image: resizedMenuImage?.withTintColor(.white), style: .plain, target: self, action: #selector(handleMenuToggle)), storeBar]
+        let giftBox = UIBarButtonItem(image: UIImage(named: "gift-box")?.resized(to: CGSize(width: 35, height: 35)).withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(tappedGift))
+        giftBox.tintColor = .none
+        giftBox.imageInsets = UIEdgeInsets(top: 0, left: -25, bottom: 0, right: 0)
+        
+        let flameImage = UIImage().textToImage(drawText: "14", inImage: UIImage(named: "flame")!.resized(to: CGSize(width: 40, height: 40)), atPoint: CGPoint(x: 20, y: 25)).withRenderingMode(.alwaysOriginal)
+        let flame = UIBarButtonItem(image: flameImage, style: .plain, target: self, action: #selector(tappedGift))
+        let streakNum = UILabel()
+        
+        streakNum.text = "14"
+        streakNum.font = UIFont(name: "Menlo-Bold", size: 10)
+        
+        flame.tintColor = .none
+        flame.imageInsets = UIEdgeInsets(top: 0, left: -125, bottom: 0, right: 0)
+                                      
+        navigationItem.leftBarButtonItems = [UIBarButtonItem(image: resizedMenuImage?.withTintColor(.white), style: .plain, target: self, action: #selector(handleMenuToggle)), giftBox, (!isIpod ? flame : UIBarButtonItem())]
     }
     
     func displayalert(title:String, message:String) {
@@ -504,10 +521,12 @@ class TimerController: UIViewController, TagUpdater {
     
     @objc func tappedTag() {
         if UserDefaults.standard.bool(forKey: "isPro") == true {
-      
             tagTableView = TagTableView(frame: view.bounds)
             tagTableView.tagDelegate = self
             view.addSubview(tagTableView)
+            navigationController?.navigationBar.alpha = 0.3
+            navigationController?.navigationBar.isUserInteractionEnabled = false
+            tagTableView.navigationBar = navigationController!.navigationBar
         }   else {
             let controller = SubscriptionController()
             controller.modalPresentationStyle = .fullScreen
@@ -525,7 +544,7 @@ class TimerController: UIViewController, TagUpdater {
         } else {
             timerButtonLbl.text = "Give Up"
         }
-        
+    
         timerButtonLbl.sizeToFit()
         timerButtonLbl.textColor = .white
         timerButton.addSubview(timerButtonLbl)

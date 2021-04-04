@@ -27,7 +27,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         var launched = defaults.integer(forKey: "launchNumber")
         launched = launched + 1
         defaults.setValue(launched, forKey: "launchNumber")    
-
         IQKeyboardManager.shared.enable = true
         self.window?.overrideUserInterfaceStyle = .light
         window?.rootViewController = nc
@@ -46,10 +45,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             if context.url.scheme == "widget" {
                 NotificationCenter.default.post(name: Notification.Name("openedFromWidget"), object: nil)
             } else if context.url.scheme == "stats" {
-                print("go t ostats")
                 NotificationCenter.default.post(name: Notification.Name("goToStats"), object: nil)
             } else if context.url.scheme == "pets" {
-                print("go to pets")
                 NotificationCenter.default.post(name: Notification.Name("changePet"), object: nil)
             }
         }

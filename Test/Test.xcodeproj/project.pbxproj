@@ -48,6 +48,7 @@
 		FE39D14F25DDA84B00DBFFDE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E159360B242ACE710050E914 /* Assets.xcassets */; };
 		FE39D18225DDADFD00DBFFDE /* SwiftUICharts in Frameworks */ = {isa = PBXBuildFile; productRef = FE39D18125DDADFD00DBFFDE /* SwiftUICharts */; };
 		FE39D19125DDFD0200DBFFDE /* GetWidgetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE39D19025DDFD0200DBFFDE /* GetWidgetData.swift */; };
+		FE41841B2618EF3A00ABCFAB /* DailyBonusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE41841A2618EF3A00ABCFAB /* DailyBonusView.swift */; };
 		FE5395C124311AD100DA83C1 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE5395C024311AD100DA83C1 /* Constants.swift */; };
 		FE53DB1325FC0AF200E7ECF0 /* EnableNotificationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE53DB1225FC0AF200E7ECF0 /* EnableNotificationsController.swift */; };
 		FE577C9224704D6800042819 /* mapGif.gif in Resources */ = {isa = PBXBuildFile; fileRef = FE577C9124704D6800042819 /* mapGif.gif */; };
@@ -199,6 +200,7 @@
 		FE39D14525DD9D8100DBFFDE /* FocusByteDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FocusByteDebug.entitlements; sourceTree = "<group>"; };
 		FE39D14A25DDA10800DBFFDE /* focuswidgetExtensionDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = focuswidgetExtensionDebug.entitlements; sourceTree = "<group>"; };
 		FE39D19025DDFD0200DBFFDE /* GetWidgetData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetWidgetData.swift; sourceTree = "<group>"; };
+		FE41841A2618EF3A00ABCFAB /* DailyBonusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyBonusView.swift; sourceTree = "<group>"; };
 		FE5395C024311AD100DA83C1 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		FE53DB1225FC0AF200E7ECF0 /* EnableNotificationsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableNotificationsController.swift; sourceTree = "<group>"; };
 		FE577C9124704D6800042819 /* mapGif.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = mapGif.gif; sourceTree = "<group>"; };
@@ -495,6 +497,7 @@
 				FE61EA9524771D9600A6AE25 /* TagTableViewController.swift */,
 				FE923F2D25CDD7E20048E4EC /* TimerIpod.swift */,
 				FE39D19025DDFD0200DBFFDE /* GetWidgetData.swift */,
+				FE41841A2618EF3A00ABCFAB /* DailyBonusView.swift */,
 			);
 			path = TimerPage;
 			sourceTree = "<group>";
@@ -921,6 +924,7 @@
 				FE33D50D247EE1C800A93C2F /* TwoItemViewController.swift in Sources */,
 				FE577CA324758EE700042819 /* PieChartUtil.swift in Sources */,
 				FEFD304625D31AA50011D64C /* SubscriptionController.swift in Sources */,
+				FE41841B2618EF3A00ABCFAB /* DailyBonusView.swift in Sources */,
 				FED05132243FD25600D7B1F0 /* RealmObjects.swift in Sources */,
 				FE8E61F82485A7AB001E1D07 /* AvatarStoreCell.swift in Sources */,
 				E1D2BF94242B9CCB004AC477 /* animatedLabel.swift in Sources */,

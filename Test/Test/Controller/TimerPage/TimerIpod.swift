@@ -91,7 +91,6 @@ extension TimerController {
         createTagImageView()
         
         view.backgroundColor = backgroundColor
-        navigationItem.title = "Home"
         createBarItem()
         navigationController?.navigationBar.addSubview(coinsL)
         navigationController?.navigationBar.addSubview(coinsImg!)
