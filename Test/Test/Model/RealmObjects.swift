@@ -29,6 +29,17 @@ class User: Object{
     @objc dynamic var backpack: String? = nil
     @objc dynamic var glasses: String? = nil
     @objc dynamic var suit: String? = nil
+    
+    //Daily + Streaks
+    @objc dynamic var lastLogin: String?
+    @objc dynamic var dailyBonus: String?
+    @objc dynamic var dailyVideo: String?
+    @objc dynamic var streak: String?
+    @objc dynamic var sevenDay: Int = 0
+    @objc dynamic var thirtyDay: Int = 0
+    @objc dynamic var longestStreak: Int = 0
+    @objc dynamic var mysteryVideo: String? 
+    
 
 
     var inventoryArray = List<String>()

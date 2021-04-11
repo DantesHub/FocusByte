@@ -74,6 +74,7 @@
 		FE8E61F82485A7AB001E1D07 /* AvatarStoreCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE8E61F72485A7AB001E1D07 /* AvatarStoreCell.swift */; };
 		FE8E61FA2485B458001E1D07 /* AvatarAccessory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE8E61F92485B458001E1D07 /* AvatarAccessory.swift */; };
 		FE923F2E25CDD7E20048E4EC /* TimerIpod.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE923F2D25CDD7E20048E4EC /* TimerIpod.swift */; };
+		FEA7C78326222A4C00D4DD06 /* DailyBonusAdDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEA7C78226222A4C00D4DD06 /* DailyBonusAdDelegate.swift */; };
 		FEBC64142431183F00FB082A /* PressStart2P-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FEBC64132431183F00FB082A /* PressStart2P-Regular.ttf */; };
 		FEC28331244B86C200098413 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEC28330244B86C200098413 /* Extensions.swift */; };
 		FEC28333244B87E100098413 /* MysteryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEC28332244B87E100098413 /* MysteryViewController.swift */; };
@@ -229,6 +230,7 @@
 		FE8E61F92485B458001E1D07 /* AvatarAccessory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarAccessory.swift; sourceTree = "<group>"; };
 		FE923F2D25CDD7E20048E4EC /* TimerIpod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerIpod.swift; sourceTree = "<group>"; };
 		FEA66C4725F9C8B500C5F725 /* focuswidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = focuswidgetExtension.entitlements; sourceTree = "<group>"; };
+		FEA7C78226222A4C00D4DD06 /* DailyBonusAdDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyBonusAdDelegate.swift; sourceTree = "<group>"; };
 		FEBC64132431183F00FB082A /* PressStart2P-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PressStart2P-Regular.ttf"; sourceTree = "<group>"; };
 		FEC28330244B86C200098413 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		FEC28332244B87E100098413 /* MysteryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MysteryViewController.swift; sourceTree = "<group>"; };
@@ -498,6 +500,7 @@
 				FE923F2D25CDD7E20048E4EC /* TimerIpod.swift */,
 				FE39D19025DDFD0200DBFFDE /* GetWidgetData.swift */,
 				FE41841A2618EF3A00ABCFAB /* DailyBonusView.swift */,
+				FEA7C78226222A4C00D4DD06 /* DailyBonusAdDelegate.swift */,
 			);
 			path = TimerPage;
 			sourceTree = "<group>";
@@ -964,6 +967,7 @@
 				FEFD306825D34E850011D64C /* BottomCell.swift in Sources */,
 				FEFD305B25D31FC10011D64C /* TopCell.swift in Sources */,
 				FED6F640243EB3A200553996 /* MenuOption.swift in Sources */,
+				FEA7C78326222A4C00D4DD06 /* DailyBonusAdDelegate.swift in Sources */,
 				FE5395C124311AD100DA83C1 /* Constants.swift in Sources */,
 				FED36A17247AEA41005DE0FC /* Alert.swift in Sources */,
 				FE61EA982477256000A6AE25 /* ImageAlertController.swift in Sources */,

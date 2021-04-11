@@ -16,6 +16,7 @@ import Purchases
 import SCLAlertView
 import WidgetKit
 import AppsFlyerLib
+import GoogleMobileAds
 
 var enteredForeground = false
 var deepFocusMode = true
@@ -35,7 +36,8 @@ var expDate = ""
 var randomNum = 0
 var upgradedToPro = false
 var tagSelected = ("unset")
-
+var howMuchTime: Int = 0
+var rewardedAd: GADRewardedAd = GADRewardedAd(adUnitID: "ca-app-pub-5091808253991399/3095897395")
 class TimerController: UIViewController, TagUpdater {
     //MARK: - Properties
     var lastDate = ""
@@ -79,7 +81,6 @@ class TimerController: UIViewController, TagUpdater {
         iv.translatesAutoresizingMaskIntoConstraints = false
         return iv
     }()
-    var howMuchTime: Int = 0
     var mins = 0
     var secs = 0
     var breakL = UILabel()
@@ -130,6 +131,7 @@ class TimerController: UIViewController, TagUpdater {
 
         return iv
     }()
+    var streakNumber = 1
     //widget variables
     var monthArray = [String]()
     var weekArray = [String]()
@@ -148,7 +150,11 @@ class TimerController: UIViewController, TagUpdater {
     override func viewDidLoad() {
         super.viewDidLoad()
         //ask for review
-     
+        loadVideoAds()
+        let date1 = Date()
+        let today1 = Date()
+        let nextDate = Calendar.current.date(byAdding: .day, value: 1, to: today1)
+        print((nextDate! - date1), "skinny")
         NotificationCenter.default.addObserver(self, selector: #selector(openedFromWidget), name: Notification.Name("openedFromWidget"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(goToStats), name: Notification.Name("goToStats"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(changePet), name: Notification.Name("changePet"), object: nil)
@@ -168,8 +174,7 @@ class TimerController: UIViewController, TagUpdater {
         
         getRealmData()
         let today = Date()
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MM-dd-yyyy HH:mm"
+      
         for item in inventoryArray {
             if item.contains("Gold Chest") {
                 let plusIndex = item.firstIndex(of: "+")
@@ -276,6 +281,32 @@ class TimerController: UIViewController, TagUpdater {
             if result.isLoggedIn == true {
                 coins = result.coins
                 exp = result.exp
+                let streak = result.streak
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                var lastStreakDate = ""
+                if let plus = result.streak?.index(of: "+") {
+                    streakNumber = Int(result.streak![..<plus])!
+                    let plusOffset = result.streak!.index(plus, offsetBy: 1)
+                    lastStreakDate = String(result.streak![plusOffset...])
+                    if (Date() - formatter.date(from: lastStreakDate)! >= 86400 && Date() - formatter.date(from: lastStreakDate)! <= 172800) { // update streak number and date
+                        lastStreakDate = formatter.string(from: Date())
+                    } else if  Date() - formatter.date(from: lastStreakDate)! > 172800 { //broke streak
+                        streakNumber = 1
+                        lastStreakDate = formatter.string(from: Date())
+                        try! uiRealm.write {
+                            result.sevenDay = 0
+                            result.thirtyDay = 0
+                        }
+                    } else {} // no need  to update streak
+                } else { //first streak ever
+                    lastStreakDate = formatter.string(from: Date())
+                    streakNumber = 1
+                }
+                try! uiRealm.write {
+                    result.streak = String(streakNumber) + "+" + lastStreakDate
+                }
+                
                 for tag in result.tagDictionary {
                     if tag.selected == true {
                         tagAndColor = (tag.name, tag.color)
@@ -338,7 +369,6 @@ class TimerController: UIViewController, TagUpdater {
     func checkIfPro() {
         Purchases.shared.purchaserInfo { [self] (purchaserInfo, error) in
                 if purchaserInfo?.entitlements.all["isPro"]?.isActive == true {
-                    print("siyanara")
                     UserDefaults.standard.setValue(true, forKey: "isPro")
                 } else {
                     UserDefaults.standard.setValue(false, forKey: "isPro")
@@ -477,6 +507,7 @@ class TimerController: UIViewController, TagUpdater {
           
             let dailyBonusView = DailyBonusView(frame: UIScreen.main.bounds)
             view.addSubview(dailyBonusView)
+            dailyBonusView.rootController = self
             dailyBonusView.setUpView()
             dailyBonusView.navigationBar = navigationController!.navigationBar
             navigationController?.navigationBar.alpha = 0.3
@@ -903,8 +934,11 @@ class TimerController: UIViewController, TagUpdater {
         }
         saveToRealm()
     }
-    
-    func updateCoinLabel(numCoins: Int) -> Int? {
+    @objc func updateCoins(){
+        updateCoinLabel(numCoins: loot)
+    }
+  func updateCoinLabel(numCoins: Int) -> Int? {
+        print(loot, howMuchTime, "hamura")
         let prevNumOfCoins = numCoins
         var numOfCoins = numCoins
         let prevExp = exp
@@ -937,7 +971,10 @@ class TimerController: UIViewController, TagUpdater {
             exp += 11 * expMultiplier
         case 6000...7201:
             numOfCoins += 40 * coinMultiplier
-            exp += 14 * expMultiplier
+            exp += 15 * expMultiplier
+        case 10000:
+            numOfCoins += 250
+            exp += 100
         default:
             numOfCoins += 2 * coinMultiplier
             exp += 1 * expMultiplier
@@ -967,6 +1004,8 @@ class TimerController: UIViewController, TagUpdater {
             userDefaults?.setValue(numOfCoins, forKey: "coins")
             WidgetCenter.shared.reloadAllTimelines()
         }
+        self.coinsL.text = String(numOfCoins)
+        coins = numOfCoins
         return numOfCoins
     }
     

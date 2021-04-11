@@ -204,6 +204,12 @@ extension MysteryViewController: UICollectionViewDelegateFlowLayout, UICollectio
             nextButton!.blink()
             backButton.removeFromSuperview()
         }
+        if data[indexPath.row].title == "Common Box" {
+            cell.rootController = self
+            cell.createVideoBox()
+        } else {
+            cell.removeVideoButton()
+        }
         name = self.data[indexPath.row].title
         cell.data = self.data[indexPath.row]
         cell.clipsToBounds = false

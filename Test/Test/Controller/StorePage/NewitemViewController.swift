@@ -208,7 +208,11 @@ class NewitemViewController: UIViewController {
     func saveToFirebaseAndRealm() {
         switch name {
         case "Common Box":
-            coins = coins - 15
+            if !commonVideo {
+                coins = coins - 15
+            } else {
+                commonVideo = false
+            }
             print("loged")
             Analytics.logEvent("Common_Box", parameters: nil)
             AppsFlyerLib.shared().logEvent("Common_Box", withValues: [AFEventParamContent: "true"])

@@ -16,6 +16,7 @@ import SCLAlertView
 import TinyConstraints
 import StoreKit
 import WidgetKit
+import GoogleMobileAds
 var requestedReview = false
 extension TimerController {
     //MARK: - Helper Functions
@@ -25,6 +26,7 @@ extension TimerController {
             UIApplication.willEnterForegroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(checkIfLocked(noti:)), name: UIApplication.protectedDataWillBecomeUnavailableNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(checkIfNotLocked(noti:)), name: UIApplication.protectedDataDidBecomeAvailableNotification, object: nil)
+ 
     }
     
     @objc func checkIfLocked(noti: Notification) {
@@ -195,7 +197,6 @@ extension TimerController {
                     //if not we have to create a new date
                     
                     coins = self.updateCoinLabel(numCoins: numCoins)!
-                    self.coinsL.text = String(coins)
                     if timeData.count == 13 || timeData.count == 23 || timeData.count == 53 {
                         if requestedReview == false {
                             SKStoreReviewController.requestReview()
@@ -230,12 +231,12 @@ extension TimerController {
         
                 }
             }
-        }
+         }
         }
         if UserDefaults.standard.bool(forKey: "isPro") == false || UserDefaults.standard.bool(forKey: "noLogin") {
             print("right here")
             coins = self.updateCoinLabel(numCoins: coins)!
-            self.coinsL.text = String(coins)
+            
             self.timeL.removeFromSuperview()
             self.twoButtonSetup()
             self.chestImageView?.image = UIImage(named: "\(self.chest)-open")
@@ -276,7 +277,7 @@ extension TimerController {
             //date already exists
             if dateFormatterGet.string(from: Date()) == fbDate {
                 totalTimeForDay = String(lastDate[equalIndexOffset..<dashIndex!])
-                let totalTimeInt = Int(totalTimeForDay)! + (self.howMuchTime/60)
+                let totalTimeInt = Int(totalTimeForDay)! + (howMuchTime/60)
                 totalSessionsForDay = String(Int(lastDate[dashIndexOffset..<plusIndex!])! + 1)
                 //Removing tag, adding time and putting it back into place
                 var tags = String(lastDate[plusIndex!...])
@@ -291,12 +292,12 @@ extension TimerController {
                     var timeForTagInt = Int(timeForTag)!
                     let timeForTagLenIndex = String.Index(encodedOffset: timeForTag.count)
                     choppedTags.removeSubrange((choppedTags.startIndex..<timeForTagLenIndex))
-                    timeForTagInt += self.howMuchTime/60
+                    timeForTagInt += howMuchTime/60
                     choppedTags.insert(contentsOf: "\(timeForTagInt)", at: choppedTags.startIndex)
                     finalProduct = nonChoppedTags + choppedTags
                 } else {
                     //first time using tag
-                    tags.append(contentsOf: "+\(tagSelected)/\(self.howMuchTime/60)")
+                    tags.append(contentsOf: "+\(tagSelected)/\(howMuchTime/60)")
                     finalProduct = tags
                 }
                 
@@ -305,14 +306,14 @@ extension TimerController {
             } else {
                 //first session for that day
                 fbDate = dateFormatterGet.string(from: Date())
-                totalTimeForDay = String(self.howMuchTime/60)
-                timeData.append(fbDate + "=" + totalTimeForDay + "-1" + "+\(tagSelected)/\(self.howMuchTime/60)")
+                totalTimeForDay = String(howMuchTime/60)
+                timeData.append(fbDate + "=" + totalTimeForDay + "-1" + "+\(tagSelected)/\(howMuchTime/60)")
             }
         } else {
             //very first session of account
             fbDate = dateFormatterGet.string(from: Date())
-            totalTimeForDay = String(self.howMuchTime/60)
-            timeData.append(fbDate + "=" + totalTimeForDay + "-1" + "+\(tagSelected)/\(self.howMuchTime/60)")
+            totalTimeForDay = String(howMuchTime/60)
+            timeData.append(fbDate + "=" + totalTimeForDay + "-1" + "+\(tagSelected)/\(howMuchTime/60)")
         }
         if #available(iOS 14.0, *) {
             if UserDefaults.standard.bool(forKey: "isPro") {
@@ -322,6 +323,17 @@ extension TimerController {
         }
     }
     
+    func loadVideoAds() {
+        rewardedAd.load(GADRequest()) { [self] error in
+              if let error = error {
+                // Handle ad failed to load case.
+                print("burgandy", error)
+              } else {
+                NotificationCenter.default.post(name: Notification.Name("createWatchButton"), object: nil)
+                print("finished loading")
+              }
+    }
+    }
 //    //MARK: - Alert Func
     func createAlert(leveled: Bool = false, evolved:Int = 0) {
         let appearance = SCLAlertView.SCLAppearance(
@@ -336,6 +348,7 @@ extension TimerController {
             titleColor: brightPurple
         )
         let alertView = SCLAlertView(appearance: appearance)
+        alertView.view.layer.cornerRadius = 15
         let subview = UIView(frame: CGRect(x:0,y:0,width:300,height: evolved == 15 || evolved == 34 ? 300 : 200))
         if evolved != 15 && evolved != 34 {
             let expDesc = UILabel()

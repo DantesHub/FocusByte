@@ -12,6 +12,8 @@ import Purchases
 import RealmSwift
 import AppsFlyerLib
 import FirebaseMessaging
+import GoogleMobileAds
+
 var uiRealm = try! Realm()
 @UIApplicationMain
  class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -47,6 +49,7 @@ var uiRealm = try! Realm()
     }
     func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any])
     -> Bool {
+        
         return GIDSignIn.sharedInstance().handle(url)
     }
     @objc func sendLaunch() {
@@ -73,6 +76,7 @@ var uiRealm = try! Realm()
         print(Realm.Configuration.defaultConfiguration.fileURL!)
 
         application.registerForRemoteNotifications()
+        GADMobileAds.sharedInstance().start(completionHandler: nil)
         AppsFlyerLib.shared().appsFlyerDevKey = "XbmHxcKdV5p9uDbufEGEAY"
         AppsFlyerLib.shared().appleAppID = "1517162999"
         AppsFlyerLib.shared().delegate = self

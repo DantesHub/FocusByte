@@ -26,7 +26,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let defaults = UserDefaults.standard
         var launched = defaults.integer(forKey: "launchNumber")
         launched = launched + 1
-        defaults.setValue(launched, forKey: "launchNumber")    
+        defaults.setValue(launched, forKey: "launchNumber")
+        let results = uiRealm.objects(User.self)
+        for result  in results {
+            if result.isLoggedIn == true {
+                try! uiRealm.write {
+                    let formatter = DateFormatter()
+                    formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                    result.lastLogin = formatter.string(from: Date())
+                }
+            }
+        }
+
         IQKeyboardManager.shared.enable = true
         self.window?.overrideUserInterfaceStyle = .light
         window?.rootViewController = nc
