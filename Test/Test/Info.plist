@@ -33,6 +33,8 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-5091808253991399~2696442140</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>Item 0</key>
@@ -84,8 +86,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-    <key>GADApplicationIdentifier</key>
-    <string>ca-app-pub-5091808253991399~2696442140</string>
-    
 </dict>
 </plist>

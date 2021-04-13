@@ -26,7 +26,7 @@ class TwoItemViewController: NewitemViewController {
         return iv
     }()
     var rareItemLabel = UILabel()
-    
+    var commonItemLabel2 = UILabel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,7 +66,7 @@ class TwoItemViewController: NewitemViewController {
         youGotLabel.centerX(to: view)
         
         createShareButton()
-        shareButton.topToBottom(of: youGotLabel)
+        shareButton.topToBottom(of: youGotLabel, offset: 10)
         
         view.addSubview(commonItemImageView)
         if name == "Gold Box" {
@@ -82,11 +82,23 @@ class TwoItemViewController: NewitemViewController {
         
         commonItemLabel.translatesAutoresizingMaskIntoConstraints = false
         commonItemLabel.numberOfLines = 0
-        commonItemLabel.text = "\(goldItemArray[0])\n-Common"
-        commonItemLabel.font = UIFont(name: "Menlo", size: 20)
+        commonItemLabel.text = "\(goldItemArray[0])"
+        commonItemLabel.font = UIFont(name: "Menlo-Bold", size: 24)
         view.addSubview(commonItemLabel)
-        commonItemLabel.leftToRight(of: commonItemImageView, offset: 5)
+        commonItemLabel.leftToRight(of: commonItemImageView, offset: 25)
         commonItemLabel.centerYAnchor.constraint(equalTo: commonItemImageView.centerYAnchor).isActive = true
+        commonItemLabel.adjustsFontSizeToFitWidth = true
+        commonItemLabel2.numberOfLines = 2
+        commonItemLabel2.width(UIScreen.main.bounds.width * 0.5)
+        commonItemLabel2.minimumScaleFactor = 0.1
+        view.addSubview(commonItemLabel2)
+        commonItemLabel2.numberOfLines = 0
+        commonItemLabel2.text = "Common"
+        commonItemLabel2.font = UIFont(name: "Menlo", size: 22)
+        commonItemLabel2.adjustsFontSizeToFitWidth = true
+        commonItemLabel2.leftToRight(of: commonItemImageView, offset: 25)
+        commonItemLabel2.topToBottom(of: commonItemLabel)
+        
         
         view.addSubview(rareItemImageView)
         rareItemImageView.topToBottom(of: commonItemImageView, offset: 10)
@@ -98,16 +110,20 @@ class TwoItemViewController: NewitemViewController {
         rareItemLabel.translatesAutoresizingMaskIntoConstraints = false
         
         rareItemLabel.text = "\(goldItemArray[1])"
-        rareItemLabel.font = UIFont (name: "Menlo", size: 20)
+        rareItemLabel.font = UIFont (name: "Menlo-Bold", size: 24)
+        rareItemLabel.numberOfLines = 2
+        rareItemLabel.width(UIScreen.main.bounds.width * 0.5)
+        rareItemLabel.minimumScaleFactor = 0.1
         view.addSubview(rareItemLabel)
-        rareItemLabel.leftToRight(of: rareItemImageView, offset: 5)
+        rareItemLabel.leftToRight(of: rareItemImageView, offset: 25)
+        rareItemLabel.adjustsFontSizeToFitWidth = true
         rareItemLabel.centerYAnchor.constraint(equalTo: rareItemImageView.centerYAnchor).isActive = true
         rarityLabel.translatesAutoresizingMaskIntoConstraints = false
-        rarityLabel.font = UIFont(name: "Menlo-Bold",size:20)
-        rarityLabel.text = itemBook[goldItemArray[1]]! == "Rare" ? "-\(itemBook[goldItemArray[1]]!)!" : "-\(itemBook[goldItemArray[1]]!)!!"
+        rarityLabel.font = UIFont(name: "Menlo-Bold",size:22)
+        rarityLabel.text = itemBook[goldItemArray[1]]! == "Rare" ? "\(itemBook[goldItemArray[1]]!)!" : "\(itemBook[goldItemArray[1]]!)!!"
         rarityLabel.textColor = itemBook[goldItemArray[1]]! == "Rare" ?  darkRed : diamond
         view.addSubview(rarityLabel)
-        rarityLabel.leftToRight(of: rareItemImageView, offset: 10)
+        rarityLabel.leftToRight(of: rareItemImageView, offset: 25)
         rarityLabel.topToBottom(of: rareItemLabel, offset: 5)
         
         

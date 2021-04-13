@@ -13,14 +13,14 @@ class ThreeItemViewController: TwoItemViewController {
     var epicItemLabel: UILabel = {
        let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "Menlo-Bold", size: 20)
+        label.font = UIFont(name: "Menlo-Bold", size: 24)
         return label
     }()
        var epicRareLabel: UILabel = {
         let label = UILabel()
          label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = brightPurple
-         label.font = UIFont(name: "Menlo-Bold", size: 20)
+         label.font = UIFont(name: "Menlo-Bold", size: 22)
          return label
      }()
     var diamondItemArray = [String]()
@@ -42,13 +42,13 @@ class ThreeItemViewController: TwoItemViewController {
     override func configureUI() {
         super.configureUI()
         commonItemImageView.image = UIImage(named: diamondItemArray[0])
-//        super.commonItemImageView.topAnchor.constraint(equalTo: youGotLabel.bottomAnchor).isActive = true
+        super.commonItemImageView.topAnchor.constraint(equalTo: youGotLabel.bottomAnchor, constant: 25).isActive = true
         commonItemImageView.updateConstraints()
-        commonItemLabel.text = "\(diamondItemArray[0])\n-Common"
+        commonItemLabel.text = "\(diamondItemArray[0])"
         
         rareItemImageView.image = UIImage(named: diamondItemArray[1])
         rareItemLabel.text = "\(diamondItemArray[1])"
-        rarityLabel.text = (itemBook[diamondItemArray[1]]!) == "Rare" ? "-\(itemBook[diamondItemArray[1]]!)!" : "-\(itemBook[diamondItemArray[1]]!)!!"
+        rarityLabel.text = (itemBook[diamondItemArray[1]]!) == "Rare" ? "\(itemBook[diamondItemArray[1]]!)!" : "\(itemBook[diamondItemArray[1]]!)!!"
         rarityLabel.textColor = itemBook[diamondItemArray[1]]! == "Rare" ?  darkRed : diamond
         
         view.addSubview(epicImageView)
@@ -60,15 +60,19 @@ class ThreeItemViewController: TwoItemViewController {
         
         view.addSubview(epicItemLabel)
         epicItemLabel.text = diamondItemArray[2]
-        epicItemLabel.leftToRight(of: epicImageView, offset: 4)
+        epicItemLabel.leftToRight(of: epicImageView, offset: 25)
         epicItemLabel.centerYAnchor.constraint(equalTo: epicImageView.centerYAnchor).isActive = true
+        epicItemLabel.adjustsFontSizeToFitWidth = true
+        epicItemLabel.numberOfLines = 2
+        epicItemLabel.width(UIScreen.main.bounds.width * 0.5)
+        epicItemLabel.minimumScaleFactor = 0.1
         
         view.addSubview(epicRareLabel)
         print(itemBook[diamondItemArray[2]]!)
-        epicRareLabel.text = itemBook[diamondItemArray[2]]! == "Epic" ? "-\(itemBook[diamondItemArray[2]]!)!!!" : "-\(itemBook[diamondItemArray[2]]!)!!"
+        epicRareLabel.text = itemBook[diamondItemArray[2]]! == "Epic" ? "\(itemBook[diamondItemArray[2]]!)!!!" : "\(itemBook[diamondItemArray[2]]!)!!"
         epicRareLabel.textColor = itemBook[diamondItemArray[2]]! == "Epic" ? brightPurple : diamond
         epicRareLabel.topToBottom(of: epicItemLabel, offset: 5)
-        epicRareLabel.leftToRight(of: epicImageView, offset: 10)
+        epicRareLabel.leftToRight(of: epicImageView, offset: 25)
     }
 
 }

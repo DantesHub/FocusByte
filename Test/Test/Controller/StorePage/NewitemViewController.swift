@@ -78,14 +78,14 @@ class NewitemViewController: UIViewController {
         
         view.addSubview(rarityLabel)
         rarityLabel.translatesAutoresizingMaskIntoConstraints = false
-        rarityLabel.text = "-\(itemBook[itemName]!)"
+        rarityLabel.text = "\(itemBook[itemName]!)"
         rarityLabel.textColor = itemBook[itemName] == "Common" ? black : darkRed
         rarityLabel.font = UIFont(name:"Menlo", size: 35)
-        rarityLabel.topToBottom(of: itemLabel)
+        rarityLabel.topToBottom(of: itemLabel, offset: 10)
         rarityLabel.centerX(to: view)
         
         createShareButton()
-        shareButton.topToBottom(of: rarityLabel)
+        shareButton.topToBottom(of: rarityLabel, offset: 15)
     }
     
     func createShareButton() {

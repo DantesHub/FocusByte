@@ -37,7 +37,8 @@ class NameViewController: UIViewController {
     //MARK: - handlers
     @objc func finishTapped() {
         showSpinner()
-       
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
         if nameInput.text! != "" {
             if !startTapped {
                 let email = Auth.auth().currentUser?.email
@@ -62,7 +63,7 @@ class NameViewController: UIViewController {
                     }
                 }
             }
-            AppsFlyerLib.shared().logEvent("tapped_boy_onboarding", withValues: [AFEventParamContent: "true"])
+            AppsFlyerLib.shared().logEvent("input_name_onboarding", withValues: [AFEventParamContent: "true"])
             UserDefaults.standard.set(false, forKey: "isPro")
             saveToRealm()
         } else {

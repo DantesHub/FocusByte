@@ -38,6 +38,8 @@ var upgradedToPro = false
 var tagSelected = ("unset")
 var howMuchTime: Int = 0
 var rewardedAd: GADRewardedAd = GADRewardedAd(adUnitID: "ca-app-pub-5091808253991399/3095897395")
+var focusCompleteNotif = false
+var totalBonuses = 0
 class TimerController: UIViewController, TagUpdater {
     //MARK: - Properties
     var lastDate = ""
@@ -145,7 +147,6 @@ class TimerController: UIViewController, TagUpdater {
     let userDefaults = UserDefaults(suiteName: "group.co.byteteam.focusbyte")
     let defaults = UserDefaults.standard
     var fromWidget = false
-   
     //MARK: -Init
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -275,7 +276,8 @@ class TimerController: UIViewController, TagUpdater {
 //             }
 //        }
 //    }
-    private func getRealmData() {
+    final func getRealmData() {
+        totalBonuses = 0
         results = uiRealm.objects(User.self)
         for result  in results {
             if result.isLoggedIn == true {
@@ -283,13 +285,17 @@ class TimerController: UIViewController, TagUpdater {
                 exp = result.exp
                 let streak = result.streak
                 let formatter = DateFormatter()
-                formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                formatter.dateFormat = "MM-dd-yyyy HH:mm:ss"
                 var lastStreakDate = ""
                 if let plus = result.streak?.index(of: "+") {
                     streakNumber = Int(result.streak![..<plus])!
                     let plusOffset = result.streak!.index(plus, offsetBy: 1)
                     lastStreakDate = String(result.streak![plusOffset...])
-                    if (Date() - formatter.date(from: lastStreakDate)! >= 86400 && Date() - formatter.date(from: lastStreakDate)! <= 172800) { // update streak number and date
+                    let now = Date() // the current date/time
+                    print(now - formatter.date(from: lastStreakDate)!, "kimetsu")
+                    if (Date() - formatter.date(from: lastStreakDate)! >= 86400 && Date() - formatter.date(from: lastStreakDate)! <= 172800) {
+                        // update streak number and date
+                        streakNumber += 1
                         lastStreakDate = formatter.string(from: Date())
                     } else if  Date() - formatter.date(from: lastStreakDate)! > 172800 { //broke streak
                         streakNumber = 1
@@ -299,6 +305,41 @@ class TimerController: UIViewController, TagUpdater {
                             result.thirtyDay = 0
                         }
                     } else {} // no need  to update streak
+
+                    if result.dailyBonus != "" && result.dailyBonus != nil {
+                        if (Date() - formatter.date(from: result.dailyBonus!)! >= 0) {
+                            totalBonuses += 1
+                        }
+                    } else {
+                        totalBonuses += 1
+                    }
+
+                    if result.dailyVideo != "" && result.dailyVideo != nil {
+                        if (Date() - formatter.date(from: result.dailyVideo!)! >= 0) {
+                            totalBonuses += 1
+                        }
+                    } else {
+                        totalBonuses += 1
+                    }
+                  
+                    var sevenDayProgress:Double = 0.0
+                    var thirtyDayProgress:Double = 0.0
+                    if result.sevenDay > 0 {
+                        let leftOver = streakNumber - (result.sevenDay * 7)
+                        sevenDayProgress = Double(leftOver)/7.0
+                    } else {
+                        sevenDayProgress = Double(streakNumber)/7.0
+                    }
+
+                    if result.thirtyDay > 0 {
+                        let leftOver = streakNumber - (result.thirtyDay * 30)
+                        thirtyDayProgress = Double(leftOver)/30.0
+                    } else {
+                        thirtyDayProgress = Double(streakNumber)/30.0
+                    }
+                    if sevenDayProgress >= 1.0 { totalBonuses += 1}
+                    if thirtyDayProgress >= 1.0 { totalBonuses += 1}
+
                 } else { //first streak ever
                     lastStreakDate = formatter.string(from: Date())
                     streakNumber = 1
@@ -523,16 +564,18 @@ class TimerController: UIViewController, TagUpdater {
     }
 
      func createBarItem() {
-        let giftBox = UIBarButtonItem(image: UIImage(named: "gift-box")?.resized(to: CGSize(width: 35, height: 35)).withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(tappedGift))
+        var giftImg = UIImage()
+        if totalBonuses == 0 {
+            giftImg = (UIImage(named: "gift-box")?.resized(to: CGSize(width: 35, height: 35)).withRenderingMode(.alwaysOriginal))!
+        } else {
+            giftImg = UIImage().textToImage(drawText: "\(totalBonuses)", inImage: UIImage(named: "gift-box")!.resized(to: CGSize(width: 35, height: 35)), atPoint: CGPoint(x: 20, y: 20)).withRenderingMode(.alwaysOriginal)
+        }
+        let giftBox = UIBarButtonItem(image: giftImg, style: .plain, target: self, action: #selector(tappedGift))
         giftBox.tintColor = .none
         giftBox.imageInsets = UIEdgeInsets(top: 0, left: -25, bottom: 0, right: 0)
         
-        let flameImage = UIImage().textToImage(drawText: "14", inImage: UIImage(named: "flame")!.resized(to: CGSize(width: 40, height: 40)), atPoint: CGPoint(x: 20, y: 25)).withRenderingMode(.alwaysOriginal)
+        let flameImage = UIImage().textToImage(drawText: "\(streakNumber)", inImage: UIImage(named: "flame")!.resized(to: CGSize(width: 40, height: 40)), atPoint: CGPoint(x: 20, y: 25)).withRenderingMode(.alwaysOriginal)
         let flame = UIBarButtonItem(image: flameImage, style: .plain, target: self, action: #selector(tappedGift))
-        let streakNum = UILabel()
-        
-        streakNum.text = "14"
-        streakNum.font = UIFont(name: "Menlo-Bold", size: 10)
         
         flame.tintColor = .none
         flame.imageInsets = UIEdgeInsets(top: 0, left: -125, bottom: 0, right: 0)
@@ -551,6 +594,8 @@ class TimerController: UIViewController, TagUpdater {
     }
     
     @objc func tappedTag() {
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
         if UserDefaults.standard.bool(forKey: "isPro") == true {
             tagTableView = TagTableView(frame: view.bounds)
             tagTableView.tagDelegate = self
@@ -665,14 +710,18 @@ class TimerController: UIViewController, TagUpdater {
     //MARK: - Handlers
     @objc func handleMenuToggle() {
         if !isPlaying {
+            let generator = UIImpactFeedbackGenerator(style: .light)
+            generator.impactOccurred()
             isOpen = !isOpen
             delegate?.handleMenuToggle(forMenuOption: nil)
         }
     }
     
     
-    
     @objc func handleTap(_ sender: UITapGestureRecognizer? = nil) {
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
+        
         let center = UNUserNotificationCenter.current()
         center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             if let _ = error {}
@@ -743,6 +792,8 @@ class TimerController: UIViewController, TagUpdater {
     }
     
     @objc func breakPressed() {
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
         let alert = LWAlert.init(customData: [["1", "2", "3", "4", "5","6","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28",
                                                "29","30"], ["minutes", "seconds"]])
         alert.customPickerBlock = { str in
@@ -754,6 +805,8 @@ class TimerController: UIViewController, TagUpdater {
     
     
     @objc func xTapped() {
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
         circularSlider.removeFromSuperview()
         if !isIpod {
             createShapeLayer()

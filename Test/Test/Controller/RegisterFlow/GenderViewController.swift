@@ -22,6 +22,8 @@ class GenderViewController: UIViewController {
 
     //MARK: - Handlers
     @objc func boyTapped() {
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
         chosenGender = "male"
         AppsFlyerLib.shared().logEvent("tapped_boy_onboarding", withValues: [AFEventParamContent: "true"])
         let nameVC = NameViewController()
@@ -30,6 +32,8 @@ class GenderViewController: UIViewController {
     }
     
     @objc func girlTapped() {
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
         AppsFlyerLib.shared().logEvent("tapped_girl_onboarding", withValues: [AFEventParamContent: "true"])
         chosenGender = "female"
         let nameVC = NameViewController()

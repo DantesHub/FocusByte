@@ -27,17 +27,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         var launched = defaults.integer(forKey: "launchNumber")
         launched = launched + 1
         defaults.setValue(launched, forKey: "launchNumber")
-        let results = uiRealm.objects(User.self)
-        for result  in results {
-            if result.isLoggedIn == true {
-                try! uiRealm.write {
-                    let formatter = DateFormatter()
-                    formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-                    result.lastLogin = formatter.string(from: Date())
-                }
-            }
-        }
-
         IQKeyboardManager.shared.enable = true
         self.window?.overrideUserInterfaceStyle = .light
         window?.rootViewController = nc
@@ -67,6 +56,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sceneDidDisconnect(_ scene: UIScene) {
         print("scene did disconnect")
+    
     }
     
     func sceneDidBecomeActive(_ scene: UIScene) {
@@ -78,7 +68,68 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func sceneWillResignActive(_ scene: UIScene) {
         isActive = false
+        print("hi from scene")
+        killDate = Date().addingTimeInterval(10000000)
+         if isPlaying && counter > 6 && deepFocusMode == true{
+            let center = UNUserNotificationCenter.current()
+            let content = UNMutableNotificationContent()
+            content.title = "Come back!"
+            content.body = "If you don't come back the treasure will be lost!"
+            
+            // Step 3: Create the notification trigger
+            killDate = Date().addingTimeInterval(12)
+            let date = Date().addingTimeInterval(7)
+            let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+            
+            // Step 4: Create the request
+            let uuidString = UUID().uuidString
+            let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
         
+            // Step 5: Register the request
+            DispatchQueue.main.async {
+                print("boom bap",UIScreen.main.brightness)
+                if UIScreen.main.brightness != 0 {
+                    center.add(request) { (error) in }
+                }
+            }
+         } else if breakPlaying {
+            let center = UNUserNotificationCenter.current()
+            let content = UNMutableNotificationContent()
+            content.title = "Break Times Up!"
+            content.body = "Lets get back to work!"
+            
+            // Step 3: Create the notification trigger
+            let date = Date().addingTimeInterval(Double(counter - 1))
+            let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+            
+            // Step 4: Create the request
+            let uuidString = UUID().uuidString
+            let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
+            
+            // Step 5: Register the request
+            center.add(request) { (error) in }
+         } else if deepFocusMode == false && isPlaying && counter > 6 {
+            let center = UNUserNotificationCenter.current()
+            let content = UNMutableNotificationContent()
+            content.title = "Focus Session Complete!"
+            content.body = "We found something you'll like!"
+            
+            // Step 3: Create the notification trigger
+            let date = Date().addingTimeInterval(Double(counter - 1))
+            let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+            
+            // Step 4: Create the request
+            let uuidString = UUID().uuidString
+            let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
+            
+            // Step 5: Register the request
+            center.add(request) { (error) in }
+            
+    
+        }
     }
     
     func sceneWillEnterForeground(_ scene: UIScene) {
@@ -87,52 +138,36 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func sceneDidEnterBackground(_ scene: UIScene) {
         //allow brightnesss of screen to equal 0 if phone locks
-        killDate = Date().addingTimeInterval(10000000)
-         if isPlaying && counter > 6 && deepFocusMode == true{
-            let center = UNUserNotificationCenter.current()
-            let content = UNMutableNotificationContent()
-            content.title = "Come back!"
-            content.body = "If you don't come back the treasure will be lost!"
-            // Step 3: Create the notification trigger
-            killDate = Date().addingTimeInterval(12)
-            let date = Date().addingTimeInterval(7)
-            let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
-            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
-            // Step 4: Create the request
-            let uuidString = UUID().uuidString
-            let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
-            // Step 5: Register the request
-            center.add(request) { (error) in }
-         } else if breakPlaying {
-            let center = UNUserNotificationCenter.current()
-            let content = UNMutableNotificationContent()
-            content.title = "Break Times Up!"
-            content.body = "Lets get back to work!"
-            // Step 3: Create the notification trigger
-            let date = Date().addingTimeInterval(Double(counter - 1))
-            let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
-            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
-            // Step 4: Create the request
-            let uuidString = UUID().uuidString
-            let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
-            // Step 5: Register the request
-            center.add(request) { (error) in }
-         } else if deepFocusMode == false && isPlaying && counter > 6 {
-            let center = UNUserNotificationCenter.current()
-            let content = UNMutableNotificationContent()
-            content.title = "Focus Session Complete!"
-            content.body = "We found something you'll like!"
-            // Step 3: Create the notification trigger
-            let date = Date().addingTimeInterval(Double(counter - 1))
-            let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
-            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
-            // Step 4: Create the request
-            let uuidString = UUID().uuidString
-            let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
-            // Step 5: Register the request
-            center.add(request) { (error) in }
+        DispatchQueue.main.async {
+            if UIScreen.main.brightness == 0 { //if phone is locked
+                if !breakPlaying {
+                    locked = true
+                    killDate = Date().addingTimeInterval(10000000)
+                    let center = UNUserNotificationCenter.current()
+                    center.removeAllDeliveredNotifications()
+                    center.removeAllPendingNotificationRequests()
+                    //cancel all notifcations and create finish notif
+                    if isPlaying {
+                        focusCompleteNotif = true
+                        
+                        let center = UNUserNotificationCenter.current()
+                        let content = UNMutableNotificationContent()
+                        content.title = "Focus Session Complete!"
+                        content.body = "We found something you'll like!"
+                        // Step 3: Create the notification trigger
+                        let date = Date().addingTimeInterval(Double(counter - 1))
+                        let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+                        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+                        // Step 4: Create the request
+                        let uuidString = UUID().uuidString
+                        let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
+                        // Step 5: Register the request
+                        center.add(request) { (error) in }
+                    }
+                }
+                
+            }
         }
- 
     }
     
 }

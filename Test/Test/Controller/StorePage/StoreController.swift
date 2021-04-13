@@ -214,18 +214,26 @@ class StoreController: UIViewController {
     }
     
     @objc func mysteryTapped() {
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
         self.navigationController?.pushViewController(MysteryViewController(), animated: true)
     }
     
     @objc func chestTapped() {
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
         self.navigationController?.pushViewController(UpgradeChestController(), animated: true)
     }
     
     @objc func tappedClothes() {
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
           self.navigationController?.pushViewController(AvatarStoreController(), animated: true)
     }
     
     @objc func handleMenuToggle() {
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
         delegate?.handleMenuToggle(forMenuOption: nil)
     }
     

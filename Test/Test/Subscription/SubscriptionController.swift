@@ -34,8 +34,8 @@ class SubscriptionController: UIViewController {
     var packagesAvailableForPurchase = [Purchases.Package]()
     var topImages = ["cloud", "stats", "tagsfinal", "quotes", "heroCat", "dev"]
     var topTitles = ["Cloud Storage", "Statistics", "Custom Tagging", "New Quotes", "Limited Time!", "Support the Developer"]
-    var topDescs = ["Data saved on the cloud so it's never lost, even if you log on to a different device", "Get access valuable insights and how your time is being spent.","Tag your timer sessions with custom tags to see how your time's being spent",  "Unlock 30+ new quotes to help you stay motivated", "Unlock the limited edition Hero Cat only available to pro users!",  "Help support me! Upcoming: sound tracks, chrome extension and new apps!"]
-    var stories = ["\"The perfect cure for pandemic laziness\" \n- Dan K.", "\"Getting focusbyte pro was the best decision I made as a student in 2020 \"- Rose", "\"I was skeptical at first but so glad I went pro\"- Brendon N.", "\"Love this app, patiently waiting for spinoff apps\" \n- Matthew G."]
+    var topDescs = ["Data saved on the cloud so it's never lost, even if you log on to a different device", "Get access valuable insights and how your time is being spent.","Tag your timer sessions with custom tags to see how your time's being spent",  "Unlock 30+ FREE new quotes to help you stay motivated", "Unlock the limited edition Hero Cat only available to pro users!",  "Help support me! Upcoming: sound tracks, chrome extension and new apps!"]
+    var stories = ["\"The perfect cure for pandemic laziness\" \n- Dan Keiser.", "\"Getting focusbyte pro was the best decision I made as a student in 2020 \"- Rose", "\"I was skeptical at first but so glad I went pro\"- Brendon Ng.", "\"Love this app, patiently waiting for spinoff apps\" \n- Matthew Gash."]
     var pics = ["pic1", "pic2", "pic3", "pic4"]
     var bottomCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()

@@ -151,15 +151,18 @@ extension UIDevice {
 }
 extension UIImage {
     func textToImage(drawText text: String, inImage image: UIImage, atPoint point: CGPoint) -> UIImage {
-        let textColor = UIColor.black
+        let textColor = UIColor.red
+    
 //        let textFont = UIFont(name: "Helvetica Bold", size: 12)!
 
         let scale = UIScreen.main.scale
         UIGraphicsBeginImageContextWithOptions(image.size, false, scale)
 
         let textFontAttributes = [
-            NSAttributedString.Key.font: UIFont(name: "Helvetica Bold", size: 16)!,
+            NSAttributedString.Key.strokeColor : UIColor.white,
+            NSAttributedString.Key.font: UIFont(name: "Menlo Bold", size: 16)!,
             NSAttributedString.Key.foregroundColor: textColor,
+            NSAttributedString.Key.strokeWidth : -5.0,
             ] as [NSAttributedString.Key : Any]
         image.draw(in: CGRect(origin: CGPoint.zero, size: image.size))
 

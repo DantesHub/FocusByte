@@ -144,6 +144,8 @@ class EnableNotificationsController: UIViewController {
     }
     
     @objc func tappedEnable() {
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
         let center = UNUserNotificationCenter.current()
         center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             if let _ = error {}

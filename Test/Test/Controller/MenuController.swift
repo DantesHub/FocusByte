@@ -60,6 +60,8 @@ extension MenuController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
         let menuOption = MenuOption(rawValue: indexPath.row)
         delegate?.handleMenuToggle(forMenuOption: menuOption)
     }

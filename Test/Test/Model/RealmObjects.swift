@@ -38,7 +38,8 @@ class User: Object{
     @objc dynamic var sevenDay: Int = 0
     @objc dynamic var thirtyDay: Int = 0
     @objc dynamic var longestStreak: Int = 0
-    @objc dynamic var mysteryVideo: String? 
+    @objc dynamic var mysteryVideo: String?
+
     
 
 

@@ -228,6 +228,8 @@ extension MysteryViewController: UICollectionViewDelegateFlowLayout, UICollectio
     }
     
     @objc func tappedBuy() {
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
         let controller = GifController()
         let appearance = SCLAlertView.SCLAppearance(
                   kWindowWidth: 300,

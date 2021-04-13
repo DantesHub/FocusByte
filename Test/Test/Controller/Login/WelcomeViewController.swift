@@ -215,6 +215,8 @@ class WelcomeViewController: UIViewController {
     
     //MARK: - Handlers
     @objc func tappedSignUp() {
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
         AppsFlyerLib.shared().logEvent("tapped_signup_onboarding", withValues: [AFEventParamContent: "true"])
         let signUpVC = RegisterViewController()
         startTapped = false
@@ -222,6 +224,8 @@ class WelcomeViewController: UIViewController {
     }
     
     @objc func tappedStart() {
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
         AppsFlyerLib.shared().logEvent("tapped_start_onboarding", withValues: [AFEventParamContent: "true"])
         startTapped = true
         self.navigationController?.pushViewController(GenderViewController(), animated: true)

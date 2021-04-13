@@ -24,6 +24,14 @@ class StatisticsController: UIViewController, ChartViewDelegate{
             var height: CGFloat = 0.0
             if UIDevice().userInterfaceIdiom == .phone {
                 switch UIScreen.main.nativeBounds.height {
+                case 1136:
+                    height = 500
+                case 1334:
+                    height = 430
+                case 2532:
+                    height = 260
+                case 2778:
+                    height = 200
                 case 1920, 2208:
                     height = 350
                     //print("iphone 8plus")

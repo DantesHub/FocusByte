@@ -105,7 +105,7 @@ class DailyBonusView: UIView{
     var thirtyDayProgress = 0.0
     var formatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MM-dd-yyyy HH:mm"
+        formatter.dateFormat = "MM-dd-yyyy HH:mm:ss"
         return formatter
     }()
     var cooldown = false
@@ -167,6 +167,8 @@ class DailyBonusView: UIView{
 
     //MARK: - helper functions
     @objc func tappedOutside() {
+        rootController!.getRealmData()
+        rootController!.createBarItem()
         UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: .curveEaseOut, animations: { [self] in
             mainView.transform = CGAffineTransform(translationX: 0, y: (isPad ? 2000 : 1200))
          
@@ -479,7 +481,7 @@ class DailyBonusView: UIView{
         mainView.layer.shadowRadius = 5
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: .curveEaseOut, animations: { [self] in
             self.backgroundColor = UIColor.black.withAlphaComponent(0.5)
-            self.mainView.transform = CGAffineTransform(translationX: 0, y: (isPad ? 625 : 375))
+            self.mainView.transform = CGAffineTransform(translationX: 0, y: (isPad ? 625 : UIDevice.current.hasNotch ? 375 : 300))
                 }) { (_) in
         }
         

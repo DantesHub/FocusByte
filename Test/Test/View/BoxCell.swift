@@ -353,6 +353,8 @@ class BoxCell: UICollectionViewCell, GADRewardedAdDelegate {
     }
     @objc func showAd() {
         if FocusByte.rewardedAd.isReady == true {
+            let generator = UIImpactFeedbackGenerator(style: .light)
+            generator.impactOccurred()
             FocusByte.rewardedAd.present(fromRootViewController: rootController!, delegate:self)
          }
     }
