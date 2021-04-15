@@ -204,7 +204,7 @@ extension MysteryViewController: UICollectionViewDelegateFlowLayout, UICollectio
             nextButton!.blink()
             backButton.removeFromSuperview()
         }
-        if data[indexPath.row].title == "Common Box" {
+        if data[indexPath.row].title == "Common Box" && !isIpod {
             cell.rootController = self
             cell.createVideoBox()
         } else {

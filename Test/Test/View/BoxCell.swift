@@ -27,7 +27,7 @@ var boxPadding: CGFloat {
                 size = 5
                 boxDescFontSize = 21
                 itemImageSize = 100
-                boxSize = 150
+                boxSize = 125
                 youGotFontSize = 30
                 commonItemPadding = 20
                 commonTitlePadding = 30
@@ -48,7 +48,7 @@ var boxPadding: CGFloat {
             case 1334:
                 //Iphone 8
                 size = 5
-                boxSize = 150
+                boxSize = 125
                 itemImageSize = 100
                 youGotFontSize = 30
                 boxDescFontSize = 16
@@ -118,7 +118,11 @@ class BoxCell: UICollectionViewCell, GADRewardedAdDelegate {
         didSet {
             guard let data = data else { return }
             boxView.image = data.image
-            if !isIpod {
+            var isPad = false
+            if UIDevice().userInterfaceIdiom == .pad {
+                isPad = true
+            }
+            if UIDevice.current.hasNotch || isPad {
                 boxView.widthAnchor.constraint(greaterThanOrEqualToConstant: boxSize).isActive = true
                 boxView.heightAnchor
                     .constraint(greaterThanOrEqualToConstant: boxSize).isActive = true

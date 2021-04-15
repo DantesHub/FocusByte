@@ -481,7 +481,7 @@ class DailyBonusView: UIView{
         mainView.layer.shadowRadius = 5
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: .curveEaseOut, animations: { [self] in
             self.backgroundColor = UIColor.black.withAlphaComponent(0.5)
-            self.mainView.transform = CGAffineTransform(translationX: 0, y: (isPad ? 625 : UIDevice.current.hasNotch ? 375 : 300))
+            self.mainView.transform = CGAffineTransform(translationX: 0, y: (isPad ? 450 : UIDevice.current.hasNotch ? 375 : 300))
                 }) { (_) in
         }
         
@@ -554,7 +554,7 @@ class DailyBonusView: UIView{
         flameLabel.numberOfLines = 2
         flameLabel.textAlignment = .center
         flameLabel.font = UIFont(name: "Menlo", size: 22)
-        flameLabel.leading(to: streakBox, offset: isPad ? 75 : 35)
+        flameLabel.leading(to: streakBox, offset: isPad ? 75 : UIDevice.current.hasNotch ? 30 : 28)
         
         //MARK: - Streak Boxes
         sevenLabel = createLabel(text: "7 Days")

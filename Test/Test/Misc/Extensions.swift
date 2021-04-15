@@ -160,7 +160,7 @@ extension UIImage {
 
         let textFontAttributes = [
             NSAttributedString.Key.strokeColor : UIColor.white,
-            NSAttributedString.Key.font: UIFont(name: "Menlo Bold", size: 16)!,
+            NSAttributedString.Key.font: UIFont(name: "Menlo", size: 16)!,
             NSAttributedString.Key.foregroundColor: textColor,
             NSAttributedString.Key.strokeWidth : -5.0,
             ] as [NSAttributedString.Key : Any]
