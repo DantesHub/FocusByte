@@ -19,7 +19,6 @@ extension DailyBonusView: GADRewardedAdDelegate, UIGestureRecognizerDelegate {
             saveData(video: true)
             watchedVideo = false
         }
-      
     }
 
 //    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {

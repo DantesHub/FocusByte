@@ -303,7 +303,6 @@ class BoxCell: UICollectionViewCell, GADRewardedAdDelegate {
         videoButton.bottomToTop(of: priceLabel, offset: -20)
         videoButton.height(50)
         
-        print("phoneix", (Date() - lastVideo!).stringFromTimeInterval())
         if (Date() - lastVideo!) >= 0 {
            createSpinnerOrWatch()
         } else { // show cooldown
@@ -387,7 +386,7 @@ class BoxCell: UICollectionViewCell, GADRewardedAdDelegate {
     }
         
         func saveToRealm() {
-            let threeHours = Calendar.current.date(byAdding: .minute, value: 1, to: Date())!
+            let threeHours = Calendar.current.date(byAdding: .hour, value: 2, to: Date())!
             let results = uiRealm.objects(User.self)
             for result  in results {
                 if result.isLoggedIn == true {

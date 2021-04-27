@@ -12,6 +12,7 @@ import Firebase
 import AppsFlyerLib
 import GoogleMobileAds
 var loot = 0
+var tappedVideoBool = false
 class DailyBonusView: UIView{
     //MARK: - instance variables
     var mainView = UIView()
@@ -96,6 +97,21 @@ class DailyBonusView: UIView{
     let dailyDouble = UILabel()
     var dailyBox = UIView()
     var videoBox = UIView()
+    //App advice variables
+    var adviceBox = UIView()
+    let adviceCoin: UIImageView = {
+        let iv = UIImageView()
+        iv.image = UIImage(named: "coins")?.resized(to: CGSize(width: 19, height: 24))
+        return iv
+    }()
+    let adviceLogo: UIImageView = {
+        let iv = UIImageView()
+        iv.image = UIImage(named: "appadvice")?.resized(to: CGSize(width: 28, height: 28))
+        return iv
+    }()
+    let adviceCoinLabel = UILabel()
+    let adviceLabel = UILabel()
+    
     var streakBox = UIView()
     let db = Firestore.firestore()
     var streakNumber = 1
@@ -123,6 +139,7 @@ class DailyBonusView: UIView{
     var rewardedAd: GADRewardedAd?
     var spinner = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.large)
     var watchedVideo = false
+    var claimedAdvice = false
     //MARK: - init
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -130,11 +147,10 @@ class DailyBonusView: UIView{
         if UIDevice().userInterfaceIdiom == .pad {
             isPad = true
         }
-
+        claimedAdvice = UserDefaults.standard.bool(forKey: "appadvice")
         let results = uiRealm.objects(User.self)
         for result  in results {
             if result.isLoggedIn == true {
-                let streak = result.streak
                 if let plus = result.streak?.index(of: "+") {
                     streakNumber = Int(result.streak![..<plus])!
                 } else {
@@ -142,8 +158,7 @@ class DailyBonusView: UIView{
                 }
 
                 dailyBonus = result.dailyBonus ?? ""
-                dailyVideo = ""
-//                dailyVideo = result.dailyVideo ?? ""
+                dailyVideo = result.dailyVideo ?? ""
                 
                 if result.sevenDay > 0 {
                     let leftOver = streakNumber - (result.sevenDay * 7)
@@ -199,6 +214,8 @@ class DailyBonusView: UIView{
     @objc func tappedDaily() {
         if !cooldown {
             if dailyBox.subviews.contains(dailyExp) {
+                let generator = UIImpactFeedbackGenerator(style: .light)
+                generator.impactOccurred()
                 AppsFlyerLib.shared().logEvent("daily_bonus", withValues: [AFEventParamContent: "true"])
                 dailyExp.removeFromSuperview()
                 dailyExpLabel.removeFromSuperview()
@@ -215,9 +232,16 @@ class DailyBonusView: UIView{
     @objc func tappedVideo() {
         if !vidCooldown {
             if videoBox.subviews.contains(videoExp) {
+                let generator = UIImpactFeedbackGenerator(style: .light)
+                generator.impactOccurred()
                 if rewardedAd?.isReady == true {
+                    tappedVideoBool = true
+                    rootController!.circularSlider.removeFromSuperview()
                     rewardedAd?.present(fromRootViewController: rootController!, delegate:self)
                     tappedOutside()
+                    totalBonuses -= 1
+                    rootController!.createBarItem()
+                    print(totalBonuses, "totalBonuses")
                  }
                 videoExp.removeFromSuperview()
                 videoExpLabel.removeFromSuperview()
@@ -229,7 +253,7 @@ class DailyBonusView: UIView{
         }
      
     }
-    private final func createVideoCooldown() {
+    final func createVideoCooldown() {
         videoBox.addSubview(videoCooldown)
         videoCooldown.center(in: videoBox)
     }
@@ -241,7 +265,7 @@ class DailyBonusView: UIView{
         vidCooldown = true
         var interval = TimeInterval()
         if dailyVideo == "" {
-            interval = 86400
+            interval = 43200
         } else {
             interval =  formatter.date(from: dailyVideo)! - Date()
         }
@@ -286,17 +310,19 @@ class DailyBonusView: UIView{
     }
     
     
-    private final func saveToRealm(video: Bool = false, streak: Bool = false) {
+    private final func saveToRealm(video: Bool = false, streak: Bool = false, advice: Bool = false) {
         let results = uiRealm.objects(User.self)
         for result  in results {
             if result.isLoggedIn == true {
+                print(result.email, "chuga")
                 do {
                     try uiRealm.write {
+                        print("saving to realm")
                         result.setValue(coins, forKey: "coins")
                         result.setValue(exp, forKey: "exp")
-                        if !streak {
+                        if !streak && !advice {
                             if video {
-                                result.dailyVideo = formatter.string(from: Calendar.current.date(byAdding: .hour, value: 24, to: Date())!)
+                                result.dailyVideo = formatter.string(from: Calendar.current.date(byAdding: .hour, value: 12, to: Date())!)
                                 dailyVideo = result.dailyVideo!
                                 createVideoCooldown()
                                 createVideoTimer()
@@ -313,8 +339,11 @@ class DailyBonusView: UIView{
                 }
             }
         }
+        if advice {
+            tappedOutside()
+        }
     }
-     final func saveData(video: Bool = false, streak: Bool = false) {
+     final func saveData(video: Bool = false, streak: Bool = false, advice: Bool = false) {
         var numCoins = 0
         if !UserDefaults.standard.bool(forKey: "noLogin") && UserDefaults.standard.bool(forKey: "isPro") {
         if let _ = Auth.auth().currentUser?.email {
@@ -333,14 +362,19 @@ class DailyBonusView: UIView{
                     if let itemArray = document["inventoryArray"] {
                         inventoryArray = itemArray as! [String]
                     }
+                    
                     if !streak {
-                        howMuchTime = 1500
+                        if advice {
+                            howMuchTime = 8000
+                        } else {
+                            howMuchTime = 1300
+                        }
                     }
                     loot = numCoins
                     rootController!.updateCoins()
                     //Check if last entry is equal to today
                     //if last entry is, then we just need to add time to it
-            
+                    saveToRealm(video: video, streak: streak,  advice: advice)
                     //update data in firebase
                     if let _ = Auth.auth().currentUser?.email {
                         let email = Auth.auth().currentUser?.email
@@ -352,7 +386,6 @@ class DailyBonusView: UIView{
                                 print("There was a issue saving data to firestore \(e) ")
                             } else {
                                 print("Succesfully saved")
-                                enteredForeground = false
                             }
                         }
                     }
@@ -364,12 +397,17 @@ class DailyBonusView: UIView{
         }
         } else {
             if !streak {
-                howMuchTime = 1500
+                if advice {
+                    howMuchTime = 8000
+                } else {
+                    howMuchTime = 1300
+                }
             }
+            
             loot = coins
             rootController!.updateCoins()
+            saveToRealm(video: video, streak: streak, advice: advice)
         }
-        saveToRealm(video: video, streak: streak)
     }
     final func createVideoBox() {
         videoBox.addSubview(videoCoin)
@@ -380,7 +418,7 @@ class DailyBonusView: UIView{
         videoCoinLabel.centerY(to: videoBox)
         videoCoinLabel.leadingToTrailing(of: videoCoin, offset: 5)
         videoCoinLabel.textColor = .white
-        videoCoinLabel.text = "10"
+        videoCoinLabel.text = "5"
         videoCoinLabel.font = UIFont(name: "Menlo-Bold", size: 18)
 
         videoBox.addSubview(videoExp)
@@ -391,7 +429,7 @@ class DailyBonusView: UIView{
         videoExpLabel.centerY(to: videoExp)
         videoExpLabel.leadingToTrailing(of: videoExp, offset: 5)
         videoExpLabel.textColor = .white
-        videoExpLabel.text = "5"
+        videoExpLabel.text = "3"
         videoExpLabel.font = UIFont(name: "Menlo-Bold", size: 18)
         
         videoBox.addSubview(playVideo)
@@ -407,8 +445,6 @@ class DailyBonusView: UIView{
             dailyDouble.numberOfLines = 2
             dailyDouble.font = UIFont(name: "Menlo-Bold", size: 14)
         }
-        
-
     }
     
     private final func createDailyBox() {
@@ -420,7 +456,7 @@ class DailyBonusView: UIView{
         dailyBoxLabel.centerY(to: dailyBox)
         dailyBoxLabel.leadingToTrailing(of: dailyCoin, offset: 5)
         dailyBoxLabel.textColor = .white
-        dailyBoxLabel.text = "10"
+        dailyBoxLabel.text = "5"
         dailyBoxLabel.font = UIFont(name: "Menlo-Bold", size: 18)
 
         dailyBox.addSubview(dailyExp)
@@ -431,7 +467,7 @@ class DailyBonusView: UIView{
         dailyExpLabel.centerY(to: dailyBox)
         dailyExpLabel.leadingToTrailing(of: dailyExp, offset: 5)
         dailyExpLabel.textColor = .white
-        dailyExpLabel.text = "5"
+        dailyExpLabel.text = "3"
         dailyExpLabel.font = UIFont(name: "Menlo-Bold", size: 18)
         
         
@@ -464,7 +500,7 @@ class DailyBonusView: UIView{
         self.addSubview(mainView)
         
         mainView.width(self.frame.width * (isIpod ? 0.90 : 0.80))
-        mainView.height(self.frame.height * (UIDevice.current.hasNotch ? 0.65 : (isIpod ? 0.75 : 0.70) ))
+        mainView.height(self.frame.height * (UIDevice.current.hasNotch ? 0.65 : (isIpod ? 0.75 : 0.70) ) * (claimedAdvice ? 1 : 1.1))
         mainView.centerX(to: self)
         mainView.topToSuperview(offset: -self.frame.height * (UIDevice.current.hasNotch ? 0.25 : isIpod ? 0.40 :0.30))
         
@@ -481,7 +517,7 @@ class DailyBonusView: UIView{
         mainView.layer.shadowRadius = 5
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: .curveEaseOut, animations: { [self] in
             self.backgroundColor = UIColor.black.withAlphaComponent(0.5)
-            self.mainView.transform = CGAffineTransform(translationX: 0, y: (isPad ? 450 : UIDevice.current.hasNotch ? 375 : 300))
+            self.mainView.transform = CGAffineTransform(translationX: 0, y: (isPad ? 450 : UIDevice.current.hasNotch ? 350 : 300))
                 }) { (_) in
         }
         
@@ -530,11 +566,13 @@ class DailyBonusView: UIView{
         } else {
             createVideoTimer()
         }
-    
+        
+        if !claimedAdvice { createAdviceBox() }
+        
                 
         mainView.addSubview(streakLabel)
         streakLabel.centerX(to: self)
-        streakLabel.topToBottom(of: videoBox, offset: 40)
+        streakLabel.topToBottom(of: claimedAdvice ? videoBox : adviceBox, offset: 40)
         
         mainView.addSubview(streakBox)
         streakBox.topToBottom(of: streakLabel, offset: 10)
@@ -719,7 +757,7 @@ class DailyBonusView: UIView{
                 }
             }
         }
-  
+
     }
     
     @objc func tappedThirty() {
@@ -746,6 +784,49 @@ class DailyBonusView: UIView{
                 }
             }
         }
-        }
+    }
+    
+    @objc func tappedAdvice() {
+        UserDefaults.standard.setValue(true, forKey: "appadvice")
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
+        tappedVideoBool = true
+        saveData(advice: true)
+    }
+    
+    private final func createAdviceBox() {
+        adviceBox = createSmallBox()
+        mainView.addSubview(adviceBox)
+        adviceBox.topToBottom(of: videoBox, offset: 20)
+        adviceBox.centerX(to: mainView)
+        adviceBox.width(self.frame.width * 0.65)
+        adviceBox.height(self.frame.height * 0.065)
+        adviceBox.layer.cornerRadius = 15
+        adviceBox.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tappedAdvice)))
         
+        adviceBox.addSubview(adviceCoin)
+        adviceCoin.leading(to: adviceBox, offset: 20)
+        adviceCoin.centerY(to: adviceBox)
+        
+        adviceBox.addSubview(adviceCoinLabel)
+        adviceCoinLabel.centerY(to: adviceBox)
+        adviceCoinLabel.leadingToTrailing(of: adviceCoin, offset: 5)
+        adviceCoinLabel.textColor = .white
+        adviceCoinLabel.text = "150"
+        adviceCoinLabel.font = UIFont(name: "Menlo-Bold", size: 20)
+        
+        adviceBox.addSubview(adviceLogo)
+        adviceLogo.centerY(to: adviceBox)
+        adviceLogo.centerX(to: adviceBox)
+        
+        adviceBox.addSubview(adviceLabel)
+        adviceLabel.centerY(to: adviceBox)
+        adviceLabel.trailing(to: adviceBox, offset: -15)
+        adviceLabel.textColor = .white
+        adviceLabel.text = "App Advice\nBonus!"
+        adviceLabel.textAlignment = .center
+        adviceLabel.numberOfLines = 2
+        adviceLabel.font = UIFont(name: "Menlo-Bold", size: 14)
+    }
+
 }

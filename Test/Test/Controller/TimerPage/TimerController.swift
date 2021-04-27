@@ -173,7 +173,11 @@ class TimerController: UIViewController, TagUpdater {
             upgradedToPro = false
         }
         
-        getRealmData()
+        if !tappedVideoBool {
+            getRealmData()
+        } else {
+            tappedVideoBool = false
+        }
         let today = Date()
       
         for item in inventoryArray {
@@ -204,6 +208,7 @@ class TimerController: UIViewController, TagUpdater {
             }
         }
     }
+    
     @objc func openedFromWidget() {
         if timerButtonLbl.text == "Timer" {
             !isIpod ? createStartUI() : createIpodStartUI()
@@ -240,7 +245,6 @@ class TimerController: UIViewController, TagUpdater {
     override func viewWillAppear(_ animated: Bool) {
         createObservers()
 //        createGestureRecognizers()
-        coinsL.countFromZero(to: Float(coins), duration: .brisk)
         level = Int(floor(sqrt(Double(exp))))
         if isIpod {
             configureIpodUI()
@@ -277,6 +281,7 @@ class TimerController: UIViewController, TagUpdater {
 //        }
 //    }
     final func getRealmData() {
+        print("getting realm data")
         totalBonuses = 0
         results = uiRealm.objects(User.self)
         for result  in results {
@@ -377,10 +382,12 @@ class TimerController: UIViewController, TagUpdater {
                 }
             }
         }
+        coinsL.countFromZero(to: Float(coins), duration: .brisk)
     }
     override func viewWillDisappear(_ animated: Bool) {
         onHome = false
         counter = 0
+        tappedVideoBool = false
         self.timer.invalidate()
         self.timer = Timer()
         self.breakTimer.invalidate()
@@ -545,7 +552,8 @@ class TimerController: UIViewController, TagUpdater {
     }
     @objc func tappedGift() {
         if !isPlaying {
-          
+            let generator = UIImpactFeedbackGenerator(style: .light)
+            generator.impactOccurred()
             let dailyBonusView = DailyBonusView(frame: UIScreen.main.bounds)
             view.addSubview(dailyBonusView)
             dailyBonusView.rootController = self
@@ -991,7 +999,6 @@ class TimerController: UIViewController, TagUpdater {
         updateCoinLabel(numCoins: loot)
     }
   func updateCoinLabel(numCoins: Int) -> Int? {
-        print(loot, howMuchTime, "hamura")
         let prevNumOfCoins = numCoins
         var numOfCoins = numCoins
         let prevExp = exp
@@ -1025,6 +1032,9 @@ class TimerController: UIViewController, TagUpdater {
         case 6000...7201:
             numOfCoins += 40 * coinMultiplier
             exp += 15 * expMultiplier
+        case 8000:
+            numOfCoins += 150
+            exp += 0
         case 10000:
             numOfCoins += 250
             exp += 100
