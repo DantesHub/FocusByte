@@ -56,8 +56,8 @@ void SetGlobalConfigEnvErrorFunction(GlobalConfigEnvErrorFunctionType func) {
   g_global_config_env_error_func = func;
 }
 
-grpc_core::UniquePtr<char> GlobalConfigEnv::GetValue() {
-  return grpc_core::UniquePtr<char>(gpr_getenv(GetName()));
+UniquePtr<char> GlobalConfigEnv::GetValue() {
+  return UniquePtr<char>(gpr_getenv(GetName()));
 }
 
 void GlobalConfigEnv::SetValue(const char* value) {
@@ -78,7 +78,7 @@ static_assert(std::is_trivially_destructible<GlobalConfigEnvBool>::value,
               "GlobalConfigEnvBool needs to be trivially destructible.");
 
 bool GlobalConfigEnvBool::Get() {
-  grpc_core::UniquePtr<char> str = GetValue();
+  UniquePtr<char> str = GetValue();
   if (str == nullptr) {
     return default_value_;
   }
@@ -99,7 +99,7 @@ static_assert(std::is_trivially_destructible<GlobalConfigEnvInt32>::value,
               "GlobalConfigEnvInt32 needs to be trivially destructible.");
 
 int32_t GlobalConfigEnvInt32::Get() {
-  grpc_core::UniquePtr<char> str = GetValue();
+  UniquePtr<char> str = GetValue();
   if (str == nullptr) {
     return default_value_;
   }
@@ -122,10 +122,10 @@ void GlobalConfigEnvInt32::Set(int32_t value) {
 static_assert(std::is_trivially_destructible<GlobalConfigEnvString>::value,
               "GlobalConfigEnvString needs to be trivially destructible.");
 
-grpc_core::UniquePtr<char> GlobalConfigEnvString::Get() {
-  grpc_core::UniquePtr<char> str = GetValue();
+UniquePtr<char> GlobalConfigEnvString::Get() {
+  UniquePtr<char> str = GetValue();
   if (str == nullptr) {
-    return grpc_core::UniquePtr<char>(gpr_strdup(default_value_));
+    return UniquePtr<char>(gpr_strdup(default_value_));
   }
   return str;
 }

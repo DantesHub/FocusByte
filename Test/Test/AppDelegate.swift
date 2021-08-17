@@ -13,8 +13,10 @@ import RealmSwift
 import AppsFlyerLib
 import FirebaseMessaging
 import GoogleMobileAds
+import GoogleSignIn
 
 var uiRealm = try! Realm()
+
 @UIApplicationMain
  class AppDelegate: UIResponder, UIApplicationDelegate {
     let gcmMessageIDKey = "gcm.Message.Id"

@@ -85,7 +85,7 @@ static grpc_error* process_plugin_result(
                              grpc_validate_header_key_is_legal(md[i].key))) {
         seen_illegal_header = true;
         break;
-      } else if (!grpc_is_binary_header_internal(md[i].key) &&
+      } else if (!grpc_is_binary_header(md[i].key) &&
                  !GRPC_LOG_IF_ERROR(
                      "validate_metadata_from_plugin",
                      grpc_validate_header_nonbin_value_is_legal(md[i].value))) {
@@ -131,7 +131,7 @@ static void plugin_md_request_metadata_ready(void* request,
   if (!r->cancelled) {
     grpc_error* error =
         process_plugin_result(r, md, num_md, status, error_details);
-    grpc_core::ExecCtx::Run(DEBUG_LOCATION, r->on_request_metadata, error);
+    GRPC_CLOSURE_SCHED(r->on_request_metadata, error);
   } else if (GRPC_TRACE_FLAG_ENABLED(grpc_plugin_credentials_trace)) {
     gpr_log(GPR_INFO,
             "plugin_credentials[%p]: request %p: plugin was previously "
@@ -142,7 +142,7 @@ static void plugin_md_request_metadata_ready(void* request,
 }
 
 bool grpc_plugin_credentials::get_request_metadata(
-    grpc_polling_entity* /*pollent*/, grpc_auth_metadata_context context,
+    grpc_polling_entity* pollent, grpc_auth_metadata_context context,
     grpc_credentials_mdelem_array* md_array, grpc_closure* on_request_metadata,
     grpc_error** error) {
   bool retval = true;  // Synchronous return.
@@ -228,9 +228,8 @@ void grpc_plugin_credentials::cancel_get_request_metadata(
                 pending_request);
       }
       pending_request->cancelled = true;
-      grpc_core::ExecCtx::Run(DEBUG_LOCATION,
-                              pending_request->on_request_metadata,
-                              GRPC_ERROR_REF(error));
+      GRPC_CLOSURE_SCHED(pending_request->on_request_metadata,
+                         GRPC_ERROR_REF(error));
       pending_request_remove_locked(pending_request);
       break;
     }
@@ -240,17 +239,15 @@ void grpc_plugin_credentials::cancel_get_request_metadata(
 }
 
 grpc_plugin_credentials::grpc_plugin_credentials(
-    grpc_metadata_credentials_plugin plugin,
-    grpc_security_level min_security_level)
-    : grpc_call_credentials(plugin.type, min_security_level), plugin_(plugin) {
+    grpc_metadata_credentials_plugin plugin)
+    : grpc_call_credentials(plugin.type), plugin_(plugin) {
   gpr_mu_init(&mu_);
 }
 
 grpc_call_credentials* grpc_metadata_credentials_create_from_plugin(
-    grpc_metadata_credentials_plugin plugin,
-    grpc_security_level min_security_level, void* reserved) {
+    grpc_metadata_credentials_plugin plugin, void* reserved) {
   GRPC_API_TRACE("grpc_metadata_credentials_create_from_plugin(reserved=%p)", 1,
                  (reserved));
   GPR_ASSERT(reserved == nullptr);
-  return new grpc_plugin_credentials(plugin, min_security_level);
+  return grpc_core::New<grpc_plugin_credentials>(plugin);
 }

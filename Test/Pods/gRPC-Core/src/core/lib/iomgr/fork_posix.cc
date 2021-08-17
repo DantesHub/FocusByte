@@ -22,10 +22,6 @@
 
 #ifdef GRPC_POSIX_FORK
 
-#ifdef GRPC_POSIX_FORK_ALLOW_PTHREAD_ATFORK
-#include <pthread.h>
-#endif
-
 #include <string.h>
 
 #include <grpc/fork.h>
@@ -63,10 +59,8 @@ void grpc_prefork() {
             "environment variable GRPC_ENABLE_FORK_SUPPORT=1");
     return;
   }
-  const char* poll_strategy_name = grpc_get_poll_strategy_name();
-  if (poll_strategy_name == nullptr ||
-      (strcmp(poll_strategy_name, "epoll1") != 0 &&
-       strcmp(poll_strategy_name, "poll") != 0)) {
+  if (strcmp(grpc_get_poll_strategy_name(), "epoll1") != 0 &&
+      strcmp(grpc_get_poll_strategy_name(), "poll") != 0) {
     gpr_log(GPR_INFO,
             "Fork support is only compatible with the epoll1 and poll polling "
             "strategies");

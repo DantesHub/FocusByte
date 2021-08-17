@@ -90,16 +90,15 @@ class GrpcPolledFdFactoryPosix : public GrpcPolledFdFactory {
  public:
   GrpcPolledFd* NewGrpcPolledFdLocked(ares_socket_t as,
                                       grpc_pollset_set* driver_pollset_set,
-                                      Combiner* /*combiner*/) override {
-    return new GrpcPolledFdPosix(as, driver_pollset_set);
+                                      grpc_combiner* combiner) override {
+    return New<GrpcPolledFdPosix>(as, driver_pollset_set);
   }
 
-  void ConfigureAresChannelLocked(ares_channel /*channel*/) override {}
+  void ConfigureAresChannelLocked(ares_channel channel) override {}
 };
 
-std::unique_ptr<GrpcPolledFdFactory> NewGrpcPolledFdFactory(
-    Combiner* /*combiner*/) {
-  return absl::make_unique<GrpcPolledFdFactoryPosix>();
+UniquePtr<GrpcPolledFdFactory> NewGrpcPolledFdFactory(grpc_combiner* combiner) {
+  return UniquePtr<GrpcPolledFdFactory>(New<GrpcPolledFdFactoryPosix>());
 }
 
 }  // namespace grpc_core

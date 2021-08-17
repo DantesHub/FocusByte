@@ -7,12 +7,12 @@ target 'Test' do
 
   # Pods for Test
   	pod 'Firebase/Auth'
-	pod 'GoogleSignIn'
+	pod 'GoogleSignIn', '~> 5.0'
 	pod 'Validator', '~> 3.2'
 	pod 'Firebase/Database'
 	pod 'FirebaseCore'
-	pod 'Firebase/Firestore'
-	pod  'Firebase/Messaging'
+	pod 'FirebaseFirestore'
+	pod 'FirebaseMessaging'
 	pod 'Firebase/Analytics'
 	pod 'Firebase'
 	pod 'HGCircularSlider', '~> 2.0.0'
@@ -25,6 +25,7 @@ target 'Test' do
 	pod 'Purchases', '3.10.1'
 	pod 'AppsFlyerFramework'
 	pod 'Google-Mobile-Ads-SDK'
+	pod 'nanopb', '~> 0.3'
   target 'TestTests' do
     inherit! :search_paths
     # Pods for testing
