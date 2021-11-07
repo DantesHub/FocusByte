@@ -147,7 +147,7 @@ class DailyBonusView: UIView{
         if UIDevice().userInterfaceIdiom == .pad {
             isPad = true
         }
-        claimedAdvice = UserDefaults.standard.bool(forKey: "appadvice")
+        claimedAdvice = true
         let results = uiRealm.objects(User.self)
         for result  in results {
             if result.isLoggedIn == true {
@@ -314,7 +314,6 @@ class DailyBonusView: UIView{
         let results = uiRealm.objects(User.self)
         for result  in results {
             if result.isLoggedIn == true {
-                print(result.email, "chuga")
                 do {
                     try uiRealm.write {
                         print("saving to realm")

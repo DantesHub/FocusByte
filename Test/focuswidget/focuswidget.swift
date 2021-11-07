@@ -44,7 +44,7 @@ struct Provider: IntentTimelineProvider {
         let timeline = Timeline(entries: entries, policy: .atEnd)
         completion(timeline)
     }
-    
+
 }
 
 struct SimpleEntry: TimelineEntry {
@@ -127,7 +127,7 @@ extension Color {
 struct focuswidgetEntryView : View {
     var entry: Provider.Entry
     private static let deeplinkURL: URL = URL(string: "widget-deeplink://")!
-  
+
     var body: some View {
           let data = entry.timeData.map { (str) -> Float in
               let num = Float(str) ?? 0
@@ -169,7 +169,7 @@ struct focuswidgetEntryView : View {
                                             .scaledToFit()
                                             .minimumScaleFactor(0.5)
                                             .lineLimit(1)
-                                          
+
                                     }  .padding(EdgeInsets(top: 5, leading: 0, bottom: 10, trailing: 5))
                                 }
                             }.padding(EdgeInsets(top: 0, leading: 0, bottom: -10, trailing: 5))
@@ -178,8 +178,8 @@ struct focuswidgetEntryView : View {
                         .frame(width: geo.size.width, height: geo.size.height/2.5, alignment: .center)
                         .background(Color(hex: "#DBCCFF"))
                         .cornerRadius(15)
-                       
-                        
+
+
                         HStack {
                             Link(destination: URL(string: "pets://link3")!)  {
                                 Spacer(minLength: 10)
@@ -193,7 +193,7 @@ struct focuswidgetEntryView : View {
                                     Image("exp").resizable().scaledToFit()
                                         .frame(width: 25, height: 25, alignment: .leading)
                                         .padding(EdgeInsets(top: 0, leading: -17, bottom: 0, trailing: -5))
-                               
+
                                     Text(String(entry.level)).font(Font.custom("Menlo-Bold", size: 17)).scaledToFill()
                                         .minimumScaleFactor(0.5)
                                         .lineLimit(1)
@@ -209,10 +209,10 @@ struct focuswidgetEntryView : View {
                         }
                         .padding(EdgeInsets(top: 0, leading: 0, bottom: 5, trailing: 10))
                         .frame(width: geo.size.width, height: geo.size.height/2.5, alignment: .center)
-                        
+
                     }
                 }.padding(EdgeInsets(top: 20, leading: 15, bottom: 0, trailing: 30))
-       
+
                 GeometryReader { geo in
 
                 VStack {
@@ -220,7 +220,7 @@ struct focuswidgetEntryView : View {
                         ZStack {
                             BarChartView(data:ChartData(points: data), title: "Sun - Sat", style: ChartStyle(backgroundColor: Color(hex: "#B3B1FA"), accentColor: Color(hex: "#5351C0"), secondGradientColor: Color(hex: "#5351C0"), textColor: Color.black, legendTextColor: Color.white, dropShadowColor: Color.gray.opacity(0.5)), form: ChartForm.small).scaledToFit()
                             if entry.noData {
-                                VStack { 
+                                VStack {
                                     Text("No Data Yet!").font(Font.custom("Menlo-Bold", size: 15)).foregroundColor(Color.black.opacity(0.5)).padding(EdgeInsets(top: 15, leading: 0, bottom: 0, trailing: 0))
                                     Text("😢 📊").padding(4)
                                     }

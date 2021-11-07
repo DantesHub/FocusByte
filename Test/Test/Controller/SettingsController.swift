@@ -28,7 +28,7 @@ class SettingsController: UIViewController, MFMailComposeViewControllerDelegate,
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    var data = [Setting(title: "Deep Focus Mode (Notifs)", type: "dfm"),Setting(title: "Quotes on home screen", type: "quotes"), Setting(title: "Set Default Time", type: "defaultTimer"),  Setting(title: "Save to other devices", type: "sync"), Setting(title: "Rate Us!", type: "rate"), Setting(title: "Go Pro!", type: "gopro"), Setting(title: "Restore Purchase", type: "restore"),Setting(title: "Join the Discord!", type: "discord"), Setting(title: "Email me! Feedback or Bugs :)", type: "email"),Setting(title: "⚠️❗️Non Pro user data is not saved to cloud", type: "warning")]
+    var data = [Setting(title: "Deep Focus Mode (Notifs)", type: "dfm"),Setting(title: "Quotes on home screen", type: "quotes"), Setting(title: "Set Default Time", type: "defaultTimer"),  Setting(title: "Save to other devices", type: "sync"), Setting(title: "Rate Us!", type: "rate"), Setting(title: "Go Pro!", type: "gopro"), Setting(title: "Restore Purchase", type: "restore"),Setting(title: "Download our Meditation App!", type: "discord"), Setting(title: "Email me! Feedback or Bugs :)", type: "email"),Setting(title: "⚠️❗️Non Pro user data is not saved to cloud", type: "warning")]
     let containerView = UIView()
     let window = UIApplication.shared.keyWindow
     var results: Results<User>!
@@ -246,8 +246,9 @@ extension SettingsController: UITableViewDelegate, UITableViewDataSource {
                  tapGesture.cancelsTouchesInView = false
                  containerView.addGestureRecognizer(tapGesture)
         } else if indexPath.row == 7 { // join discord
-            if let url = URL(string: "https://discord.gg/ZhfC6az") {
-                UIApplication.shared.open(url)
+            let url = URL(string: "https://apps.apple.com/us/app/mindgarden-smiling-mind/id1588582890")!
+            if UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
             }
         } else if indexPath.row == 8 { //email
             if MFMailComposeViewController.canSendMail() {

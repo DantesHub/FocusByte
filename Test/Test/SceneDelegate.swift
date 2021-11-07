@@ -31,13 +31,25 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         self.window?.overrideUserInterfaceStyle = .light
         window?.rootViewController = nc
         window?.makeKeyAndVisible()
+
+        if !UserDefaults.standard.bool(forKey: "showedNotif") {
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
+                if success {
+                    AppsFlyerLib.shared().logEvent("notification_on", withValues: [AFEventParamContent: "true"])
+                    NotificationHelper.addOneDay()
+                    NotificationHelper.addThreeDay()
+                } else {
+                    AppsFlyerLib.shared().logEvent("notification_off", withValues: [AFEventParamContent: "true"])
+                }
+                UserDefaults.standard.setValue(true, forKey: "showedNotif")
+            }
+        }
     }
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
             AppsFlyerLib.shared().continue(userActivity, restorationHandler: nil)
         }
         
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-        
         if let url = URLContexts.first?.url {
             AppsFlyerLib.shared().handleOpen(url, options: nil)
         }
@@ -68,7 +80,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func sceneWillResignActive(_ scene: UIScene) {
         isActive = false
-        print("hi from scene")
         killDate = Date().addingTimeInterval(10000000)
          if isPlaying && counter > 6 && deepFocusMode == true{
             let center = UNUserNotificationCenter.current()

@@ -34,8 +34,8 @@ class SubscriptionController: UIViewController {
     var packagesAvailableForPurchase = [Purchases.Package]()
     var topImages = ["cloud", "stats", "tagsfinal", "quotes", "heroCat", "dev"]
     var topTitles = ["Cloud Storage", "Statistics", "Custom Tagging", "New Quotes", "Limited Time!", "Support the Developer"]
-    var topDescs = ["Data saved on the cloud so it's never lost, even if you log on to a different device", "Get access valuable insights and how your time is being spent.","Tag your timer sessions with custom tags to see how your time's being spent",  "Unlock 30+ FREE new quotes to help you stay motivated", "Unlock the limited edition Hero Cat only available to pro users!",  "Help support me! Upcoming: sound tracks, chrome extension and new apps!"]
-    var stories = ["\"The perfect cure for pandemic laziness\" \n- Dan Keiser.", "\"Getting focusbyte pro was the best decision I made as a student in 2020 \"- Rose", "\"I was skeptical at first but so glad I went pro\"- Brendon Ng.", "\"Love this app, patiently waiting for spinoff apps\" \n- Matthew Gash."]
+    var topDescs = ["Data saved on the cloud so it's never lost, even if you log on to a different device", "Get access valuable insights and how your time is being spent.","Tag your timer sessions with custom tags to see how your time's being spent",  "Unlock 30+ new quotes to help you stay motivated", "Unlock the limited edition Hero Cat only available to pro users!",  "Help support me! Upcoming: sound tracks, chrome extension and new apps!"]
+    var stories = ["\"The perfect cure for pandemic laziness\" \n- Dan K.", "\"Getting focusbyte pro was the best decision I made as a student in 2020 \"- Rose", "\"I was skeptical at first but so glad I went pro\"- Brendon N.", "\"Love this app, patiently waiting for spinoff apps\" \n- Matthew G."]
     var pics = ["pic1", "pic2", "pic3", "pic4"]
     var bottomCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -44,7 +44,7 @@ class SubscriptionController: UIViewController {
 
         let cv = UICollectionView(frame: .zero
                                   , collectionViewLayout: layout)
-        
+
         cv.isPagingEnabled = true
         cv.showsHorizontalScrollIndicator = false
         cv.backgroundColor = .white
@@ -97,7 +97,7 @@ class SubscriptionController: UIViewController {
     var fromSettings = false
     var fromMenuOption = false
     var isPad = false
-    
+
     var contentViewSize: CGSize {
         get {
             var height: CGFloat = -145
@@ -136,6 +136,7 @@ class SubscriptionController: UIViewController {
     }
     //TODO
     // make it fullscreen & add pictures
+
     //MARK: - init
     override func viewDidLoad() {
         switch UIDevice.current.userInterfaceIdiom {
@@ -187,6 +188,20 @@ class SubscriptionController: UIViewController {
 
 
     @objc func scrollAutomatically(_ timer1: Timer) {
+        if #available(iOS 15, *) {
+            for cell in topCollectionView.visibleCells {
+                let indexPath: IndexPath? = topCollectionView.indexPath(for: cell)
+                if ((indexPath?.row)! < 5){
+                    let indexPath1: IndexPath?
+                    indexPath1 = IndexPath.init(row: (indexPath?.row)! + 1, section: 0)
+                    topCollectionView.scrollToItem(at: indexPath1!, at: .right, animated: true)
+                }  else{
+                    let indexPath1: IndexPath?
+                    indexPath1 = IndexPath.init(row: 0, section: 0)
+                    topCollectionView.scrollToItem(at: indexPath1!, at: .left, animated: true)
+                }
+            }
+        } else {
             for cell in topCollectionView.visibleCells {
                 let indexPath: IndexPath? = topCollectionView.indexPath(for: cell)
                 if ((indexPath?.row)! < 6){
@@ -199,15 +214,37 @@ class SubscriptionController: UIViewController {
                     topCollectionView.scrollToItem(at: indexPath1!, at: .left, animated: true)
                 }
             }
-        
+        }
+
+    }
+    @objc func imageTappedTriple(sender: UITapGestureRecognizer) {
+        UserDefaults.standard.setValue(true, forKey: "trippleTapped")
+        AppsFlyerLib.shared().logEvent("triple_tapped", withValues: [AFEventParamContent: "true"])
+       userWentPro()
     }
      func configureUI() {
+         let tapGestureRecognizer = UITapGestureRecognizer(target: self,
+                                                           action: #selector(imageTappedTriple))
+         tapGestureRecognizer.numberOfTapsRequired = 3
+         self.scrollView.isUserInteractionEnabled = true
+         self.scrollView.addGestureRecognizer(tapGestureRecognizer)
         view.addSubview(scrollView)
         self.scrollView.addSubview(self.containerView)
         view.isUserInteractionEnabled = true
-        navigationController?.navigationBar.isTranslucent = false
-        navigationController?.navigationBar.barTintColor = .white
-        navigationItem.title = "Focusbyte Pro"
+         if #available(iOS 15, *) {
+             let appearance = UINavigationBarAppearance()
+             appearance.configureWithOpaqueBackground()
+             appearance.titleTextAttributes =   [NSAttributedString.Key.foregroundColor: UIColor.black,
+                                                 NSAttributedString.Key.font: UIFont(name: "Menlo-Bold", size: 18)!]
+             appearance.backgroundColor = .white
+             UINavigationBar.appearance().standardAppearance = appearance
+             UINavigationBar.appearance().scrollEdgeAppearance = appearance
+         } else {
+             navigationController?.navigationBar.barTintColor = .white
+         }
+         navigationController?.navigationBar.isTranslucent = false
+         navigationItem.title = "Focusbyte Pro"
+
         view.backgroundColor = .white
         var btn = UIBarButtonItem()
         if !onboarding {
@@ -219,7 +256,7 @@ class SubscriptionController: UIViewController {
             btn.tintColor = .gray
             navigationItem.leftBarButtonItem?.tintColor = .gray
         }
-      
+
         navigationItem.hidesBackButton = true
         navigationItem.leftBarButtonItem = btn
 
@@ -245,7 +282,7 @@ class SubscriptionController: UIViewController {
             dot.topToBottom(of: topCollectionView, offset: UIDevice.current.hasNotch ? -25 : -15)
             dot.translatesAutoresizingMaskIntoConstraints = false
         }
-    
+
         one.trailingToLeading(of: two, offset: -12)
         one.backgroundColor = .black
         two.trailingToLeading(of: three, offset: -12)
@@ -261,7 +298,7 @@ class SubscriptionController: UIViewController {
         successStories.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         successStories.topToBottom(of: four, offset: 20)
         let currencySymbol = locale.currencySymbol!
-         
+
         scrollView.addSubview(bottomCollectionView)
         bottomCollectionView.height(isIpod ? (view.frame.height * 0.225) : (view.frame.height * 0.20))
         bottomCollectionView.width(view.frame.width)
@@ -293,7 +330,7 @@ class SubscriptionController: UIViewController {
         lifeBox.configureLife()
         let lifeGest = UITapGestureRecognizer(target: self, action: #selector(tappedLife))
         lifeBox.addGestureRecognizer(lifeGest)
-        
+
         scrollView.addSubview(yearlyBox)
         yearlyBox.width(view.frame.width * 0.84)
         yearlyBox.height(view.frame.height * 0.075)
@@ -309,7 +346,7 @@ class SubscriptionController: UIViewController {
         yearlyBox.configure()
         let yearlyGest = UITapGestureRecognizer(target: self, action: #selector(tappedYearly))
         yearlyBox.addGestureRecognizer(yearlyGest)
-        
+
         scrollView.addSubview(monthlyBox)
         monthlyBox.topToBottom(of: yearlyBox, offset: 10)
         monthlyBox.height(view.frame.height * 0.075)
@@ -321,16 +358,16 @@ class SubscriptionController: UIViewController {
         monthlyBox.title.text = "Monthly Subscription"
         monthlyBox.smallLabel.text = "(\(currencySymbol)\(monthlyPrice)/mo)"
         monthlyBox.height = view.frame.height * 0.20 *  0.08
-        monthlyBox.configure() 
+        monthlyBox.configure()
         let monthlyGest = UITapGestureRecognizer(target: self, action: #selector(tappedMonthly))
         monthlyBox.addGestureRecognizer(monthlyGest)
-        
+
         let box = UIView(frame: CGRect(x: 0, y: view.frame.size.height - (self.view.frame.height * (isIpod ? 0.25 : iphone12 ? 0.225 : 0.21)), width: view.frame.width, height: self.view.frame.height * 0.10))
         box.backgroundColor = .white
         view.addSubview(box)
         box.addSubview(continueButton)
         continueButton.center(in: box)
-        
+
         continueButton.titleLabel?.font = UIFont(name: "Menlo-Bold", size: 20)
         continueButton.height(self.view.frame.height * 0.08)
         continueButton.width(self.view.frame.width * 0.84)
@@ -350,7 +387,7 @@ class SubscriptionController: UIViewController {
         terms.text = "Terms of Use"
         privacy.font = UIFont(name: "OpenSans", size: 2)
         terms.font = UIFont(name: "OpenSans", size: 2)
-        
+
         scrollView.addSubview(privacy)
         scrollView.addSubview(terms)
         privacy.translatesAutoresizingMaskIntoConstraints = false
@@ -398,7 +435,7 @@ class SubscriptionController: UIViewController {
         monthlyBox.selected = false
         monthlyBox.configure()
     }
-    
+
     @objc func tappedPrivacy() {
         if let url = URL(string: "https://focusbyte.flycricket.io/privacy.html") {
             UIApplication.shared.open(url)
@@ -409,7 +446,7 @@ class SubscriptionController: UIViewController {
             UIApplication.shared.open(url)
         }
     }
- 
+
 
     @objc func tappedContinue(sender:UIButton) {
         var package = packagesAvailableForPurchase[0]
@@ -435,44 +472,13 @@ class SubscriptionController: UIViewController {
                                                     AFEventParamRevenue:  yearlyBox.selected ? yearlyPrice : lifeBox.selected ? lifePrice : monthlyPrice,
                                                     AFEventParamCurrency:"\(locale.currencyCode!)"
                                                 ])
-                
+
                 AppsFlyerLib.shared().logEvent(name: yearlyBox.selected ? "Yearly_Started_From_All" : lifeBox.selected ? "Lifetime_Started_From_All" : "Monthly_Started_From_All", values:
                                                 [
                                                     AFEventParamContent: "true"
                                                 ])
-                UserDefaults.standard.setValue(true, forKey: "isPro")
-                upgradedToPro = true
-                let controller = ContainerController(center: TimerController())
-                controller.modalPresentationStyle = .fullScreen
-                self.presentInFullScreen(UINavigationController(rootViewController: controller), animated: false, completion: {
-                    let users = uiRealm.objects(User.self)
-                    for user in users {
-                        if Auth.auth().currentUser?.email == user.email {
-                            inventoryArray.append("Hero Cat")
-                            try! uiRealm.write {
-                                user.inventoryArray.append("Hero Cat")
-                            }
-                        }
-                    }
-                    if let _ = Auth.auth().currentUser?.email {
-                           let email = Auth.auth().currentUser?.email
-                         Firestore.firestore().collection(K.userPreferenes).document(email!).updateData([
-                                "isPro": true,
-                                "coins": coins,
-                                "inventoryArray": inventoryArray,
-                                "exp": exp,
-                                "TimeData": timeData
-                           ]) { (error) in
-                               if let e = error {
-                                   print("There was a issue saving data to firestore \(e) ")
-                               } else {
-                                   print("Succesfully saved new items")
-                               }
-                           }
-                       }
+               userWentPro()
 
-                })
-             
             } else if userCancelled {
                 let event = logEvent(cancelled: true)
                 AppsFlyerLib.shared().logEvent(event, withValues: [AFEventParamEventStart: "cancelled", AFEventParamCurrency: "\(locale.currencyCode!)"])
@@ -484,7 +490,7 @@ class SubscriptionController: UIViewController {
                     content.title = "Don't Miss This Opportunity"
                     content.body = "🎉 Focusbyte Pro For Life is Gone in the Next 24 Hours!!! 🎉"
                     // Step 3: Create the notification trigger
-                    let date = Date().addingTimeInterval(86400)
+                    let date = Date().addingTimeInterval(43200)
                     let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
                     let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
                     // Step 4: Create the request
@@ -493,15 +499,60 @@ class SubscriptionController: UIViewController {
                     // Step 5: Register the request
                     center.add(request) { (error) in }
                 }
-                
+
             }
         }
     }
-    
+
+    private func userWentPro() {
+        UserDefaults.standard.setValue(true, forKey: "isPro")
+        upgradedToPro = true
+        let controller = ContainerController(center: TimerController())
+        controller.modalPresentationStyle = .fullScreen
+        if #available(iOS 15, *) {
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.titleTextAttributes =   [NSAttributedString.Key.foregroundColor: UIColor.white,
+                                                NSAttributedString.Key.font: UIFont(name: "Menlo-Bold", size: 30)!]
+            appearance.backgroundColor = .clear
+            UINavigationBar.appearance().standardAppearance = appearance
+            UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        }
+        self.presentInFullScreen(UINavigationController(rootViewController: controller), animated: false, completion: {
+            UserDefaults.standard.setValue(true, forKey: "isPro")
+            let users = uiRealm.objects(User.self)
+            for user in users {
+                if Auth.auth().currentUser?.email == user.email {
+                    inventoryArray.append("Hero Cat")
+                    try! uiRealm.write {
+                        user.inventoryArray.append("Hero Cat")
+                    }
+                }
+            }
+            if let _ = Auth.auth().currentUser?.email {
+                   let email = Auth.auth().currentUser?.email
+                 Firestore.firestore().collection(K.userPreferenes).document(email!).updateData([
+                        "isPro": true,
+                        "coins": coins,
+                        "inventoryArray": inventoryArray,
+                        "exp": exp,
+                        "TimeData": timeData
+                   ]) { (error) in
+                       if let e = error {
+                           print("There was a issue saving data to firestore \(e) ")
+                       } else {
+                           print("Succesfully saved new items")
+                       }
+                   }
+               }
+
+        })
+    }
+
     func logEvent(cancelled: Bool = false) -> String {
         let lst = ["Group", "Statistics", "Tags", "Repeat", "Notes"]
         var event = ""
-       
+
         event = yearlyBox.selected ? "Yearly_Started_From_" : lifeBox.selected ? "Lifetime_Started_From_" : "Monthly_Started_From_"
         if cancelled {
             event = "Cancelled_" + event
@@ -517,8 +568,21 @@ class SubscriptionController: UIViewController {
         }
               return event
     }
-    
+
     @objc func tappedBack() {
+        if onboarding {
+            NotificationHelper.addPro()
+        }
+        if #available(iOS 15, *) {
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.titleTextAttributes =   [NSAttributedString.Key.foregroundColor: UIColor.white,
+                                                NSAttributedString.Key.font: UIFont(name: "Menlo-Bold", size: 30)!]
+            appearance.backgroundColor = .clear
+            UINavigationBar.appearance().standardAppearance = appearance
+            UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        }
+        
         let nav = navigationController
         DispatchQueue.main.async { [self] in //make sure all UI updates are on the main thread.
             if self.onboarding {
@@ -529,9 +593,8 @@ class SubscriptionController: UIViewController {
 
             }
             nav?.pushViewController(ContainerController(center: TimerController()), animated: false)
-            
         }
-        
+
     }
-    
+
 }

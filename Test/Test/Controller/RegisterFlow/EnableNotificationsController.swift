@@ -67,7 +67,9 @@ class EnableNotificationsController: UIViewController {
     override func viewDidLoad() {
         configureUI()
     }
-    
+    override func viewWillAppear(_ animated: Bool) {
+        configureNavigationBar(color: backgroundColor, isTrans: true)
+    }
     
     //MARK: - helper functions
     func configureUI() {
@@ -146,17 +148,37 @@ class EnableNotificationsController: UIViewController {
     @objc func tappedEnable() {
         let generator = UIImpactFeedbackGenerator(style: .light)
         generator.impactOccurred()
-        let center = UNUserNotificationCenter.current()
-        center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
-            if let _ = error {}
-            if granted {
-                AppsFlyerLib.shared().logEvent("enabled_notifications_onboarding", withValues: [AFEventParamContent: "true"])
+        let current = UNUserNotificationCenter.current()
+        current.getNotificationSettings(completionHandler: { permission in
+            switch permission.authorizationStatus  {
+            case .authorized:
+                AppsFlyerLib.shared().logEvent("notification_enabled", withValues: [AFEventParamContent: "true"])
+                //came back from settings add these reminders
+                if UserDefaults.standard.value(forKey: "oneDayNotif") == nil {
+                    NotificationHelper.addOneDay()
+                }
+                if UserDefaults.standard.value(forKey: "threeDayNotif") == nil {
+                    NotificationHelper.addThreeDay()
+                }
                 self.pushController()
-            } else {
-                AppsFlyerLib.shared().logEvent("disabled_notifications_onboarding", withValues: [AFEventParamContent: "true"])
-                self.pushController()
+            case .denied:
+                AppsFlyerLib.shared().logEvent("notification_go_to_settings", withValues: [AFEventParamContent: "true"])
+                DispatchQueue.main.async {
+                    if let appSettings = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(appSettings) {
+                        UIApplication.shared.open(appSettings)
+                    }
+                }
+            case .notDetermined:
+                AppsFlyerLib.shared().logEvent("notification_go_to_settings", withValues: [AFEventParamContent: "true"])
+                DispatchQueue.main.async {
+                    if let appSettings = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(appSettings) {
+                        UIApplication.shared.open(appSettings)
+                    }
+                }
+            default:
+                print("Unknow Status")
             }
-        }
+        })
         UIApplication.shared.registerForRemoteNotifications()
 
     }
@@ -164,9 +186,11 @@ class EnableNotificationsController: UIViewController {
         UserDefaults.standard.setValue(signUpTapped ? false : true, forKey: "noLogin")
         DispatchQueue.main.async {
             let controller = SubscriptionController()
+            controller.modalPresentationStyle = .fullScreen
             controller.onboarding = true
-            self.navigationController?.pushViewController(controller, animated: true)
+            self.presentInFullScreen(UINavigationController(rootViewController: controller), animated: true, completion: nil)
         }
     }
 }
+
 

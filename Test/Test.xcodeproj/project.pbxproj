@@ -46,9 +46,10 @@
 		FE39D13A25DD9CB700DBFFDE /* focuswidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = FE39D13525DD9CB500DBFFDE /* focuswidget.intentdefinition */; };
 		FE39D13D25DD9CB700DBFFDE /* focuswidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = FE39D12F25DD9CB500DBFFDE /* focuswidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		FE39D14F25DDA84B00DBFFDE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E159360B242ACE710050E914 /* Assets.xcassets */; };
-		FE39D18225DDADFD00DBFFDE /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = FE39D18125DDADFD00DBFFDE /* SwiftPackageProductDependency */; };
+		FE39D18225DDADFD00DBFFDE /* SwiftUICharts in Frameworks */ = {isa = PBXBuildFile; productRef = FE39D18125DDADFD00DBFFDE /* SwiftUICharts */; };
 		FE39D19125DDFD0200DBFFDE /* GetWidgetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE39D19025DDFD0200DBFFDE /* GetWidgetData.swift */; };
 		FE41841B2618EF3A00ABCFAB /* DailyBonusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE41841A2618EF3A00ABCFAB /* DailyBonusView.swift */; };
+		FE4DBADD272DE70100A6254F /* NotificationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE4DBADC272DE70100A6254F /* NotificationHelper.swift */; };
 		FE5395C124311AD100DA83C1 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE5395C024311AD100DA83C1 /* Constants.swift */; };
 		FE53DB1325FC0AF200E7ECF0 /* EnableNotificationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE53DB1225FC0AF200E7ECF0 /* EnableNotificationsController.swift */; };
 		FE577C9224704D6800042819 /* mapGif.gif in Resources */ = {isa = PBXBuildFile; fileRef = FE577C9124704D6800042819 /* mapGif.gif */; };
@@ -97,6 +98,7 @@
 		FED6F63C243EA82700553996 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED6F63B243EA82700553996 /* Protocols.swift */; };
 		FED6F63E243EAC6100553996 /* MenuOptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED6F63D243EAC6100553996 /* MenuOptionCell.swift */; };
 		FED6F640243EB3A200553996 /* MenuOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED6F63F243EB3A200553996 /* MenuOption.swift */; };
+		FEE9FAE02737652100404098 /* MindGardenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEE9FADF2737652100404098 /* MindGardenView.swift */; };
 		FEF00175243FB635002D6C78 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEF00174243FB635002D6C78 /* SettingsController.swift */; };
 		FEF55DCC2430275E00B4C0E1 /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEF55DCA2430275E00B4C0E1 /* WelcomeViewController.swift */; };
 		FEF55DCF2430346D00B4C0E1 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEF55DCE2430346D00B4C0E1 /* LoginViewController.swift */; };
@@ -202,6 +204,7 @@
 		FE39D14A25DDA10800DBFFDE /* focuswidgetExtensionDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = focuswidgetExtensionDebug.entitlements; sourceTree = "<group>"; };
 		FE39D19025DDFD0200DBFFDE /* GetWidgetData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetWidgetData.swift; sourceTree = "<group>"; };
 		FE41841A2618EF3A00ABCFAB /* DailyBonusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyBonusView.swift; sourceTree = "<group>"; };
+		FE4DBADC272DE70100A6254F /* NotificationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHelper.swift; sourceTree = "<group>"; };
 		FE5395C024311AD100DA83C1 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		FE53DB1225FC0AF200E7ECF0 /* EnableNotificationsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableNotificationsController.swift; sourceTree = "<group>"; };
 		FE577C9124704D6800042819 /* mapGif.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = mapGif.gif; sourceTree = "<group>"; };
@@ -253,6 +256,7 @@
 		FED6F63B243EA82700553996 /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		FED6F63D243EAC6100553996 /* MenuOptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuOptionCell.swift; sourceTree = "<group>"; };
 		FED6F63F243EB3A200553996 /* MenuOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuOption.swift; sourceTree = "<group>"; };
+		FEE9FADF2737652100404098 /* MindGardenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MindGardenView.swift; sourceTree = "<group>"; };
 		FEF00174243FB635002D6C78 /* SettingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		FEF55DCA2430275E00B4C0E1 /* WelcomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewController.swift; sourceTree = "<group>"; };
 		FEF55DCE2430346D00B4C0E1 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -296,7 +300,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FE39D18225DDADFD00DBFFDE /* BuildFile in Frameworks */,
+				FE39D18225DDADFD00DBFFDE /* SwiftUICharts in Frameworks */,
 				FE39D13125DD9CB500DBFFDE /* SwiftUI.framework in Frameworks */,
 				FE39D13025DD9CB500DBFFDE /* WidgetKit.framework in Frameworks */,
 			);
@@ -501,6 +505,7 @@
 				FE39D19025DDFD0200DBFFDE /* GetWidgetData.swift */,
 				FE41841A2618EF3A00ABCFAB /* DailyBonusView.swift */,
 				FEA7C78226222A4C00D4DD06 /* DailyBonusAdDelegate.swift */,
+				FEE9FADF2737652100404098 /* MindGardenView.swift */,
 			);
 			path = TimerPage;
 			sourceTree = "<group>";
@@ -570,6 +575,7 @@
 				E1D2BF93242B9CCB004AC477 /* animatedLabel.swift */,
 				FE5395C024311AD100DA83C1 /* Constants.swift */,
 				FED6F63B243EA82700553996 /* Protocols.swift */,
+				FE4DBADC272DE70100A6254F /* NotificationHelper.swift */,
 			);
 			path = Misc;
 			sourceTree = "<group>";
@@ -673,7 +679,7 @@
 			);
 			name = focuswidgetExtension;
 			packageProductDependencies = (
-				FE39D18125DDADFD00DBFFDE /* SwiftPackageProductDependency */,
+				FE39D18125DDADFD00DBFFDE /* SwiftUICharts */,
 			);
 			productName = focuswidgetExtension;
 			productReference = FE39D12F25DD9CB500DBFFDE /* focuswidgetExtension.appex */;
@@ -716,7 +722,7 @@
 			);
 			mainGroup = E15935F6242ACE6F0050E914;
 			packageReferences = (
-				FE39D18025DDADFD00DBFFDE /* RemoteSwiftPackageReference */,
+				FE39D18025DDADFD00DBFFDE /* XCRemoteSwiftPackageReference "ChartView" */,
 			);
 			productRefGroup = E1593600242ACE6F0050E914 /* Products */;
 			projectDirPath = "";
@@ -933,6 +939,7 @@
 				E1D2BF94242B9CCB004AC477 /* animatedLabel.swift in Sources */,
 				FE577C942470CD1200042819 /* DateHelper.swift in Sources */,
 				E1593603242ACE6F0050E914 /* AppDelegate.swift in Sources */,
+				FEE9FAE02737652100404098 /* MindGardenView.swift in Sources */,
 				FE61EA922475F8F200A6AE25 /* StatisticsPieChartLogic.swift in Sources */,
 				FE61EA9624771D9600A6AE25 /* TagTableViewController.swift in Sources */,
 				FEC28337244BA17A00098413 /* MysteryBox.swift in Sources */,
@@ -992,6 +999,7 @@
 				FED6F63C243EA82700553996 /* Protocols.swift in Sources */,
 				FE8E61F4248580ED001E1D07 /* SectionHeaderViewCell.swift in Sources */,
 				FED36A15247750B8005DE0FC /* TagViewCell.swift in Sources */,
+				FE4DBADD272DE70100A6254F /* NotificationHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1177,15 +1185,16 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Test/FocusByteDebug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 63;
+				CURRENT_PROJECT_VERSION = 65;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = M5757NXZKD;
 				INFOPLIST_FILE = Test/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.6.9;
+				MARKETING_VERSION = 1.7.1;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = co.byteteam.focusbyte;
 				PRODUCT_NAME = FocusByte;
@@ -1204,15 +1213,16 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Test/Test.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 63;
+				CURRENT_PROJECT_VERSION = 65;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = M5757NXZKD;
 				INFOPLIST_FILE = Test/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.6.9;
+				MARKETING_VERSION = 1.7.1;
 				PRODUCT_BUNDLE_IDENTIFIER = co.byteteam.focusbyte;
 				PRODUCT_NAME = FocusByte;
 				SWIFT_VERSION = 5.0;
@@ -1316,7 +1326,7 @@
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CODE_SIGN_ENTITLEMENTS = focuswidgetExtensionDebug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 63;
+				CURRENT_PROJECT_VERSION = 65;
 				DEVELOPMENT_TEAM = M5757NXZKD;
 				INFOPLIST_FILE = focuswidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
@@ -1325,7 +1335,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.6.9;
+				MARKETING_VERSION = 1.7.1;
 				PRODUCT_BUNDLE_IDENTIFIER = co.byteteam.focusbyte.focuswidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1342,7 +1352,7 @@
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CODE_SIGN_ENTITLEMENTS = focuswidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 63;
+				CURRENT_PROJECT_VERSION = 65;
 				DEVELOPMENT_TEAM = M5757NXZKD;
 				INFOPLIST_FILE = focuswidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
@@ -1351,7 +1361,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.6.9;
+				MARKETING_VERSION = 1.7.1;
 				PRODUCT_BUNDLE_IDENTIFIER = co.byteteam.focusbyte.focuswidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1411,7 +1421,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		FE39D18025DDADFD00DBFFDE /* RemoteSwiftPackageReference */ = {
+		FE39D18025DDADFD00DBFFDE /* XCRemoteSwiftPackageReference "ChartView" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/AppPear/ChartView";
 			requirement = {
@@ -1422,9 +1432,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		FE39D18125DDADFD00DBFFDE /* SwiftPackageProductDependency */ = {
+		FE39D18125DDADFD00DBFFDE /* SwiftUICharts */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = FE39D18025DDADFD00DBFFDE /* RemoteSwiftPackageReference */;
+			package = FE39D18025DDADFD00DBFFDE /* XCRemoteSwiftPackageReference "ChartView" */;
 			productName = SwiftUICharts;
 		};
 /* End XCSwiftPackageProductDependency section */

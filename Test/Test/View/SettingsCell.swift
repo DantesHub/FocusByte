@@ -37,8 +37,8 @@ class SettingsCell:UITableViewCell,SKPaymentTransactionObserver, SKProductsReque
     lazy var discordView: UIImageView = {
         let iv = UIImageView()
         iv.translatesAutoresizingMaskIntoConstraints = false
-        iv.image = UIImage(named: "discordlogo")
-        iv.width(40)
+        iv.image = UIImage(named: "mgLogo")
+        iv.width(30)
         iv.height(40)
         return iv
     }()

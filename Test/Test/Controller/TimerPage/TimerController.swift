@@ -243,6 +243,7 @@ class TimerController: UIViewController, TagUpdater {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+
         createObservers()
 //        createGestureRecognizers()
         level = Int(floor(sqrt(Double(exp))))
@@ -252,6 +253,15 @@ class TimerController: UIViewController, TagUpdater {
            configureUI()
         }
         configureNavigationBar(color: backgroundColor, isTrans: true)
+        if !UserDefaults.standard.bool(forKey: "mindGarden") {
+            let mindGardenView = MindGardenView(frame: UIScreen.main.bounds)
+            view.addSubview(mindGardenView)
+            mindGardenView.rootController = self
+            mindGardenView.setUpView()
+            mindGardenView.navigationBar = navigationController!.navigationBar
+            navigationController?.navigationBar.alpha = 0.3
+            navigationController?.navigationBar.isUserInteractionEnabled = false
+        }
     }
 //    private final func createGestureRecognizers() {
 //        let rightSwipe = UISwipeGestureRecognizer(target: self, action: #selector(swipedRight))
@@ -281,14 +291,12 @@ class TimerController: UIViewController, TagUpdater {
 //        }
 //    }
     final func getRealmData() {
-        print("getting realm data")
-        totalBonuses = 0
+            totalBonuses = 0
         results = uiRealm.objects(User.self)
         for result  in results {
             if result.isLoggedIn == true {
                 coins = result.coins
                 exp = result.exp
-                let streak = result.streak
                 let formatter = DateFormatter()
                 formatter.dateFormat = "MM-dd-yyyy HH:mm:ss"
                 var lastStreakDate = ""
@@ -296,10 +304,21 @@ class TimerController: UIViewController, TagUpdater {
                     streakNumber = Int(result.streak![..<plus])!
                     let plusOffset = result.streak!.index(plus, offsetBy: 1)
                     lastStreakDate = String(result.streak![plusOffset...])
-                    let now = Date() // the current date/time
-                    print(now - formatter.date(from: lastStreakDate)!, "kimetsu")
                     if (Date() - formatter.date(from: lastStreakDate)! >= 86400 && Date() - formatter.date(from: lastStreakDate)! <= 172800) {
                         // update streak number and date
+                        if let oneId = UserDefaults.standard.value(forKey: "oneDayNotif") as? String {
+                            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [oneId])
+                            NotificationHelper.addOneDay()
+                        }
+                        if let threeId = UserDefaults.standard.value(forKey: "threeDayNotif") as? String {
+                            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [threeId])
+                            NotificationHelper.addThreeDay()
+                        }
+                        if let proId = UserDefaults.standard.value(forKey: "proNotif") as? String {
+                            if UserDefaults.standard.bool(forKey: "isPro") {
+                                UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [proId])
+                            }
+                        }
                         streakNumber += 1
                         lastStreakDate = formatter.string(from: Date())
                     } else if  Date() - formatter.date(from: lastStreakDate)! > 172800 { //broke streak
@@ -310,7 +329,6 @@ class TimerController: UIViewController, TagUpdater {
                             result.thirtyDay = 0
                         }
                     } else {} // no need  to update streak
-
                     if result.dailyBonus != "" && result.dailyBonus != nil {
                         if (Date() - formatter.date(from: result.dailyBonus!)! >= 0) {
                             totalBonuses += 1
@@ -419,38 +437,39 @@ class TimerController: UIViewController, TagUpdater {
                 if purchaserInfo?.entitlements.all["isPro"]?.isActive == true {
                     UserDefaults.standard.setValue(true, forKey: "isPro")
                 } else {
-                    UserDefaults.standard.setValue(false, forKey: "isPro")
-                    if !UserDefaults.standard.bool(forKey: "noLogin") {
-                        if let email = Auth.auth().currentUser?.email {
-                            var isPro = false
-                            let docRef = db.collection(K.FStore.collectionName).document(email)
-                            docRef.getDocument { (snapshot, error) in
-                                if let document = snapshot, document.exists {
-                                    _ = document.data().map(String.init(describing:)) ?? "nil"
-                                    if let isP = document["isPro"] {
-                                        isPro = isP as! Bool
+                    if !UserDefaults.standard.bool(forKey: "trippleTapped") {
+                        UserDefaults.standard.setValue(false, forKey: "isPro")
+                        if !UserDefaults.standard.bool(forKey: "noLogin") {
+                            if let email = Auth.auth().currentUser?.email {
+                                var isPro = false
+                                let docRef = db.collection(K.FStore.collectionName).document(email)
+                                docRef.getDocument { (snapshot, error) in
+                                    if let document = snapshot, document.exists {
+                                        _ = document.data().map(String.init(describing:)) ?? "nil"
+                                        if let isP = document["isPro"] {
+                                            isPro = isP as! Bool
+                                        }
+                                    }
+                                    if isPro {
+                                        UserDefaults.standard.setValue(true, forKey: "isPro")
                                     }
                                 }
-                                if isPro {
-                                    UserDefaults.standard.setValue(true, forKey: "isPro")
+                                Firestore.firestore().collection(K.userPreferenes).document(email).updateData([
+                                    "isPremium": false,
+                                ]) { (error) in
+                                    if let e = error {
+                                        print("There was a issue saving data to firestore \(e) ")
+                                    } else {
+                                        print("Succesfully saved new items")
+                                    }
                                 }
                             }
-                             Firestore.firestore().collection(K.userPreferenes).document(email).updateData([
-                                    "isPremium": false,
-                               ]) { (error) in
-                                   if let e = error {
-                                       print("There was a issue saving data to firestore \(e) ")
-                                   } else {
-                                       print("Succesfully saved new items")
-                                   }
-                               }
-                        }
 
+                        }
                     }
                 }
-            }
-        
         }
+    }
     func configureUI() {
         self.navigationController?.navigationItem.hidesBackButton = true
         coinsImg = UIImageView(image: UIImage(named: "coins")!)
@@ -561,7 +580,6 @@ class TimerController: UIViewController, TagUpdater {
             dailyBonusView.navigationBar = navigationController!.navigationBar
             navigationController?.navigationBar.alpha = 0.3
             navigationController?.navigationBar.isUserInteractionEnabled = false
-
         }
     }
     
